@@ -72,7 +72,9 @@ ingress:
 ui:
   header:
     title: true              # ÓRBITA logo, app title and subtitle
-    homeLink: true           # "🏠 Mi intranet" link (not shown on the home app itself)
+    # "🏠 Mi intranet" link (not shown on the home app itself). auto: hidden when the example theme is on (its page
+    # menu already has "Mi intranet"), shown otherwise
+    homeLink: auto
     # "✨ Pregúntale a ÓRBITA" button (the AI assistant). auto: hidden when the example theme shows it in the page header
     # (theme.enabled and theme.assistantButton), shown otherwise
     assistant: auto

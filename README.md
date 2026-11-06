@@ -244,7 +244,7 @@ the user's name. Hide in the apps whatever the theme already shows:
 ui:
   header:
     title: true          # ÓRBITA logo, app title and subtitle
-    homeLink: true       # "Mi intranet" link
+    homeLink: auto       # "Mi intranet" link (auto: hidden with the example theme, whose page menu has it)
     assistant: auto      # AI assistant button (auto: hidden when the example theme shows it in the page header)
     notifications: true  # notification bell
     user: auto           # user's name, role and avatar (auto: hidden with the example theme, which already shows it)

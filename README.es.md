@@ -249,7 +249,7 @@ cabecera, como el nombre del usuario. Oculta en las aplicaciones lo que ya muest
 ui:
   header:
     title: true          # logo de ÓRBITA, título y subtítulo de la app
-    homeLink: true       # enlace «Mi intranet»
+    homeLink: auto       # enlace «Mi intranet» (auto: oculto con el theme de ejemplo, que lo tiene en su menú)
     assistant: auto      # botón del asistente de IA (auto: oculto si el theme de ejemplo lo muestra en la cabecera)
     notifications: true  # campana de avisos
     user: auto           # nombre, rol y avatar del usuario (auto: oculto con el theme de ejemplo, que ya lo muestra)
