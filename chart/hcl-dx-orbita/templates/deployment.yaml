@@ -74,6 +74,13 @@ spec:
             - name: ORBITA_KIOSK_KEY
               valueFrom: { secretKeyRef: { name: {{ include "orbita.fullname" . }}-kiosk, key: key } }
             - { name: ORBITA_PAGES_BASE, value: {{ .Values.pages.base | quote }} }
+            # What the apps show (ui.*): the API returns it in GET /v1/config
+            - { name: ORBITA_HEADER_TITLE, value: {{ .Values.ui.header.title | quote }} }
+            - { name: ORBITA_HEADER_HOMELINK, value: {{ .Values.ui.header.homeLink | quote }} }
+            - { name: ORBITA_HEADER_ASSISTANT, value: {{ .Values.ui.header.assistant | quote }} }
+            - { name: ORBITA_HEADER_NOTIFICATIONS, value: {{ .Values.ui.header.notifications | quote }} }
+            - { name: ORBITA_HEADER_USER, value: {{ .Values.ui.header.user | quote }} }
+            - { name: ORBITA_FOOTER, value: {{ .Values.ui.footer | quote }} }
             - { name: ORBITA_KIOSK_PAGE, value: {{ printf "%squiosco" .Values.pages.base | quote }} }
             {{- with .Values.mcp.tools }}
             {{- if .enabled }}

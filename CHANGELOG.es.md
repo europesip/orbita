@@ -2,6 +2,16 @@
 
 [English](CHANGELOG.md) · **Español**
 
+## 2.3.0 · 2026-11-06 · Se adapta a tu tema de DX
+
+- **`ui.header.*` y `ui.footer`** en los valores del chart: elige qué muestran las aplicaciones en su cabecera
+  (título, enlace a Mi intranet, asistente de IA, avisos, nombre y rol del usuario) y en el pie, para que nada salga
+  dos veces cuando tu tema de DX ya lo muestra. Por defecto se ve todo.
+- Documentado cómo instalar **sin páginas** (`pages.create: false`) y colocar tú las Script Applications.
+- **Manual ilustrado** en español e inglés (PDF, `docs/manual/`).
+- Nueva sección de **Contacto y servicios**: servicios opcionales de EUROPESIP, con el código y los procedimientos
+  completos incluidos.
+
 ## 2.2.1 · 2026-11-06 · Preguntar en inglés o en español
 
 - El panel «✨ Pregúntale a ÓRBITA» responde en el idioma de cada pregunta (inglés o español; antes, siempre en

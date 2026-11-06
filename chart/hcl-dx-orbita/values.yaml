@@ -66,6 +66,18 @@ ingress:
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "16m"     # expense receipt photos
 
+# --- What the apps show -------------------------------------------------------------------------------------------
+# The apps run inside DX pages. If your DX theme already shows something (for example the user's name), hide it in the
+# apps so it does not appear twice. Everything is shown by default.
+ui:
+  header:
+    title: true              # ÓRBITA logo, app title and subtitle
+    homeLink: true           # "🏠 Mi intranet" link (not shown on the home app itself)
+    assistant: true          # "✨ Pregúntale a ÓRBITA" button (the AI assistant)
+    notifications: true      # notification bell
+    user: true               # user's name, job title, role and avatar
+  footer: true               # "ÓRBITA · HCL DX Compose · EuropeSIP" line
+
 # --- MCP server for HCL DX IQ -------------------------------------------------------------------------------------
 mcp:
   enabled: true
@@ -136,7 +148,7 @@ scriptapps:
   dxclient:
     acceptLicense: false     # REQUIRED true: you accept the HCL DXClient license
   bundle:
-    image: ghcr.io/europesip/orbita/orbita-scriptapps:2.2.1
+    image: ghcr.io/europesip/orbita/orbita-scriptapps:2.3.0
   job:
     imagePullSecrets: []     # the bundle image is public; set it for a private mirror
   apps:

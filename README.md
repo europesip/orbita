@@ -2,14 +2,14 @@
 
 # ÓRBITA · Time tracking, Time off, Expenses and Approvals for HCL DX
 
-**English** · [Español](README.es.md) · [Release history](CHANGELOG.md) · [Licence](#licence-and-services)
+**English** · [Español](README.es.md) · [Manual (PDF)](docs/manual/orbita-explained.en.pdf) · [Release history](CHANGELOG.md) · [Contact](#contact-and-services)
 
 **ÓRBITA** is an intranet suite for **HCL DX Compose** (CF239) by **EUROPESIP**. Its React interface is published as
 six **Script Applications**; the logic and the data live in a REST API (**`orbita-api`**, Open Liberty) with
 PostgreSQL, which also includes an **MCP server** so that **HCL DX IQ** can answer questions and act for the user.
 Everything is installed with **one Helm chart**, `hcl-dx-orbita`.
 
-> **Version 2.2.1.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
+> **Version 2.3.0.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
 > in later releases. The application interface is in Spanish.
 
 | Page (signed-in users only) | URL in the HCL DX Compose labs |
@@ -26,7 +26,8 @@ Everything is installed with **one Helm chart**, `hcl-dx-orbita`.
 - [Demo users](#demo-users) · [Features](#features) · [Architecture](#architecture)
 - [Ask the AI](#ask-the-ai-about-órbita) · [Requirements](#requirements) · [Installation with Helm](#installation-with-helm) · [HCL DX IQ integration](#hcl-dx-iq-integration-the-mcp-server)
 - [Upgrade and uninstall](#upgrade-and-uninstall) · [Repository](#repository) · [Development](#development)
-- [Release history](CHANGELOG.md) · [Licence and services](#licence-and-services)
+- [Release history](CHANGELOG.md) · [Licence](#licence) · [Contact and services](#contact-and-services)
+- **Illustrated manual (PDF)**: [English](docs/manual/orbita-explained.en.pdf) · [Español](docs/manual/orbita-explicada.es.pdf)
 
 ## Demo users
 
@@ -161,7 +162,7 @@ scriptapps:                                       # subchart hcl-dx-scriptapp: r
 **3. Install**:
 
 ```bash
-helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 2.2.1 \
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 2.3.0 \
   -n dx-shared -f orbita-values.yaml --timeout 15m
 ```
 
@@ -182,6 +183,28 @@ What happens, in order:
 ```bash
 DXCLIENT_ACCEPT_LICENSE=yes scripts/instalar-en-labs.sh
 scripts/verificar.sh
+```
+
+### Options: pages and what the apps show
+
+**Pages (optional).** By default the chart creates one DX page per app under *Home* (`pages.create: true`). To place
+the six Script Applications yourself (in your own pages, with your own layout), install with `pages.create: false`:
+the apps are still pushed to WCM (*Script Application Library › Script Applications*, titles «ÓRBITA · …»), and you
+add each one to the page you want. Then set `pages.base` (and keep the friendly names `mi-intranet`, `fichaje`,
+`vacaciones`, `gastos`, `aprobaciones`, `quiosco`), so that the apps link to each other correctly.
+
+**Header and footer.** The apps run inside DX pages, so your DX theme may already show some of their header, such as
+the user's name. Hide in the apps whatever the theme already shows:
+
+```yaml
+ui:
+  header:
+    title: true          # ÓRBITA logo, app title and subtitle
+    homeLink: true       # "Mi intranet" link
+    assistant: true      # AI assistant button
+    notifications: true  # notification bell
+    user: false          # user's name, role and avatar (already in the theme)
+  footer: true
 ```
 
 ## HCL DX IQ integration (the MCP server)
@@ -263,28 +286,41 @@ web/                    React interface (Vite); scripts/scriptapps.mjs builds th
 images/                 Dockerfiles: orbita-api (Open Liberty) and orbita-scriptapps (the built apps)
 chart/hcl-dx-orbita/    Helm chart
 scripts/                helpers for the labs (install, verify, register the MCP in IQ)
-docs/                   AI questions (EN/ES), functional spec, MCP and REST Client tests (in Spanish)
+docs/                   illustrated manual (PDF, EN/ES), AI questions (EN/ES), functional spec, MCP and REST Client tests
 ```
 
 ## Development
 
 - **Back end**: `mvn -f api/pom.xml package` (Java 21). **Interface**: `cd web && npm ci && npm run build:scriptapps`.
-- **Images**: CI builds and tests both images; a push to `main` publishes `:main`, a tag `v2.2.1` publishes `:2.2.1`
+- **Images**: CI builds and tests both images; a push to `main` publishes `:main`, a tag `v2.3.0` publishes `:2.3.0`
   and the chart.
 - **A new operation**: method in `Api.java` (or `Gastos.java`), its route in `api/rutas.json`, and the interface calls
   it with `api('op', {...})`. **A schema change**: a new file `V<n>__description.sql` in `db/migration` (never edit a
   published one).
 
-## Licence and services
+## Licence
 
 ÓRBITA is **source-available** under the **[PolyForm Noncommercial License 1.0.0](LICENSE)**: you may use, study,
 **modify** and redistribute it for any **noncommercial** purpose (personal use, study, research, evaluation, and
 charitable, educational and public organisations). **Commercial use is not allowed** without an agreement with
 EUROPESIP. Third-party components keep their own licences: see [NOTICE](NOTICE).
 
-**EUROPESIP services.** If you want to use ÓRBITA in your organisation, EUROPESIP offers a catalogue of related
-services: **customisation** and new features, **branding** with your corporate identity, **adaptation** to your
-processes and systems (directory, payroll, ERP), **support**, and **packs of hours** for a tailored installation.
-Contact: [www.europesip.com](https://www.europesip.com).
+## Contact and services
+
+**Everything you need is here**: the complete source code, the Helm chart and the installation procedures. You can
+install and run ÓRBITA on your own, with no obligation.
+
+If you would like some help, EUROPESIP, the team behind ÓRBITA, offers **optional** services around it:
+
+- **Getting started**: installation on your environment, a review of your prerequisites and values, and a first
+  hand-over session for your team.
+- **Customisation and branding**: your corporate identity, new features, your own rules (holiday policy, expense
+  limits, approval flows) and integration with your DX theme.
+- **Integrations** with your corporate systems: Microsoft Teams, CRM, HR and payroll, ERP, reporting and metrics, your
+  own databases or AI models.
+- **Upgrades and support**: new ÓRBITA, HCL DX and HCL DX IQ versions, and support with an agreed response time.
+- **Packs of hours** for any of the above, used whenever you need them.
+
+📧 [info@europesip.com](mailto:info@europesip.com) · 🌐 [www.europesip.com](https://www.europesip.com)
 
 Copyright © 2026 EUROPESIP.

@@ -2,6 +2,15 @@
 
 **English** · [Español](CHANGELOG.es.md)
 
+## 2.3.0 · 2026-11-06 · Fits your DX theme
+
+- **`ui.header.*` and `ui.footer`** in the chart values: choose what the apps show in their header (title, home link,
+  AI assistant, notifications, user's name and role) and footer, so that nothing appears twice when your DX theme
+  already shows it. Everything is shown by default.
+- Documented how to install **without pages** (`pages.create: false`) and place the Script Applications yourself.
+- **Illustrated manual** in English and Spanish (PDF, `docs/manual/`).
+- New **Contact and services** section: optional EUROPESIP services, with the complete code and procedures included.
+
 ## 2.2.1 · 2026-11-06 · Ask in English or Spanish
 
 - The «✨ Pregúntale a ÓRBITA» panel answers in the language of each question (English or Spanish; before, always in

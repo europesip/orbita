@@ -65,6 +65,13 @@ public class Recursos {
                 .add("quiosco", Config.paginaQuiosco())
                 .add("claveQuiosco", Config.claveQuiosco() == null ? "" : Config.claveQuiosco())
                 .add("demo", Config.demo())
+                .add("cabecera", Json.createObjectBuilder()
+                        .add("titulo", Config.cabecera("title"))
+                        .add("inicio", Config.cabecera("homelink"))
+                        .add("asistente", Config.cabecera("assistant"))
+                        .add("avisos", Config.cabecera("notifications"))
+                        .add("usuario", Config.cabecera("user")))
+                .add("pie", Config.pie())
                 .build();
         return json(200, o.toString());
     }

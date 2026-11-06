@@ -1,6 +1,6 @@
 // ÓRBITA: cabecera común y aplicación de cada Script Application (data-app).
 import React, {useEffect, useMemo, useState} from 'react';
-import {Avatar, Cargando, Fallo, Suite, crearApi, leerConfig, useAvisos, useDatos} from './ui.jsx';
+import {Avatar, Cargando, Fallo, Suite, crearApi, leerConfig, useAvisos, useDatos, useSuite} from './ui.jsx';
 import {Campana, RUTAS, urlApp} from './social.jsx';
 import {Fichaje} from './Fichaje.jsx';
 import {Vacaciones} from './Vacaciones.jsx';
@@ -44,32 +44,43 @@ export function App({app, url, raiz}) {
 }
 
 function Contenido({app}) {
+  const {config} = useSuite();
   const [yo, error] = useDatos('yo', {}, []);
   if (error) return <Fallo>{error}</Fallo>;
   if (!yo) return <Cargando />;
   const def = APPS[app];
   const {Vista} = def;
+  // Qué mostrar en la cabecera (valores ui.header.* del chart): con un tema de DX que ya muestra el usuario o los
+  // avisos, la aplicación no los repite
+  const c = {titulo: true, inicio: true, asistente: true, avisos: true, usuario: true, ...(config && config.cabecera)};
+  const derecha = (c.inicio && app !== 'inicio') || c.asistente || c.avisos || c.usuario;
   return (
     <div className="si-raiz">
-      <header className="si-cabecera">
-        <div className="si-marca">
-          <OrbitaIcono tam={46} />
-          <div>
-            <span className="si-producto">{PRODUCTO}</span>
-            <h2><span className="si-titulo-icono" aria-hidden="true">{def.icono}</span>{def.titulo}</h2>
-            <p>{def.subtitulo}</p>
-          </div>
-        </div>
-        <div className="si-usuario">
-          {app !== 'inicio' && <a className="si-enlace si-a-inicio" href={urlApp('inicio')}>🏠 Mi intranet</a>}
-          <Asistente app={app} yo={yo} />
-          <Campana inicial={yo.avisos} app={app} />
-          <div><strong>{yo.nombre}</strong><span>{yo.puesto} · {ROLES[yo.rol] || yo.rol}</span></div>
-          <Avatar nombre={yo.nombre} tam={38} />
-        </div>
-      </header>
+      {(c.titulo || derecha) && (
+        <header className="si-cabecera">
+          {c.titulo ? (
+            <div className="si-marca">
+              <OrbitaIcono tam={46} />
+              <div>
+                <span className="si-producto">{PRODUCTO}</span>
+                <h2><span className="si-titulo-icono" aria-hidden="true">{def.icono}</span>{def.titulo}</h2>
+                <p>{def.subtitulo}</p>
+              </div>
+            </div>
+          ) : <div />}
+          {derecha && (
+            <div className="si-usuario">
+              {c.inicio && app !== 'inicio' && <a className="si-enlace si-a-inicio" href={urlApp('inicio')}>🏠 Mi intranet</a>}
+              {c.asistente && <Asistente app={app} yo={yo} />}
+              {c.avisos && <Campana inicial={yo.avisos} app={app} />}
+              {c.usuario && <div><strong>{yo.nombre}</strong><span>{yo.puesto} · {ROLES[yo.rol] || yo.rol}</span></div>}
+              {c.usuario && <Avatar nombre={yo.nombre} tam={38} />}
+            </div>
+          )}
+        </header>
+      )}
       <Vista yo={yo} />
-      <footer className="si-pie">{PRODUCTO} · HCL DX Compose · EuropeSIP</footer>
+      {(!config || config.pie !== false) && <footer className="si-pie">{PRODUCTO} · HCL DX Compose · EuropeSIP</footer>}
     </div>
   );
 }

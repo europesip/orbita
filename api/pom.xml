@@ -22,7 +22,7 @@
   </modules>
 
   <properties>
-    <revision>2.2.1</revision>
+    <revision>2.3.0</revision>
     <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jakartaee.version>10.0.0</jakartaee.version>

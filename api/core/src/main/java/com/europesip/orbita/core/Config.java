@@ -46,6 +46,16 @@ public final class Config {
     public static String paginas() { return env("ORBITA_PAGES_BASE", "/wps/myportal/Home/"); }
     public static String paginaQuiosco() { return env("ORBITA_KIOSK_PAGE", "/wps/myportal/Home/quiosco"); }
 
+    // --- Cabecera y pie de las aplicaciones ------------------------------------------------------------------------
+    /**
+     * Qué muestran la cabecera y el pie de cada aplicación (ORBITA_HEADER_* y ORBITA_FOOTER, valores ui.* del chart).
+     * Todo visible por defecto; con un tema de DX que ya muestra el usuario, se puede ocultar en la aplicación.
+     */
+    public static boolean cabecera(String parte) {
+        return si("ORBITA_HEADER_" + parte.toUpperCase(Locale.ROOT), true);
+    }
+    public static boolean pie() { return si("ORBITA_FOOTER", true); }
+
     // --- MCP ------------------------------------------------------------------------------------------------------
     /** Token Bearer opcional que debe enviar el cliente MCP (además de la sesión de DX del usuario). */
     public static String tokenMcp() { return env("ORBITA_MCP_TOKEN", null); }
