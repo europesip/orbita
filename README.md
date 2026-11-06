@@ -27,7 +27,7 @@ Everything is installed with **one Helm chart**, `hcl-dx-orbita`.
 - [Demo users](#demo-users) · [Features](#features) · [Architecture](#architecture)
 - [Ask the AI](#ask-the-ai-about-órbita) · [Requirements](#requirements) · [Installation with Helm](#installation-with-helm) · [HCL DX IQ integration](#hcl-dx-iq-integration-the-mcp-server)
 - [Upgrade and uninstall](#upgrade-and-uninstall) · [Repository](#repository) · [Development](#development)
-- [Release history](CHANGELOG.md) · [Licence](#licence) · [Contact and services](#contact-and-services)
+- [Release history](CHANGELOG.md) · [FAQ](#faq) · [Licence](#licence) · [Contact and services](#contact-and-services)
 - **Illustrated manual (PDF)**: [English](docs/manual/orbita-explained.en.pdf) · [Español](docs/manual/orbita-explicada.es.pdf)
 
 ## Demo users
@@ -48,12 +48,13 @@ OpenLDAP:
 | `administracion` | `german` | Accounting: pays the expense reports | 6001 |
 | `tecnologia-2`, `tecnologia-3` | (fictitious) | In the data; nobody signs in with them | 4444, 5555 |
 
-To run the demo again from scratch: HR › *Fichaje* › *Informes* › **Restaurar datos de demostración**. The data are
+To run the demo again from scratch: HR › *Time tracking* › *Reports* › **Restore demo data**. The data are
 relative to the day they are loaded.
 
 ## Features
 
-- **Assistant «✨ Pregúntale a ÓRBITA»** (header of every app): HCL DX IQ chat in a side panel, with the portal session.
+- **Assistant «✨ Ask ÓRBITA»** (header of every app, or of the example theme): ÓRBITA's own assistant in a side
+  panel, with the portal session (or the HCL DX IQ chat, see [Three ways to put AI on ÓRBITA](#three-ways-to-put-ai-on-órbita)).
   It answers with the ÓRBITA MCP tools as the user asking («How many days of holiday do I have left?»).
 - **My intranet**: quick clock-in, hours of the last six weeks, time-off balance, expenses by category, pending
   approvals, who is away in the next 14 days and the latest notifications.
@@ -106,19 +107,20 @@ needs your confirmation first; paying, restoring the demo, deleting and exportin
    give ÓRBITA a different model (cheaper, private, your own…). It does not need HCL DX IQ.
 
    ```yaml
-assistant:
-  backend: orbita            # orbita (own assistant, default) | iq (HCL DX IQ chat) | none (no button)
-  litellm:
-    url: http://litellm.dx-shared.svc.cluster.local:4000   # LiteLLM or any OpenAI-compatible API
-    apiKeySecret: {name: litellm-env, key: PROXY_MASTER_KEY}
-  model: iq-general-purpose  # LiteLLM alias: the same as HCL DX IQ by default; register another one for ÓRBITA only
-```
+   assistant:
+     backend: orbita            # orbita (own assistant, default) | iq (HCL DX IQ chat) | none (no button)
+     litellm:
+       url: http://litellm.dx-shared.svc.cluster.local:4000   # LiteLLM or any OpenAI-compatible API
+       apiKeySecret: {name: litellm-env, key: PROXY_MASTER_KEY}
+     model: iq-general-purpose  # LiteLLM alias: the same as HCL DX IQ by default; register another one for ÓRBITA only
+   ```
 
 2. **The HCL DX IQ chat (`assistant.backend: iq`).** IQ is designed for the **DX practitioners** who manage the
    portal. Its chat (the ✨ button of DX) uses the model configured in IQ and **all the MCP servers of the Integrator**
    at once: the 55 HCL DX tools (WCM, DAM, pages) plus the ÓRBITA ones. So one question can mix portal content and
    ÓRBITA data, at the cost of a much larger prompt. It needs the patch of the MCP list described below. With
    `backend: iq` the button of the ÓRBITA apps opens the IQ chat.
+
 3. **Your own AI chat, apart from IQ.** The ÓRBITA MCP server is **standard MCP** (Streamable HTTP, JSON-RPC), and
    the REST API is documented in `api/rutas.json`, so any MCP client or your own chatbot can use them: a chat service of
    yours with any LLM (directly or through the same LiteLLM), Microsoft Copilot Studio, Claude, a Teams or WhatsApp
@@ -192,7 +194,7 @@ What happens, in order:
    *Home* with XMLAccess.
 
 **4. Check**: `kubectl -n dx-shared logs job/orbita-scriptapps-push -c dxclient | tail -3`, and
-`https://<DX host>/orbita-api/v1/salud` must answer `ok`. Then sign in to DX as a demo user and open *Mi intranet*.
+`https://<DX host>/orbita-api/v1/salud` must answer `ok`. Then sign in to DX as a demo user and open *My intranet*.
 
 **In the HCL DX Compose labs**, the same with one script (it reads the labs `env.sh` and creates the secrets):
 
@@ -244,7 +246,7 @@ the user's name. Hide in the apps whatever the theme already shows:
 ui:
   header:
     title: true          # ÓRBITA logo, app title and subtitle
-    homeLink: auto       # "Mi intranet" link (auto: hidden with the example theme, whose page menu has it)
+    homeLink: auto       # "My intranet" link (auto: hidden with the example theme, whose page menu has it)
     assistant: auto      # AI assistant button (auto: hidden when the example theme shows it in the page header)
     notifications: true  # notification bell
     user: auto           # user's name, role and avatar (auto: hidden with the example theme, which already shows it)
@@ -344,6 +346,11 @@ docs/                   illustrated manual (PDF, EN/ES), AI questions (EN/ES), f
 - **A new operation**: method in `Api.java` (or `Gastos.java`), its route in `api/rutas.json`, and the interface calls
   it with `api('op', {...})`. **A schema change**: a new file `V<n>__description.sql` in `db/migration` (never edit a
   published one).
+
+## FAQ
+
+Typical questions about installation, cost and licence, the theme and DAM, AI (including your own sovereign AI),
+languages, security, technology and services: **[FAQ](docs/faq.md)** · [Preguntas frecuentes](docs/faq.es.md).
 
 ## Licence
 

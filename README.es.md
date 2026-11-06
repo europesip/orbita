@@ -28,7 +28,7 @@ se instala con **un chart de Helm**, `hcl-dx-orbita`. Qué hace cada aplicación
 - [Usuarios de la demo](#usuarios-de-la-demo) · [Funciones](#funciones) · [Arquitectura](#arquitectura)
 - [Preguntas a la IA](#qué-preguntarle-a-la-ia-sobre-órbita) · [Requisitos](#requisitos) · [Instalación con Helm](#instalación-con-helm) · [Integración con HCL DX IQ](#integración-con-hcl-dx-iq-el-servidor-mcp)
 - [Actualizar y desinstalar](#actualizar-y-desinstalar) · [Repositorio](#repositorio) · [Desarrollo](#desarrollo)
-- [Historial de versiones](CHANGELOG.es.md) · [Licencia](#licencia) · [Contacto y servicios](#contacto-y-servicios)
+- [Historial de versiones](CHANGELOG.es.md) · [Preguntas frecuentes](#preguntas-frecuentes) · [Licencia](#licencia) · [Contacto y servicios](#contacto-y-servicios)
 - **Manual ilustrado (PDF)**: [Español](docs/manual/orbita-explicada.es.pdf) · [English](docs/manual/orbita-explained.en.pdf)
 
 ## Usuarios de la demo
@@ -54,8 +54,9 @@ Cada persona ve su PIN y su tarjeta QR en *Fichaje › Mi tarjeta de quiosco*. P
 
 ## Funciones
 
-- **Asistente «✨ Pregúntale a ÓRBITA»** (cabecera de todas las aplicaciones): chat con HCL DX IQ en un panel
-  lateral, con la sesión del portal. Responde con las herramientas del MCP de ÓRBITA como el usuario que pregunta
+- **Asistente «✨ Pregúntale a ÓRBITA»** (cabecera de todas las aplicaciones o del theme de ejemplo): el asistente
+  propio de ÓRBITA en un panel lateral, con la sesión del portal (o el chat de HCL DX IQ, ver
+  [Tres formas de poner IA en ÓRBITA](#tres-formas-de-poner-ia-en-órbita)). Responde con las herramientas del MCP de ÓRBITA como el usuario que pregunta
   («¿cuántas vacaciones me quedan?», «pídeme del 9 al 11 de diciembre»…).
 - **Mi intranet**: saludo con fichaje rápido, horas de las últimas seis semanas, saldo de vacaciones, gastos del año por
   categoría, solicitudes por aprobar, quién falta los próximos 14 días y últimos avisos.
@@ -108,19 +109,20 @@ pide antes tu confirmación; pagar, restaurar la demo, borrar y exportar se qued
    barato, privado, propio…). No necesita HCL DX IQ.
 
    ```yaml
-assistant:
-  backend: orbita            # orbita (asistente propio, por defecto) | iq (chat de HCL DX IQ) | none (sin botón)
-  litellm:
-    url: http://litellm.dx-shared.svc.cluster.local:4000   # LiteLLM o cualquier API compatible con OpenAI
-    apiKeySecret: {name: litellm-env, key: PROXY_MASTER_KEY}
-  model: iq-general-purpose  # alias de LiteLLM: por defecto el mismo que HCL DX IQ; registra otro solo para ÓRBITA
-```
+   assistant:
+     backend: orbita            # orbita (asistente propio, por defecto) | iq (chat de HCL DX IQ) | none (sin botón)
+     litellm:
+       url: http://litellm.dx-shared.svc.cluster.local:4000   # LiteLLM o cualquier API compatible con OpenAI
+       apiKeySecret: {name: litellm-env, key: PROXY_MASTER_KEY}
+     model: iq-general-purpose  # alias de LiteLLM: por defecto el mismo que HCL DX IQ; registra otro solo para ÓRBITA
+   ```
 
 2. **El chat de HCL DX IQ (`assistant.backend: iq`).** IQ está pensado para los **profesionales de DX** que gestionan el
    portal. Su chat (el botón ✨ de DX) usa el modelo configurado en IQ y **todos los servidores MCP del Integrator** a la
    vez: las 55 herramientas de HCL DX (WCM, DAM, páginas) más las de ÓRBITA. Así una pregunta puede mezclar contenido del
    portal y datos de ÓRBITA, a cambio de un prompt mucho mayor. Necesita el parche de la lista de MCP que se explica
    abajo. Con `backend: iq`, el botón de las aplicaciones de ÓRBITA abre el chat de IQ.
+
 3. **Con un chat de IA propio, aparte de IQ.** El servidor MCP de ÓRBITA es **MCP estándar** (Streamable HTTP,
    JSON-RPC) y la API REST está descrita en `api/rutas.json`, así que cualquier cliente MCP o un chatbot propio puede
    usarlos: un servicio de chat vuestro con cualquier LLM (directo o a través del mismo LiteLLM), Microsoft Copilot
@@ -352,6 +354,11 @@ docs/                   manual ilustrado (PDF, ES/EN), preguntas a la IA, especi
 - La API responde 401 sin sesión de DX, 422 con `{"error", "aviso": true}` para los errores de negocio y 500 si algo
   falla. WCM elimina `[$…]` al servir el JavaScript: `web/scripts/scriptapps.mjs` lo escribe con escapes equivalentes.
   En Open Liberty, Flyway solo encuentra las migraciones si su carpeta tiene un fichero `flyway.location`.
+
+## Preguntas frecuentes
+
+Dudas habituales sobre instalación, coste y licencia, el theme y el DAM, la IA (también con tu propia IA soberana),
+idiomas, seguridad, tecnología y servicios: **[Preguntas frecuentes](docs/faq.es.md)** · [FAQ in English](docs/faq.md).
 
 ## Licencia
 
