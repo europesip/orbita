@@ -1,0 +1,26 @@
+# Pruebas de suite-api con la extensión REST Client (entorno "lab": Ctrl+Alt+E).
+# "Send Request" encima de cada petición. La contraseña se pide al enviar, no se guarda.
+
+### Estado del servicio (sin sesión)
+GET {{host}}/suite-api/publico
+
+### ¿Quién soy? (usuario del LDAP; la contraseña de los empleados de la demo es demo1234)
+# @prompt password Contraseña de {{usuario}}
+GET {{host}}/suite-api/api?op=yo
+Authorization: Basic {{usuario}}:{{password}}
+
+### Resumen de "Mi intranet"
+# @prompt password Contraseña de {{usuario}}
+POST {{host}}/suite-api/api
+Authorization: Basic {{usuario}}:{{password}}
+Content-Type: application/x-www-form-urlencoded
+
+op=inicio.resumen
+
+### Avisos de la campana
+# @prompt password Contraseña de {{usuario}}
+POST {{host}}/suite-api/api
+Authorization: Basic {{usuario}}:{{password}}
+Content-Type: application/x-www-form-urlencoded
+
+op=avisos.lista

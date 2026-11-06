@@ -1,0 +1,9 @@
+{
+  // Suite Intranet: proyecto Java sin Maven/Gradle ("unmanaged folder" de la extensión Java).
+  // portlet/java: lógica de la suite (el nombre de la carpeta viene de Portal 8.5); rest/java: servicio REST.
+  "java.project.sourcePaths": ["portlet/java", "rest/java", "mcp/java"],
+  "java.project.referencedLibraries": [".herramientas/javax.servlet-api-4.0.1.jar", ".herramientas/javax.json-api-1.1.4.jar", ".herramientas/postgresql-42.7.11.jar"],
+  "java.project.outputPath": "build/vscode-classes",
+  "java.compile.nullAnalysis.mode": "disabled",
+  "java.configuration.updateBuildConfiguration": "automatic"
+}

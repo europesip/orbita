@@ -1,0 +1,25 @@
+# INGRESS_CLASS=nginx · ${SUITE_PATH} en el mismo host que DX (https://${DX_HOST}${SUITE_PATH}). ingress-nginx une las
+# reglas de todos los Ingress del mismo host y la ruta más específica gana a la "/" de DX.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ${SUITE_APP}
+  namespace: ${SUITE_NS}
+  labels: {app: ${SUITE_APP}}
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "16m"   # fotos de tickets de gasto
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: ["${DX_HOST}"]
+      secretName: suite-tls-cert
+  rules:
+    - host: ${DX_HOST}
+      http:
+        paths:
+          - path: ${SUITE_PATH}
+            pathType: Prefix
+            backend:
+              service:
+                name: ${SUITE_APP}
+                port: {number: 9080}

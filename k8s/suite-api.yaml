@@ -1,0 +1,95 @@
+# ÓRBITA API, suite-api (Open Liberty) en ${SUITE_NS}. Lo aplica 04-api.sh sustituyendo las variables.
+#  - suite-api.war, orbita-mcp.war y el controlador JDBC van en el PVC ${SUITE_APP}-files (no caben en un ConfigMap) que carga 04-api.sh.
+#  - server.xml y la configuración de registros de DX en el ConfigMap ${SUITE_APP}-config.
+#  - Claves LTPA y credenciales de los registros en el secret ${SUITE_APP}-sso; las de la base de datos en suite-db.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ${SUITE_APP}-files
+  namespace: ${SUITE_NS}
+  labels: {app: ${SUITE_APP}}
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: ${SC_RWO}
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${SUITE_APP}
+  namespace: ${SUITE_NS}
+  labels: {app: ${SUITE_APP}}
+spec:
+  replicas: 1
+  strategy: {type: Recreate}          # PVC ReadWriteOnce
+  selector:
+    matchLabels: {app: ${SUITE_APP}}
+  template:
+    metadata:
+      labels: {app: ${SUITE_APP}}
+      annotations:
+        suite-intranet/checksum: "${SUITE_CHECKSUM}"   # cambia con el WAR o la configuración -> nuevo pod
+    spec:
+      containers:
+        - name: liberty
+          image: ${SUITE_LIBERTY_IMAGE}
+          ports:
+            - {name: http, containerPort: 9080}   # API de las Script Applications (Ingress /suite-api)
+            - {name: mcp, containerPort: 9081}    # servidor MCP, solo dentro del clúster (networkpolicy.yaml)
+          env:
+            - {name: TZ, value: "${SUITE_TZ}"}                       # la misma zona horaria que la WebEngine (fichajes)
+            - {name: LTPA_KEYS_PASSWORD, valueFrom: {secretKeyRef: {name: ${SUITE_APP}-sso, key: ltpa-password}}}
+            # Variables que usan los ficheros de registros copiados de la WebEngine
+            - {name: DX_ADMIN, valueFrom: {secretKeyRef: {name: ${SUITE_APP}-sso, key: dx-admin}}}
+            - {name: DX_PASSWORD, valueFrom: {secretKeyRef: {name: ${SUITE_APP}-sso, key: dx-password}}}
+            - {name: DX_ADMIN_GROUP, value: "${DX_ADMIN_GROUP}"}
+            - {name: DX_BASIC_REGISTRY_REALM, value: "${DX_BASIC_REGISTRY_REALM}"}
+            - {name: LDAP_BIND_USER, valueFrom: {secretKeyRef: {name: ${SUITE_APP}-sso, key: ldap-bind-user}}}
+            - {name: LDAP_BIND_PASSWORD, valueFrom: {secretKeyRef: {name: ${SUITE_APP}-sso, key: ldap-bind-password}}}
+            # Base de datos
+            - {name: SUITE_DB_HOST, value: "${PG_HOST}"}
+            - {name: SUITE_DB, value: "${SUITE_DB}"}
+            - {name: SUITE_DB_USER, valueFrom: {secretKeyRef: {name: suite-db, key: username}}}
+            - {name: SUITE_DB_PASSWORD, valueFrom: {secretKeyRef: {name: suite-db, key: password}}}
+            # MCP: token Bearer opcional (si el secret suite-mcp no existe, el MCP no pide token)
+            - {name: ORBITA_MCP_TOKEN, valueFrom: {secretKeyRef: {name: suite-mcp, key: token, optional: true}}}
+          volumeMounts:
+            - {name: config, mountPath: /config/server.xml, subPath: server.xml}
+            - {name: config, mountPath: /config/configDropins/overrides/ldap-config.xml, subPath: ldap-config.xml}
+            - {name: config, mountPath: /config/configDropins/overrides/basic-registry-default.xml, subPath: basic-registry-default.xml}
+            - {name: sso, mountPath: /config/sso, readOnly: true}
+            - {name: files, mountPath: /config/suite, readOnly: true}
+          readinessProbe:                    # GET /publico responde sin sesión ({"servicio":"suite-api",...})
+            httpGet: {path: "${SUITE_PATH}/publico", port: http}
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket: {port: http}
+            initialDelaySeconds: 120
+            periodSeconds: 20
+          resources:
+            requests: {cpu: 100m, memory: 384Mi}
+            limits: {memory: 1Gi}
+      volumes:
+        - name: config
+          configMap: {name: ${SUITE_APP}-config}
+        - name: sso
+          secret:
+            secretName: ${SUITE_APP}-sso
+            items: [{key: ltpa.keys, path: ltpa.keys}]
+        - name: files
+          persistentVolumeClaim: {claimName: ${SUITE_APP}-files}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${SUITE_APP}
+  namespace: ${SUITE_NS}
+  labels: {app: ${SUITE_APP}}
+spec:
+  selector: {app: ${SUITE_APP}}
+  ports:
+    - {name: http, port: 9080, targetPort: http}
+    - {name: mcp, port: 9081, targetPort: mcp}      # http://suite-api.<ns>.svc.cluster.local:9081/mcp

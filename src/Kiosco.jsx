@@ -1,0 +1,207 @@
+// Quiosco de fichaje: tablet en la entrada; cada persona se identifica con su PIN o su tarjeta (QR) y ficha.
+import React, {useEffect, useRef, useState} from 'react';
+import jsQR from 'jsqr';
+import {Avatar, dosCifras, horas, useReloj, useSuite} from './ui.jsx';
+import {OrbitaLogo} from './marca.jsx';
+
+const DEMO = [['Lucía', '1111'], ['Javier', '2222'], ['David', '3333'], ['Elena', '4444'], ['Pablo', '5555']];
+const DESPEDIDA = {
+  ENTRADA: (n) => `¡Que tengas un buen día, ${n}!`, PAUSA: (n) => `Buen descanso, ${n}.`,
+  REANUDAR: (n) => `De vuelta, ${n}. ¡Ánimo!`, SALIDA: (n) => `¡Hasta mañana, ${n}!`,
+};
+const NOMBRE = {ENTRADA: 'Entrada', PAUSA: 'Pausa', REANUDAR: 'Vuelta de la pausa', SALIDA: 'Salida'};
+
+export function Kiosco({clave, raiz}) {
+  const {api} = useSuite();
+  const ahora = useReloj();
+  const [modo, setModo] = useState('pin');
+  const [pin, setPin] = useState('');
+  const [persona, setPersona] = useState(null); // {usuario, nombre, ..., fichaje, cred}
+  const [hecho, setHecho] = useState(null);
+  const [error, setError] = useState('');
+  const [ocupado, setOcupado] = useState(false);
+
+  // Pantalla completa sobre el tema del Portal (un contenedor del tema rompe position: fixed: se mueve a <body>)
+  useEffect(() => {
+    document.body.appendChild(raiz);
+    document.documentElement.style.overflow = 'hidden';
+  }, [raiz]);
+
+  // Vuelta automática al inicio
+  useEffect(() => {
+    if (!persona && !hecho) return undefined;
+    const t = setTimeout(reiniciar, hecho ? 5000 : 20000);
+    return () => clearTimeout(t);
+  }, [persona, hecho]); // eslint-disable-line
+
+  function reiniciar() { setPersona(null); setHecho(null); setPin(''); setError(''); }
+
+  const identificar = async (cred) => {
+    setOcupado(true);
+    setError('');
+    try {
+      const p = await api('kiosco.identificar', {clave, ...cred});
+      setPersona({...p, cred});
+    } catch (e) {
+      setError(e.message);
+      setPin('');
+    } finally { setOcupado(false); }
+  };
+  const marcar = async (tipo) => {
+    setOcupado(true);
+    try {
+      const r = await api('kiosco.marcar', {clave, tipo, ...persona.cred});
+      setHecho({tipo, nombre: persona.nombre.split(' ')[0], completo: persona.nombre, fichaje: r.fichaje});
+      setPersona(null);
+    } catch (e) { setError(e.message); } finally { setOcupado(false); }
+  };
+  const tecla = (t) => {
+    if (ocupado) return;
+    if (t === '⌫') { setPin(pin.slice(0, -1)); return; }
+    if (t === 'C') { setPin(''); return; }
+    const nuevo = (pin + t).slice(0, 4);
+    setPin(nuevo);
+    setError('');
+    if (nuevo.length === 4) identificar({pin: nuevo});
+  };
+  useEffect(() => {
+    const k = (e) => {
+      if (persona || hecho || modo !== 'pin') return;
+      if (/^[0-9]$/.test(e.key)) tecla(e.key);
+      else if (e.key === 'Backspace') tecla('⌫');
+    };
+    document.addEventListener('keydown', k);
+    return () => document.removeEventListener('keydown', k);
+  });
+
+  return (
+    <div className="si-kiosco">
+      <header className="si-k-cab">
+        <span className="si-k-marca"><OrbitaLogo tam={34} claro /><span className="si-k-sep">Quiosco de fichaje</span></span>
+        <span>{ahora.toLocaleDateString('es-ES', {weekday: 'long', day: 'numeric', month: 'long'})}</span>
+      </header>
+      <main className="si-k-cuerpo">
+        <section className="si-k-reloj">
+          <span className="si-k-hora">{dosCifras(ahora.getHours())}:{dosCifras(ahora.getMinutes())}<small>:{dosCifras(ahora.getSeconds())}</small></span>
+          <p>Identifícate con tu PIN o acerca tu tarjeta a la cámara.</p>
+        </section>
+
+        <section className="si-k-panel">
+          {hecho ? <Hecho h={hecho} onSalir={reiniciar} /> : persona ? (
+            <div className="si-k-persona">
+              <Avatar nombre={persona.nombre} tam={84} />
+              <h2>Hola, {persona.nombre.split(' ')[0]}</h2>
+              <p>{{
+                TRABAJANDO: `Trabajando desde las ${persona.fichaje.desde} · hoy llevas ${horas(persona.fichaje.minutosHoy)}`,
+                PAUSA: `En pausa desde las ${persona.fichaje.desde}`,
+                FUERA: persona.fichaje.marcas.length ? `Hoy llevas ${horas(persona.fichaje.minutosHoy)}` : 'Aún no has fichado hoy',
+              }[persona.fichaje.estado]}</p>
+              <div className="si-k-acciones">
+                {persona.fichaje.estado === 'FUERA' && <button type="button" className="si-k-boton verde" disabled={ocupado} onClick={() => marcar('ENTRADA')}>▶ Entrada</button>}
+                {persona.fichaje.estado === 'TRABAJANDO' && <>
+                  <button type="button" className="si-k-boton ambar" disabled={ocupado} onClick={() => marcar('PAUSA')}>❚❚ Pausa</button>
+                  <button type="button" className="si-k-boton rojo" disabled={ocupado} onClick={() => marcar('SALIDA')}>■ Salida</button>
+                </>}
+                {persona.fichaje.estado === 'PAUSA' && <>
+                  <button type="button" className="si-k-boton verde" disabled={ocupado} onClick={() => marcar('REANUDAR')}>▶ Volver</button>
+                  <button type="button" className="si-k-boton rojo" disabled={ocupado} onClick={() => marcar('SALIDA')}>■ Salida</button>
+                </>}
+              </div>
+              {error && <p className="si-k-error">{error}</p>}
+              <button type="button" className="si-k-cancelar" onClick={reiniciar}>No soy {persona.nombre.split(' ')[0]}</button>
+            </div>
+          ) : (
+            <>
+              <nav className="si-k-modos">
+                <button type="button" className={modo === 'pin' ? 'activa' : ''} onClick={() => { setModo('pin'); setError(''); }}>🔢 PIN</button>
+                <button type="button" className={modo === 'tarjeta' ? 'activa' : ''} onClick={() => { setModo('tarjeta'); setError(''); }}>📷 Tarjeta QR</button>
+              </nav>
+              {modo === 'pin' ? (
+                <div className="si-k-pin">
+                  <div className="si-k-puntos">{[0, 1, 2, 3].map((i) => <span key={i} className={i < pin.length ? 'lleno' : ''} />)}</div>
+                  {error && <p className="si-k-error">{error}</p>}
+                  <div className="si-k-teclado">
+                    {['1', '2', '3', '4', '5', '6', '7', '8', '9', 'C', '0', '⌫'].map((t) => (
+                      <button key={t} type="button" onClick={() => tecla(t)} disabled={ocupado}>{t}</button>
+                    ))}
+                  </div>
+                  <p className="si-k-demo">Demo: {DEMO.map(([n, p]) => `${n} ${p}`).join(' · ')}</p>
+                </div>
+              ) : <LectorTarjeta onLeida={(t) => identificar({tarjeta: t})} error={error} />}
+            </>
+          )}
+        </section>
+      </main>
+    </div>
+  );
+}
+
+function Hecho({h, onSalir}) {
+  const salida = h.tipo === 'SALIDA';
+  return (
+    <div className="si-k-hecho" onClick={onSalir} role="button" tabIndex={0}>
+      <span className="si-k-check">✓</span>
+      <h2>{NOMBRE[h.tipo]} registrada</h2>
+      <p className="si-k-cuando">{dosCifras(new Date().getHours())}:{dosCifras(new Date().getMinutes())} · {h.completo}</p>
+      {salida && <p className="si-k-resumen">Hoy has trabajado <b>{horas(h.fichaje.minutosHoy)}</b></p>}
+      <p>{DESPEDIDA[h.tipo](h.nombre)}</p>
+    </div>
+  );
+}
+
+/** Lee el QR de la tarjeta con la cámara (BarcodeDetector si existe; si no, jsQR). */
+function LectorTarjeta({onLeida, error}) {
+  const video = useRef(null);
+  const [estado, setEstado] = useState('Abriendo la cámara…');
+  useEffect(() => {
+    let flujo, parar = false, ultimo = '';
+    const lienzo = document.createElement('canvas');
+    const detector = 'BarcodeDetector' in window ? new window.BarcodeDetector({formats: ['qr_code']}) : null;
+    (async () => {
+      try {
+        flujo = await navigator.mediaDevices.getUserMedia({video: {facingMode: 'user'}});
+        video.current.srcObject = flujo;
+        await video.current.play();
+        setEstado('Acerca el código QR de tu tarjeta a la cámara');
+      } catch (e) {
+        setEstado('No hay cámara disponible: usa tu PIN.');
+        return;
+      }
+      const leer = async () => {
+        if (parar) return;
+        const v = video.current;
+        let texto = null;
+        if (v && v.readyState >= 2) {
+          try {
+            if (detector) {
+              const r = await detector.detect(v);
+              if (r.length) texto = r[0].rawValue;
+            } else {
+              lienzo.width = v.videoWidth;
+              lienzo.height = v.videoHeight;
+              const ctx = lienzo.getContext('2d');
+              ctx.drawImage(v, 0, 0);
+              const qr = jsQR(ctx.getImageData(0, 0, lienzo.width, lienzo.height).data, lienzo.width, lienzo.height);
+              if (qr) texto = qr.data;
+            }
+          } catch (e) { /* siguiente fotograma */ }
+        }
+        if (texto && texto !== ultimo) {
+          ultimo = texto;
+          onLeida(texto);
+          setTimeout(() => { ultimo = ''; }, 3000);
+        }
+        setTimeout(leer, 250);
+      };
+      leer();
+    })();
+    return () => { parar = true; if (flujo) flujo.getTracks().forEach((t) => t.stop()); };
+  }, []); // eslint-disable-line
+  return (
+    <div className="si-k-tarjeta">
+      <div className="si-k-video"><video ref={video} muted playsInline /><span className="si-k-marco" /></div>
+      <p>{estado}</p>
+      {error && <p className="si-k-error">{error}</p>}
+    </div>
+  );
+}

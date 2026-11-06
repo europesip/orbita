@@ -1,0 +1,23 @@
+ÓRBITA
+Copyright (c) 2026 EuropeSIP. Todos los derechos reservados.
+
+Licencia pendiente de decisión (GPLv3 o AGPLv3). Hasta entonces, este repositorio es privado y su uso,
+copia o distribución requieren autorización de EuropeSIP.
+
+Componentes de terceros que usa ÓRBITA (no se incluyen en este repositorio; se descargan al construir o desplegar):
+
+  Interfaz (npm)
+    React, React DOM 18.3.1 ........ MIT                https://react.dev
+    qrcode 1.5.4 ................... MIT                https://github.com/soldair/node-qrcode
+    jsQR 1.4.0 ..................... Apache-2.0         https://github.com/cozmo/jsQR
+    Tesseract.js 7.0.0 ............. Apache-2.0         https://github.com/naptha/tesseract.js
+    Vite 5, @vitejs/plugin-react ... MIT (solo para construir)
+
+  Servidor (Java)
+    Open Liberty 26.0.0.8 .......... EPL-2.0            imagen icr.io/appcafe/open-liberty
+    PostgreSQL JDBC 42.7.11 ........ BSD-2-Clause       https://jdbc.postgresql.org
+    Servlet API 4.0.1, JSON-P 1.1 .. CDDL/GPL-2.0+CE    solo para compilar (las aporta Open Liberty)
+
+  Plataforma
+    HCL DX Compose, HCL DX IQ y DXClient son productos de HCL Software con su propia licencia: no forman
+    parte de ÓRBITA. DXClient exige aceptar su acuerdo de licencia (k8s/05-scriptapps.sh lo acepta).

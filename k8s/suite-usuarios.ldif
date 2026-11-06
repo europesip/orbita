@@ -1,0 +1,83 @@
+# ÓRBITA · empleados de la demo en el OpenLDAP del Lab 2A (ou=users,dc=dxdemo,dc=com).
+# 02-usuarios-ldap.sh sustituye ${SUITE_USERS_PASSWORD} por un hash {SSHA} distinto por usuario y los da de alta
+# con ldapadd -c (los que ya existen se saltan). wpsadmin (Ana Torres, RRHH) ya existe en el registro básico de DX.
+
+dn: uid=carlos.ruiz,ou=users,dc=dxdemo,dc=com
+objectClass: inetOrgPerson
+uid: carlos.ruiz
+cn: Carlos Ruiz
+givenName: Carlos
+sn: Ruiz
+title: Responsable de Ventas
+mail: carlos.ruiz@dxdemo.com
+userPassword: ${SUITE_USERS_PASSWORD}
+
+dn: uid=lucia.martin,ou=users,dc=dxdemo,dc=com
+objectClass: inetOrgPerson
+uid: lucia.martin
+cn:: THVjw61hIE1hcnTDrW4=
+givenName:: THVjw61h
+sn:: TWFydMOtbg==
+title: Comercial
+mail: lucia.martin@dxdemo.com
+userPassword: ${SUITE_USERS_PASSWORD}
+
+dn: uid=javier.gomez,ou=users,dc=dxdemo,dc=com
+objectClass: inetOrgPerson
+uid: javier.gomez
+cn:: SmF2aWVyIEfDs21leg==
+givenName: Javier
+sn:: R8OzbWV6
+title: Comercial
+mail: javier.gomez@dxdemo.com
+userPassword: ${SUITE_USERS_PASSWORD}
+
+dn: uid=marta.sanchez,ou=users,dc=dxdemo,dc=com
+objectClass: inetOrgPerson
+uid: marta.sanchez
+cn:: TWFydGEgU8OhbmNoZXo=
+givenName: Marta
+sn:: U8OhbmNoZXo=
+title:: UmVzcG9uc2FibGUgZGUgVGVjbm9sb2fDrWE=
+mail: marta.sanchez@dxdemo.com
+userPassword: ${SUITE_USERS_PASSWORD}
+
+dn: uid=david.lopez,ou=users,dc=dxdemo,dc=com
+objectClass: inetOrgPerson
+uid: david.lopez
+cn:: RGF2aWQgTMOzcGV6
+givenName: David
+sn:: TMOzcGV6
+title: Desarrollador
+mail: david.lopez@dxdemo.com
+userPassword: ${SUITE_USERS_PASSWORD}
+
+dn: uid=elena.navarro,ou=users,dc=dxdemo,dc=com
+objectClass: inetOrgPerson
+uid: elena.navarro
+cn: Elena Navarro
+givenName: Elena
+sn: Navarro
+title:: RGlzZcOxYWRvcmE=
+mail: elena.navarro@dxdemo.com
+userPassword: ${SUITE_USERS_PASSWORD}
+
+dn: uid=pablo.diaz,ou=users,dc=dxdemo,dc=com
+objectClass: inetOrgPerson
+uid: pablo.diaz
+cn:: UGFibG8gRMOtYXo=
+givenName: Pablo
+sn:: RMOtYXo=
+title:: VMOpY25pY28gZGUgc29wb3J0ZQ==
+mail: pablo.diaz@dxdemo.com
+userPassword: ${SUITE_USERS_PASSWORD}
+
+dn: uid=rosa.molina,ou=users,dc=dxdemo,dc=com
+objectClass: inetOrgPerson
+uid: rosa.molina
+cn: Rosa Molina
+givenName: Rosa
+sn: Molina
+title:: UmVzcG9uc2FibGUgZGUgQWRtaW5pc3RyYWNpw7Nu
+mail: rosa.molina@dxdemo.com
+userPassword: ${SUITE_USERS_PASSWORD}

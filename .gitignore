@@ -1,0 +1,31 @@
+# Dependencias y artefactos generados (se regeneran con npm ci y k8s/01-construir.sh)
+node_modules/
+build/
+dist/
+
+# Herramientas descargadas por k8s/01-construir.sh (JDK portable y JAR de compilación)
+.herramientas/
+
+# Nunca datos sensibles: credenciales, claves, certificados y ficheros de entorno
+.env
+.env.*
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+ltpa.keys
+*.secret.yaml
+*.rendered.yaml
+cookies.txt
+
+# Bases de datos locales y registros
+*.log
+derby.log
+databases/
+
+# Editores y sistema
+.idea/
+*.iml
+.DS_Store
+Thumbs.db

@@ -1,0 +1,47 @@
+# Pruebas del servidor MCP de ÓRBITA con la extensión REST Client ("Send Request" encima de cada petición).
+# Antes: tarea de VS Code "ÓRBITA: túnel MCP (localhost:9081)"  (kubectl -n dx-shared port-forward svc/suite-api 9081:9081)
+# El puerto local TIENE que ser 9081: el virtual host del MCP solo acepta "Host: <lo que sea>:9081".
+
+@mcp = http://localhost:9081
+
+### Disponibilidad (lo llama DX IQ antes de pedir las herramientas)
+GET {{mcp}}/probe/ready
+
+### initialize
+POST {{mcp}}/mcp
+Content-Type: application/json
+Accept: application/json, text/event-stream
+MCP-Protocol-Version: 2025-06-18
+
+{"jsonrpc": "2.0", "id": 1, "method": "initialize",
+ "params": {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "rest-client", "version": "1"}}}
+
+### tools/list
+POST {{mcp}}/mcp
+Content-Type: application/json
+
+{"jsonrpc": "2.0", "id": 2, "method": "tools/list"}
+
+### tools/call · consulta
+POST {{mcp}}/mcp
+Content-Type: application/json
+
+{"jsonrpc": "2.0", "id": 3, "method": "tools/call",
+ "params": {"name": "vacaciones_saldo", "arguments": {"usuario": "lucia.martin"}}}
+
+### tools/call · modificación, 1.ª llamada: solo devuelve el resumen (no cambia nada)
+POST {{mcp}}/mcp
+Content-Type: application/json
+
+{"jsonrpc": "2.0", "id": 4, "method": "tools/call",
+ "params": {"name": "vacaciones_solicitar",
+            "arguments": {"usuario": "lucia.martin", "tipo": "VACACIONES", "desde": "2026-12-09", "hasta": "2026-12-11"}}}
+
+### tools/call · modificación, 2.ª llamada con confirmar=true: CREA la solicitud (cancélala luego en Vacaciones)
+POST {{mcp}}/mcp
+Content-Type: application/json
+
+{"jsonrpc": "2.0", "id": 5, "method": "tools/call",
+ "params": {"name": "vacaciones_solicitar",
+            "arguments": {"usuario": "lucia.martin", "tipo": "VACACIONES", "desde": "2026-12-09", "hasta": "2026-12-11",
+                          "comentario": "Prueba desde REST Client", "confirmar": true}}}

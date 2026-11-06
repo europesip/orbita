@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ÓRBITA API (suite-api) en Open Liberty, junto a HCL DX Compose (lo monta 04-api.sh desde el ConfigMap suite-api-config).
+
+  Inicio de sesión único con DX Compose: la WebEngine y este servidor comparten
+   - las claves LTPA de la WebEngine (secret suite-api-sso), así que la cookie LtpaToken2 del portal vale aquí, y
+   - el mismo realm: 04-api.sh copia en configDropins/overrides los ldap-config.xml y basic-registry-default.xml que
+     genera el chart de DX (repositorio federado "FederatedRealm" = registro básico de wpsadmin + LDAP del Lab 2A).
+     Usan las mismas variables que en la WebEngine (DX_ADMIN, DX_PASSWORD, LDAP_BIND_USER...), que llegan como
+     variables de entorno del contenedor.
+  Base de datos: suite_intranet en el PostgreSQL 18 del Lab 2B. stringtype=unspecified deja que PostgreSQL convierta
+  los parámetros de texto (fechas y horas enviadas con setString), como hace Derby.
+-->
+<server description="ORBITA API · HCL DX Compose">
+  <featureManager>
+    <feature>servlet-4.0</feature>
+    <feature>jdbc-4.2</feature>
+    <feature>jndi-1.0</feature>
+    <feature>appSecurity-3.0</feature>
+    <feature>ldapRegistry-3.0</feature>
+    <feature>federatedRegistry-1.0</feature>
+    <feature>jsonp-1.1</feature>          <!-- JSON del servidor MCP (javax.json) -->
+  </featureManager>
+
+  <!-- 9080: API de las Script Applications (publicada en el Ingress como /suite-api).
+       9081: servidor MCP (POST /mcp, GET /probe/ready), SOLO dentro del clúster: no está en el Ingress y la
+       NetworkPolicy k8s/networkpolicy.yaml solo deja entrar al Integrator de DX IQ. Cada aplicación se ata a su
+       puerto con un virtualHost, así /mcp no responde en 9080 ni /suite-api en 9081. -->
+  <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="9080" httpsPort="-1"/>
+  <httpEndpoint id="mcpHttpEndpoint" host="*" httpPort="9081" httpsPort="-1"/>
+  <virtualHost id="default_host" allowFromEndpointRef="defaultHttpEndpoint"/>
+  <virtualHost id="mcp_host" allowFromEndpointRef="mcpHttpEndpoint">
+    <hostAlias>*:9081</hostAlias>    <!-- Host: <lo que sea>:9081 (port-forward: usa también el puerto local 9081) -->
+  </virtualHost>
+
+  <!-- Consola (kubectl logs) también con los mensajes INFO de las aplicaciones: la auditoría del MCP -->
+  <logging consoleLogLevel="INFO"/>
+
+  <!-- SSO con la WebEngine: mismas claves y misma cookie (LtpaToken2); TLS lo termina el Ingress -->
+  <ltpa keysFileName="/config/sso/ltpa.keys" keysPassword="${env.LTPA_KEYS_PASSWORD}" monitorInterval="0"/>
+  <webAppSecurity httpOnlyCookies="true" ssoRequiresSSL="false" allowFailOverToBasicAuth="true"/>
+
+  <library id="postgresql">
+    <file name="/config/suite/postgresql.jar"/>
+  </library>
+  <dataSource id="suiteIntranet" jndiName="jdbc/suiteIntranet">
+    <jdbcDriver libraryRef="postgresql"/>
+    <properties.postgresql URL="jdbc:postgresql://${env.SUITE_DB_HOST}:5432/${env.SUITE_DB}?stringtype=unspecified"
+        user="${env.SUITE_DB_USER}" password="${env.SUITE_DB_PASSWORD}"/>
+    <connectionManager maxPoolSize="20"/>
+  </dataSource>
+
+  <webApplication id="suite-api" location="/config/suite/suite-api.war" contextRoot="/suite-api"/>
+  <!-- Atada a mcp_host por su WEB-INF/ibm-web-bnd.xml -->
+  <webApplication id="orbita-mcp" location="/config/suite/orbita-mcp.war" contextRoot="/"/>
+</server>

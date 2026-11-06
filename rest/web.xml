@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Servicio REST de ÓRBITA (HCL DX Compose / Open Liberty / WebSphere). Servlet 3.1, Java EE 8 compatible. -->
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+    version="3.1">
+  <display-name>ORBITA API</display-name>
+
+  <servlet>
+    <servlet-name>api</servlet-name>
+    <servlet-class>com.demo.suite.ApiServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>api</servlet-name>
+    <url-pattern>/api</url-pattern>
+    <url-pattern>/publico</url-pattern>
+  </servlet-mapping>
+
+  <!-- /api: cualquier usuario autenticado (rol ** de Servlet 3.1). En DX Compose la sesión del portal (LTPA/SSO)
+       basta; sin sesión el servidor pide usuario y contraseña. /publico (quiosco) queda sin restricción. -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>api</web-resource-name>
+      <url-pattern>/api</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>**</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>ORBITA</realm-name>
+  </login-config>
+
+  <!-- Base de datos: búsqueda JNDI global jdbc/suiteIntranet (PostgreSQL, definida en k8s/server.xml) -->
+</web-app>
