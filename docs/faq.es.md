@@ -133,6 +133,24 @@ Responder y actuar por el empleado que pregunta: su día, fichar entrada y salid
 notas de gasto (crear, añadir gastos, enviar), aprobaciones para los responsables y avisos. 26 herramientas en total;
 tú eliges cuáles se publican (`mcp.tools`). Más de 60 preguntas de ejemplo: [preguntas-ia.md](preguntas-ia.md).
 
+**¿Qué es un servidor MCP?**
+MCP (Model Context Protocol) es el estándar abierto que permite a un asistente de IA usar las herramientas de una
+aplicación: consultar sus datos y actuar en ella, en nombre del usuario. ÓRBITA incluye su propio **servidor MCP con más
+de 20 herramientas** (26) para trabajar con ÓRBITA: fichaje, vacaciones, gastos, aprobaciones y avisos. Las usa su
+asistente propio, y también HCL DX IQ o cualquier otro cliente MCP.
+
+**¿Se puede ampliar la IA más allá de las herramientas de ÓRBITA?**
+Sí. La IA se puede ampliar y personalizar según lo que necesite cada empresa:
+
+- **Más herramientas**: nuevas herramientas MCP para ÓRBITA, o para vuestros otros sistemas (RRHH, ERP, tickets…), para
+  que el asistente también responda y actúe en ellos, siempre como el usuario que pregunta.
+- **RAG (generación aumentada con recuperación)**: acceso a vuestra información propia, como las políticas de la
+  empresa, el convenio, la política de viajes y gastos o los procedimientos internos, para que las respuestas sigan
+  vuestras normas («¿Puedo pasar un taxi desde el aeropuerto?»).
+- **Instrucciones propias**: el tono, el idioma y las normas de la empresa para el asistente.
+
+EUROPESIP construye estas ampliaciones dentro de sus [servicios](#servicios-de-europesip).
+
 **¿La IA puede hacer algo que el usuario no puede hacer?**
 No. Actúa siempre como el usuario de la sesión de DX, con sus permisos, y pide confirmación antes de cambiar datos.
 Pagar, borrar y exportar se hacen en la aplicación.

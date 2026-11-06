@@ -128,6 +128,24 @@ Answer and act for the employee asking: their day, clocking in and out, holiday 
 (create, add expenses, send), approvals for managers, notifications. 26 tools in total; you choose which ones are
 published (`mcp.tools`). More than 60 example questions: [ai-questions.md](ai-questions.md).
 
+**What is an MCP server?**
+MCP (Model Context Protocol) is the open standard that lets an AI assistant use the tools of an application: read its
+data and act on it, on behalf of the user. ÓRBITA includes its own **MCP server with more than 20 tools** (26) to work
+with ÓRBITA: time tracking, time off, expenses, approvals and notifications. Its own assistant uses them, and so can
+HCL DX IQ or any other MCP client.
+
+**Can we extend the AI beyond the ÓRBITA tools?**
+Yes. The AI can be extended and customised as each company needs:
+
+- **More tools**: new MCP tools for ÓRBITA, or for your other systems (HR, ERP, ticketing…), so the assistant can
+  answer and act on them too, always as the user asking.
+- **RAG (retrieval-augmented generation)**: access to your own information, such as company policies, the collective
+  agreement, the travel and expenses policy or internal procedures, so that answers follow your rules
+  («Can I claim a taxi from the airport?»).
+- **Your own instructions**: tone, language and company rules for the assistant.
+
+EUROPESIP builds these extensions as part of its [services](#services-from-europesip).
+
 **Can the AI do something the user is not allowed to do?**
 No. It always acts as the user of the DX session, with their permissions, and asks for confirmation before changing
 any data. Paying, deleting and exporting stay in the app.

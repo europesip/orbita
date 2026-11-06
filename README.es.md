@@ -358,7 +358,7 @@ docs/                   manual ilustrado (PDF, ES/EN), preguntas a la IA, especi
 ## Preguntas frecuentes
 
 Dudas habituales sobre instalación, coste y licencia, el theme y el DAM, la IA (también con tu propia IA soberana),
-idiomas, seguridad, tecnología y servicios: **[Preguntas frecuentes](docs/faq.es.md)** · [FAQ in English](docs/faq.md).
+idiomas, seguridad, tecnología y servicios: **[Preguntas frecuentes](docs/faq.es.md)**.
 
 ## Licencia
 

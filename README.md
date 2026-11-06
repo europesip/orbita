@@ -350,7 +350,7 @@ docs/                   illustrated manual (PDF, EN/ES), AI questions (EN/ES), f
 ## FAQ
 
 Typical questions about installation, cost and licence, the theme and DAM, AI (including your own sovereign AI),
-languages, security, technology and services: **[FAQ](docs/faq.md)** · [Preguntas frecuentes](docs/faq.es.md).
+languages, security, technology and services: **[FAQ](docs/faq.md)**.
 
 ## Licence
 
