@@ -36,7 +36,7 @@ export function App({app, url, raiz}) {
   if (error) return <Fallo>{error}</Fallo>;
   if (!config) return <Cargando />;
   return (
-    <Suite.Provider value={{api, avisar, config}}>
+    <Suite.Provider value={{api, avisar, config, base: url}}>
       {app === 'kiosco' ? <Kiosco clave={config.claveQuiosco} raiz={raiz} /> : <Contenido app={APPS[app] ? app : 'fichaje'} />}
       {avisos}
     </Suite.Provider>

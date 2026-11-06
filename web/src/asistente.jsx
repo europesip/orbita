@@ -1,4 +1,9 @@
-// Asistente de ÓRBITA: chat con HCL DX IQ dentro de la aplicación (panel lateral).
+// Asistente de ÓRBITA: chat de IA dentro de la aplicación (panel lateral), con dos motores (valor assistant.backend):
+//
+//  orbita (por defecto)  el asistente propio de ÓRBITA: POST /orbita-api/v1/asistente. El servidor habla con LiteLLM
+//                        solo con las herramientas de ÓRBITA, como el usuario de la sesión de DX. El prompt es pequeño
+//                        (sin las herramientas de DX ni el prompt de IQ) y el modelo se elige en el chart.
+//  iq                    el chat de HCL DX IQ, con el MCP de ÓRBITA registrado en el Integrator (ver abajo).
 //
 // DX IQ no tiene API REST de chat: su interfaz habla JSON-RPC 2.0 por WebSocket en /dx/api/iq/v1/ws (start_session,
 // send_message, close_session), a través del HAProxy de DX y con la sesión del portal. Como ÓRBITA se sirve en el
@@ -9,6 +14,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 import {OrbitaIcono, PRODUCTO} from './marca.jsx';
+import {useSuite} from './ui.jsx';
 
 const SUGERENCIAS = {
   inicio: ['¿Cuántas vacaciones me quedan?', '¿Tengo vacaciones pendientes de aprobar?', 'Resume mi día'],
@@ -20,15 +26,43 @@ const SUGERENCIAS = {
 
 /** Botón de la cabecera + panel. */
 export function Asistente({app, yo}) {
+  const {config} = useSuite();
   const [abierto, setAbierto] = useState(false);
+  const modo = (config && config.asistente) || 'iq';
+  if (modo === 'none') return null;
   return (
     <>
-      <button type="button" className="si-iq-boton" onClick={() => setAbierto(true)} title={`Pregúntale a ${PRODUCTO} (HCL DX IQ)`}>
+      <button type="button" className="si-iq-boton" onClick={() => setAbierto(true)} title={`Pregúntale a ${PRODUCTO}${modo === 'iq' ? ' (HCL DX IQ)' : ''}`}>
         <span aria-hidden="true">✨</span><span className="si-iq-boton-texto">Pregúntale a {PRODUCTO}</span>
       </button>
       {abierto && <Panel app={app} yo={yo} onCerrar={() => setAbierto(false)} />}
     </>
   );
+}
+
+// --- Asistente propio de ÓRBITA -----------------------------------------------------------------------------------------
+
+/** Cliente del asistente de ÓRBITA (POST <base>/asistente): la conversación se guarda aquí y se envía entera. */
+function crearOrbita(base) {
+  let historia = [];
+  return {
+    sinSesion: () => false,
+    async preguntar(texto, progreso, idiomaRespuesta = 'es') {
+      historia = [...historia, {rol: 'user', texto}];
+      const r = await fetch(`${base.replace(/\/+$/, '')}/asistente`, {
+        method: 'POST', credentials: 'same-origin',
+        headers: {'Content-Type': 'application/json', Accept: 'application/json'},
+        body: JSON.stringify({mensajes: historia, idioma: idiomaRespuesta}),
+      });
+      let j = null;
+      try { j = await r.json(); } catch (e) { /* sin JSON */ }
+      if (!r.ok || !j) { historia = historia.slice(0, -1); throw new Error((j && j.error) || `El asistente ha respondido ${r.status}.`); }
+      (j.herramientas || []).forEach((h) => progreso && progreso(h));
+      historia = [...historia, {rol: 'assistant', texto: j.respuesta}];
+      return j.respuesta;
+    },
+    cerrar() { historia = []; },
+  };
 }
 
 // --- Conexión con DX IQ ----------------------------------------------------------------------------------------------
@@ -128,8 +162,10 @@ export function idioma(texto) {
 // --- Panel -----------------------------------------------------------------------------------------------------------
 
 function Panel({app, yo, onCerrar}) {
+  const {config, base} = useSuite();
+  const modo = (config && config.asistente) || 'iq';
   const iq = useRef(null);
-  if (!iq.current) iq.current = crearIq();
+  if (!iq.current) iq.current = modo === 'orbita' ? crearOrbita(base) : crearIq();
   const [mensajes, setMensajes] = useState([]);       // {de: 'yo'|'iq'|'error', texto}
   const [texto, setTexto] = useState('');
   const [ocupado, setOcupado] = useState(false);
@@ -171,7 +207,7 @@ function Panel({app, yo, onCerrar}) {
         <aside className="si-iq-panel" role="dialog" aria-label={`Asistente de ${PRODUCTO}`}>
           <header className="si-iq-cab">
             <OrbitaIcono tam={34} />
-            <div><strong>Asistente {PRODUCTO}</strong><span>con HCL DX IQ · {yo.nombre}</span></div>
+            <div><strong>Asistente {PRODUCTO}</strong><span>{modo === 'iq' ? 'con HCL DX IQ · ' : ''}{yo.nombre}</span></div>
             {mensajes.length > 0 && <button type="button" className="si-iq-nueva" onClick={nueva} disabled={ocupado}>Nueva</button>}
             <button type="button" className="si-cerrar" onClick={onCerrar} aria-label="Cerrar">×</button>
           </header>

@@ -1,4 +1,4 @@
-package com.europesip.orbita.mcp;
+package com.europesip.orbita.ia;
 
 import java.io.StringReader;
 import java.util.HashMap;
@@ -18,14 +18,14 @@ import com.europesip.orbita.core.Despachador;
  * Las herramientas se declaran en {@link Herramientas}. Cada una suele ser una operación de la lógica de ÓRBITA
  * (Despachador, la misma que usa la API REST) ejecutada como el usuario de DX que pregunta en DX IQ.
  */
-final class Herramienta {
+public final class Herramienta {
 
     /** Lo que hace la herramienta con los argumentos recibidos. */
     interface Ejecutor {
         Resultado ejecutar(Llamada llamada);
     }
 
-    final String nombre;
+    public final String nombre;
     private final String titulo, descripcion;
     private final JsonObject esquema;
     private final boolean soloLectura;
@@ -40,16 +40,26 @@ final class Herramienta {
         this.ejecutor = ejecutor;
     }
 
-    boolean soloLectura() {
+    public boolean soloLectura() {
         return soloLectura;
     }
 
-    Resultado ejecutar(Llamada llamada) {
+    public Resultado ejecutar(Llamada llamada) {
         return ejecutor.ejecutar(llamada);
     }
 
     /** Definición para tools/list. */
-    JsonObject definicion() {
+    /** Descripción para el modelo (también en la definición de funciones del asistente). */
+    public String descripcion() {
+        return descripcion;
+    }
+
+    /** El inputSchema (JSON Schema) de la herramienta. */
+    public JsonObject esquema() {
+        return esquema;
+    }
+
+    public JsonObject definicion() {
         return Json.createObjectBuilder()
                 .add("name", nombre)
                 .add("title", titulo)
@@ -67,12 +77,12 @@ final class Herramienta {
     // --- Llamada: argumentos + acceso a la API de la suite ---------------------------------------------------------
 
     /** Una invocación concreta: el usuario de DX que pregunta (su sesión) y los argumentos. */
-    static final class Llamada {
+    public static final class Llamada {
         final String usuario;
         final JsonObject args;
         private final Despachador.Registro registro;
 
-        Llamada(String usuario, JsonObject args, Despachador.Registro registro) {
+        public Llamada(String usuario, JsonObject args, Despachador.Registro registro) {
             this.usuario = usuario;
             this.args = args;
             this.registro = registro;
@@ -120,7 +130,7 @@ final class Herramienta {
 
     // --- Resultado de tools/call -------------------------------------------------------------------------------------
 
-    static final class Resultado {
+    public static final class Resultado {
         private final JsonObject datos;
         private final String texto, estado;
         private final boolean error;
@@ -137,7 +147,7 @@ final class Herramienta {
         }
 
         /** Error de negocio o de argumentos: el modelo lo ve (isError=true) y puede corregir la llamada. */
-        static Resultado error(String mensaje) {
+        public static Resultado error(String mensaje) {
             return new Resultado(Json.createObjectBuilder().add("error", mensaje).build(), mensaje, true, "error");
         }
 
@@ -151,12 +161,17 @@ final class Herramienta {
             return new Resultado(d, d.toString(), false, "confirmacion");
         }
 
-        String estado() {
+        public String estado() {
             return estado;
         }
 
         /** Cuerpo de result de tools/call: texto (para todos los clientes) + structuredContent. */
-        JsonObject json() {
+        /** Texto del resultado, tal como lo lee el modelo. */
+        public String texto() {
+            return texto;
+        }
+
+        public JsonObject json() {
             JsonArrayBuilder contenido = Json.createArrayBuilder()
                     .add(Json.createObjectBuilder().add("type", "text").add("text", texto));
             return Json.createObjectBuilder().add("content", contenido).add("structuredContent", datos).add("isError", error).build();

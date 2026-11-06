@@ -78,6 +78,27 @@ ui:
     user: true               # user's name, job title, role and avatar
   footer: true               # "ÓRBITA · HCL DX Compose · EuropeSIP" line
 
+# --- AI assistant («✨ Pregúntale a ÓRBITA») ------------------------------------------------------------------------
+assistant:
+  # orbita (recommended): ÓRBITA's own chat. orbita-api calls the model through LiteLLM with ÓRBITA's tools only, as
+  #   the user of the DX session: a small prompt (no HCL DX tools, no IQ system prompt), so each question costs less.
+  # iq: the HCL DX IQ chat (meant for practitioners managing DX), with the ÓRBITA MCP server registered in the
+  #   Integrator (see mcp below and the README).
+  # none: no assistant button.
+  backend: orbita
+  litellm:
+    # LiteLLM (or any OpenAI-compatible API). Default: the LiteLLM of the HCL DX Compose labs external dependencies.
+    url: http://litellm.dx-shared.svc.cluster.local:4000
+    # Secret with the API key (a LiteLLM virtual key, or the master key in a lab). Empty name: no key sent.
+    apiKeySecret:
+      name: litellm-env
+      key: PROXY_MASTER_KEY
+  # Model alias in LiteLLM. Default: the same alias HCL DX IQ uses, so it works with any LiteLLM prepared for IQ.
+  # Register another alias in LiteLLM to use a different AI (model, provider or your own) for ÓRBITA only.
+  model: iq-general-purpose
+  maxTokens: ""              # optional, for models with strict limits
+  temperature: ""            # optional
+
 # --- MCP server for HCL DX IQ -------------------------------------------------------------------------------------
 mcp:
   enabled: true

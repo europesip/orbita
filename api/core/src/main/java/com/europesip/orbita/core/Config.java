@@ -56,6 +56,17 @@ public final class Config {
     }
     public static boolean pie() { return si("ORBITA_FOOTER", true); }
 
+    // --- Asistente de IA de ÓRBITA (valores assistant.* del chart) -------------------------------------------------
+    /** orbita: chat propio (llama a LiteLLM solo con las herramientas de ÓRBITA) · iq: el chat de HCL DX IQ · none. */
+    public static String asistente() { return env("ORBITA_ASSISTANT", "orbita").toLowerCase(Locale.ROOT); }
+    /** URL base de LiteLLM (o de cualquier API compatible con OpenAI), p. ej. http://litellm.dx-shared.svc.cluster.local:4000 */
+    public static String llmUrl() { return env("ORBITA_LLM_URL", null); }
+    public static String llmClave() { return env("ORBITA_LLM_API_KEY", null); }
+    /** Alias del modelo en LiteLLM: por defecto el mismo que usa HCL DX IQ. */
+    public static String llmModelo() { return env("ORBITA_LLM_MODEL", "iq-general-purpose"); }
+    public static String llmMaxTokens() { return env("ORBITA_LLM_MAX_TOKENS", null); }
+    public static String llmTemperatura() { return env("ORBITA_LLM_TEMPERATURE", null); }
+
     // --- MCP ------------------------------------------------------------------------------------------------------
     /** Token Bearer opcional que debe enviar el cliente MCP (además de la sesión de DX del usuario). */
     public static String tokenMcp() { return env("ORBITA_MCP_TOKEN", null); }

@@ -82,6 +82,22 @@ spec:
             - { name: ORBITA_HEADER_USER, value: {{ .Values.ui.header.user | quote }} }
             - { name: ORBITA_FOOTER, value: {{ .Values.ui.footer | quote }} }
             - { name: ORBITA_KIOSK_PAGE, value: {{ printf "%squiosco" .Values.pages.base | quote }} }
+            # AI assistant (assistant.*)
+            - { name: ORBITA_ASSISTANT, value: {{ .Values.assistant.backend | quote }} }
+            {{- if eq .Values.assistant.backend "orbita" }}
+            - { name: ORBITA_LLM_URL, value: {{ required "assistant.litellm.url is required with assistant.backend=orbita" .Values.assistant.litellm.url | quote }} }
+            - { name: ORBITA_LLM_MODEL, value: {{ .Values.assistant.model | quote }} }
+            {{- with .Values.assistant.litellm.apiKeySecret }}{{ if .name }}
+            - name: ORBITA_LLM_API_KEY
+              valueFrom: { secretKeyRef: { name: {{ .name }}, key: {{ .key }} } }
+            {{- end }}{{ end }}
+            {{- with .Values.assistant.maxTokens }}
+            - { name: ORBITA_LLM_MAX_TOKENS, value: {{ . | quote }} }
+            {{- end }}
+            {{- with .Values.assistant.temperature }}
+            - { name: ORBITA_LLM_TEMPERATURE, value: {{ . | quote }} }
+            {{- end }}
+            {{- end }}
             {{- with .Values.mcp.tools }}
             {{- if .enabled }}
             - { name: ORBITA_MCP_TOOLS, value: {{ join "," .enabled | quote }} }

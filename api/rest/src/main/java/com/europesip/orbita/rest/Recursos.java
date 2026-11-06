@@ -1,6 +1,7 @@
 package com.europesip.orbita.rest;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +12,10 @@ import com.europesip.orbita.core.Config;
 import com.europesip.orbita.core.Db;
 import com.europesip.orbita.core.Despachador;
 import com.europesip.orbita.core.SesionDx;
+import com.europesip.orbita.ia.Asistente;
 
 import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonString;
@@ -72,8 +75,44 @@ public class Recursos {
                         .add("avisos", Config.cabecera("notifications"))
                         .add("usuario", Config.cabecera("user")))
                 .add("pie", Config.pie())
+                // Asistente: orbita (chat propio, POST /v1/asistente), iq (chat de HCL DX IQ) o none
+                .add("asistente", Asistente.configurado() ? "orbita" : "iq".equals(Config.asistente()) ? "iq" : "none")
                 .build();
         return json(200, o.toString());
+    }
+
+    /**
+     * El asistente de IA de ÓRBITA: {"mensajes": [{"rol": "user"|"assistant", "texto": "..."}], "idioma": "es"|"en"}
+     * → {"respuesta": "...", "herramientas": [...]}. Las herramientas actúan como el usuario de la sesión de DX.
+     */
+    @POST
+    @Path("asistente")
+    public Response asistente(String cuerpo) {
+        String usuario = usuario();
+        if (usuario == null) return sinSesion();
+        if (!Arranque.listo()) return error(503, "ÓRBITA se está iniciando: inténtalo en unos segundos.");
+        List<Asistente.Mensaje> conversacion = new ArrayList<>();
+        String idioma;
+        try (JsonReader r = Json.createReader(new StringReader(cuerpo == null ? "{}" : cuerpo))) {
+            JsonObject o = r.readObject();
+            idioma = "en".equals(o.getString("idioma", "es")) ? "en" : "es";
+            for (JsonValue v : o.getJsonArray("mensajes")) {
+                JsonObject m = v.asJsonObject();
+                String texto = m.getString("texto", "");
+                if (texto.length() > 8000) texto = texto.substring(0, 8000);
+                conversacion.add(new Asistente.Mensaje(m.getString("rol", "user"), texto));
+            }
+        } catch (RuntimeException e) {
+            return error(400, "Petición no válida: {\"mensajes\": [...], \"idioma\": \"es\"|\"en\"}.");
+        }
+        try {
+            Asistente.Respuesta a = Asistente.responder(usuario, conversacion, idioma);
+            JsonArrayBuilder h = Json.createArrayBuilder();
+            a.herramientas().forEach(h::add);
+            return json(200, Json.createObjectBuilder().add("respuesta", a.texto()).add("herramientas", h).build().toString());
+        } catch (Asistente.Fallo f) {
+            return error(f.estado, f.getMessage());
+        }
     }
 
     @GET

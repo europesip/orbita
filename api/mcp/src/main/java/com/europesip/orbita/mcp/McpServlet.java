@@ -15,6 +15,8 @@ import jakarta.json.JsonReader;
 import jakarta.json.JsonStructure;
 import jakarta.json.JsonValue;
 import com.europesip.orbita.core.Config;
+import com.europesip.orbita.ia.Herramienta;
+import com.europesip.orbita.ia.Herramientas;
 import com.europesip.orbita.core.SesionDx;
 
 import jakarta.servlet.annotation.WebServlet;

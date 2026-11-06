@@ -1,4 +1,4 @@
-package com.europesip.orbita.mcp;
+package com.europesip.orbita.ia;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,9 +13,9 @@ import java.util.logging.Logger;
 
 import com.europesip.orbita.core.Config;
 
-import com.europesip.orbita.mcp.Herramienta.Esquema;
-import com.europesip.orbita.mcp.Herramienta.Llamada;
-import com.europesip.orbita.mcp.Herramienta.Resultado;
+import com.europesip.orbita.ia.Herramienta.Esquema;
+import com.europesip.orbita.ia.Herramienta.Llamada;
+import com.europesip.orbita.ia.Herramienta.Resultado;
 
 /**
  * Catálogo de herramientas (tools) del MCP de ÓRBITA. Todas actúan como el usuario de DX que pregunta, con sus permisos.
@@ -36,7 +36,7 @@ import com.europesip.orbita.mcp.Herramienta.Resultado;
  *   ORBITA_MCP_READ_ONLY=true  solo las de consulta
  * Áreas: general, fichaje, vacaciones, gastos, aprobaciones (AREAS).
  */
-final class Herramientas {
+public final class Herramientas {
 
     private Herramientas() {}
 
@@ -45,7 +45,7 @@ final class Herramientas {
     private static final String[] MARCAS = {"ENTRADA", "PAUSA", "REANUDAR", "SALIDA"};
     private static final String[] CATEGORIAS = {"COMIDA", "HOTEL", "TRANSPORTE", "KILOMETRAJE", "PARKING", "OTROS"};
 
-    static final List<Herramienta> TODAS = Arrays.asList(
+    public static final List<Herramienta> TODAS = Arrays.asList(
 
         // ------------------------------------------------------------------------------------------- General
         new Herramienta("quien_soy", "Mi ficha de empleado",
@@ -305,7 +305,7 @@ final class Herramientas {
     private static volatile List<Herramienta> activas;
 
     /** Las herramientas que se publican, según ORBITA_MCP_TOOLS, ORBITA_MCP_TOOLS_DISABLED y ORBITA_MCP_READ_ONLY. */
-    static List<Herramienta> activas() {
+    public static List<Herramienta> activas() {
         if (activas == null) {
             activas = filtrar(Config.herramientasMcp(), Config.herramientasMcpQuitadas(), Config.mcpSoloLectura());
             List<String> n = new ArrayList<>();
@@ -342,7 +342,7 @@ final class Herramientas {
         return s;
     }
 
-    static Herramienta buscar(String nombre) {
+    public static Herramienta buscar(String nombre) {
         for (Herramienta h : activas()) if (h.nombre.equals(nombre)) return h;
         return null;
     }
