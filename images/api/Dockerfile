@@ -3,7 +3,8 @@
 #   docker build -f images/api/Dockerfile -t orbita-api .
 # Nada específico de una instalación va dentro: todo llega por variables de entorno (chart/hcl-dx-orbita).
 
-FROM maven:3.9.9-eclipse-temurin-21 AS build
+# Las WAR y el JAR no dependen de la arquitectura: se construyen una vez, en la plataforma nativa, para todas
+FROM --platform=$BUILDPLATFORM maven:3.9.9-eclipse-temurin-21 AS build
 WORKDIR /src
 COPY api/ api/
 RUN mvn -B -q -f api/pom.xml package \

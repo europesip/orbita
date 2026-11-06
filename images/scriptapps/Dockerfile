@@ -4,7 +4,7 @@
 #   docker build -f images/scriptapps/Dockerfile -t orbita-scriptapps .
 
 # 1. Construir (Vite + scripts/scriptapps.mjs: escapes de WCM y comprobación de sintaxis)
-FROM node:24.22.1-alpine AS build
+FROM --platform=$BUILDPLATFORM node:24.22.1-alpine AS build
 WORKDIR /src
 COPY api/rutas.json api/rutas.json
 COPY web/package.json web/package-lock.json web/
