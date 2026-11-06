@@ -9,7 +9,7 @@ six **Script Applications**; the logic and the data live in a REST API (**`orbit
 PostgreSQL, which also includes an **MCP server** so that **HCL DX IQ** can answer questions and act for the user.
 Everything is installed with **one Helm chart**, `hcl-dx-orbita`.
 
-> **Version 3.0.0.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
+> **Version 3.1.0.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
 > in later releases. The interface is in **English and Spanish**, in the language of each user's DX profile.
 > It has its **own AI assistant** ([below](#ask-the-ai-about-órbita)), and the integration with HCL DX IQ is optional.
 
@@ -178,7 +178,7 @@ scriptapps:                                       # subchart hcl-dx-scriptapp: r
 **3. Install**:
 
 ```bash
-helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 3.0.0 \
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 3.1.0 \
   -n dx-shared -f orbita-values.yaml --timeout 15m
 ```
 
@@ -217,6 +217,25 @@ Spanish or English. Messages, dates, amounts and notifications follow it. The de
 higher on the application) sees «⚙ Settings of this application». There they choose, for that instance only, the
 header parts, the footer and the language (*Automatic*, Español, English). They are stored as preferences of the Script
 Application in DX, survive chart upgrades, and anything not changed follows the `ui.*` values below.
+
+**Example theme.** By default the chart also deploys an ÓRBITA theme for its pages, so that they look like a finished
+intranet that runs on HCL DX:
+
+- A copy of the HCL DX **Portal 8.5** theme, made at install time from **your own DX** (WebDAV only, no EAR: HCL's
+  theme files are not part of ÓRBITA), with an ÓRBITA header: the **company logo**, **"Powered by HCL Software"** and a
+  **button that opens the ÓRBITA assistant**. Everything else (toolbar, menus, edit mode) is the Portal 8.5 theme.
+- The images are in a **DAM collection** (`ÓRBITA`): to put your company logo, upload a new version of
+  `company-logo.png` there; the theme always shows its latest version. Or give it at install time with
+  `--set theme.logoBase64=$(base64 -w0 logo.png)`.
+- It is assigned **to the ÓRBITA pages only**; the rest of the portal keeps its theme.
+
+```yaml
+theme:
+  enabled: true          # false: the pages keep the theme they have
+  hclLogo: true          # "Powered by HCL Software"
+  assistantButton: true  # assistant button in the header (only on pages with an ÓRBITA app)
+  headerBackground: "linear-gradient(90deg, #15123B 0%, #2A1B6B 55%, #0B2A6F 100%)"
+```
 
 **Header and footer.** The apps run inside DX pages, so your DX theme may already show some of their header, such as
 the user's name. Hide in the apps whatever the theme already shows:
@@ -300,7 +319,7 @@ deployment/dx-iq-integrator`) so that it reads the new list; the `orbita-api` lo
   `none`. The notifications created from 3.0 are shown in each user's language; the earlier ones stay in Spanish.
 - **Uninstall**: `helm -n dx-shared uninstall orbita`. The database, its Secret `orbita-db`, the Script Applications
   and the pages stay (pages may be in use); remove the pages in DX and the database in PostgreSQL if you no longer need
-  them. Remove ÓRBITA from the IQ list with the same patch, without its URL.
+  them. Remove ÓRBITA from the IQ list with the same patch, without its URL. The example theme (`orbita.theme`, WebDAV `OrbitaTheme`) and its DAM collection `ÓRBITA` stay too.
 
 ## Repository
 
@@ -320,7 +339,7 @@ docs/                   illustrated manual (PDF, EN/ES), AI questions (EN/ES), f
 ## Development
 
 - **Back end**: `mvn -f api/pom.xml package` (Java 21). **Interface**: `cd web && npm ci && npm run build:scriptapps`.
-- **Images**: CI builds and tests both images; a push to `main` publishes `:main`, a tag `v3.0.0` publishes `:3.0.0`
+- **Images**: CI builds and tests both images; a push to `main` publishes `:main`, a tag `v3.1.0` publishes `:3.1.0`
   and the chart.
 - **A new operation**: method in `Api.java` (or `Gastos.java`), its route in `api/rutas.json`, and the interface calls
   it with `api('op', {...})`. **A schema change**: a new file `V<n>__description.sql` in `db/migration` (never edit a

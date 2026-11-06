@@ -10,7 +10,7 @@ PostgreSQL, que incluye también un **servidor MCP** para que **HCL DX IQ** resp
 se instala con **un chart de Helm**, `hcl-dx-orbita`. Qué hace cada aplicación:
 [docs/ESPECIFICACION.md](docs/ESPECIFICACION.md).
 
-> **Versión 3.0.0.** Necesita **PostgreSQL** (ver [Requisitos](#requisitos)); en las siguientes versiones se podrán
+> **Versión 3.1.0.** Necesita **PostgreSQL** (ver [Requisitos](#requisitos)); en las siguientes versiones se podrán
 > usar otras bases de datos. La interfaz está en **español e inglés**, en el idioma del perfil de DX de cada usuario.
 > Tiene **asistente de IA propio** ([más abajo](#qué-preguntarle-a-la-ia-sobre-órbita)), y la integración con HCL DX IQ es opcional.
 
@@ -181,7 +181,7 @@ scriptapps:                                       # subchart hcl-dx-scriptapp: s
 **3. Instalar**:
 
 ```bash
-helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 3.0.0 \
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 3.1.0 \
   -n dx-shared -f orbita-values.yaml --timeout 15m
 ```
 
@@ -221,6 +221,26 @@ usa inglés. Mensajes, fechas, importes y avisos lo siguen. Los datos de la demo
 superior sobre la aplicación) ve «⚙ Ajustes de esta aplicación». Ahí elige, solo para esa instancia, las partes de la
 cabecera, el pie y el idioma (*Automático*, Español, English). Se guardan como preferencias de la Script Application en
 DX, se mantienen al actualizar el chart, y lo que no se cambie sigue los valores `ui.*` de abajo.
+
+**Theme de ejemplo.** Por defecto el chart despliega también un theme de ÓRBITA para sus páginas, para que se vean
+como una intranet terminada que funciona sobre HCL DX:
+
+- Una copia del theme **Portal 8.5** de HCL DX, hecha al instalar desde **tu propio DX** (solo WebDAV, sin EAR: los
+  ficheros del theme de HCL no forman parte de ÓRBITA), con una cabecera de ÓRBITA: el **logo de la empresa**,
+  **«Powered by HCL Software»** y un **botón que abre el asistente de ÓRBITA**. Todo lo demás (barra de herramientas,
+  menús, modo edición) es el theme Portal 8.5.
+- Las imágenes están en una **colección del DAM** (`ÓRBITA`): para poner el logo de tu empresa, sube allí una nueva
+  versión de `company-logo.png`; el theme muestra siempre su última versión. O dalo al instalar con
+  `--set theme.logoBase64=$(base64 -w0 logo.png)`.
+- Se asigna **solo a las páginas de ÓRBITA**; el resto del portal mantiene su theme.
+
+```yaml
+theme:
+  enabled: true          # false: las páginas mantienen el theme que tengan
+  hclLogo: true          # «Powered by HCL Software»
+  assistantButton: true  # botón del asistente en la cabecera (solo en páginas con una aplicación de ÓRBITA)
+  headerBackground: "linear-gradient(90deg, #15123B 0%, #2A1B6B 55%, #0B2A6F 100%)"
+```
 
 **Cabecera y pie.** Las aplicaciones van dentro de páginas de DX, así que tu tema puede mostrar ya parte de su
 cabecera, como el nombre del usuario. Oculta en las aplicaciones lo que ya muestre el tema:
@@ -304,7 +324,7 @@ deployment/dx-iq-integrator`) para que lea la lista nueva; el log de `orbita-api
   Los avisos creados desde la 3.0 se muestran en el idioma de cada usuario; los anteriores siguen en español.
 - **Desinstalar**: `helm -n dx-shared uninstall orbita`. Se quedan la base de datos, su Secret `orbita-db`, las Script
   Applications y las páginas (puede haber páginas que las usen); borra las páginas en DX y la base en PostgreSQL si ya
-  no las necesitas. Quita ÓRBITA de la lista de IQ con el mismo parche, sin su URL.
+  no las necesitas. Quita ÓRBITA de la lista de IQ con el mismo parche, sin su URL. También se quedan el theme de ejemplo (`orbita.theme`, WebDAV `OrbitaTheme`) y su colección del DAM `ÓRBITA`.
 
 ## Repositorio
 
@@ -324,8 +344,8 @@ docs/                   manual ilustrado (PDF, ES/EN), preguntas a la IA, especi
 ## Desarrollo
 
 - **Back end**: `mvn -f api/pom.xml package` (Java 21). **Interfaz**: `cd web && npm ci && npm run build:scriptapps`.
-- **Imágenes**: CI construye y prueba las dos imágenes; un push a `main` publica `:main`, un tag `v3.0.0` publica
-  `:3.0.0` y el chart.
+- **Imágenes**: CI construye y prueba las dos imágenes; un push a `main` publica `:main`, un tag `v3.1.0` publica
+  `:3.1.0` y el chart.
 - **Una operación nueva**: método en `Api.java` (o `Gastos.java`), su ruta en `api/rutas.json`, y la interfaz la llama
   con `api('op', {...})`. **Un cambio de esquema**: un fichero nuevo `V<n>__descripcion.sql` en `db/migration` (nunca
   se edita uno publicado).

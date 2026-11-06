@@ -33,3 +33,11 @@ Componentes de terceros que usa ÓRBITA (no se incluyen en este repositorio; se 
   Plataforma
     HCL DX Compose, HCL DX IQ y DXClient son productos de HCL Software con su propia licencia: no forman
     parte de ÓRBITA. DXClient exige aceptar su acuerdo de licencia (valor scriptapps.dxclient.acceptLicense del chart).
+
+  Theme de ejemplo / Example theme (chart/hcl-dx-orbita, theme.*)
+    Los ficheros del theme Portal 8.5 de HCL DX NO están en este repositorio: el chart los copia de tu propio DX al
+    instalar. The HCL DX Portal 8.5 theme files are NOT in this repository: the chart copies them from your own DX.
+    chart/hcl-dx-orbita/files/theme/hcl-software.png: el logotipo "HCL Software" es una marca de HCL Technologies,
+    usada con su permiso para mostrar "Powered by HCL Software". No está cubierto por la licencia AGPL de ÓRBITA.
+    The "HCL Software" logo is a trademark of HCL Technologies, used with its permission to show "Powered by HCL
+    Software". It is not covered by the AGPL licence of ÓRBITA (value theme.hclLogo=false hides it).

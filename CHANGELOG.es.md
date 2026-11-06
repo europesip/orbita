@@ -2,6 +2,14 @@
 
 [English](CHANGELOG.md) · **Español**
 
+## 3.1.0 · 2026-11-06 · Un theme de ejemplo
+
+- **Theme de ÓRBITA** para sus páginas, desplegado por el chart (`theme.*`, activado por defecto): una copia del theme
+  Portal 8.5 de HCL DX hecha desde tu propio DX al instalar, con una cabecera de ÓRBITA que muestra el **logo de la
+  empresa**, **«Powered by HCL Software»** y un **botón que abre el asistente de ÓRBITA**. Solo en las páginas de ÓRBITA.
+- Los logos están en una **colección del DAM** (`ÓRBITA`): cambia ahí el logo de la empresa, o dalo al instalar
+  (`theme.logoBase64`). `theme.hclLogo` y `theme.assistantButton` se pueden desactivar.
+
 ## 3.0.0 · 2026-11-06 · Asistente propio, en español e inglés
 
 - **Asistente de IA propio de ÓRBITA** (por defecto): el botón «✨ Pregúntale a ÓRBITA» habla con el modelo a través de

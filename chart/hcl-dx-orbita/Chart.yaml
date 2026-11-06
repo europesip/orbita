@@ -4,8 +4,8 @@ description: >-
   ÓRBITA, intranet suite for HCL DX Compose: six Script Applications (time tracking, time off, expenses,
   approvals, home and kiosk), their REST API and an MCP server for HCL DX IQ (Open Liberty + PostgreSQL).
 type: application
-version: 3.0.0
-appVersion: "3.0.0"
+version: 3.1.0
+appVersion: "3.1.0"
 home: https://github.com/europesip/orbita
 sources:
   - https://github.com/europesip/orbita
