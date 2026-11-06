@@ -2,7 +2,16 @@
 
 **English** · [Español](CHANGELOG.es.md)
 
-## 3.1.0 · 2026-11-07 · An example theme, integrated with DAM
+## 3.1.1 · 2026-11-07 · Nothing twice with the theme
+
+- With the example theme, nothing appears twice: `ui.header.assistant`, `ui.header.user` and `ui.header.homeLink` are
+  `auto` by default and hide the assistant button, the user and the "My intranet" link in the apps when the theme
+  shows them.
+- **Frequently asked questions** in English and Spanish ([docs/faq.md](docs/faq.md)): cost, installation, theme and DAM,
+  AI (also with your own sovereign AI), languages, security, technology and services.
+- **Presentation** of ÓRBITA in English and Spanish (PDF, `docs/presentation/`).
+
+## 3.1.0 · 2026-11-06 · An example theme, integrated with DAM
 
 - **ÓRBITA theme** for its pages, deployed by the chart (`theme.*`, on by default): a copy of the HCL DX Portal 8.5
   theme made from your own DX at install time, with an ÓRBITA header showing the **company logo**, **"Powered by HCL
@@ -11,11 +20,6 @@
 - **Fully integrated with DAM**: the theme's images and logos are served from a DAM collection (`ÓRBITA`). Change them
   there, without code, or give the company logo at install time (`theme.logoBase64`). `theme.hclLogo` and
   `theme.assistantButton` can be turned off.
-- With the theme, nothing appears twice: `ui.header.assistant`, `ui.header.user` and `ui.header.homeLink` are `auto` by
-  default and hide the assistant button, the user and the "My intranet" link in the apps when the theme shows them.
-- **Frequently asked questions** in English and Spanish ([docs/faq.md](docs/faq.md)): cost, installation, theme and DAM,
-  AI (also with your own sovereign AI), languages, security, technology and services.
-- **Presentation** of ÓRBITA in English and Spanish (PDF, `docs/presentation/`).
 
 ## 3.0.0 · 2026-11-06 · Its own assistant, in English and Spanish
 

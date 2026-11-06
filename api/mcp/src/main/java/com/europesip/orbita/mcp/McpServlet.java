@@ -45,7 +45,7 @@ public class McpServlet extends HttpServlet {
     /** Versiones del protocolo MCP que acepta este servidor (la primera es la preferida). */
     static final List<String> VERSIONES = Arrays.asList("2025-06-18", "2025-03-26", "2024-11-05");
     static final String NOMBRE = "orbita-mcp";
-    static final String VERSION = "3.1.0";
+    static final String VERSION = "3.1.1";
     static final String INSTRUCCIONES = "ÓRBITA es la intranet de la empresa (fichaje, vacaciones y ausencias, gastos y viajes, "
             + "aprobaciones). Las herramientas actúan siempre como el usuario que pregunta (su sesión de HCL DX) y solo "
             + "devuelven o cambian lo que esa persona puede ver o hacer. Las herramientas que modifican datos devuelven "

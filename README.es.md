@@ -10,7 +10,7 @@ PostgreSQL, que incluye también un **servidor MCP** para que **HCL DX IQ** resp
 se instala con **un chart de Helm**, `hcl-dx-orbita`. Qué hace cada aplicación:
 [docs/ESPECIFICACION.md](docs/ESPECIFICACION.md).
 
-> **Versión 3.1.0.** Necesita **PostgreSQL** (ver [Requisitos](#requisitos)); en las siguientes versiones se podrán
+> **Versión 3.1.1.** Necesita **PostgreSQL** (ver [Requisitos](#requisitos)); en las siguientes versiones se podrán
 > usar otras bases de datos. La interfaz está en **español e inglés**, en el idioma del perfil de DX de cada usuario.
 > Tiene **asistente de IA propio** ([más abajo](#qué-preguntarle-a-la-ia-sobre-órbita)), y la integración con HCL DX IQ es opcional.
 
@@ -183,7 +183,7 @@ scriptapps:                                       # subchart hcl-dx-scriptapp: s
 **3. Instalar**:
 
 ```bash
-helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 3.1.0 \
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 3.1.1 \
   -n dx-shared -f orbita-values.yaml --timeout 15m
 ```
 
@@ -346,8 +346,8 @@ docs/                   manual ilustrado (PDF, ES/EN), preguntas a la IA, especi
 ## Desarrollo
 
 - **Back end**: `mvn -f api/pom.xml package` (Java 21). **Interfaz**: `cd web && npm ci && npm run build:scriptapps`.
-- **Imágenes**: CI construye y prueba las dos imágenes; un push a `main` publica `:main`, un tag `v3.1.0` publica
-  `:3.1.0` y el chart.
+- **Imágenes**: CI construye y prueba las dos imágenes; un push a `main` publica `:main`, un tag `v3.1.1` publica
+  `:3.1.1` y el chart.
 - **Una operación nueva**: método en `Api.java` (o `Gastos.java`), su ruta en `api/rutas.json`, y la interfaz la llama
   con `api('op', {...})`. **Un cambio de esquema**: un fichero nuevo `V<n>__descripcion.sql` en `db/migration` (nunca
   se edita uno publicado).
