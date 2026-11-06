@@ -405,10 +405,13 @@ final class Api {
     private Map<String, Object> marcar(String tipo, String modalidad, String origen, String incidencia,
             Double lat, Double lon, Integer precision) throws SQLException {
         if (!TIPOS_MARCA.contains(tipo)) throw new Aviso("Tipo de fichaje no válido.");
-        if (!"TELETRABAJO".equals(modalidad)) modalidad = "OFICINA";
         if (!"PAUSA".equals(tipo) || !INCIDENCIAS.contains(incidencia)) incidencia = "PAUSA".equals(tipo) ? "OTRA" : null;
         LocalDate hoy = LocalDate.now();
-        String est = estado(marcas(yo.usuario, hoy, hoy.plusDays(1)));
+        List<Marca> deHoy = marcas(yo.usuario, hoy, hoy.plusDays(1));
+        // Sin modalidad (p. ej. desde el asistente de IA), la pausa, la vuelta y la salida siguen la de la jornada
+        if (modalidad == null && !"ENTRADA".equals(tipo) && !deHoy.isEmpty()) modalidad = deHoy.get(deHoy.size() - 1).modalidad;
+        if (!"TELETRABAJO".equals(modalidad)) modalidad = "OFICINA";
+        String est = estado(deHoy);
         boolean ok = ("FUERA".equals(est) && "ENTRADA".equals(tipo))
                 || ("TRABAJANDO".equals(est) && ("PAUSA".equals(tipo) || "SALIDA".equals(tipo)))
                 || ("PAUSA".equals(est) && ("REANUDAR".equals(tipo) || "SALIDA".equals(tipo)));
