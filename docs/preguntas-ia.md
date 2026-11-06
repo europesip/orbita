@@ -2,8 +2,8 @@
 
 [English](ai-questions.md) · **Español**
 
-Ejemplos para el chat de **HCL DX IQ** (el botón ✨ de DX o el panel «✨ Pregúntale a ÓRBITA» de cada aplicación), con
-el servidor MCP de ÓRBITA registrado. La IA actúa **como el usuario que pregunta**: cada persona ve y cambia solo lo
+Ejemplos para el **asistente propio de ÓRBITA** (el botón «✨ Pregúntale a ÓRBITA» de cada aplicación). También
+funcionan en el chat de **HCL DX IQ** (el botón ✨ de DX), con el servidor MCP de ÓRBITA registrado. La IA actúa **como el usuario que pregunta**: cada persona ve y cambia solo lo
 suyo (y su equipo, si es responsable). Lo que **cambia datos** nunca se hace a la primera: la IA enseña antes un
 resumen y espera a que confirmes («sí, hazlo»). **Se puede preguntar en español o en inglés**: la IA responde en el
 idioma de la pregunta (las preguntas en inglés: [ai-questions.md](ai-questions.md)).

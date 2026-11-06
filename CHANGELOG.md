@@ -2,6 +2,21 @@
 
 **English** · [Español](CHANGELOG.es.md)
 
+## 3.0.0 · 2026-11-06 · Its own assistant, in English and Spanish
+
+- **ÓRBITA's own AI assistant** (default): the «✨ Ask ÓRBITA» button talks to the model through **LiteLLM** with only
+  the ÓRBITA tools, as the user of the DX session. A much smaller prompt than the HCL DX IQ chat, so each question uses
+  far fewer tokens. Model configurable (`assistant.model`, by default the same alias as HCL DX IQ,
+  `iq-general-purpose`). The HCL DX IQ integration is still available (`assistant.backend: iq`) and is meant for DX
+  practitioners.
+- **English and Spanish**: interface, messages, dates, amounts and notifications in the language of each user's DX
+  profile (`preferredLanguage`), then the page language and the browser. Notifications are stored with their data and
+  shown in the reader's language. The demo data stay in Spanish.
+- **Settings of each application on its page**: in the DX edit mode, «⚙ Settings of this application» chooses the
+  header parts, the footer and the language for that instance only. They are kept on upgrades.
+- Upgrades keep the existing pages and their layout. Amounts can be typed as 12,30 or 12.30.
+- **From 2.x**: the own assistant needs a LiteLLM; without one, use `assistant.backend: iq` or `none`.
+
 ## 2.3.0 · 2026-11-06 · Fits your DX theme
 
 - **`ui.header.*` and `ui.footer`** in the chart values: choose what the apps show in their header (title, home link,

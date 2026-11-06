@@ -1,10 +1,14 @@
 // ÓRBITA · XMLAccess request with one page per application (see after-push.sh). Prints nothing if pages are disabled.
-//   node paginas.mjs <paginas.json> <APP_IDS_FILE: "name<TAB>content ID" lines>
+//   node paginas.mjs <paginas.json> <APP_IDS_FILE: "name<TAB>content ID" lines> [file with the existing pages]
+// A page that already exists keeps its layout and its Web Content Viewer instance: only its title, parameters and
+// access are updated. So the settings of each application instance (edit mode, DX preferences) survive upgrades.
 import {readFileSync} from 'node:fs';
 
-const [cfgFile, idsFile] = process.argv.slice(2);
+const [cfgFile, idsFile, existentesFile] = process.argv.slice(2);
 const cfg = JSON.parse(readFileSync(cfgFile, 'utf8'));
 if (!cfg.create) process.exit(0);
+let existentes = new Set();
+try { existentes = new Set(readFileSync(existentesFile, 'utf8').split('\n').map((l) => l.trim()).filter(Boolean)); } catch (e) { /* none */ }
 const ids = Object.fromEntries(readFileSync(idsFile, 'utf8').split('\n').filter(Boolean).map((l) => l.split('\t')));
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const cdata = (s) => `<![CDATA[${String(s).replace(/]]>/g, ']]]]><![CDATA[>')}]]>`;
@@ -29,7 +33,7 @@ const paginas = cfg.titles.map((t, n) => {
       <access-control externalized="false" owner="undefined" private="false"><role actionset="User" update="set">
         <mapping subjectid="anonymous portal user" subjecttype="user" update="remove"/>
         <mapping subjectid="all authenticated portal users" subjecttype="user_group" update="set"/>
-      </role></access-control>
+      </role></access-control>${existentes.has(t.friendly) ? '' : `
       <component action="update" active="true" domain="rel" ordinal="100" orientation="V" type="container">
         <component action="update" active="true" domain="rel" ordinal="100" orientation="H" type="container">
           ${param('com.ibm.portal.layoutnode.localname', 'ibmHiddenWidgets')}
@@ -51,7 +55,7 @@ const paginas = cfg.titles.map((t, n) => {
             </portletinstance>
           </component>
         </component>
-      </component>
+      </component>`}
     </content-node>`;
 });
 

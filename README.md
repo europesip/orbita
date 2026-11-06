@@ -9,8 +9,9 @@ six **Script Applications**; the logic and the data live in a REST API (**`orbit
 PostgreSQL, which also includes an **MCP server** so that **HCL DX IQ** can answer questions and act for the user.
 Everything is installed with **one Helm chart**, `hcl-dx-orbita`.
 
-> **Version 2.3.0.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
-> in later releases. The application interface is in Spanish.
+> **Version 3.0.0.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
+> in later releases. The interface is in **English and Spanish**, in the language of each user's DX profile.
+> It has its **own AI assistant** ([below](#ask-the-ai-about-órbita)), and the integration with HCL DX IQ is optional.
 
 | Page (signed-in users only) | URL in the HCL DX Compose labs |
 |---|---|
@@ -78,8 +79,8 @@ relative to the day they are loaded.
 
 ## Ask the AI about ÓRBITA
 
-With the MCP server registered in IQ ([HCL DX IQ integration](#hcl-dx-iq-integration-the-mcp-server)), the assistant
-can answer and act **as the user asking**, with **26 tools** ([you choose which](#choosing-which-mcp-tools-to-publish)): their day, time tracking (also clocking in and out),
+The «✨ Ask ÓRBITA» button of every app opens **ÓRBITA's own assistant**. It can answer and act **as the user
+asking**, with **26 tools** ([you choose which](#choosing-which-mcp-tools-to-publish)): their day, time tracking (also clocking in and out),
 time off (balance, requests, team calendar), expenses and travel (reports, adding expenses, sending them), approvals
 (approve, reject, comment) and notifications. A few examples:
 
@@ -96,14 +97,29 @@ categories and statuses, are in Spanish and the AI translates them). **More than
 [docs/ai-questions.md](docs/ai-questions.md)** (in Spanish: [docs/preguntas-ia.md](docs/preguntas-ia.md)). Anything that changes data
 needs your confirmation first; paying, restoring the demo, deleting and exporting stay in the app.
 
-### Two ways to put AI on ÓRBITA
+### Three ways to put AI on ÓRBITA
 
-1. **With the HCL DX IQ Integrator (what version 2.1 does).** The IQ chat (the ✨ button of DX, or the «✨ Pregúntale a
-   ÓRBITA» panel of every ÓRBITA app, which talks to IQ) uses **the AI model configured in IQ** (through LiteLLM:
-   Claude, Qwen…) and **all the MCP servers of the Integrator** at once: the 55 HCL DX tools (WCM, DAM, pages) plus the
-   ÓRBITA ones, so one question can mix portal content and ÓRBITA data. Identity comes for free (the user's DX
-   session), there is no extra infrastructure and no extra AI bill, only the patch of the MCP list described below.
-2. **With your own AI chat, apart from IQ.** The ÓRBITA MCP server is **standard MCP** (Streamable HTTP, JSON-RPC), and
+1. **ÓRBITA's own assistant (default, recommended for employees).** `orbita-api` talks to the model through
+   **LiteLLM** with **only the ÓRBITA tools**, as the user of the DX session. Its prompt is small: no HCL DX tools and
+   no IQ system prompt, so **each question uses far fewer tokens**. The model is a LiteLLM alias, by default the same
+   one HCL DX IQ uses (`iq-general-purpose`), so it works with any LiteLLM prepared for IQ. Register another alias to
+   give ÓRBITA a different model (cheaper, private, your own…). It does not need HCL DX IQ.
+
+   ```yaml
+assistant:
+  backend: orbita            # orbita (own assistant, default) | iq (HCL DX IQ chat) | none (no button)
+  litellm:
+    url: http://litellm.dx-shared.svc.cluster.local:4000   # LiteLLM or any OpenAI-compatible API
+    apiKeySecret: {name: litellm-env, key: PROXY_MASTER_KEY}
+  model: iq-general-purpose  # LiteLLM alias: the same as HCL DX IQ by default; register another one for ÓRBITA only
+```
+
+2. **The HCL DX IQ chat (`assistant.backend: iq`).** IQ is designed for the **DX practitioners** who manage the
+   portal. Its chat (the ✨ button of DX) uses the model configured in IQ and **all the MCP servers of the Integrator**
+   at once: the 55 HCL DX tools (WCM, DAM, pages) plus the ÓRBITA ones. So one question can mix portal content and
+   ÓRBITA data, at the cost of a much larger prompt. It needs the patch of the MCP list described below. With
+   `backend: iq` the button of the ÓRBITA apps opens the IQ chat.
+3. **Your own AI chat, apart from IQ.** The ÓRBITA MCP server is **standard MCP** (Streamable HTTP, JSON-RPC), and
    the REST API is documented in `api/rutas.json`, so any MCP client or your own chatbot can use them: a chat service of
    yours with any LLM (directly or through the same LiteLLM), Microsoft Copilot Studio, Claude, a Teams or WhatsApp
    bot… The only condition is **identity**: ÓRBITA acts as the user of the DX session it receives. A chat embedded in
@@ -162,7 +178,7 @@ scriptapps:                                       # subchart hcl-dx-scriptapp: r
 **3. Install**:
 
 ```bash
-helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 2.3.0 \
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 3.0.0 \
   -n dx-shared -f orbita-values.yaml --timeout 15m
 ```
 
@@ -192,6 +208,15 @@ the six Script Applications yourself (in your own pages, with your own layout), 
 the apps are still pushed to WCM (*Script Application Library › Script Applications*, titles «ÓRBITA · …»), and you
 add each one to the page you want. Then set `pages.base` (and keep the friendly names `mi-intranet`, `fichaje`,
 `vacaciones`, `gastos`, `aprobaciones`, `quiosco`), so that the apps link to each other correctly.
+
+**Language.** Each user sees ÓRBITA in the language of their DX profile (`preferredLanguage`). Without one, ÓRBITA uses
+the language DX chose for the page, and then the browser language. English is used for any language other than
+Spanish or English. Messages, dates, amounts and notifications follow it. The demo data stays in Spanish.
+
+**Settings of each application on its page.** Whoever edits the page in DX (**edit mode**, with the Editor role or
+higher on the application) sees «⚙ Settings of this application». There they choose, for that instance only, the
+header parts, the footer and the language (*Automatic*, Español, English). They are stored as preferences of the Script
+Application in DX, survive chart upgrades, and anything not changed follows the `ui.*` values below.
 
 **Header and footer.** The apps run inside DX pages, so your DX theme may already show some of their header, such as
 the user's name. Hide in the apps whatever the theme already shows:
@@ -269,7 +294,10 @@ deployment/dx-iq-integrator`) so that it reads the new list; the `orbita-api` lo
 
 - **Upgrade**: `helm upgrade orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version <new> -n dx-shared -f
   orbita-values.yaml`. New migrations are applied at start-up; data are kept. The Script Applications are updated in
-  place on their pages.
+  place on their pages, and the existing pages keep their layout and the settings of each application.
+- **From 2.x to 3.0**: the assistant button now opens ÓRBITA's own assistant, which needs a LiteLLM
+  (`assistant.litellm.*`). Without LiteLLM, keep the IQ chat with `assistant.backend: iq`, or hide the button with
+  `none`. The notifications created from 3.0 are shown in each user's language; the earlier ones stay in Spanish.
 - **Uninstall**: `helm -n dx-shared uninstall orbita`. The database, its Secret `orbita-db`, the Script Applications
   and the pages stay (pages may be in use); remove the pages in DX and the database in PostgreSQL if you no longer need
   them. Remove ÓRBITA from the IQ list with the same patch, without its URL.
@@ -292,7 +320,7 @@ docs/                   illustrated manual (PDF, EN/ES), AI questions (EN/ES), f
 ## Development
 
 - **Back end**: `mvn -f api/pom.xml package` (Java 21). **Interface**: `cd web && npm ci && npm run build:scriptapps`.
-- **Images**: CI builds and tests both images; a push to `main` publishes `:main`, a tag `v2.3.0` publishes `:2.3.0`
+- **Images**: CI builds and tests both images; a push to `main` publishes `:main`, a tag `v3.0.0` publishes `:3.0.0`
   and the chart.
 - **A new operation**: method in `Api.java` (or `Gastos.java`), its route in `api/rutas.json`, and the interface calls
   it with `api('op', {...})`. **A schema change**: a new file `V<n>__description.sql` in `db/migration` (never edit a

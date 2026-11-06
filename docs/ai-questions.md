@@ -2,8 +2,8 @@
 
 **English** · [Español](preguntas-ia.md)
 
-Examples for the **HCL DX IQ** chat (the ✨ button of DX or the «✨ Pregúntale a ÓRBITA» panel of each app), with the
-ÓRBITA MCP server registered. The AI acts **as the user asking**: each person sees and changes only their own data
+Examples for **ÓRBITA's own assistant** (the «✨ Ask ÓRBITA» button of each app). They also work in the **HCL DX IQ**
+chat (the ✨ button of DX), with the ÓRBITA MCP server registered. The AI acts **as the user asking**: each person sees and changes only their own data
 (and their team's, if they are a manager). Anything that **changes data** is never done at once: the AI first shows a
 summary and waits for you to confirm ("yes, do it"). **You can ask in English or in Spanish**: the AI answers in the
 language of the question (ÓRBITA's data, such as categories and statuses, are in Spanish and the AI translates them).

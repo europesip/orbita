@@ -88,10 +88,11 @@ spec:
             {{- if eq .Values.assistant.backend "orbita" }}
             - { name: ORBITA_LLM_URL, value: {{ required "assistant.litellm.url is required with assistant.backend=orbita" .Values.assistant.litellm.url | quote }} }
             - { name: ORBITA_LLM_MODEL, value: {{ .Values.assistant.model | quote }} }
-            {{- with .Values.assistant.litellm.apiKeySecret }}{{ if .name }}
+            {{- if eq .Values.assistant.backend "orbita" }}{{ with .Values.assistant.litellm.apiKeySecret }}{{ if .name }}
+            # optional: without the Secret (no LiteLLM yet) ÓRBITA starts and only the chat reports the error
             - name: ORBITA_LLM_API_KEY
-              valueFrom: { secretKeyRef: { name: {{ .name }}, key: {{ .key }} } }
-            {{- end }}{{ end }}
+              valueFrom: { secretKeyRef: { name: {{ .name }}, key: {{ .key }}, optional: true } }
+            {{- end }}{{ end }}{{ end }}
             {{- with .Values.assistant.maxTokens }}
             - { name: ORBITA_LLM_MAX_TOKENS, value: {{ . | quote }} }
             {{- end }}
