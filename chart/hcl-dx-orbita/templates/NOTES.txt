@@ -22,5 +22,5 @@ Add it to the IQ Integrator's MCP server list (see docs/mcp.md: the IQ chart doe
 {{- end }}
 {{- if .Values.demo.seed }}
 
-Demo users: the DX users of demo.people. HR ({{ .Values.demo.people.rrhh.uid | default "wpsadmin" }}) can restore the demo data from Fichaje > Informes.
+Demo users: the DX users of demo.people. HR ({{ .Values.demo.people.rrhh.uid | default "wpsadmin" }}) can restore the demo data from Time tracking > Reports > Restore demo data.
 {{- end }}
