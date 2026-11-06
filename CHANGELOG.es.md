@@ -2,6 +2,17 @@
 
 [English](CHANGELOG.md) · **Español**
 
+## 2.1.0 · 2026-11-06 · La IA hace mucho más
+
+- **Servidor MCP con 26 herramientas** (antes 2): mi día y avisos, fichaje (estado, mes, equipo ahora, **fichar**,
+  pedir una corrección), vacaciones (saldo, solicitudes, calendario del equipo, solicitar, cancelar), gastos y viajes
+  (resumen, detalle de una nota, **crear una nota, añadir gastos, enviarla**, pedir o cancelar un viaje, pagos
+  pendientes para Administración) y aprobaciones (pendientes, **aprobar o rechazar**, leer y escribir comentarios). Todo
+  lo que cambia datos pide confirmación antes; pagar, restaurar la demo, borrar y exportar quedan fuera a propósito.
+- **Más de 60 preguntas de ejemplo** por áreas: `docs/preguntas-ia.md` (ES) y `docs/ai-questions.md` (EN).
+- README: las dos formas de poner IA en ÓRBITA (el Integrator de HCL DX IQ, o un chat propio).
+- **Repositorio, imágenes y chart públicos**: ya no hace falta iniciar sesión en el registro ni un Secret de descarga.
+
 ## 2.0.0 · 2026-11-06 · Chart de Helm
 
 **Instalación**

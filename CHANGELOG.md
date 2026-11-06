@@ -2,6 +2,17 @@
 
 **English** · [Español](CHANGELOG.es.md)
 
+## 2.1.0 · 2026-11-06 · The AI can do much more
+
+- **MCP server with 26 tools** (2 before): my day and notifications, time tracking (status, month, team now, **clock
+  in and out**, ask for a correction), time off (balance, requests, team calendar, request, cancel), expenses and travel
+  (summary, report detail, **create a report, add expenses, send it**, request or cancel a trip, payments pending for
+  Accounting) and approvals (pending, **approve or reject**, read and write comments). Everything that changes data
+  asks for confirmation first; paying, restoring the demo, deleting and exporting stay out on purpose.
+- **More than 60 example questions** by area: `docs/ai-questions.md` (EN) and `docs/preguntas-ia.md` (ES).
+- README: the two ways of adding AI to ÓRBITA (the HCL DX IQ Integrator, or your own chat).
+- **Public repository, images and chart**: no registry login or pull Secret is needed any more.
+
 ## 2.0.0 · 2026-11-06 · Helm chart
 
 **Installation**

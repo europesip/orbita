@@ -9,7 +9,7 @@ six **Script Applications**; the logic and the data live in a REST API (**`orbit
 PostgreSQL, which also includes an **MCP server** so that **HCL DX IQ** can answer questions and act for the user.
 Everything is installed with **one Helm chart**, `hcl-dx-orbita`.
 
-> **Version 2.0.0.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
+> **Version 2.1.0.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
 > in later releases. The application interface is in Spanish.
 
 | Page (signed-in users only) | URL in the HCL DX Compose labs |
@@ -24,7 +24,7 @@ Everything is installed with **one Helm chart**, `hcl-dx-orbita`.
 ## Contents
 
 - [Demo users](#demo-users) · [Features](#features) · [Architecture](#architecture)
-- [Requirements](#requirements) · [Installation with Helm](#installation-with-helm) · [HCL DX IQ integration](#hcl-dx-iq-integration-the-mcp-server)
+- [Ask the AI](#ask-the-ai-about-órbita) · [Requirements](#requirements) · [Installation with Helm](#installation-with-helm) · [HCL DX IQ integration](#hcl-dx-iq-integration-the-mcp-server)
 - [Upgrade and uninstall](#upgrade-and-uninstall) · [Repository](#repository) · [Development](#development)
 - [Release history](CHANGELOG.md) · [Licence and services](#licence-and-services)
 
@@ -75,15 +75,47 @@ relative to the day they are loaded.
 - **MCP server**: `POST /mcp` and `GET /probe/ready` on port 9081 of the same pod, only for the IQ Integrator
   (NetworkPolicy). The tools act as the IQ chat user, identified by their DX session.
 
+## Ask the AI about ÓRBITA
+
+With the MCP server registered in IQ ([HCL DX IQ integration](#hcl-dx-iq-integration-the-mcp-server)), the assistant
+can answer and act **as the user asking**, with **26 tools**: their day, time tracking (also clocking in and out),
+time off (balance, requests, team calendar), expenses and travel (reports, adding expenses, sending them), approvals
+(approve, reject, comment) and notifications. A few examples:
+
+| Area | Ask, for example |
+|---|---|
+| My day | «What do I have today?» · «Do I have anything to approve?» |
+| Time tracking | «Clock me in, working from home» · «Which days this month did I not clock out?» · «I forgot to clock out on Tuesday at 18:05: ask for the correction» |
+| Time off | «How many days of holiday do I have left?» · «Book me holidays from 9 to 11 December» · «Who in the team is away in December?» |
+| Expenses | «How much am I owed?» · «Create a report "Visita a Sevilla" and add a €42.80 lunch from yesterday» · «Send it to my manager» |
+| Approvals | «What do I have to approve?» · «Approve macarena's holidays» · «Reject the Barcelona trip: tighter budget» |
+
+**More than 60 example questions, by area: [docs/ai-questions.md](docs/ai-questions.md)**. Anything that changes data
+needs your confirmation first; paying, restoring the demo, deleting and exporting stay in the app.
+
+### Two ways to put AI on ÓRBITA
+
+1. **With the HCL DX IQ Integrator (what version 2.1 does).** The IQ chat (the ✨ button of DX, or the «✨ Pregúntale a
+   ÓRBITA» panel of every ÓRBITA app, which talks to IQ) uses **the AI model configured in IQ** (through LiteLLM:
+   Claude, Qwen…) and **all the MCP servers of the Integrator** at once: the 55 HCL DX tools (WCM, DAM, pages) plus the
+   ÓRBITA ones, so one question can mix portal content and ÓRBITA data. Identity comes for free (the user's DX
+   session), there is no extra infrastructure and no extra AI bill, only the patch of the MCP list described below.
+2. **With your own AI chat, apart from IQ.** The ÓRBITA MCP server is **standard MCP** (Streamable HTTP, JSON-RPC), and
+   the REST API is documented in `api/rutas.json`, so any MCP client or your own chatbot can use them: a chat service of
+   yours with any LLM (directly or through the same LiteLLM), Microsoft Copilot Studio, Claude, a Teams or WhatsApp
+   bot… The only condition is **identity**: ÓRBITA acts as the user of the DX session it receives. A chat embedded in
+   DX pages (for example, the ÓRBITA panel pointing to your own back end) can forward that session; a chat outside DX
+   needs an identity exchange (OAuth / token), which EUROPESIP can build as part of the services below.
+
 ## Requirements
 
 | | |
 |---|---|
 | **HCL DX Compose** | CF239 on Kubernetes, with an Ingress (ingress-nginx) for its host name. A DX **administrator** user for DXClient (it pushes the Script Applications and creates the pages with XMLAccess) |
-| **PostgreSQL** | **Required in version 2.0.0** (tested with PostgreSQL 18 / CloudNativePG), reachable from the cluster, and a **superuser** Secret (keys `username` and `password`) so that the chart creates its database and user. If you do not have one, the labs install it in about 3 minutes: [External dependencies](https://github.com/europesip/hcl-dx-compose-labs/blob/main/external-deps/GUIDE.md) (`external-deps/02-postgres.sh`). **Other databases will be supported in later releases** |
+| **PostgreSQL** | **Required in version 2.x** (tested with PostgreSQL 18 / CloudNativePG), reachable from the cluster, and a **superuser** Secret (keys `username` and `password`) so that the chart creates its database and user. If you do not have one, the labs install it in about 3 minutes: [External dependencies](https://github.com/europesip/hcl-dx-compose-labs/blob/main/external-deps/GUIDE.md) (`external-deps/02-postgres.sh`). **Other databases will be supported in later releases** |
 | **Users** | The DX users of `demo.people` (in the labs, the OpenLDAP of Lab 2A) |
 | **HCL DX IQ** (optional) | For the assistant: IQ installed (Lab 3 of the labs) |
-| **Images** | `ghcr.io/europesip/orbita/...`. While the repository is private, a pull Secret (a GitHub token with `read:packages`) |
+| **Images and chart** | Public, on `ghcr.io/europesip`: no registry login needed |
 | **Tools** | `kubectl` and Helm 3.8+ (OCI charts) |
 
 ## Installation with Helm
@@ -99,9 +131,6 @@ kubectl -n $NS create secret generic orbita-dx --from-literal=username=wpsadmin 
 # CA of the DX certificate (self-signed or private CA). In the labs: the certificate itself
 kubectl -n dx-demo get secret dx-tls-cert -o jsonpath='{.data.tls\.crt}' | base64 -d > dx-ca.crt
 kubectl -n $NS create secret generic orbita-dx-ca --from-file=ca.crt=dx-ca.crt
-# While the images are private: a GitHub token with read:packages
-kubectl -n $NS create secret docker-registry ghcr-pull --docker-server=ghcr.io \
-  --docker-username=<GitHub user> --docker-password=<token>
 ```
 
 **2. Values** (`orbita-values.yaml`; every value is explained in [values.yaml](chart/hcl-dx-orbita/values.yaml)):
@@ -117,7 +146,6 @@ database:
 mcp:
   networkPolicy:
     integratorNamespace: dx-demo                  # namespace of HCL DX IQ
-imagePullSecrets: [{ name: ghcr-pull }]
 scriptapps:                                       # subchart hcl-dx-scriptapp: repeat the DX settings
   dx:
     host: dx-demo.apps.promox.europesip-lab.com
@@ -125,16 +153,13 @@ scriptapps:                                       # subchart hcl-dx-scriptapp: r
     caSecret: orbita-dx-ca
   dxclient:
     acceptLicense: true                           # you accept the HCL DXClient license
-  job:
-    imagePullSecrets: [{ name: ghcr-pull }]
 # demo.people: who plays each role (default: the labs users)
 ```
 
 **3. Install**:
 
 ```bash
-helm registry login ghcr.io -u <GitHub user>      # while the chart is private (same token)
-helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 2.0.0 \
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 2.1.0 \
   -n dx-shared -f orbita-values.yaml --timeout 15m
 ```
 
@@ -178,14 +203,14 @@ kubectl -n dx-demo patch configmap dx-iq-integrator --type merge \
 kubectl -n dx-demo rollout restart deployment/dx-iq-integrator
 # Check: the ÓRBITA tools must be there
 kubectl -n dx-demo logs deploy/dx-iq-integrator | grep Fetched
-#  Fetched 2 tools from http://orbita-api.dx-shared.svc.cluster.local:9081
+#  Fetched 26 tools from http://orbita-api.dx-shared.svc.cluster.local:9081
 ```
 
 In the labs, `scripts/registrar-mcp-en-iq.sh` does exactly this (and does not duplicate the entry).
 
 - **After every `helm upgrade` of IQ, apply the patch again**: the chart regenerates the list. With Helm 4 that
   upgrade also needs `--force-conflicts`, because the key now belongs to `kubectl patch`.
-- **Test** in the IQ chat, as a demo user: «¿Cuántos días de vacaciones me quedan?». Each call is audited in the
+- **Test** in the IQ chat, as a demo user: «¿Cuántos días de vacaciones me quedan?» ([more questions](docs/ai-questions.md)). Each call is audited in the
   `orbita-api` log (`ORBITA MCP auditoria herramienta=… usuario=…`).
 - Tools and security model: [docs/mcp.md](docs/mcp.md) (in Spanish).
 
@@ -210,13 +235,13 @@ web/                    React interface (Vite); scripts/scriptapps.mjs builds th
 images/                 Dockerfiles: orbita-api (Open Liberty) and orbita-scriptapps (the built apps)
 chart/hcl-dx-orbita/    Helm chart
 scripts/                helpers for the labs (install, verify, register the MCP in IQ)
-docs/                   functional spec, MCP and REST Client tests (in Spanish)
+docs/                   AI questions (EN/ES), functional spec, MCP and REST Client tests (in Spanish)
 ```
 
 ## Development
 
 - **Back end**: `mvn -f api/pom.xml package` (Java 21). **Interface**: `cd web && npm ci && npm run build:scriptapps`.
-- **Images**: CI builds and tests both images; a push to `main` publishes `:main`, a tag `v2.0.0` publishes `:2.0.0`
+- **Images**: CI builds and tests both images; a push to `main` publishes `:main`, a tag `v2.1.0` publishes `:2.1.0`
   and the chart.
 - **A new operation**: method in `Api.java` (or `Gastos.java`), its route in `api/rutas.json`, and the interface calls
   it with `api('op', {...})`. **A schema change**: a new file `V<n>__description.sql` in `db/migration` (never edit a

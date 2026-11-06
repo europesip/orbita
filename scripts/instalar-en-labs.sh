@@ -8,9 +8,6 @@
 #   DXCLIENT_ACCEPT_LICENSE=yes   aceptas la licencia de HCL DXClient (como en el Lab 1B)
 #   ORBITA_CHART                  chart a instalar: por defecto el de este repositorio (chart/hcl-dx-orbita);
 #                                 o oci://ghcr.io/europesip/charts/hcl-dx-orbita con ORBITA_CHART_VERSION
-#   GHCR_USER y GHCR_TOKEN        mientras las imágenes de ghcr.io/europesip/orbita sean privadas: usuario de GitHub y
-#                                 un token con permiso read:packages (crea el secret ghcr-pull en $SHARED_NS; si ya
-#                                 existe, se usa sin más)
 #
 # Los parámetros que se le pasen van a helm (p. ej. --set demo.seed=false).
 set -euo pipefail
@@ -42,12 +39,8 @@ CA=$(mktemp); trap 'rm -f "$CA"' EXIT
 kubectl -n "$DX_NS" get secret dx-tls-cert -o jsonpath='{.data.tls\.crt}' | base64 -d > "$CA"
 apply_secret "$SHARED_NS" generic orbita-dx-ca --from-file=ca.crt="$CA"
 
+# Las imágenes y el chart son públicos. Si existe un secret ghcr-pull (instalaciones anteriores), se sigue usando.
 PULL=()
-if [[ -n "${GHCR_TOKEN:-}" ]]; then
-  info "Secret ghcr-pull en $SHARED_NS (imágenes privadas de ghcr.io)"
-  kubectl -n "$SHARED_NS" create secret docker-registry ghcr-pull --docker-server=ghcr.io \
-    --docker-username="${GHCR_USER:?falta GHCR_USER}" --docker-password="$GHCR_TOKEN" --dry-run=client -o yaml | kubectl apply -f - >/dev/null
-fi
 if kubectl -n "$SHARED_NS" get secret ghcr-pull >/dev/null 2>&1; then
   PULL=(--set 'imagePullSecrets[0].name=ghcr-pull' --set 'scriptapps.job.imagePullSecrets[0].name=ghcr-pull')
 fi

@@ -16,8 +16,7 @@ gastos, aprobar solicitudes…
 | Token Bearer opcional (`mcp.tokenSecret`) | ✅ (desactivado por defecto) |
 | Auditoría de cada `tools/call` en el log | ✅ |
 | Confirmación previa en las herramientas que modifican datos | ✅ |
-| Herramientas de ejemplo: `vacaciones_saldo`, `vacaciones_solicitar` | ✅ |
-| **Resto del catálogo** (tabla de abajo) | ⏳ Pendiente |
+| **26 herramientas**: día, fichaje, vacaciones, gastos y viajes, aprobaciones y avisos (catálogo de abajo) | ✅ (2.1.0) |
 | Registro en DX IQ | Manual: `scripts/registrar-mcp-en-iq.sh` (el chart de IQ no permite ampliar la lista) |
 
 ## Arquitectura
@@ -54,7 +53,7 @@ MCP de HCL DX IQ. Las respuestas siempre son `application/json`: no se abren flu
 
 | Petición | Respuesta |
 |---|---|
-| `initialize` | `protocolVersion`, `capabilities.tools`, `serverInfo` (`orbita-mcp` 2.0.0), `instructions` |
+| `initialize` | `protocolVersion`, `capabilities.tools`, `serverInfo` (`orbita-mcp` 2.1.0), `instructions` |
 | `notifications/*` (sin `id`) | `202 Accepted`, sin cuerpo |
 | `ping` | `{}` |
 | `tools/list` | Herramientas con `inputSchema` (JSON Schema) y `annotations` (`readOnlyHint`…) |
@@ -88,29 +87,46 @@ new Herramienta("fichaje_hoy", "Fichaje de hoy",
 Para desplegarla: nueva versión de la imagen `orbita-api` (tag `v*` o push a la rama), `helm upgrade`, y
 `scripts/registrar-mcp-en-iq.sh` para que el Integrator, que lee las herramientas al arrancar, las vuelva a cargar.
 
-## Catálogo pendiente
+## Catálogo (2.1.0)
 
-Operaciones en `api/core/.../Api.java` (método `ejecutar`) y `Gastos.java`; rutas en `api/rutas.json`.
+Ejemplos de preguntas para cada una: [preguntas-ia.md](preguntas-ia.md). Las que **modifican** devuelven primero un
+resumen y solo actúan con `confirmar: true`.
 
-| Herramienta | Operación y parámetros | Tipo | Notas |
-|---|---|---|---|
-| `vacaciones_solicitudes` | `vac.anio` (`anio`) | Consulta | Solicitudes del año y su estado |
-| `vacaciones_cancelar` | `vac.cancelar` (`id`) | Modifica | Solo las suyas pendientes. El `id` sale de `vacaciones_solicitudes` |
-| `ausencias_equipo` | `vac.calendario` (`anio`, `mes`) | Consulta | Quién falta en su equipo |
-| `fichaje_hoy` | `fichaje.estado` | Consulta | Si ha fichado, horas de hoy |
-| `fichaje_mes` | `fichaje.mes` (`anio`, `mes`) | Consulta | Horas, saldo e incidencias (días sin cerrar) |
-| `gastos_resumen` | `gastos.resumen` | Consulta | Gastos del año por categoría, notas y pendiente de cobro |
-| `gastos_nota` | `gastos.nota` (`id`) | Consulta | Detalle de una nota (líneas, importes, estado) |
-| `viaje_solicitar` | `viaje.solicitar` (`destino`, `motivo`, `desde`, `hasta`, `estimado` en euros: `350` o `350,50`) | Modifica | Queda pendiente del responsable |
-| `aprobaciones_pendientes` | `apr.pendientes` | Consulta | Para responsables, RRHH y administración |
-| `aprobar` / `rechazar` | `apr.resolver` (`clase` = `AUSENCIA`/`CORRECCION`/`NOTA`/`VIAJE`, `id`, `decision` = `APROBAR`/`RECHAZAR`, `comentario`) | Modifica | La lógica comprueba que la solicitud es de su equipo |
-| `resumen_dia` | `inicio.resumen` | Consulta | El panel de Mi intranet en una llamada |
-| `avisos` | `avisos.lista` | Consulta | Avisos de la campana |
+| Área | Herramienta | Operación | Tipo | Para quién |
+|---|---|---|---|---|
+| General | `quien_soy` | `yo` | Consulta | Todos |
+| | `resumen_dia` | `inicio.resumen` | Consulta | Todos |
+| | `avisos` | `avisos.lista` | Consulta | Todos |
+| | `avisos_marcar_leidos` | `avisos.leer` (`id` opcional) | Modifica (sin confirmación) | Todos |
+| Fichaje | `fichaje_hoy` | `fichaje.estado` | Consulta | Todos |
+| | `fichaje_mes` | `fichaje.mes` (`anio`, `mes`, `empleado`) | Consulta | Todos; `empleado` solo responsables y RRHH |
+| | `equipo_ahora` | `fichaje.equipo` | Consulta | Responsables y RRHH |
+| | `fichar` | `fichaje.marcar` (`tipo`, `modalidad`, `motivo_pausa`) | Modifica | Todos |
+| | `fichaje_corregir` | `fichaje.correccion` (`fecha`, `tipo`, `hora`, `motivo`) | Modifica | Todos |
+| Vacaciones | `vacaciones_saldo` | `vac.resumen` | Consulta | Todos |
+| | `vacaciones_solicitudes` | `vac.anio` (`anio`) | Consulta | Todos |
+| | `ausencias_equipo` | `vac.calendario` (`anio`, `mes`) | Consulta | Todos (su equipo; RRHH, toda la plantilla) |
+| | `vacaciones_solicitar` | `vac.solicitar` (`tipo`, `desde`, `hasta`, `comentario`) | Modifica | Todos |
+| | `vacaciones_cancelar` | `vac.cancelar` (`id`) | Modifica | Todos (solo las suyas) |
+| Gastos y viajes | `gastos_resumen` | `gastos.resumen` | Consulta | Todos |
+| | `nota_gasto` | `gastos.nota` (`id`) | Consulta | Quien puede verla |
+| | `nota_gasto_crear` | `gastos.nuevaNota` (`titulo`) | Modifica | Todos |
+| | `gasto_anadir` | `gastos.guardarLinea` (`nota`, `fecha`, `categoria`, `descripcion`, `importe`, `iva`, `km`, `justificacion`) | Modifica | Todos (notas en borrador) |
+| | `nota_gasto_enviar` | `gastos.enviar` (`id`) | Modifica | Todos |
+| | `viaje_solicitar` | `viaje.solicitar` (`destino`, `motivo`, `desde`, `hasta`, `estimado`) | Modifica | Todos |
+| | `viaje_cancelar` | `viaje.cancelar` (`id`) | Modifica | Todos (solo los suyos) |
+| | `pagos_pendientes` | `gastos.pagos` | Consulta | Administración |
+| Aprobaciones | `aprobaciones_pendientes` | `apr.pendientes` | Consulta | Responsables, RRHH |
+| | `solicitud_resolver` | `apr.resolver` (`clase`, `id`, `decision`, `comentario`) | Modifica | Responsables, RRHH |
+| | `solicitud_comentarios` | `com.lista` (`clase`, `id`) | Consulta | Las partes de la solicitud |
+| | `solicitud_comentar` | `com.enviar` (`clase`, `id`, `texto`) | Modifica | Las partes de la solicitud |
 
 Fuera de alcance a propósito: `demo.reiniciar`, pagos (`gastos.pagar`), borrados de notas o líneas y exportaciones
 CSV. Son acciones masivas o irreversibles que no deberían quedar a una sola frase de la IA.
 
-Tipos de ausencia: `VACACIONES`, `ASUNTOS_PROPIOS`, `PERMISO`, `BAJA`.
+Valores: tipos de ausencia `VACACIONES`, `ASUNTOS_PROPIOS`, `PERMISO`, `BAJA`; marcas `ENTRADA`, `PAUSA`, `REANUDAR`,
+`SALIDA`; categorías de gasto `COMIDA`, `HOTEL`, `TRANSPORTE`, `KILOMETRAJE`, `PARKING`, `OTROS`; clases de solicitud
+`AUSENCIA`, `CORRECCION`, `NOTA`, `VIAJE`.
 
 ## Seguridad
 

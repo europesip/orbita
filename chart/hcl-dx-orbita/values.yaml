@@ -27,7 +27,7 @@ image:
   repository: ghcr.io/europesip/orbita/orbita-api
   tag: ""                    # default: the chart appVersion
   pullPolicy: IfNotPresent
-imagePullSecrets: []         # e.g. [{ name: ghcr-pull }] while the images are private
+imagePullSecrets: []         # the images are public; set it for a private mirror
 
 # --- PostgreSQL ---------------------------------------------------------------------------------------------------
 database:
@@ -129,9 +129,9 @@ scriptapps:
   dxclient:
     acceptLicense: false     # REQUIRED true: you accept the HCL DXClient license
   bundle:
-    image: ghcr.io/europesip/orbita/orbita-scriptapps:2.0.0
+    image: ghcr.io/europesip/orbita/orbita-scriptapps:2.1.0
   job:
-    imagePullSecrets: []     # e.g. [{ name: ghcr-pull }] while the images are private
+    imagePullSecrets: []     # the bundle image is public; set it for a private mirror
   apps:
     - { name: orbita-mi-intranet,  title: "ÓRBITA · Mi intranet",        path: mi-intranet }
     - { name: orbita-fichaje,      title: "ÓRBITA · Fichaje",            path: fichaje }
