@@ -11,4 +11,19 @@ data:
 {{ .Files.Get "files/paginas.mjs" | indent 4 }}
   paginas.json: |
     {{- toJson (dict "create" .Values.pages.create "parent" .Values.pages.parent "base" .Values.pages.base
-          "layoutTemplate" .Values.pages.layoutTemplate "skin" .Values.pages.skin "titles" .Values.pages.items) | nindent 4 }}
+          "layoutTemplate" .Values.pages.layoutTemplate "skin" .Values.pages.skin "titles" .Values.pages.items
+          "theme" (ternary .Values.theme.uniqueName "" .Values.theme.enabled)) | nindent 4 }}
+  tema.mjs: |
+{{ .Files.Get "files/tema.mjs" | indent 4 }}
+  tema.json: |
+    {{- toJson (dict "enabled" .Values.theme.enabled "name" .Values.theme.name "uniqueName" .Values.theme.uniqueName
+          "title" .Values.theme.title "base" .Values.theme.base.folder "baseUniqueName" .Values.theme.base.uniqueName
+          "damCollection" .Values.theme.damCollection "hclLogo" .Values.theme.hclLogo
+          "assistantButton" .Values.theme.assistantButton "logoAlt" .Values.theme.logoAlt
+          "headerBackground" .Values.theme.headerBackground
+          "homeUrl" (printf "%s%s" .Values.pages.base "mi-intranet")) | nindent 4 }}
+binaryData:
+  # Default images of the example theme, uploaded once to the DAM collection theme.damCollection
+  company-logo.png: {{ ternary (.Files.Get "files/theme/company-logo.png" | b64enc) .Values.theme.logoBase64 (empty .Values.theme.logoBase64) }}
+  hcl-software.png: {{ .Files.Get "files/theme/hcl-software.png" | b64enc }}
+  orbita-icon.png: {{ .Files.Get "files/theme/orbita-icon.png" | b64enc }}

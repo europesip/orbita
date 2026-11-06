@@ -5,6 +5,7 @@
 import {readFileSync} from 'node:fs';
 
 const [cfgFile, idsFile, existentesFile] = process.argv.slice(2);
+// cfg.theme: unique name of the example theme (theme.enabled), assigned to the ÓRBITA pages only
 const cfg = JSON.parse(readFileSync(cfgFile, 'utf8'));
 if (!cfg.create) process.exit(0);
 let existentes = new Set();
@@ -20,7 +21,7 @@ const paginas = cfg.titles.map((t, n) => {
   if (!id) throw new Error(`no WCM content ID for orbita-${t.friendly} (is it in scriptapps.apps?)`);
   return `
     <content-node action="update" active="true" allportletsallowed="true" content-parentref="padre" create-type="explicit"
-        domain="rel" objectid="p${n}" ordinal="${1000 + n * 100}" type="staticpage" uniquename="orbita.${esc(t.friendly)}">
+        domain="rel" objectid="p${n}" ordinal="${1000 + n * 100}" type="staticpage" uniquename="orbita.${esc(t.friendly)}"${cfg.theme ? ' themeref="tema"' : ''}>
       <supported-markup markup="html" update="set"/>
       <localedata locale="es"><title>${esc(t.es)}</title></localedata>
       <localedata locale="en"><title>${esc(t.en)}</title></localedata>
@@ -64,7 +65,8 @@ process.stdout.write(`<?xml version="1.0" encoding="UTF-8"?>
 <request xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PortalConfig_8.5.0.xsd"
     type="update" create-oids="true">
   <portal action="locate">
-    <skin action="locate" objectid="piel" uniquename="${esc(cfg.skin)}"/>
+    <skin action="locate" objectid="piel" uniquename="${esc(cfg.skin)}"/>${cfg.theme ? `
+    <theme action="locate" objectid="tema" uniquename="${esc(cfg.theme)}"/>` : ''}
     <web-app action="locate" uid="ilwwcm-localrenderingportlet-jsr.war.webmod">
       <portlet-app action="locate" uid="ilwwcm-localrenderingportlet-jsr.war">
         <portlet action="locate" objectid="visor" name="Web Content Viewer (JSR 286)"/>

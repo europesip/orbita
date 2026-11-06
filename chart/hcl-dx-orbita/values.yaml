@@ -161,6 +161,28 @@ pages:
     - { friendly: aprobaciones, es: "Aprobaciones",       en: "Approvals" }
     - { friendly: quiosco,      es: "Quiosco de fichaje", en: "Time clock kiosk" }
 
+# --- Example theme for the ÓRBITA pages ----------------------------------------------------------------------------
+# A copy of the HCL DX Portal 8.5 theme (copied from YOUR DX at install time, WebDAV only, no EAR) with an ÓRBITA
+# header: the company logo and the HCL Software logo, both from a DAM collection, and a button that opens the ÓRBITA
+# assistant. Assigned to the ÓRBITA pages only; the rest of the portal is not touched. Needs pages.create=true.
+theme:
+  enabled: true
+  name: OrbitaTheme                 # WebDAV folder (dav:fs-type1/themes/OrbitaTheme/)
+  uniqueName: orbita.theme
+  title: ÓRBITA
+  base:                             # theme to copy (its static files and its registration)
+    folder: Portal8.5
+    uniqueName: ibm.portal.85Theme
+  damCollection: ÓRBITA             # DAM collection with company-logo.png, hcl-software.png and orbita-icon.png
+  # Company logo: uploaded to the DAM the first time (default: the ÓRBITA logo). Afterwards, change it in the DAM
+  # (new version of company-logo.png): the theme always shows its latest version. Or give a PNG here (base64), used
+  # when the collection does not have it yet: --set-file needs base64, e.g. --set theme.logoBase64=$(base64 -w0 logo.png)
+  logoBase64: ""
+  logoAlt: ÓRBITA
+  hclLogo: true                     # "Powered by HCL Software" in the header
+  assistantButton: true             # button that opens the ÓRBITA assistant (only on pages with an ÓRBITA app)
+  headerBackground: "linear-gradient(90deg, #15123B 0%, #2A1B6B 55%, #0B2A6F 100%)"
+
 # --- Script Applications (subchart hcl-dx-scriptapp 0.2.0) -------------------------------------------------------
 # The subchart does not see the values above: repeat dx.host and the secrets here.
 scriptapps:

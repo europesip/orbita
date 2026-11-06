@@ -26,16 +26,25 @@ const SUGERENCIAS = {
 };
 
 /** Botón de la cabecera + panel. */
-export function Asistente({app, yo}) {
+export function Asistente({app, yo, boton = true}) {
   const {config} = useSuite();
   const [abierto, setAbierto] = useState(false);
   const modo = (config && config.asistente) || 'iq';
+  // El botón del theme de ÓRBITA (cabecera de la página) abre este mismo asistente con el evento «orbita:asistente»;
+  // la clase en <html> le dice al theme que en esta página hay asistente, para que muestre el botón
+  useEffect(() => {
+    if (modo === 'none') return undefined;
+    const abrir = () => setAbierto(true);
+    window.addEventListener('orbita:asistente', abrir);
+    document.documentElement.classList.add('orbita-asistente');
+    return () => { window.removeEventListener('orbita:asistente', abrir); document.documentElement.classList.remove('orbita-asistente'); };
+  }, [modo]);
   if (modo === 'none') return null;
   return (
     <>
-      <button type="button" className="si-iq-boton" onClick={() => setAbierto(true)} title={t('Pregúntale a {p}', {p: PRODUCTO}) + (modo === 'iq' ? ' (HCL DX IQ)' : '')}>
+      {boton && <button type="button" className="si-iq-boton" onClick={() => setAbierto(true)} title={t('Pregúntale a {p}', {p: PRODUCTO}) + (modo === 'iq' ? ' (HCL DX IQ)' : '')}>
         <span aria-hidden="true">✨</span><span className="si-iq-boton-texto">{t('Pregúntale a {p}', {p: PRODUCTO})}</span>
-      </button>
+      </button>}
       {abierto && <Panel app={app} yo={yo} onCerrar={() => setAbierto(false)} />}
     </>
   );

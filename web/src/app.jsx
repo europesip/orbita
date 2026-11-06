@@ -160,6 +160,7 @@ function Contenido({app}) {
           )}
         </header>
       )}
+      {!c.asistente && <Asistente app={app} yo={yo} boton={false} />}
       <Vista yo={yo} />
       {(!config || config.pie !== false) && <footer className="si-pie">{PRODUCTO} · HCL DX Compose · EuropeSIP
         {' · '}<a href={config.codigoFuente || 'https://github.com/europesip/orbita'} target="_blank" rel="noopener noreferrer">{t('Código fuente')}</a> (AGPL-3.0)</footer>}
