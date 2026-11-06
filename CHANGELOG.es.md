@@ -2,6 +2,22 @@
 
 [English](CHANGELOG.md) · **Español**
 
+## 3.1.0 · 2026-11-07 · Un theme de ejemplo, integrado con el DAM
+
+- **Theme de ÓRBITA** para sus páginas, desplegado por el chart (`theme.*`, activo por defecto): una copia del theme
+  Portal 8.5 de HCL DX hecha desde tu propio DX al instalar, con una cabecera de ÓRBITA que muestra el **logo de la
+  empresa**, **«Powered by HCL Software»** y un **botón que abre el asistente de ÓRBITA**. Se asigna solo a las páginas
+  de ÓRBITA; el resto del portal mantiene su theme. Con `theme.enabled: false` mantienes tu propio theme.
+- **Totalmente integrado con el DAM**: las imágenes y los logos del theme se sirven desde una colección del DAM
+  (`ÓRBITA`). Se cambian allí, sin código, o se da el logo de la empresa al instalar (`theme.logoBase64`).
+  `theme.hclLogo` y `theme.assistantButton` se pueden desactivar.
+- Con el theme, nada aparece dos veces: `ui.header.assistant`, `ui.header.user` y `ui.header.homeLink` son `auto` por
+  defecto y ocultan en las aplicaciones el botón del asistente, el usuario y el enlace «Mi intranet» cuando el theme
+  ya los muestra.
+- **Preguntas frecuentes** en español e inglés ([docs/faq.es.md](docs/faq.es.md)): coste, instalación, theme y DAM, IA
+  (también con tu propia IA soberana), idiomas, seguridad, tecnología y servicios.
+- **Presentación** de ÓRBITA en español e inglés (PDF, `docs/presentation/`).
+
 ## 3.0.0 · 2026-11-06 · Asistente propio, en español e inglés
 
 - **Asistente de IA propio de ÓRBITA** (por defecto): el botón «✨ Pregúntale a ÓRBITA» habla con el modelo a través de
