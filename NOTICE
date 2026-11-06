@@ -1,8 +1,10 @@
 ÓRBITA
-Copyright (c) 2026 EuropeSIP. Todos los derechos reservados.
+Copyright (c) 2026 EuropeSIP (https://www.europesip.com)
 
-Licencia pendiente de decisión (GPLv3 o AGPLv3). Hasta entonces, este repositorio es privado y su uso,
-copia o distribución requieren autorización de EuropeSIP.
+Licencia: PolyForm Noncommercial License 1.0.0 (fichero LICENSE). Puedes usar, estudiar, modificar y redistribuir
+ÓRBITA con cualquier fin NO comercial. Para un uso comercial, contacta con EuropeSIP.
+License: PolyForm Noncommercial License 1.0.0 (LICENSE file). You may use, study, modify and redistribute ÓRBITA for
+any NONcommercial purpose. For commercial use, contact EuropeSIP.
 
 Componentes de terceros que usa ÓRBITA (no se incluyen en este repositorio; se descargan al construir o desplegar):
 
