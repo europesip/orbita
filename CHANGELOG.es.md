@@ -2,6 +2,12 @@
 
 [English](CHANGELOG.md) · **Español**
 
+## 2.2.1 · 2026-11-06 · Preguntar en inglés o en español
+
+- El panel «✨ Pregúntale a ÓRBITA» responde en el idioma de cada pregunta (inglés o español; antes, siempre en
+  español), y el servidor MCP indica al modelo que responda en el idioma del usuario y traduzca los datos de ÓRBITA.
+- Ejemplos en inglés en la documentación en inglés (README, Lab 5).
+
 ## 2.2.0 · 2026-11-06 · Elegir las herramientas MCP
 
 - **`mcp.tools`** en los valores del chart: publicar solo algunas áreas o herramientas (`enabled`), quitar algunas

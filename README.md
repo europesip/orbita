@@ -9,7 +9,7 @@ six **Script Applications**; the logic and the data live in a REST API (**`orbit
 PostgreSQL, which also includes an **MCP server** so that **HCL DX IQ** can answer questions and act for the user.
 Everything is installed with **one Helm chart**, `hcl-dx-orbita`.
 
-> **Version 2.2.0.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
+> **Version 2.2.1.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
 > in later releases. The application interface is in Spanish.
 
 | Page (signed-in users only) | URL in the HCL DX Compose labs |
@@ -52,7 +52,7 @@ relative to the day they are loaded.
 ## Features
 
 - **Assistant «✨ Pregúntale a ÓRBITA»** (header of every app): HCL DX IQ chat in a side panel, with the portal session.
-  It answers with the ÓRBITA MCP tools as the user asking («¿cuántas vacaciones me quedan?»).
+  It answers with the ÓRBITA MCP tools as the user asking («How many days of holiday do I have left?»).
 - **My intranet**: quick clock-in, hours of the last six weeks, time-off balance, expenses by category, pending
   approvals, who is away in the next 14 days and the latest notifications.
 - **Time tracking**, **time off**, **expenses and travel** (receipts with in-browser OCR), **approvals** with
@@ -87,10 +87,12 @@ time off (balance, requests, team calendar), expenses and travel (reports, addin
 | My day | «What do I have today?» · «Do I have anything to approve?» |
 | Time tracking | «Clock me in, working from home» · «Which days this month did I not clock out?» · «I forgot to clock out on Tuesday at 18:05: ask for the correction» |
 | Time off | «How many days of holiday do I have left?» · «Book me holidays from 9 to 11 December» · «Who in the team is away in December?» |
-| Expenses | «How much am I owed?» · «Create a report "Visita a Sevilla" and add a €42.80 lunch from yesterday» · «Send it to my manager» |
+| Expenses | «How much am I owed?» · «Create a report "Visit to Seville" and add a €42.80 lunch from yesterday» · «Send it to my manager» |
 | Approvals | «What do I have to approve?» · «Approve macarena's holidays» · «Reject the Barcelona trip: tighter budget» |
 
-**More than 60 example questions, by area: [docs/ai-questions.md](docs/ai-questions.md)**. Anything that changes data
+**Ask in English or in Spanish**: the assistant answers in the language of the question (the ÓRBITA data, such as
+categories and statuses, are in Spanish and the AI translates them). **More than 60 example questions, by area:
+[docs/ai-questions.md](docs/ai-questions.md)** (in Spanish: [docs/preguntas-ia.md](docs/preguntas-ia.md)). Anything that changes data
 needs your confirmation first; paying, restoring the demo, deleting and exporting stay in the app.
 
 ### Two ways to put AI on ÓRBITA
@@ -159,7 +161,7 @@ scriptapps:                                       # subchart hcl-dx-scriptapp: r
 **3. Install**:
 
 ```bash
-helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 2.2.0 \
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 2.2.1 \
   -n dx-shared -f orbita-values.yaml --timeout 15m
 ```
 
@@ -210,7 +212,7 @@ In the labs, `scripts/registrar-mcp-en-iq.sh` does exactly this (and does not du
 
 - **After every `helm upgrade` of IQ, apply the patch again**: the chart regenerates the list. With Helm 4 that
   upgrade also needs `--force-conflicts`, because the key now belongs to `kubectl patch`.
-- **Test** in the IQ chat, as a demo user: «¿Cuántos días de vacaciones me quedan?» ([more questions](docs/ai-questions.md)). Each call is audited in the
+- **Test** in the IQ chat, as a demo user: «How many days of holiday do I have left?» ([more questions](docs/ai-questions.md)). Each call is audited in the
   `orbita-api` log (`ORBITA MCP auditoria herramienta=… usuario=…`).
 - Tools and security model: [docs/mcp.md](docs/mcp.md) (in Spanish).
 
@@ -267,7 +269,7 @@ docs/                   AI questions (EN/ES), functional spec, MCP and REST Clie
 ## Development
 
 - **Back end**: `mvn -f api/pom.xml package` (Java 21). **Interface**: `cd web && npm ci && npm run build:scriptapps`.
-- **Images**: CI builds and tests both images; a push to `main` publishes `:main`, a tag `v2.2.0` publishes `:2.2.0`
+- **Images**: CI builds and tests both images; a push to `main` publishes `:main`, a tag `v2.2.1` publishes `:2.2.1`
   and the chart.
 - **A new operation**: method in `Api.java` (or `Gastos.java`), its route in `api/rutas.json`, and the interface calls
   it with `api('op', {...})`. **A schema change**: a new file `V<n>__description.sql` in `db/migration` (never edit a

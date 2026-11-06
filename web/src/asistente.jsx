@@ -79,12 +79,12 @@ function crearIq() {
   return {
     /** true si la próxima pregunta abre sesión nueva (y debe llevar el contexto). */
     sinSesion: () => !sesion,
-    async preguntar(texto, progreso) {
+    async preguntar(texto, progreso, idiomaRespuesta = 'es') {
       if (!ws || ws.readyState !== WebSocket.OPEN || !sesion) await conectar();
       return new Promise((resolver, rechazar) => {
         pendiente = {resolver, rechazar, progreso};
         ws.send(JSON.stringify({jsonrpc: '2.0', id: siguienteId++, method: 'send_message',
-          params: {id: sesion, payload: {question: texto, language: 'es'}}}));
+          params: {id: sesion, payload: {question: texto, language: idiomaRespuesta}}}));
       });
     },
     cerrar() {
@@ -107,7 +107,22 @@ function textoProgreso(h) {
 
 function contexto(yo) {
   return `Contexto (no lo menciones en la respuesta): soy ${yo.nombre}, empleado de ${PRODUCTO}. Las herramientas de `
-    + `${PRODUCTO} ya saben quién soy por mi sesión. Responde en español.\n\nPregunta: `;
+    + `${PRODUCTO} ya saben quién soy por mi sesión. Responde en el idioma en que está escrita mi pregunta.\n\nPregunta: `;
+}
+
+/**
+ * Idioma de la respuesta: el de la pregunta (se puede preguntar a ÓRBITA en español o en inglés). Si el texto no lo
+ * deja claro, el de la página de DX (<html lang>) o el del navegador.
+ */
+const PALABRAS = {
+  es: /\b(qué|que|cuánt[oa]s?|cuál|cómo|quién|dónde|cuándo|mis?|tengo|me|el|la|los|las|de|del|para|por|hoy|ficha|pídeme|vacaciones|gastos?|aprueba)\b|[¿¡ñáéíóú]/gi,
+  en: /\b(what|how|who|which|when|where|my|me|do|does|did|have|has|the|of|for|today|clock|book|holidays?|expenses?|approve|team|left)\b/gi,
+};
+export function idioma(texto) {
+  const es = (String(texto).match(PALABRAS.es) || []).length, en = (String(texto).match(PALABRAS.en) || []).length;
+  if (es !== en) return es > en ? 'es' : 'en';
+  const pagina = (document.documentElement.lang || navigator.language || 'es').slice(0, 2).toLowerCase();
+  return pagina === 'en' ? 'en' : 'es';
 }
 
 // --- Panel -----------------------------------------------------------------------------------------------------------
@@ -136,7 +151,7 @@ function Panel({app, yo, onCerrar}) {
     setMensajes((m) => [...m, {de: 'yo', texto: q}]);
     try {
       const completa = iq.current.sinSesion() ? contexto(yo) + q : q;
-      const respuesta = await iq.current.preguntar(completa, (h) => setProgreso(textoProgreso(h)));
+      const respuesta = await iq.current.preguntar(completa, (h) => setProgreso(textoProgreso(h)), idioma(q));
       setMensajes((m) => [...m, {de: 'iq', texto: respuesta}]);
     } catch (e) {
       setMensajes((m) => [...m, {de: 'error', texto: e.message}]);

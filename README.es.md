@@ -10,7 +10,7 @@ PostgreSQL, que incluye también un **servidor MCP** para que **HCL DX IQ** resp
 se instala con **un chart de Helm**, `hcl-dx-orbita`. Qué hace cada aplicación:
 [docs/ESPECIFICACION.md](docs/ESPECIFICACION.md).
 
-> **Versión 2.2.0.** Necesita **PostgreSQL** (ver [Requisitos](#requisitos)); en las siguientes versiones se podrán
+> **Versión 2.2.1.** Necesita **PostgreSQL** (ver [Requisitos](#requisitos)); en las siguientes versiones se podrán
 > usar otras bases de datos.
 
 | Página (solo usuarios con sesión) | URL en los labs de HCL DX Compose |
@@ -92,7 +92,8 @@ enviarlas), las aprobaciones (aprobar, rechazar, comentar) y los avisos. Algunos
 | Gastos | «¿Cuánto me deben?» · «Crea una nota "Visita a Sevilla" y añade una comida de ayer de 42,80 €» · «Envíasela a mi responsable» |
 | Aprobaciones | «¿Qué tengo que aprobar?» · «Aprueba las vacaciones de macarena» · «Rechaza el viaje a Barcelona: presupuesto más ajustado» |
 
-**Más de 60 preguntas de ejemplo, por áreas: [docs/preguntas-ia.md](docs/preguntas-ia.md)**. Lo que cambia datos
+**Pregunta en español o en inglés**: el asistente responde en el idioma de la pregunta. **Más de 60 preguntas de
+ejemplo, por áreas: [docs/preguntas-ia.md](docs/preguntas-ia.md)** (en inglés: [docs/ai-questions.md](docs/ai-questions.md)). Lo que cambia datos
 pide antes tu confirmación; pagar, restaurar la demo, borrar y exportar se quedan en la aplicación.
 
 ### Dos formas de poner IA en ÓRBITA
@@ -163,7 +164,7 @@ scriptapps:                                       # subchart hcl-dx-scriptapp: s
 **3. Instalar**:
 
 ```bash
-helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 2.2.0 \
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 2.2.1 \
   -n dx-shared -f orbita-values.yaml --timeout 15m
 ```
 
@@ -272,8 +273,8 @@ docs/                   preguntas a la IA, especificación, MCP y pruebas con RE
 ## Desarrollo
 
 - **Back end**: `mvn -f api/pom.xml package` (Java 21). **Interfaz**: `cd web && npm ci && npm run build:scriptapps`.
-- **Imágenes**: CI construye y prueba las dos imágenes; un push a `main` publica `:main`, un tag `v2.2.0` publica
-  `:2.2.0` y el chart.
+- **Imágenes**: CI construye y prueba las dos imágenes; un push a `main` publica `:main`, un tag `v2.2.1` publica
+  `:2.2.1` y el chart.
 - **Una operación nueva**: método en `Api.java` (o `Gastos.java`), su ruta en `api/rutas.json`, y la interfaz la llama
   con `api('op', {...})`. **Un cambio de esquema**: un fichero nuevo `V<n>__descripcion.sql` en `db/migration` (nunca
   se edita uno publicado).

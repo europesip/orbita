@@ -5,8 +5,9 @@
 Examples for the **HCL DX IQ** chat (the ✨ button of DX or the «✨ Pregúntale a ÓRBITA» panel of each app), with the
 ÓRBITA MCP server registered. The AI acts **as the user asking**: each person sees and changes only their own data
 (and their team's, if they are a manager). Anything that **changes data** is never done at once: the AI first shows a
-summary and waits for you to confirm ("yes, do it"). ÓRBITA's data and texts are in Spanish, and IQ answers in the
-language you write in.
+summary and waits for you to confirm ("yes, do it"). **You can ask in English or in Spanish**: the AI answers in the
+language of the question (ÓRBITA's data, such as categories and statuses, are in Spanish and the AI translates them).
+The questions in Spanish: [preguntas-ia.md](preguntas-ia.md).
 
 In brackets, the MCP tool the AI uses ([mcp.md](mcp.md)) and who can ask it in the demo.
 
@@ -46,11 +47,11 @@ In brackets, the MCP tool the AI uses ([mcp.md](mcp.md)) and who can ask it in t
 - How much have I spent this year? In which category do I spend most? (`gastos_resumen`)
 - Do I have expense reports waiting to be paid? How much am I owed? (`gastos_resumen`)
 - What is in my Valencia expense report and how much is it? (`nota_gasto`)
-- Create an expense report "Visita a clientes en Sevilla" (`nota_gasto_crear`)
+- Create an expense report "Customer visits in Seville" (`nota_gasto_crear`)
 - Add a lunch of €42.80 with €3.89 VAT yesterday, with the customer Grupo Sur (`gasto_anadir`)
 - Add 186 km Madrid–Toledo and back on Monday (`gasto_anadir`, KILOMETRAJE)
 - The lunch was over €30: justify it, we were four (`gasto_anadir` with justification)
-- Send the Sevilla report to my manager (`nota_gasto_enviar`)
+- Send the Seville report to my manager (`nota_gasto_enviar`)
 - Ask for a trip to Barcelona on 2–3 December to meet the distributor, about €450 (`viaje_solicitar`)
 - Cancel my Barcelona trip (`gastos_resumen` + `viaje_cancelar`)
 - *Accounting:* Which reports are approved and waiting to be paid? How much in total? (`pagos_pendientes`; `german`)

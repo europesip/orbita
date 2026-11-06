@@ -2,6 +2,12 @@
 
 **English** · [Español](CHANGELOG.es.md)
 
+## 2.2.1 · 2026-11-06 · Ask in English or Spanish
+
+- The «✨ Pregúntale a ÓRBITA» panel answers in the language of each question (English or Spanish; before, always in
+  Spanish), and the MCP server tells the model to answer in the user's language and translate ÓRBITA's data.
+- English examples in the English documentation (README, Lab 5).
+
 ## 2.2.0 · 2026-11-06 · Choose the MCP tools
 
 - **`mcp.tools`** in the chart values: publish only some areas or tools (`enabled`), remove some (`disabled`) or only

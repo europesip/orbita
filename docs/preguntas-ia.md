@@ -5,7 +5,8 @@
 Ejemplos para el chat de **HCL DX IQ** (el botón ✨ de DX o el panel «✨ Pregúntale a ÓRBITA» de cada aplicación), con
 el servidor MCP de ÓRBITA registrado. La IA actúa **como el usuario que pregunta**: cada persona ve y cambia solo lo
 suyo (y su equipo, si es responsable). Lo que **cambia datos** nunca se hace a la primera: la IA enseña antes un
-resumen y espera a que confirmes («sí, hazlo»).
+resumen y espera a que confirmes («sí, hazlo»). **Se puede preguntar en español o en inglés**: la IA responde en el
+idioma de la pregunta (las preguntas en inglés: [ai-questions.md](ai-questions.md)).
 
 Entre paréntesis, la herramienta del MCP que usa la IA ([mcp.md](mcp.md)) y quién puede preguntarlo en la demo.
 
