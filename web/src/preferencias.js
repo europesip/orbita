@@ -43,7 +43,10 @@ export async function guardarAjustes(h, ajustes) {
   try {
     await promesa(h.setPortletPreferences(ajustes));
   } catch (e) {
-    throw new Error((e && (e.message || e.errorMessage)) || String(e));
+    const texto = (e && (e.message || e.errorMessage)) || String(e);
+    // EJPEK0020E / 403: el usuario edita la página pero no tiene permiso sobre los ajustes compartidos de la aplicación
+    if (/\b403\b|EJPEK0020E/.test(texto)) throw new Error(t('No tienes permiso para cambiar los ajustes de esta aplicación: hace falta el rol Editor (o superior) sobre ella en DX.'));
+    throw new Error(texto);
   }
 }
 

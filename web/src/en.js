@@ -517,4 +517,5 @@ export default {
   "Automático": "Automatic",
   "Los ajustes solo se pueden guardar en una página de DX.": "Settings can only be saved on a DX page.",
   "Código fuente": "Source code",
+  "No tienes permiso para cambiar los ajustes de esta aplicación: hace falta el rol Editor (o superior) sobre ella en DX.": "You are not allowed to change the settings of this application: you need the Editor role (or higher) on it in DX.",
 };

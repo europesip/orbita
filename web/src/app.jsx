@@ -125,7 +125,8 @@ function VentanaAjustes({instancia, config, avisar, onCerrar}) {
 function Contenido({app}) {
   const {config} = useSuite();
   const [yo, error] = useDatos('yo', {}, []);
-  if (error) return <Fallo>{error}</Fallo>;
+  // Sin ficha en ÓRBITA (p. ej. wpsadmin) también se pueden cambiar los ajustes de la instancia en el modo edición
+  if (error) return <><AjustesInstancia /><Fallo>{error}</Fallo></>;
   if (!yo) return <Cargando />;
   const def = APPS[app];
   const {Vista} = def;
