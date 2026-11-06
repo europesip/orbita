@@ -1,5 +1,7 @@
 // Idioma de ÓRBITA (español o inglés), como en Hello DX: primero el idioma del perfil de DX del usuario
-// (preferredLanguage, lo devuelve GET /config), después el <html lang> de la página de DX y después el navegador.
+// (preferredLanguage, lo devuelven GET /config y el spHelper de DX), después el idioma con el que DX pinta la página
+// (renderingLocale del spHelper o <html lang>) y después el navegador. Quien edita la página puede fijarlo por
+// instancia (preferencias.js).
 // t('Texto en español', {dato}) devuelve el texto en el idioma de la interfaz; los textos en inglés están en en.js,
 // con el texto en español como clave. Un texto sin traducción se muestra en español.
 import EN from './en.js';
@@ -7,8 +9,8 @@ import EN from './en.js';
 const IDIOMAS = ['es', 'en'];
 const corto = (v) => (v || '').toString().trim().toLowerCase().slice(0, 2);
 
-function detectar(perfil) {
-  const candidatos = [perfil, typeof document !== 'undefined' && document.documentElement.lang,
+function detectar(...primero) {
+  const candidatos = [...primero, typeof document !== 'undefined' && document.documentElement.lang,
     ...(typeof navigator !== 'undefined' ? (navigator.languages || [navigator.language]) : [])];
   for (const c of candidatos) if (IDIOMAS.includes(corto(c))) return corto(c);
   return 'en';
@@ -16,8 +18,11 @@ function detectar(perfil) {
 
 let idioma = detectar();
 
-/** Fija el idioma con el del perfil de DX (si es es o en; si no, el de la página o el navegador). */
-export function fijarIdioma(perfil) { idioma = detectar(perfil); return idioma; }
+/**
+ * Fija el idioma: el primero que sea es o en de los que se pasan (ajuste de la instancia, perfil de DX, idioma con el
+ * que DX pinta la página) y, si no, el <html lang> o el navegador.
+ */
+export function fijarIdioma(...primero) { idioma = detectar(...primero); return idioma; }
 export const lang = () => idioma;
 /** Locale para fechas y números. */
 export const locale = () => (idioma === 'en' ? 'en-GB' : 'es-ES');

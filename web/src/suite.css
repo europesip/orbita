@@ -948,3 +948,8 @@
 .si-app .si-iq-pie button:disabled { opacity: .45; cursor: default; }
 .si-app .si-iq-aviso { display: block; background: #fff; color: var(--si-tenue); font-size: 11px; padding: 0 14px 10px; }
 @media (max-width: 720px) { .si-app .si-iq-boton-texto { display: none; } }
+
+/* Ajustes de la instancia (solo en el modo edición de la página de DX) */
+.si-ajustes-barra { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+.si-ajustes-lista { display: grid; gap: 6px; }
+.si-ajustes-lista label { display: flex; gap: 8px; align-items: center; font-weight: 400; }

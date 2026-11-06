@@ -39,10 +39,12 @@ for (const [carpeta, app] of APPS) {
   mkdirSync(dir, {recursive: true});
   writeFileSync(join(dir, 'orbita.js'), js);
   copyFileSync(join(BUNDLE, 'orbita.css'), join(dir, 'orbita.css'));
-  // En DX la Script Application es un fragmento dentro de la página (no un documento HTML completo)
+  // En DX la Script Application es un fragmento dentro de la página (no un documento HTML completo). data-ns: DX
+  // cambia __SPNS__ por el espacio de nombres de esta instancia (ns_Z7_..._), con el que la app encuentra su
+  // ns_..._spHelper (preferencias de la instancia, que se editan en el modo edición de la página)
   writeFileSync(join(dir, 'index.html'), `<!-- ÓRBITA · ${carpeta} (Script Application de HCL DX) -->\n`
     + `${FUENTE}\n<link rel="stylesheet" href="orbita.css">\n`
-    + `<div class="si-app" data-app="${app}" data-api="${API}"><p class="si-cargando">Cargando&hellip;</p></div>\n`
+    + `<div class="si-app" data-app="${app}" data-api="${API}" data-ns="__SPNS__"><p class="si-cargando">Cargando&hellip;</p></div>\n`
     + '<script type="module" src="orbita.js"></script>\n');
 }
 console.log(`Script Applications en ${DESTINO}: ${APPS.map((a) => a[0]).join(', ')} (API ${API})`);
