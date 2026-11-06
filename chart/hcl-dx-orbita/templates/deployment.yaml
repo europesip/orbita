@@ -81,6 +81,7 @@ spec:
             - { name: ORBITA_HEADER_NOTIFICATIONS, value: {{ .Values.ui.header.notifications | quote }} }
             - { name: ORBITA_HEADER_USER, value: {{ .Values.ui.header.user | quote }} }
             - { name: ORBITA_FOOTER, value: {{ .Values.ui.footer | quote }} }
+            - { name: ORBITA_SOURCE_URL, value: {{ .Values.ui.sourceUrl | default "https://github.com/europesip/orbita" | quote }} }
             - { name: ORBITA_KIOSK_PAGE, value: {{ printf "%squiosco" .Values.pages.base | quote }} }
             # AI assistant (assistant.*)
             - { name: ORBITA_ASSISTANT, value: {{ .Values.assistant.backend | quote }} }

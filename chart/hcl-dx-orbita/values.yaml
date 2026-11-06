@@ -76,7 +76,10 @@ ui:
     assistant: true          # "✨ Pregúntale a ÓRBITA" button (the AI assistant)
     notifications: true      # notification bell
     user: true               # user's name, job title, role and avatar
-  footer: true               # "ÓRBITA · HCL DX Compose · EuropeSIP" line
+  footer: true               # "ÓRBITA · HCL DX Compose · EuropeSIP" line, with the "Source code" link
+  # Source code of the version you run (AGPL-3.0, section 13: if you modify ÓRBITA and offer it over a network,
+  # point this to the code of your version)
+  sourceUrl: https://github.com/europesip/orbita
 
 # --- AI assistant («✨ Pregúntale a ÓRBITA») ------------------------------------------------------------------------
 assistant:

@@ -54,6 +54,12 @@ public final class Config {
     public static boolean cabecera(String parte) {
         return si("ORBITA_HEADER_" + parte.toUpperCase(Locale.ROOT), true);
     }
+    /** Código fuente de la versión que se ejecuta (AGPL-3.0, sección 13): ORBITA_SOURCE_URL. */
+    public static String codigoFuente() {
+        String v = System.getenv("ORBITA_SOURCE_URL");
+        return v == null || v.isBlank() ? "https://github.com/europesip/orbita" : v.trim();
+    }
+
     public static boolean pie() { return si("ORBITA_FOOTER", true); }
 
     // --- Asistente de IA de ÓRBITA (valores assistant.* del chart) -------------------------------------------------

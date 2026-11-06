@@ -83,6 +83,7 @@ public class Recursos {
                         .add("avisos", Config.cabecera("notifications"))
                         .add("usuario", Config.cabecera("user")))
                 .add("pie", Config.pie())
+                .add("codigoFuente", Config.codigoFuente())
                 // Asistente: orbita (chat propio, POST /v1/asistente), iq (chat de HCL DX IQ) o none
                 .add("asistente", Asistente.configurado() ? "orbita" : "iq".equals(Config.asistente()) ? "iq" : "none")
                 .build();

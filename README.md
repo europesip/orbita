@@ -300,10 +300,14 @@ docs/                   illustrated manual (PDF, EN/ES), AI questions (EN/ES), f
 
 ## Licence
 
-ÓRBITA is **source-available** under the **[PolyForm Noncommercial License 1.0.0](LICENSE)**: you may use, study,
-**modify** and redistribute it for any **noncommercial** purpose (personal use, study, research, evaluation, and
-charitable, educational and public organisations). **Commercial use is not allowed** without an agreement with
-EUROPESIP. Third-party components keep their own licences: see [NOTICE](NOTICE).
+ÓRBITA is **free and open source software** under the **[GNU Affero General Public License v3.0 or later](LICENSE)**
+(AGPL-3.0-or-later): you may use, study, **modify** and redistribute it, also for commercial purposes.
+
+It is a **copyleft** licence: if you distribute ÓRBITA, or a modified version, or **offer a modified version to
+other people over a network** (for example, as a service for your customers), you must give them the **complete
+source code** of your version under the same licence (section 13 of the AGPL). To make it easy, the footer of every
+application has a *Source code* link (value `ui.sourceUrl` of the chart): point it to the code of your version.
+Third-party components keep their own licences: see [NOTICE](NOTICE).
 
 ## Contact and services
 

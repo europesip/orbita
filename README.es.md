@@ -307,10 +307,15 @@ docs/                   manual ilustrado (PDF, ES/EN), preguntas a la IA, especi
 
 ## Licencia
 
-El código de ÓRBITA es **abierto** (*source-available*) con la licencia **[PolyForm Noncommercial 1.0.0](LICENSE)**:
-puedes usarlo, estudiarlo, **modificarlo** y redistribuirlo con cualquier fin **no comercial** (uso personal, estudio,
-investigación, evaluación, y organizaciones sin ánimo de lucro, educativas y públicas). **No se permite el uso
-comercial** sin un acuerdo con EUROPESIP. Los componentes de terceros mantienen sus licencias: ver [NOTICE](NOTICE).
+ÓRBITA es **software libre y de código abierto** con la licencia **[GNU Affero General Public License v3.0 o
+posterior](LICENSE)** (AGPL-3.0-or-later): puedes usarlo, estudiarlo, **modificarlo** y redistribuirlo, también con
+fines comerciales.
+
+Es una licencia **copyleft**: si distribuyes ÓRBITA o una versión modificada, o **ofreces una versión modificada a
+otras personas a través de una red** (por ejemplo, como servicio para tus clientes), debes darles el **código fuente
+completo** de tu versión con la misma licencia (sección 13 de la AGPL). Para facilitarlo, el pie de cada aplicación
+tiene un enlace *Código fuente* (valor `ui.sourceUrl` del chart): apúntalo al código de tu versión. Los componentes de
+terceros mantienen sus licencias: ver [NOTICE](NOTICE).
 
 ## Contacto y servicios
 
