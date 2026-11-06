@@ -322,7 +322,12 @@ final class Gastos {
     static int centimos(String s) {
         if (s == null || s.trim().isEmpty()) return 0;
         String t = s.trim().replace("€", "").replace(" ", "");
-        if (t.contains(",")) t = t.replace(".", "").replace(',', '.');
+        // 12,30 · 1.234,56 (español) o 12.30 · 1,234.56 (inglés): el último separador es el decimal
+        if (t.contains(",") && t.contains(".")) {
+            t = t.lastIndexOf(',') > t.lastIndexOf('.') ? t.replace(".", "").replace(',', '.') : t.replace(",", "");
+        } else if (t.contains(",")) {
+            t = t.replace(',', '.');
+        }
         try {
             return (int) Math.round(Double.parseDouble(t) * 100);
         } catch (NumberFormatException e) {
@@ -476,7 +481,8 @@ final class Gastos {
             ps.executeUpdate();
         }
         Map<String, Object> r = nota(id);
-        if (!auto) Social.avisar(c, yo.responsable, "aprobaciones", "NOTA", id, yo.nombre + " ha enviado la nota de gasto «" + r.get("titulo")
+        if (!auto) Social.avisar(c, yo.responsable, "aprobaciones", "NOTA", id, "nota.enviada",
+                obj("quien", yo.nombre, "titulo", r.get("titulo"), "total", r.get("total")), yo.nombre + " ha enviado la nota de gasto «" + r.get("titulo")
                 + "» (" + Ticket.euros((Integer) r.get("total")) + " €)");
         r.put("mensaje", auto ? "Nota registrada: pasa directamente a pago." : "Nota de " + Ticket.euros((Integer) r.get("total"))
                 + " € enviada a " + api.emp(yo.responsable).nombre + ".");
@@ -526,7 +532,9 @@ final class Gastos {
             ps.setTimestamp(10, auto ? ahora : null);
             ps.executeUpdate();
         }
-        if (!auto) Social.avisar(c, yo.responsable, "aprobaciones", "VIAJE", null, yo.nombre + " ha pedido un viaje a " + destino
+        if (!auto) Social.avisar(c, yo.responsable, "aprobaciones", "VIAJE", null, "viaje.pedido",
+                obj("quien", yo.nombre, "destino", destino, "desde", desde.toString(), "hasta", hasta.toString()),
+                yo.nombre + " ha pedido un viaje a " + destino
                 + " (" + Api.corta(desde) + " – " + Api.corta(hasta) + ")");
         Map<String, Object> r = resumen();
         r.put("mensaje", auto ? "Viaje registrado." : "Solicitud de viaje a " + destino + " enviada a " + api.emp(yo.responsable).nombre + ".");
@@ -587,6 +595,7 @@ final class Gastos {
                     n++;
                     Map<String, Object> pagada = nota(Integer.parseInt(s.trim()));
                     Social.avisar(c, (String) ((Map<?, ?>) pagada.get("persona")).get("usuario"), "gastos", "NOTA", (Integer) pagada.get("id"),
+                            "nota.pagada", obj("titulo", pagada.get("titulo"), "total", pagada.get("total")),
                             "Administración ha pagado tu nota «" + pagada.get("titulo") + "» (" + Ticket.euros((Integer) pagada.get("total")) + " €)");
                 }
             }
@@ -703,7 +712,8 @@ final class Gastos {
             ps.setInt(5, id);
             ps.executeUpdate();
         }
-        Social.avisar(c, usuario, "gastos", clase, id, yo.nombre + (aprobar ? " ha aprobado " : " ha rechazado ")
+        Social.avisar(c, usuario, "gastos", clase, id, (nota ? "nota." : "viaje.") + (aprobar ? "aprobada" : "rechazada"),
+                obj("quien", yo.nombre, "comentario", comentario), yo.nombre + (aprobar ? " ha aprobado " : " ha rechazado ")
                 + (nota ? "tu nota de gasto" : "tu solicitud de viaje") + (comentario != null ? ": «" + comentario + "»" : "."));
         return api.emp(usuario).nombre;
     }

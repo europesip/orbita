@@ -10,6 +10,7 @@ import {Inicio} from './Inicio.jsx';
 import {Kiosco} from './Kiosco.jsx';
 import {OrbitaIcono, PRODUCTO} from './marca.jsx';
 import {Asistente} from './asistente.jsx';
+import {fijarIdioma, t} from './i18n.js';
 
 const APPS = {
   inicio: {titulo: 'Mi intranet', subtitulo: 'Tu día de un vistazo', icono: '🏠', Vista: Inicio},
@@ -23,13 +24,14 @@ const ROLES = {RRHH: 'RRHH', RESPONSABLE: 'Responsable', EMPLEADO: 'Empleado', A
 export function App({app, url, raiz}) {
   const api = useMemo(() => crearApi(url), [url]);
   const [avisar, avisos] = useAvisos();
-  // Configuración de la instalación: dónde están las páginas en DX y la clave del quiosco
+  // Configuración de la instalación (dónde están las páginas en DX, la clave del quiosco...) y el idioma del perfil de DX
   const [config, setConfig] = useState(null);
   const [error, setError] = useState(null);
   useEffect(() => {
     leerConfig(url).then((c) => {
       RUTAS.paginas = c.paginas;
       RUTAS.quiosco = c.quiosco;
+      fijarIdioma(c.idioma);
       setConfig(c);
     }).catch((e) => setError(e.message));
   }, [url]);
@@ -63,17 +65,17 @@ function Contenido({app}) {
               <OrbitaIcono tam={46} />
               <div>
                 <span className="si-producto">{PRODUCTO}</span>
-                <h2><span className="si-titulo-icono" aria-hidden="true">{def.icono}</span>{def.titulo}</h2>
-                <p>{def.subtitulo}</p>
+                <h2><span className="si-titulo-icono" aria-hidden="true">{def.icono}</span>{t(def.titulo)}</h2>
+                <p>{t(def.subtitulo)}</p>
               </div>
             </div>
           ) : <div />}
           {derecha && (
             <div className="si-usuario">
-              {c.inicio && app !== 'inicio' && <a className="si-enlace si-a-inicio" href={urlApp('inicio')}>🏠 Mi intranet</a>}
+              {c.inicio && app !== 'inicio' && <a className="si-enlace si-a-inicio" href={urlApp('inicio')}>🏠 {t('Mi intranet')}</a>}
               {c.asistente && <Asistente app={app} yo={yo} />}
               {c.avisos && <Campana inicial={yo.avisos} app={app} />}
-              {c.usuario && <div><strong>{yo.nombre}</strong><span>{yo.puesto} · {ROLES[yo.rol] || yo.rol}</span></div>}
+              {c.usuario && <div><strong>{yo.nombre}</strong><span>{yo.puesto} · {ROLES[yo.rol] ? t(ROLES[yo.rol]) : yo.rol}</span></div>}
               {c.usuario && <Avatar nombre={yo.nombre} tam={38} />}
             </div>
           )}

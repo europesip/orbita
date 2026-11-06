@@ -5,14 +5,15 @@ import {
   euros, fecha, plural, rango, useDatos, useSuite,
 } from './ui.jsx';
 import {BotonConversacion, Conversacion} from './social.jsx';
+import {t} from './i18n.js';
 
 const COLOR = {CORRECCION: 'var(--si-ambar)', NOTA: 'var(--si-verde)', VIAJE: 'var(--si-turquesa)'};
 
 function resumenHistorial(h) {
   switch (h.clase) {
-    case 'CORRECCION': return `Corrección de ${MARCAS[h.tipo].toLowerCase()} (${fecha(h.fecha)})`;
-    case 'NOTA': return `Nota de gasto «${h.titulo}» · ${euros(h.total)}`;
-    case 'VIAJE': return `Viaje a ${h.destino} · ${rango(h.desde, h.hasta)}`;
+    case 'CORRECCION': return t('Corrección de {tipo} ({fecha})', {tipo: MARCAS[h.tipo].toLowerCase(), fecha: fecha(h.fecha)});
+    case 'NOTA': return t('Nota de gasto «{titulo}» · {total}', {titulo: h.titulo, total: euros(h.total)});
+    case 'VIAJE': return t('Viaje a {destino} · {rango}', {destino: h.destino, rango: rango(h.desde, h.hasta)});
     default: return `${TIPOS_AUSENCIA[h.tipo].nombre} · ${rango(h.desde, h.hasta)}`;
   }
 }
@@ -20,15 +21,15 @@ function resumenHistorial(h) {
 export function Aprobaciones({yo}) {
   const [datos, error, , fijar] = useDatos('apr.pendientes', {}, []);
   const [filtro, setFiltro] = useState('');
-  if (!yo.tieneEquipo) return <Tarjeta><Vacio icono="👥">No tienes personas a tu cargo: aquí verás sus solicitudes cuando las tengas.</Vacio></Tarjeta>;
+  if (!yo.tieneEquipo) return <Tarjeta><Vacio icono="👥">{t('No tienes personas a tu cargo: aquí verás sus solicitudes cuando las tengas.')}</Vacio></Tarjeta>;
   if (error) return <Fallo>{error}</Fallo>;
   if (!datos) return <Cargando />;
   const grupos = [['', 'Todas'], ['AUSENCIA', 'Ausencias'], ['CORRECCION', 'Fichajes'], ['NOTA', 'Gastos'], ['VIAJE', 'Viajes']]
-    .map(([id, nombre]) => ({id, nombre, n: datos.items.filter((i) => !id || i.clase === id).length}));
+    .map(([id, nombre]) => ({id, nombre: t(nombre), n: datos.items.filter((i) => !id || i.clase === id).length}));
   const items = datos.items.filter((i) => !filtro || i.clase === filtro);
   return (
     <>
-      <Tarjeta titulo={datos.items.length ? `${plural(datos.items.length, 'solicitud pendiente', 'solicitudes pendientes')}` : 'Pendientes'}
+      <Tarjeta titulo={datos.items.length ? plural(datos.items.length, 'solicitud pendiente', 'solicitudes pendientes') : t('Pendientes')}
         accion={datos.items.length > 0 && <div className="si-filtros">
           {grupos.filter((g) => !g.id || g.n).map((g) => (
             <button key={g.id} type="button" className={filtro === g.id ? 'activa' : ''} onClick={() => setFiltro(g.id)}>{g.nombre} <span>{g.n}</span></button>
@@ -36,10 +37,10 @@ export function Aprobaciones({yo}) {
         </div>}>
         {items.length
           ? <div className="si-bandeja">{items.map((it) => <Solicitud key={it.clase + it.id} it={it} politica={datos.politica} onHecho={fijar} />)}</div>
-          : <Vacio>Todo al día: no hay solicitudes de tu equipo esperando respuesta.</Vacio>}
+          : <Vacio>{t('Todo al día: no hay solicitudes de tu equipo esperando respuesta.')}</Vacio>}
       </Tarjeta>
       {datos.historial.length > 0 && (
-        <Tarjeta titulo="Resueltas recientemente">
+        <Tarjeta titulo={t('Resueltas recientemente')}>
           <ul className="si-lista si-historial">
             {datos.historial.map((h) => (
               <li key={h.clase + h.id}>
@@ -72,40 +73,40 @@ function Solicitud({it, politica, onHecho}) {
       onHecho(r);
     } catch (e) { avisar(e.message, 'rojo'); setEnviando(false); }
   };
-  const t = it.clase === 'AUSENCIA' ? TIPOS_AUSENCIA[it.tipo] : null;
+  const ta = it.clase === 'AUSENCIA' ? TIPOS_AUSENCIA[it.tipo] : null;
   return (
-    <article className={`si-peticion${it.clase === 'NOTA' ? ' si-peticion-nota' : ''}`} style={{'--c': t ? t.color : COLOR[it.clase]}}>
+    <article className={`si-peticion${it.clase === 'NOTA' ? ' si-peticion-nota' : ''}`} style={{'--c': ta ? ta.color : COLOR[it.clase]}}>
       <header>
         <Avatar nombre={it.persona.nombre} />
         <div><strong>{it.persona.nombre}</strong><span>{it.persona.puesto}</span></div>
-        <small className="si-tenue">{it.clase === 'NOTA' ? 'Enviada' : 'Pedida'} el {fecha(it.creado)}</small>
+        <small className="si-tenue">{t(it.clase === 'NOTA' ? 'Enviada el {fecha}' : 'Pedida el {fecha}', {fecha: fecha(it.creado)})}</small>
       </header>
       <div className="si-peticion-cuerpo">
         {it.clase === 'AUSENCIA' && <>
-          <h4>{t.nombre} · {plural(it.dias, 'día laborable', 'días laborables')}</h4>
+          <h4>{ta.nombre} · {plural(it.dias, 'día laborable', 'días laborables')}</h4>
           <p className="si-fechas">{rango(it.desde, it.hasta)}</p>
           {it.comentario && <q>{it.comentario}</q>}
           <div className="si-datos-extra">
             {it.saldoRestante !== undefined && it.saldoRestante !== null &&
-              <Insignia tono={it.saldoRestante < 3 ? 'ambar' : 'gris'}>Le quedarán {plural(it.saldoRestante, 'día', 'días')}</Insignia>}
+              <Insignia tono={it.saldoRestante < 3 ? 'ambar' : 'gris'}>{t('Le quedarán {n}', {n: plural(it.saldoRestante, 'día', 'días')})}</Insignia>}
             {it.coincidencias.length === 0
-              ? <Insignia tono="verde">Nadie más del equipo falta esos días</Insignia>
+              ? <Insignia tono="verde">{t('Nadie más del equipo falta esos días')}</Insignia>
               : it.coincidencias.map((c, i) => (
-                <Insignia key={i} tono="ambar">⚠ Coincide con {c.nombre} ({rango(c.desde, c.hasta)}{c.estado === 'PENDIENTE' ? ', pendiente' : ''})</Insignia>
+                <Insignia key={i} tono="ambar">⚠ {t('Coincide con {nombre}', {nombre: c.nombre})} ({rango(c.desde, c.hasta)}{c.estado === 'PENDIENTE' ? `, ${t('pendiente')}` : ''})</Insignia>
               ))}
           </div>
         </>}
         {it.clase === 'CORRECCION' && <>
-          <h4>Corrección de fichaje · {MARCAS[it.tipo]} a las {it.hora}</h4>
+          <h4>{t('Corrección de fichaje · {tipo} a las {hora}', {tipo: MARCAS[it.tipo], hora: it.hora})}</h4>
           <p className="si-fechas">{fecha(it.fecha, {weekday: 'long', day: 'numeric', month: 'long'})}</p>
           <div className="si-marcas-dia">
-            <span>Registrado ese día:</span>
-            {it.marcas.length ? it.marcas.map((m, i) => <Insignia key={i}>{MARCAS[m.tipo]} {m.hora}</Insignia>) : <em>sin marcas</em>}
+            <span>{t('Registrado ese día:')}</span>
+            {it.marcas.length ? it.marcas.map((m, i) => <Insignia key={i}>{MARCAS[m.tipo]} {m.hora}</Insignia>) : <em>{t('sin marcas')}</em>}
           </div>
           {it.motivo && <q>{it.motivo}</q>}
         </>}
         {it.clase === 'NOTA' && <>
-          <h4>Nota de gasto · {euros(it.total)}</h4>
+          <h4>{t('Nota de gasto')} · {euros(it.total)}</h4>
           <p className="si-fechas">{it.titulo}{it.viaje ? ` · ✈ ${it.viaje.destino}` : ''}</p>
           <ul className="si-lineas-mini">
             {it.lineas.map((l) => (
@@ -113,43 +114,43 @@ function Solicitud({it, politica, onHecho}) {
                 <span className="si-gasto-icono">{ICONOS_GASTO[l.categoria]}</span>
                 <span className="si-lm-desc">
                   {l.descripcion}<small>{fecha(l.fecha)}{l.km ? ` · ${l.km} km` : ''}</small>
-                  {l.excede && <em>⚠ Supera la política ({euros(l.limite)}): {l.justificacion}</em>}
+                  {l.excede && <em>⚠ {t('Supera la política ({limite})', {limite: euros(l.limite)})}: {l.justificacion}</em>}
                 </span>
                 {l.ticket ? <button type="button" className="si-enlace" onClick={() => setTicket(l.id)}>📎</button>
-                  : <span className="si-tenue" title={l.categoria === 'KILOMETRAJE' ? 'Kilometraje' : 'Sin ticket'}>{l.categoria === 'KILOMETRAJE' ? '' : '—'}</span>}
+                  : <span className="si-tenue" title={t(l.categoria === 'KILOMETRAJE' ? 'Kilometraje' : 'Sin ticket')}>{l.categoria === 'KILOMETRAJE' ? '' : '—'}</span>}
                 <strong>{euros(l.importe)}</strong>
               </li>
             ))}
           </ul>
           <div className="si-datos-extra">
-            {it.excedidas === 0 ? <Insignia tono="verde">Dentro de la política</Insignia>
+            {it.excedidas === 0 ? <Insignia tono="verde">{t('Dentro de la política')}</Insignia>
               : <Insignia tono="ambar">{plural(it.excedidas, 'gasto fuera de política (justificado)', 'gastos fuera de política (justificados)')}</Insignia>}
             {it.sinTicket > 0 && <Insignia tono="rojo">{plural(it.sinTicket, 'gasto sin ticket', 'gastos sin ticket')}</Insignia>}
-            {it.viaje && <Insignia tono="azul">Viaje estimado en {euros(it.viaje.estimado)}</Insignia>}
+            {it.viaje && <Insignia tono="azul">{t('Viaje estimado en {importe}', {importe: euros(it.viaje.estimado)})}</Insignia>}
           </div>
         </>}
         {it.clase === 'VIAJE' && <>
-          <h4>Solicitud de viaje · {it.destino}</h4>
+          <h4>{t('Solicitud de viaje')} · {it.destino}</h4>
           <p className="si-fechas">{rango(it.desde, it.hasta)}</p>
           {it.motivo && <q>{it.motivo}</q>}
-          <div className="si-datos-extra"><Insignia tono="azul">Importe estimado {euros(it.estimado)}</Insignia></div>
+          <div className="si-datos-extra"><Insignia tono="azul">{t('Importe estimado {importe}', {importe: euros(it.estimado)})}</Insignia></div>
         </>}
       </div>
       {chat && <Conversacion clase={it.clase} objeto={it.id} compacta onCuenta={setCuenta} />}
       {rechazando ? (
         <div className="si-rechazo">
           <textarea className="si-input" rows={2} autoFocus value={comentario} onChange={(e) => setComentario(e.target.value)}
-            placeholder="Explica el motivo (lo verá en su solicitud)" />
+            placeholder={t('Explica el motivo (lo verá en su solicitud)')} />
           <div className="si-fila">
-            <Boton onClick={() => setRechazando(false)}>Volver</Boton>
-            <Boton tipo="peligro" disabled={enviando || !comentario.trim()} onClick={() => resolver('RECHAZAR')}>Rechazar</Boton>
+            <Boton onClick={() => setRechazando(false)}>{t('Volver')}</Boton>
+            <Boton tipo="peligro" disabled={enviando || !comentario.trim()} onClick={() => resolver('RECHAZAR')}>{t('Rechazar')}</Boton>
           </div>
         </div>
       ) : (
         <footer className="si-fila">
           {it.clase !== 'CORRECCION' && <BotonConversacion cuenta={cuenta} abierta={chat} onAlternar={() => setChat(!chat)} />}
-          <Boton disabled={enviando} onClick={() => setRechazando(true)}>Rechazar</Boton>
-          <Boton tipo="exito" disabled={enviando} onClick={() => resolver('APROBAR')}>Aprobar</Boton>
+          <Boton disabled={enviando} onClick={() => setRechazando(true)}>{t('Rechazar')}</Boton>
+          <Boton tipo="exito" disabled={enviando} onClick={() => resolver('APROBAR')}>{t('Aprobar')}</Boton>
         </footer>
       )}
       {ticket && <VerTicket linea={ticket} onCerrar={() => setTicket(null)} />}

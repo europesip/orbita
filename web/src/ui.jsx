@@ -1,6 +1,7 @@
-// Piezas comunes de ÓRBITA: llamada a la API, formatos en español y componentes de interfaz.
+// Piezas comunes de ÓRBITA: llamada a la API, formatos (en el idioma de la interfaz) y componentes de interfaz.
 import React, {createContext, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
+import {lang, locale, t} from './i18n.js';
 import CONTRATO from '../../api/rutas.json';
 
 export const Suite = createContext(null);
@@ -17,7 +18,7 @@ const RUTAS_API = Object.fromEntries(CONTRATO.rutas.map((r) => [r.op, r]));
 export function crearApi(base) {
   return async (op, params = {}) => {
     const def = RUTAS_API[op];
-    if (!def) throw new Error(`Operación desconocida: ${op}`);
+    if (!def) throw new Error(t('Operación desconocida: {op}', {op}));
     const resto = {...params};
     const ruta = def.ruta.replace(/\{(\w+)\}/g, (_, k) => {
       const v = resto[k];
@@ -30,23 +31,24 @@ export function crearApi(base) {
     const consulta = !conCuerpo && Object.keys(limpio).length ? `?${new URLSearchParams(limpio)}` : '';
     const r = await fetch(`${base.replace(/\/+$/, '')}/${ruta}${consulta}`, {
       method: def.metodo, credentials: 'same-origin',
-      headers: conCuerpo ? {'Content-Type': 'application/json', Accept: 'application/json'} : {Accept: 'application/json'},
+      headers: conCuerpo ? {'Content-Type': 'application/json', Accept: 'application/json', 'X-Orbita-Lang': lang()}
+        : {Accept: 'application/json', 'X-Orbita-Lang': lang()},
       body: conCuerpo ? JSON.stringify(limpio) : undefined,
     });
     let j = null;
     try { j = await r.json(); } catch (e) { /* sin JSON */ }
-    if (r.status === 401) throw new Error((j && j.error) || 'No hay sesión: vuelve a iniciar sesión en el portal.');
-    if (!r.ok || !j) throw new Error((j && j.error) || `El servidor ha respondido ${r.status}.`);
+    if (r.status === 401) throw new Error((j && j.error) || t('No hay sesión: vuelve a iniciar sesión en el portal.'));
+    if (!r.ok || !j) throw new Error((j && j.error) || t('El servidor ha respondido {estado}.', {estado: r.status}));
     return j;
   };
 }
 
 /** Configuración de esta instalación (GET /config): páginas del portal, clave del quiosco, modo demo. */
 export async function leerConfig(base) {
-  const r = await fetch(`${base.replace(/\/+$/, '')}/config`, {credentials: 'same-origin', headers: {Accept: 'application/json'}});
+  const r = await fetch(`${base.replace(/\/+$/, '')}/config`, {credentials: 'same-origin', headers: {Accept: 'application/json', 'X-Orbita-Lang': lang()}});
   let j = null;
   try { j = await r.json(); } catch (e) { /* sin JSON */ }
-  if (!r.ok || !j) throw new Error((j && j.error) || `El servidor ha respondido ${r.status}.`);
+  if (!r.ok || !j) throw new Error((j && j.error) || t('El servidor ha respondido {estado}.', {estado: r.status}));
   return j;
 }
 
@@ -80,25 +82,28 @@ export const horas = (min) => {
   const h = Math.floor(min / 60), m = min % 60;
   return h === 0 ? `${m} min` : m === 0 ? `${h} h` : `${h} h ${m} min`;
 };
-export const fecha = (s, o) => deIso(s).toLocaleDateString('es-ES', o || {weekday: 'short', day: 'numeric', month: 'short'});
+export const fecha = (s, o) => deIso(s).toLocaleDateString(locale(), o || {weekday: 'short', day: 'numeric', month: 'short'});
 export const rango = (desde, hasta) => {
   if (desde === hasta) return fecha(desde, {weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'});
   const a = deIso(desde), b = deIso(hasta);
-  const fin = b.toLocaleDateString('es-ES', {day: 'numeric', month: 'long', year: 'numeric'});
-  const ini = a.toLocaleDateString('es-ES', a.getFullYear() === b.getFullYear()
+  const fin = b.toLocaleDateString(locale(), {day: 'numeric', month: 'long', year: 'numeric'});
+  const ini = a.toLocaleDateString(locale(), a.getFullYear() === b.getFullYear()
     ? (a.getMonth() === b.getMonth() ? {day: 'numeric'} : {day: 'numeric', month: 'long'}) : {day: 'numeric', month: 'long', year: 'numeric'});
   return `${ini} – ${fin}`;
 };
-export const nombreMes = (anio, mes) => new Date(anio, mes - 1, 1).toLocaleDateString('es-ES', {month: 'long', year: 'numeric'});
-export const plural = (n, uno, varios) => `${n} ${n === 1 ? uno : varios}`;
+export const nombreMes = (anio, mes) => new Date(anio, mes - 1, 1).toLocaleDateString(locale(), {month: 'long', year: 'numeric'});
+export const plural = (n, uno, varios) => `${n} ${t(n === 1 ? uno : varios)}`;
 
-export const TIPOS_AUSENCIA = {
+/** Nombre traducido en cada lectura (el idioma se fija al leer GET /config). */
+export const traducido = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, Object.defineProperty({...v}, 'nombre',
+  {get: () => t(v.nombre), enumerable: true})]));
+export const TIPOS_AUSENCIA = traducido({
   VACACIONES: {nombre: 'Vacaciones', color: 'var(--si-azul)'},
   ASUNTOS_PROPIOS: {nombre: 'Asuntos propios', color: 'var(--si-violeta)'},
   PERMISO: {nombre: 'Permiso retribuido', color: 'var(--si-turquesa)'},
   BAJA: {nombre: 'Baja médica', color: 'var(--si-rosa)'},
-};
-export const ESTADOS = {
+});
+export const ESTADOS = traducido({
   BORRADOR: {nombre: 'Borrador', tono: 'gris'},
   ENVIADA: {nombre: 'Pendiente de aprobar', tono: 'ambar'},
   PENDIENTE: {nombre: 'Pendiente', tono: 'ambar'},
@@ -106,31 +111,42 @@ export const ESTADOS = {
   PAGADA: {nombre: 'Pagada', tono: 'azul'},
   RECHAZADA: {nombre: 'Rechazada', tono: 'rojo'},
   CANCELADA: {nombre: 'Cancelada', tono: 'gris'},
-};
+});
 
-const EUR = new Intl.NumberFormat('es-ES', {style: 'currency', currency: 'EUR'});
-/** Importe en céntimos → "1.234,56 €". */
-export const euros = (cent) => EUR.format((cent || 0) / 100);
-/** Céntimos → texto para un campo de importe ("12,30"). */
-export const importeTexto = (cent) => (cent ? (cent / 100).toFixed(2).replace('.', ',') : '');
+/** Importe en céntimos → "1.234,56 €" (es) o "€1,234.56" (en). */
+export const euros = (cent) => new Intl.NumberFormat(locale(), {style: 'currency', currency: 'EUR'}).format((cent || 0) / 100);
+/** Importe en euros sin céntimos ("1.235 €" / "€1,235"), para gráficos y totales grandes. */
+export const eurosRedondo = (cent) => new Intl.NumberFormat(locale(), {style: 'currency', currency: 'EUR', maximumFractionDigits: 0})
+  .format(Math.round((cent || 0) / 100));
+/** Texto de un campo de importe → céntimos (como el servidor: 12,30 · 1.234,56 · 12.30 · 1,234.56). */
+export function centimosDe(texto) {
+  let s = String(texto || '').replace(/[€\s]/g, '');
+  if (s.includes(',') && s.includes('.')) s = s.lastIndexOf(',') > s.lastIndexOf('.') ? s.replace(/\./g, '').replace(',', '.') : s.replace(/,/g, '');
+  else s = s.replace(',', '.');
+  return Math.round(parseFloat(s || '0') * 100) || 0;
+}
+/** Céntimos → texto para un campo de importe ("12,30" en español, "12.30" en inglés). */
+export const importeTexto = (cent) => (cent ? (cent / 100).toFixed(2).replace('.', lang() === 'en' ? '.' : ',') : '');
 
 export const ICONOS_GASTO = {COMIDA: '🍽', HOTEL: '🏨', TRANSPORTE: '🚆', KILOMETRAJE: '🚗', PARKING: '🅿', OTROS: '📦'};
 
 /** Ver el ticket de una línea de gasto (imagen o PDF) en una ventana. */
 export function VerTicket({linea, onCerrar}) {
-  const [t, error] = useDatos('gastos.ticket', {id: linea}, [linea]);
-  const src = t && `data:${t.tipo};base64,${t.datos}`;
+  const [tk, error] = useDatos('gastos.ticket', {id: linea}, [linea]);
+  const src = tk && `data:${tk.tipo};base64,${tk.datos}`;
   return (
-    <Modal titulo={t ? t.nombre : 'Ticket'} onCerrar={onCerrar}
-      pie={t && <><a className="si-boton" href={src} download={t.nombre}>⤓ Descargar</a><Boton onClick={onCerrar}>Cerrar</Boton></>}>
+    <Modal titulo={tk ? tk.nombre : t('Ticket')} onCerrar={onCerrar}
+      pie={tk && <><a className="si-boton" href={src} download={tk.nombre}>⤓ {t('Descargar')}</a><Boton onClick={onCerrar}>{t('Cerrar')}</Boton></>}>
       {error && <Fallo>{error}</Fallo>}
-      {!t ? <Cargando /> : t.tipo === 'application/pdf'
-        ? <object className="si-ticket-pdf" data={src} type="application/pdf"><p>Descarga el PDF para verlo.</p></object>
-        : <img className="si-ticket-img" src={src} alt={t.nombre} />}
+      {!tk ? <Cargando /> : tk.tipo === 'application/pdf'
+        ? <object className="si-ticket-pdf" data={src} type="application/pdf"><p>{t('Descarga el PDF para verlo.')}</p></object>
+        : <img className="si-ticket-img" src={src} alt={tk.nombre} />}
     </Modal>
   );
 }
-export const MARCAS = {ENTRADA: 'Entrada', PAUSA: 'Pausa', REANUDAR: 'Reanudar', SALIDA: 'Salida'};
+const MARCAS_ES = {ENTRADA: 'Entrada', PAUSA: 'Pausa', REANUDAR: 'Reanudar', SALIDA: 'Salida'};
+export const MARCAS = {};
+for (const k of Object.keys(MARCAS_ES)) Object.defineProperty(MARCAS, k, {get: () => t(MARCAS_ES[k]), enumerable: true});
 
 /** Días laborables entre dos fechas ISO (igual que el servidor: sin fines de semana ni festivos). */
 export function laborables(desde, hasta, festivos) {
@@ -192,7 +208,7 @@ export function Modal({titulo, onCerrar, children, pie, ancho}) {
     <div className="si-app">
       <div className="si-modal-fondo" onMouseDown={(e) => { if (e.target === e.currentTarget) onCerrar(); }}>
         <div className={`si-modal${ancho ? ' si-modal-ancho' : ''}`} role="dialog" aria-label={titulo}>
-          <header><h3>{titulo}</h3><button type="button" className="si-cerrar" onClick={onCerrar} aria-label="Cerrar">×</button></header>
+          <header><h3>{titulo}</h3><button type="button" className="si-cerrar" onClick={onCerrar} aria-label={t('Cerrar')}>×</button></header>
           <div className="si-modal-cuerpo">{children}</div>
           {pie && <footer>{pie}</footer>}
         </div>
@@ -210,15 +226,15 @@ export function SelectorMes({anio, mes, onCambiar}) {
   const mover = (n) => { const d = new Date(anio, mes - 1 + n, 1); onCambiar(d.getFullYear(), d.getMonth() + 1); };
   return (
     <div className="si-selector-mes">
-      <button type="button" onClick={() => mover(-1)} aria-label="Mes anterior">‹</button>
+      <button type="button" onClick={() => mover(-1)} aria-label={t('Mes anterior')}>‹</button>
       <span>{nombreMes(anio, mes)}</span>
-      <button type="button" onClick={() => mover(1)} aria-label="Mes siguiente">›</button>
+      <button type="button" onClick={() => mover(1)} aria-label={t('Mes siguiente')}>›</button>
     </div>
   );
 }
 
 export const Vacio = ({icono = '✓', children}) => <div className="si-vacio"><span>{icono}</span><p>{children}</p></div>;
-export const Cargando = () => <p className="si-cargando">Cargando…</p>;
+export const Cargando = () => <p className="si-cargando">{t('Cargando…')}</p>;
 export const Fallo = ({children}) => <p className="si-error">{children}</p>;
 
 /** Mensajes breves en la esquina (avisos de éxito o error). */

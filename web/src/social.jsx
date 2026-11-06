@@ -1,6 +1,7 @@
 // Avisos (campana de la cabecera) y conversación en cada solicitud.
 import React, {useEffect, useRef, useState} from 'react';
-import {Avatar, Boton, Cargando, Fallo, useDatos, useSuite} from './ui.jsx';
+import {Avatar, Boton, Cargando, Fallo, MARCAS, TIPOS_AUSENCIA, euros, fecha, rango, useDatos, useSuite} from './ui.jsx';
+import {lang, locale, t, tPlural} from './i18n.js';
 
 /** Páginas de ÓRBITA en DX (nombres amigables). */
 export const PAGINAS = {
@@ -15,11 +16,30 @@ const ICONO_APP = {fichaje: '⏱', vacaciones: '🌴', gastos: '🧾', aprobacio
 export function haceCuanto(isoFechaHora) {
   const d = new Date(isoFechaHora);
   const min = Math.round((Date.now() - d.getTime()) / 60000);
-  if (min < 1) return 'ahora';
-  if (min < 60) return `hace ${min} min`;
-  if (min < 24 * 60) return `hace ${Math.round(min / 60)} h`;
-  if (min < 48 * 60) return 'ayer';
-  return d.toLocaleDateString('es-ES', {day: 'numeric', month: 'short'});
+  if (min < 1) return t('ahora');
+  if (min < 60) return t('hace {n} min', {n: min});
+  if (min < 24 * 60) return t('hace {n} h', {n: Math.round(min / 60)});
+  if (min < 48 * 60) return t('ayer');
+  return d.toLocaleDateString(locale(), {day: 'numeric', month: 'short'});
+}
+
+/**
+ * Texto de un aviso en el idioma de la interfaz. El servidor guarda el aviso en español (texto) y, desde la 3.0, una
+ * clave con sus datos: en inglés se compone con la plantilla «aviso.<clave>» de en.js. Los avisos sin clave (los
+ * anteriores y los de la demo) se muestran en español.
+ */
+export function textoAviso(a) {
+  if (lang() === 'es' || !a.clave || !a.params) return a.texto;
+  const p = {...a.params};
+  if (p.total !== undefined && p.total !== null) p.total = euros(p.total);
+  if (p.desde && p.hasta) p.rango = rango(p.desde, p.hasta);
+  if (p.fecha) p.fecha = fecha(p.fecha, {day: 'numeric', month: 'short'});
+  if (p.dias !== undefined) p.dias = tPlural(p.dias, 'día', 'días');
+  if (p.tipo) p.tipo = (TIPOS_AUSENCIA[p.tipo] ? TIPOS_AUSENCIA[p.tipo].nombre : MARCAS[p.tipo] || p.tipo).toLowerCase();
+  p.comentario = p.comentario ? `: “${p.comentario}”` : '.';
+  const clave = `aviso.${a.clave}`;
+  const s = t(clave, p);
+  return s === clave ? a.texto : s;
 }
 
 export function Campana({inicial, app}) {
@@ -45,19 +65,19 @@ export function Campana({inicial, app}) {
   const leerTodo = async () => { try { const d = await api('avisos.leer'); setDatos(d); setN(d.noLeidos); } catch (e) { /* */ } };
   return (
     <div className="si-campana" ref={caja}>
-      <button type="button" className="si-campana-boton" onClick={() => setAbierta(!abierta)} aria-label={`Avisos (${n} sin leer)`}>
+      <button type="button" className="si-campana-boton" onClick={() => setAbierta(!abierta)} aria-label={t('Avisos ({n} sin leer)', {n})}>
         🔔{n > 0 && <span className="si-campana-n">{n > 9 ? '9+' : n}</span>}
       </button>
       {abierta && (
         <div className="si-avisos-panel">
-          <header><strong>Avisos</strong>{n > 0 && <button type="button" className="si-enlace" onClick={leerTodo}>Marcar todo como leído</button>}</header>
-          {!datos ? <Cargando /> : !datos.avisos.length ? <p className="si-tenue si-avisos-vacio">No tienes avisos.</p> : (
+          <header><strong>{t('Avisos')}</strong>{n > 0 && <button type="button" className="si-enlace" onClick={leerTodo}>{t('Marcar todo como leído')}</button>}</header>
+          {!datos ? <Cargando /> : !datos.avisos.length ? <p className="si-tenue si-avisos-vacio">{t('No tienes avisos.')}</p> : (
             <ul>
               {datos.avisos.map((a) => (
                 <li key={a.id}>
                   <button type="button" className={a.leido ? '' : 'nuevo'} onClick={() => abrir(a)}>
                     <span className="si-aviso-icono">{ICONO_APP[a.app] || '•'}</span>
-                    <span className="si-aviso-texto">{a.texto}<small>{haceCuanto(a.creado)}</small></span>
+                    <span className="si-aviso-texto">{textoAviso(a)}<small>{haceCuanto(a.creado)}</small></span>
                   </button>
                 </li>
               ))}
@@ -92,7 +112,7 @@ export function Conversacion({clase, objeto, onCuenta, compacta}) {
       {error && <Fallo>{error}</Fallo>}
       {!lista ? <Cargando /> : (
         <div className="si-mensajes">
-          {!lista.length && <p className="si-tenue si-sin-mensajes">Aún no hay comentarios. Pregunta o aclara lo que necesites sin rechazar la solicitud.</p>}
+          {!lista.length && <p className="si-tenue si-sin-mensajes">{t('Aún no hay comentarios. Pregunta o aclara lo que necesites sin rechazar la solicitud.')}</p>}
           {lista.map((m) => (
             <div key={m.id} className={`si-mensaje${m.yo ? ' mio' : ''}`}>
               {!m.yo && <Avatar nombre={m.nombre} tam={26} />}
@@ -107,9 +127,9 @@ export function Conversacion({clase, objeto, onCuenta, compacta}) {
         </div>
       )}
       <div className="si-escribir">
-        <textarea className="si-input" rows={1} value={texto} placeholder="Escribe un comentario…" onChange={(e) => setTexto(e.target.value)}
+        <textarea className="si-input" rows={1} value={texto} placeholder={t('Escribe un comentario…')} onChange={(e) => setTexto(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviar(); } }} />
-        <Boton tipo="primario" disabled={enviando || !texto.trim()} onClick={enviar}>Enviar</Boton>
+        <Boton tipo="primario" disabled={enviando || !texto.trim()} onClick={enviar}>{t('Enviar')}</Boton>
       </div>
     </div>
   );
@@ -119,7 +139,7 @@ export function Conversacion({clase, objeto, onCuenta, compacta}) {
 export function BotonConversacion({clase, objeto, cuenta = 0, abierta, onAlternar}) {
   return (
     <button type="button" className={`si-boton-chat${abierta ? ' activa' : ''}`} onClick={onAlternar}>
-      💬 {cuenta ? `${cuenta} ${cuenta === 1 ? 'comentario' : 'comentarios'}` : 'Comentar'}
+      💬 {cuenta ? tPlural(cuenta, 'comentario', 'comentarios') : t('Comentar')}
     </button>
   );
 }

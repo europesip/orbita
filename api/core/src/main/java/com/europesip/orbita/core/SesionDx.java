@@ -47,7 +47,10 @@ public final class SesionDx {
     static final String PERFIL = "/wps/mycontenthandler/um/secure/currentuser/profile?expandRefs=true";
     private static final String UM = "http://www.ibm.com/xmlns/prod/websphere/um.xsd";
 
-    private record Entrada(String usuario, long caduca) {}
+    /** Lo que ÓRBITA sabe del usuario por DX: su uid y su idioma preferido del perfil ("" si no tiene). */
+    public record Perfil(String uid, String idioma) {}
+
+    private record Entrada(Perfil perfil, long caduca) {}
 
     private static final Map<String, Entrada> CACHE = new ConcurrentHashMap<>();
     private static volatile HttpClient cliente;
@@ -58,17 +61,23 @@ public final class SesionDx {
      * uid del usuario de la sesión de DX que viene en la cabecera Cookie, o null si no hay sesión o DX no la acepta.
      */
     public static String usuario(String cabeceraCookie) {
+        Perfil p = perfil(cabeceraCookie);
+        return p == null ? null : p.uid();
+    }
+
+    /** El perfil (uid e idioma) del usuario de la sesión de DX, o null si no hay sesión o DX no la acepta. */
+    public static Perfil perfil(String cabeceraCookie) {
         String valor = cookie(cabeceraCookie, Config.cookieSesion());
         if (valor == null) return null;
         String clave = hash(valor);
         long ahora = System.currentTimeMillis();
         Entrada e = CACHE.get(clave);
-        if (e != null && e.caduca() > ahora) return e.usuario();
-        String u = preguntarADx(Config.cookieSesion() + "=" + valor);
+        if (e != null && e.caduca() > ahora) return e.perfil();
+        Perfil p = preguntarADx(Config.cookieSesion() + "=" + valor);
         // Las sesiones no válidas también se recuerdan (poco tiempo): una página con muchas llamadas no repite la consulta
-        CACHE.put(clave, new Entrada(u, ahora + (u != null ? Config.cacheSesionSegundos() * 1000L : 10_000L)));
+        CACHE.put(clave, new Entrada(p, ahora + (p != null ? Config.cacheSesionSegundos() * 1000L : 10_000L)));
         if (CACHE.size() > 5000) CACHE.entrySet().removeIf(x -> x.getValue().caduca() <= ahora);
-        return u;
+        return p;
     }
 
     /** Valor de una cookie en la cabecera Cookie ("a=1; LtpaToken2=xyz"). */
@@ -84,7 +93,7 @@ public final class SesionDx {
         return null;
     }
 
-    private static String preguntarADx(String cookie) {
+    private static Perfil preguntarADx(String cookie) {
         String base = Config.dxUrl();
         if (base == null) {
             LOG.severe("ORBITA: falta ORBITA_DX_URL, no se puede validar la sesión con DX");
@@ -95,7 +104,7 @@ public final class SesionDx {
                     .timeout(Duration.ofSeconds(10)).header("Cookie", cookie).header("Accept", "application/xml").GET().build();
             HttpResponse<byte[]> r = cliente().send(req, HttpResponse.BodyHandlers.ofByteArray());
             if (r.statusCode() != 200) return null;          // sin sesión DX contesta 401 o redirige al login
-            return uid(new ByteArrayInputStream(r.body()));
+            return perfil(new ByteArrayInputStream(r.body()));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return null;
@@ -110,6 +119,12 @@ public final class SesionDx {
      * (uid=lucia.martin,ou=users,dc=... → lucia.martin). El perfil también trae atributos sensibles: solo se lee esto.
      */
     static String uid(InputStream xml) throws Exception {
+        Perfil p = perfil(xml);
+        return p == null ? null : p.uid();
+    }
+
+    /** uid e idioma preferido (atributo preferredLanguage) del perfil XML de DX. */
+    static Perfil perfil(InputStream xml) throws Exception {
         DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
         f.setNamespaceAware(true);
         f.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
@@ -119,18 +134,21 @@ public final class SesionDx {
         NodeList perfiles = d.getElementsByTagNameNS(UM, "profile");
         if (perfiles.getLength() == 0) return null;          // p. ej. la página de login en HTML
         Element perfil = (Element) perfiles.item(0);
+        String uid = null, idioma = "";
         NodeList atributos = perfil.getElementsByTagNameNS(UM, "attribute");
         for (int i = 0; i < atributos.getLength(); i++) {
             Element a = (Element) atributos.item(i);
-            if ("uid".equals(a.getAttribute("name"))) {
-                NodeList v = a.getElementsByTagNameNS(UM, "attributeValue");
-                if (v.getLength() > 0 && !v.item(0).getTextContent().isBlank()) return v.item(0).getTextContent().trim();
-            }
+            NodeList v = a.getElementsByTagNameNS(UM, "attributeValue");
+            String valor = v.getLength() > 0 ? v.item(0).getTextContent().trim() : "";
+            if ("uid".equals(a.getAttribute("name")) && !valor.isEmpty()) uid = valor;
+            if ("preferredLanguage".equals(a.getAttribute("name"))) idioma = valor;
         }
-        String dn = perfil.getAttribute("identifier");
-        int igual = dn.indexOf('='), coma = dn.indexOf(',');
-        if (igual > 0) return (coma > igual ? dn.substring(igual + 1, coma) : dn.substring(igual + 1)).trim();
-        return null;
+        if (uid == null) {
+            String dn = perfil.getAttribute("identifier");
+            int igual = dn.indexOf('='), coma = dn.indexOf(',');
+            if (igual > 0) uid = (coma > igual ? dn.substring(igual + 1, coma) : dn.substring(igual + 1)).trim();
+        }
+        return uid == null ? null : new Perfil(uid, idioma);
     }
 
     private static HttpClient cliente() throws Exception {

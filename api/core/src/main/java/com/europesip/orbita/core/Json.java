@@ -25,6 +25,8 @@ final class Json {
     private static void write(StringBuilder b, Object o) {
         if (o == null) {
             b.append("null");
+        } else if (o instanceof jakarta.json.JsonValue) {
+            b.append(o);
         } else if (o instanceof Number || o instanceof Boolean) {
             b.append(o);
         } else if (o instanceof Map) {

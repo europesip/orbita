@@ -527,7 +527,8 @@ final class Api {
             ps.executeUpdate();
         }
         if (auto) aplicarCorreccion(yo.usuario, fecha, tipo, hora);
-        else Social.avisar(c, yo.responsable, "aprobaciones", "CORRECCION", null,
+        else Social.avisar(c, yo.responsable, "aprobaciones", "CORRECCION", null, "correccion.pedida",
+                obj("quien", yo.nombre, "fecha", fecha.toString(), "tipo", tipo, "hora", hora.toString()),
                 yo.nombre + " pide corregir su fichaje del " + corta(fecha) + " (" + tipo.toLowerCase() + " a las " + hora + ")");
         return obj("ok", true, "mensaje", auto ? "Corrección registrada." : "Corrección enviada a " + plantilla.get(yo.responsable).nombre + ".");
     }
@@ -729,7 +730,8 @@ final class Api {
             }
         }
         String n = dias + (dias == 1 ? " día" : " días");
-        if (!auto) Social.avisar(c, yo.responsable, "aprobaciones", "AUSENCIA", id,
+        if (!auto) Social.avisar(c, yo.responsable, "aprobaciones", "AUSENCIA", id, "ausencia.pedida",
+                obj("quien", yo.nombre, "tipo", tipo, "dias", dias, "desde", desde.toString(), "hasta", hasta.toString()),
                 yo.nombre + " ha pedido " + nombreAusencia(tipo).toLowerCase() + " (" + n + ", " + corta(desde) + (desde.equals(hasta) ? "" : " – " + corta(hasta)) + ")");
         Map<String, Object> r = resumenVacaciones();
         r.put("mensaje", auto ? "Ausencia registrada (" + n + ")." : "Solicitud de " + n + " enviada a "
@@ -967,7 +969,10 @@ final class Api {
         }
         if (aprobar && "CORRECCION".equals(tabla)) aplicarCorreccion(usuario, fecha, tipo, hora);
         String que = "CORRECCION".equals(tabla) ? "tu corrección de fichaje del " + corta(fecha) : "tu solicitud de ausencia";
-        Social.avisar(c, usuario, Social.appDe(tabla), tabla, id, yo.nombre + (aprobar ? " ha aprobado " : " ha rechazado ") + que
+        Social.avisar(c, usuario, Social.appDe(tabla), tabla, id,
+                ("CORRECCION".equals(tabla) ? "correccion." : "ausencia.") + (aprobar ? "aprobada" : "rechazada"),
+                obj("quien", yo.nombre, "fecha", fecha == null ? null : fecha.toString(), "comentario", comentario),
+                yo.nombre + (aprobar ? " ha aprobado " : " ha rechazado ") + que
                 + (comentario != null ? ": «" + comentario + "»" : "."));
         Map<String, Object> r = pendientes();
         r.put("mensaje", (aprobar ? "Aprobada" : "Rechazada") + " la solicitud de " + plantilla.get(usuario).nombre + ".");

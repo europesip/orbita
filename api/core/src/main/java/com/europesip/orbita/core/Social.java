@@ -38,16 +38,35 @@ final class Social {
 
     // ---------------------------------------------------------------- Avisos
 
-    static void avisar(Connection c, String usuario, String app, String clase, Integer objeto, String texto) throws SQLException {
+    /**
+     * Crea un aviso. La interfaz lo muestra en el idioma de cada persona con la clave y los datos (fechas ISO, importes
+     * en céntimos, códigos en lugar de nombres); texto es el aviso en español, de respaldo.
+     */
+    static void avisar(Connection c, String usuario, String app, String clase, Integer objeto, String clave,
+            Map<String, Object> datos, String texto) throws SQLException {
         if (usuario == null) return;
-        try (PreparedStatement ps = c.prepareStatement("INSERT INTO AVISO (USUARIO, APP, CLASE, OBJETO, TEXTO, LEIDO, CREADO) VALUES (?,?,?,?,?,0,?)")) {
+        String params = datos == null ? null : Json.of(datos);
+        if (params != null && params.length() > 1000) params = null;
+        try (PreparedStatement ps = c.prepareStatement("INSERT INTO AVISO (USUARIO, APP, CLASE, OBJETO, TEXTO, LEIDO, CREADO, CLAVE, PARAMS)"
+                + " VALUES (?,?,?,?,?,0,?,?,?)")) {
             ps.setString(1, usuario);
             ps.setString(2, app);
             ps.setString(3, clase);
             if (objeto == null) ps.setNull(4, java.sql.Types.INTEGER); else ps.setInt(4, objeto);
             ps.setString(5, texto.length() > 300 ? texto.substring(0, 297) + "…" : texto);
             ps.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
+            ps.setString(7, params == null ? null : clave);
+            ps.setString(8, params);
             ps.executeUpdate();
+        }
+    }
+
+    private static Object params(String json) {
+        if (json == null) return null;
+        try (jakarta.json.JsonReader r = jakarta.json.Json.createReader(new java.io.StringReader(json))) {
+            return r.readObject();
+        } catch (RuntimeException e) {
+            return null;
         }
     }
 
@@ -69,7 +88,8 @@ final class Social {
                     int o = rs.getInt("OBJETO");
                     Integer objeto = rs.wasNull() ? null : o;
                     l.add(obj("id", rs.getInt("ID"), "app", rs.getString("APP"), "clase", rs.getString("CLASE"), "objeto", objeto,
-                            "texto", rs.getString("TEXTO"), "leido", rs.getInt("LEIDO") == 1,
+                            "texto", rs.getString("TEXTO"), "clave", rs.getString("CLAVE"), "params", params(rs.getString("PARAMS")),
+                            "leido", rs.getInt("LEIDO") == 1,
                             "creado", rs.getTimestamp("CREADO").toLocalDateTime().withNano(0).toString()));
                 }
             }
@@ -141,9 +161,11 @@ final class Social {
         String corto = texto.length() > 120 ? texto.substring(0, 117) + "…" : texto;
         if (dueno.equals(yo.usuario)) {
             Api.Emp d = api.emp(dueno);
-            avisar(c, d.responsable, "aprobaciones", clase, objeto, yo.nombre + " ha comentado su solicitud: «" + corto + "»");
+            avisar(c, d.responsable, "aprobaciones", clase, objeto, "comentario.suya", obj("quien", yo.nombre, "texto", corto),
+                    yo.nombre + " ha comentado su solicitud: «" + corto + "»");
         } else {
-            avisar(c, dueno, appDe(clase), clase, objeto, yo.nombre + " ha comentado tu solicitud: «" + corto + "»");
+            avisar(c, dueno, appDe(clase), clase, objeto, "comentario.tuya", obj("quien", yo.nombre, "texto", corto),
+                    yo.nombre + " ha comentado tu solicitud: «" + corto + "»");
         }
         return comentarios(c, api, clase, objeto);
     }

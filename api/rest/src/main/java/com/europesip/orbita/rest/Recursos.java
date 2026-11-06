@@ -11,11 +11,13 @@ import java.util.logging.Logger;
 import com.europesip.orbita.core.Config;
 import com.europesip.orbita.core.Db;
 import com.europesip.orbita.core.Despachador;
+import com.europesip.orbita.core.Mensajes;
 import com.europesip.orbita.core.SesionDx;
 import com.europesip.orbita.ia.Asistente;
 
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonString;
@@ -40,6 +42,9 @@ import jakarta.ws.rs.core.UriInfo;
  *
  * Quién es el usuario lo dice DX (SesionDx) con la cookie de sesión que envía el navegador. Sin sesión válida: 401.
  * Las operaciones del quiosco son públicas y se protegen con la clave del dispositivo.
+ *
+ * Idioma: la interfaz envía X-Orbita-Lang (es | en) y los campos "error" y "mensaje" de las respuestas se traducen
+ * (Mensajes). /config devuelve el idioma del perfil de DX del usuario (preferredLanguage), si lo tiene.
  */
 @Path("/")
 public class Recursos {
@@ -62,8 +67,11 @@ public class Recursos {
     @GET
     @Path("config")
     public Response config() {
-        if (usuario() == null) return sinSesion();
+        SesionDx.Perfil perfil = SesionDx.perfil(cabeceras.getHeaderString(HttpHeaders.COOKIE));
+        if (perfil == null) return sinSesion();
+        String idiomaPerfil = perfil.idioma() == null ? "" : perfil.idioma();
         JsonObject o = Json.createObjectBuilder()
+                .add("idioma", idiomaPerfil)
                 .add("paginas", Config.paginas())
                 .add("quiosco", Config.paginaQuiosco())
                 .add("claveQuiosco", Config.claveQuiosco() == null ? "" : Config.claveQuiosco())
@@ -157,7 +165,30 @@ public class Recursos {
         p.putAll(e.parametros());
         Despachador.Respuesta r = Despachador.ejecutar(e.ruta().op(), p, usuario, e.ruta().publica(),
                 (m, t) -> LOG.log(Level.SEVERE, m, t));
-        return json(r.estado(), r.json());
+        return json(r.estado(), traducir(r.json()));
+    }
+
+    /** es | en, según la cabecera X-Orbita-Lang de la interfaz (es por defecto). */
+    private String idioma() {
+        String h = cabeceras == null ? null : cabeceras.getHeaderString("X-Orbita-Lang");
+        return h != null && h.trim().toLowerCase().startsWith("en") ? "en" : "es";
+    }
+
+    /** Traduce los campos "error" y "mensaje" de una respuesta JSON al idioma de la interfaz. */
+    private String traducir(String json) {
+        if (!"en".equals(idioma()) || json == null || !(json.contains("\"error\"") || json.contains("\"mensaje\""))) return json;
+        try (JsonReader r = Json.createReader(new StringReader(json))) {
+            JsonValue v = r.readValue();
+            if (v.getValueType() != JsonValue.ValueType.OBJECT) return json;
+            JsonObject o = v.asJsonObject();
+            JsonObjectBuilder b = Json.createObjectBuilder(o);
+            for (String campo : new String[] {"error", "mensaje"}) {
+                if (o.get(campo) instanceof JsonString t) b.add(campo, Mensajes.traducir(t.getString(), "en"));
+            }
+            return b.build().toString();
+        } catch (RuntimeException e) {
+            return json;
+        }
     }
 
     /** Valor de un campo JSON como lo esperan las operaciones (texto; null si es null). */
@@ -173,12 +204,12 @@ public class Recursos {
         return SesionDx.usuario(cabeceras.getHeaderString(HttpHeaders.COOKIE));
     }
 
-    private static Response sinSesion() {
+    private Response sinSesion() {
         return error(401, "No hay sesión de DX: vuelve a iniciar sesión en el portal.");
     }
 
-    private static Response error(int estado, String mensaje) {
-        return json(estado, Json.createObjectBuilder().add("error", mensaje).build().toString());
+    private Response error(int estado, String mensaje) {
+        return json(estado, Json.createObjectBuilder().add("error", Mensajes.traducir(mensaje, idioma())).build().toString());
     }
 
     private static Response json(int estado, String json) {

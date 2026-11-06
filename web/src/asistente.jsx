@@ -15,6 +15,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 import {OrbitaIcono, PRODUCTO} from './marca.jsx';
 import {useSuite} from './ui.jsx';
+import {lang, t} from './i18n.js';
 
 const SUGERENCIAS = {
   inicio: ['¿Cuántas vacaciones me quedan?', '¿Tengo vacaciones pendientes de aprobar?', 'Resume mi día'],
@@ -32,8 +33,8 @@ export function Asistente({app, yo}) {
   if (modo === 'none') return null;
   return (
     <>
-      <button type="button" className="si-iq-boton" onClick={() => setAbierto(true)} title={`Pregúntale a ${PRODUCTO}${modo === 'iq' ? ' (HCL DX IQ)' : ''}`}>
-        <span aria-hidden="true">✨</span><span className="si-iq-boton-texto">Pregúntale a {PRODUCTO}</span>
+      <button type="button" className="si-iq-boton" onClick={() => setAbierto(true)} title={t('Pregúntale a {p}', {p: PRODUCTO}) + (modo === 'iq' ? ' (HCL DX IQ)' : '')}>
+        <span aria-hidden="true">✨</span><span className="si-iq-boton-texto">{t('Pregúntale a {p}', {p: PRODUCTO})}</span>
       </button>
       {abierto && <Panel app={app} yo={yo} onCerrar={() => setAbierto(false)} />}
     </>
@@ -51,12 +52,12 @@ function crearOrbita(base) {
       historia = [...historia, {rol: 'user', texto}];
       const r = await fetch(`${base.replace(/\/+$/, '')}/asistente`, {
         method: 'POST', credentials: 'same-origin',
-        headers: {'Content-Type': 'application/json', Accept: 'application/json'},
+        headers: {'Content-Type': 'application/json', Accept: 'application/json', 'X-Orbita-Lang': lang()},
         body: JSON.stringify({mensajes: historia, idioma: idiomaRespuesta}),
       });
       let j = null;
       try { j = await r.json(); } catch (e) { /* sin JSON */ }
-      if (!r.ok || !j) { historia = historia.slice(0, -1); throw new Error((j && j.error) || `El asistente ha respondido ${r.status}.`); }
+      if (!r.ok || !j) { historia = historia.slice(0, -1); throw new Error((j && j.error) || t('El asistente ha respondido {estado}.', {estado: r.status})); }
       (j.herramientas || []).forEach((h) => progreso && progreso(h));
       historia = [...historia, {rol: 'assistant', texto: j.respuesta}];
       return j.respuesta;
@@ -81,8 +82,8 @@ function crearIq() {
         ws.send(JSON.stringify({jsonrpc: '2.0', id, method: 'start_session', params: {}}));
       };
       ws.onmessage = (e) => recibir(JSON.parse(e.data));
-      ws.onerror = () => fallo('No se ha podido conectar con el asistente (DX IQ).');
-      ws.onclose = () => { if (pendiente) fallo('Se ha cerrado la conexión con el asistente.'); ws = null; sesion = null; };
+      ws.onerror = () => fallo(t('No se ha podido conectar con el asistente (DX IQ).'));
+      ws.onclose = () => { if (pendiente) fallo(t('Se ha cerrado la conexión con el asistente.')); ws = null; sesion = null; };
     });
   }
 
@@ -97,13 +98,13 @@ function crearIq() {
     const r = m.result || {};
     if (p.inicio !== undefined) {                       // respuesta a start_session
       if (m.id !== p.inicio) return;
-      if (m.error || !r.id) return fallo('El asistente no ha podido iniciar la conversación.');
+      if (m.error || !r.id) return fallo(t('El asistente no ha podido iniciar la conversación.'));
       sesion = r.id; pendiente = null; p.resolver(true);
       return;
     }
     if (m.error || r.businessError) {
       return fallo((m.error && m.error.message) || (r.businessError && (r.businessError.message || JSON.stringify(r.businessError)))
-        || 'El asistente ha devuelto un error.');
+        || t('El asistente ha devuelto un error.'));
     }
     if (r.answer) { pendiente = null; p.resolver(r.answer); return; }
     const meta = r.metadata || {};                      // progreso: herramientas que está usando
@@ -136,7 +137,7 @@ function crearIq() {
 /** "74c38aed_vacaciones_saldo" (IQ antepone un prefijo a cada herramienta) -> "Consultando vacaciones saldo…" */
 function textoProgreso(h) {
   const limpio = String(h).replace(/^[0-9a-f]{6,}_/i, '').replace(/_/g, ' ').trim();
-  return limpio ? `Consultando ${limpio}…` : 'Pensando…';
+  return limpio ? t('Consultando {h}…', {h: limpio}) : t('Pensando…');
 }
 
 function contexto(yo) {
@@ -146,7 +147,7 @@ function contexto(yo) {
 
 /**
  * Idioma de la respuesta: el de la pregunta (se puede preguntar a ÓRBITA en español o en inglés). Si el texto no lo
- * deja claro, el de la página de DX (<html lang>) o el del navegador.
+ * deja claro, el idioma de la interfaz (perfil de DX, <html lang> o navegador).
  */
 const PALABRAS = {
   es: /\b(qué|que|cuánt[oa]s?|cuál|cómo|quién|dónde|cuándo|mis?|tengo|me|el|la|los|las|de|del|para|por|hoy|ficha|pídeme|vacaciones|gastos?|aprueba)\b|[¿¡ñáéíóú]/gi,
@@ -155,8 +156,7 @@ const PALABRAS = {
 export function idioma(texto) {
   const es = (String(texto).match(PALABRAS.es) || []).length, en = (String(texto).match(PALABRAS.en) || []).length;
   if (es !== en) return es > en ? 'es' : 'en';
-  const pagina = (document.documentElement.lang || navigator.language || 'es').slice(0, 2).toLowerCase();
-  return pagina === 'en' ? 'en' : 'es';
+  return lang();
 }
 
 // --- Panel -----------------------------------------------------------------------------------------------------------
@@ -183,7 +183,7 @@ function Panel({app, yo, onCerrar}) {
   async function enviar(pregunta) {
     const q = (pregunta || '').trim();
     if (!q || ocupado) return;
-    setTexto(''); setOcupado(true); setProgreso('Pensando…');
+    setTexto(''); setOcupado(true); setProgreso(t('Pensando…'));
     setMensajes((m) => [...m, {de: 'yo', texto: q}]);
     try {
       const completa = iq.current.sinSesion() ? contexto(yo) + q : q;
@@ -204,19 +204,19 @@ function Panel({app, yo, onCerrar}) {
   return createPortal(
     <div className="si-app">
       <div className="si-iq-fondo" onMouseDown={(e) => { if (e.target === e.currentTarget) onCerrar(); }}>
-        <aside className="si-iq-panel" role="dialog" aria-label={`Asistente de ${PRODUCTO}`}>
+        <aside className="si-iq-panel" role="dialog" aria-label={t('Asistente de {p}', {p: PRODUCTO})}>
           <header className="si-iq-cab">
             <OrbitaIcono tam={34} />
-            <div><strong>Asistente {PRODUCTO}</strong><span>{modo === 'iq' ? 'con HCL DX IQ · ' : ''}{yo.nombre}</span></div>
-            {mensajes.length > 0 && <button type="button" className="si-iq-nueva" onClick={nueva} disabled={ocupado}>Nueva</button>}
-            <button type="button" className="si-cerrar" onClick={onCerrar} aria-label="Cerrar">×</button>
+            <div><strong>{t('Asistente {p}', {p: PRODUCTO})}</strong><span>{modo === 'iq' ? `${t('con HCL DX IQ')} · ` : ''}{yo.nombre}</span></div>
+            {mensajes.length > 0 && <button type="button" className="si-iq-nueva" onClick={nueva} disabled={ocupado}>{t('Nueva')}</button>}
+            <button type="button" className="si-cerrar" onClick={onCerrar} aria-label={t('Cerrar')}>×</button>
           </header>
           <div className="si-iq-lista" ref={lista}>
             {mensajes.length === 0 && (
               <div className="si-iq-bienvenida">
-                <p>Hola, {yo.nombre.split(' ')[0]}. Pregúntame por tus vacaciones, tus fichajes, tus gastos o lo que tengas pendiente.</p>
+                <p>{t('Hola, {n}. Pregúntame por tus vacaciones, tus fichajes, tus gastos o lo que tengas pendiente.', {n: yo.nombre.split(' ')[0]})}</p>
                 <div className="si-iq-sugerencias">
-                  {(SUGERENCIAS[app] || SUGERENCIAS.inicio).map((s) => (
+                  {(SUGERENCIAS[app] || SUGERENCIAS.inicio).map((s) => t(s)).map((s) => (
                     <button type="button" key={s} onClick={() => enviar(s)}>{s}</button>
                   ))}
                 </div>
@@ -230,12 +230,12 @@ function Panel({app, yo, onCerrar}) {
             {progreso && <div className="si-iq-progreso"><span className="si-iq-puntos" aria-hidden="true"><i /><i /><i /></span>{progreso}</div>}
           </div>
           <form className="si-iq-pie" onSubmit={(e) => { e.preventDefault(); enviar(texto); }}>
-            <textarea ref={entrada} rows={2} value={texto} placeholder="Escribe tu pregunta…" disabled={ocupado}
+            <textarea ref={entrada} rows={2} value={texto} placeholder={t('Escribe tu pregunta…')} disabled={ocupado}
               onChange={(e) => setTexto(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviar(texto); } }} />
-            <button type="submit" disabled={ocupado || !texto.trim()} aria-label="Enviar">➤</button>
+            <button type="submit" disabled={ocupado || !texto.trim()} aria-label={t('Enviar')}>➤</button>
           </form>
-          <small className="si-iq-aviso">Respuestas generadas con IA. Revisa los datos antes de confirmar una solicitud.</small>
+          <small className="si-iq-aviso">{t('Respuestas generadas con IA. Revisa los datos antes de confirmar una solicitud.')}</small>
         </aside>
       </div>
     </div>,
@@ -294,7 +294,7 @@ function Markdown({texto}) {
       const items = [];
       for (; i < lineas.length && lista.test(lineas[i]); i++) items.push(lineas[i].replace(lista, ''));
       const Lista = ordenada ? 'ol' : 'ul';
-      bloques.push(<Lista key={bloques.length}>{items.map((t, k) => <li key={k}>{enLinea(t)}</li>)}</Lista>);
+      bloques.push(<Lista key={bloques.length}>{items.map((it, k) => <li key={k}>{enLinea(it)}</li>)}</Lista>);
       continue;
     }
     const parrafo = [];

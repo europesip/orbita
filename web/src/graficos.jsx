@@ -1,5 +1,6 @@
 // Gráficos sencillos en SVG (sin librerías): barras con objetivo y anillo.
 import React from 'react';
+import {t} from './i18n.js';
 
 /** Barras verticales con una marca de objetivo por barra. datos: [{etiqueta, valor, objetivo, titulo}] */
 export function Barras({datos, alto = 160, formato = (v) => v, color = 'var(--si-acento)'}) {
@@ -7,7 +8,7 @@ export function Barras({datos, alto = 160, formato = (v) => v, color = 'var(--si
   const ancho = 100 / datos.length;
   return (
     <div className="si-grafico">
-      <svg viewBox={`0 0 100 ${alto}`} preserveAspectRatio="none" style={{height: alto}} role="img" aria-label="Gráfico de barras">
+      <svg viewBox={`0 0 100 ${alto}`} preserveAspectRatio="none" style={{height: alto}} role="img" aria-label={t('Gráfico de barras')}>
         {[0.25, 0.5, 0.75].map((f) => <line key={f} x1="0" x2="100" y1={alto * f} y2={alto * f} className="si-g-rejilla" />)}
         {datos.map((d, i) => {
           const h = (d.valor / max) * alto, x = i * ancho + ancho * 0.2, w = ancho * 0.6;
@@ -36,7 +37,7 @@ export function Anillo({segmentos, tam = 120, grosor = 16, centro, sub}) {
   let acumulado = 0;
   return (
     <div className="si-anillo" style={{width: tam, height: tam}}>
-      <svg width={tam} height={tam} viewBox={`0 0 ${tam} ${tam}`} role="img" aria-label="Gráfico de anillo">
+      <svg width={tam} height={tam} viewBox={`0 0 ${tam} ${tam}`} role="img" aria-label={t('Gráfico de anillo')}>
         <circle cx={tam / 2} cy={tam / 2} r={r} fill="none" stroke="#eef0f4" strokeWidth={grosor} />
         {segmentos.filter((s) => s.valor > 0).map((s, i) => {
           const largo = (s.valor / total) * c;
