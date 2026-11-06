@@ -2,7 +2,7 @@
 
 # ÓRBITA · Fichaje, Vacaciones, Gastos y Aprobaciones para HCL DX
 
-[English](README.md) · **Español** · [Manual (PDF)](docs/manual/orbita-explicada.es.pdf) · [Historial de versiones](CHANGELOG.es.md) · [Contacto](#contacto-y-servicios)
+[English](README.md) · **Español** · [Manual (PDF)](docs/manual/orbita-explicada.es.pdf) · [Preguntas frecuentes](docs/faq.es.md) · [Historial de versiones](CHANGELOG.es.md) · [Contacto](#contacto-y-servicios)
 
 **ÓRBITA** es una suite de intranet para **HCL DX Compose** (CF239), de **EUROPESIP**. Su interfaz React se publica
 como seis **Script Applications**; la lógica y los datos están en una API REST (**`orbita-api`**, Open Liberty) con
@@ -250,9 +250,9 @@ ui:
   header:
     title: true          # logo de ÓRBITA, título y subtítulo de la app
     homeLink: true       # enlace «Mi intranet»
-    assistant: true      # botón del asistente de IA
+    assistant: auto      # botón del asistente de IA (auto: oculto si el theme de ejemplo lo muestra en la cabecera)
     notifications: true  # campana de avisos
-    user: false          # nombre, rol y avatar del usuario (ya están en el tema)
+    user: auto           # nombre, rol y avatar del usuario (auto: oculto con el theme de ejemplo, que ya lo muestra)
   footer: true
 ```
 
@@ -355,15 +355,9 @@ docs/                   manual ilustrado (PDF, ES/EN), preguntas a la IA, especi
 
 ## Licencia
 
-ÓRBITA es **software libre y de código abierto** con la licencia **[GNU Affero General Public License v3.0 o
-posterior](LICENSE)** (AGPL-3.0-or-later): puedes usarlo, estudiarlo, **modificarlo** y redistribuirlo, también con
-fines comerciales.
-
-Es una licencia **copyleft**: si distribuyes ÓRBITA o una versión modificada, o **ofreces una versión modificada a
-otras personas a través de una red** (por ejemplo, como servicio para tus clientes), debes darles el **código fuente
-completo** de tu versión con la misma licencia (sección 13 de la AGPL). Para facilitarlo, el pie de cada aplicación
-tiene un enlace *Código fuente* (valor `ui.sourceUrl` del chart): apúntalo al código de tu versión. Los componentes de
-terceros mantienen sus licencias: ver [NOTICE](NOTICE).
+ÓRBITA es **software libre y de código abierto** con la **[licencia MIT](LICENSE)**: puedes usarlo, copiarlo,
+**modificarlo**, distribuirlo y venderlo, también con fines comerciales y en tus propios productos, manteniendo el aviso
+de copyright y de licencia. Los componentes de terceros mantienen sus licencias: ver [NOTICE](NOTICE).
 
 ## Contacto y servicios
 

@@ -10,7 +10,7 @@ home: https://github.com/europesip/orbita
 sources:
   - https://github.com/europesip/orbita
 annotations:
-  artifacthub.io/license: AGPL-3.0-or-later
+  artifacthub.io/license: MIT
 keywords: [hcl, dx, digital-experience, script-application, mcp, intranet]
 maintainers:
   - name: EUROPESIP

@@ -2,7 +2,7 @@
 
 # ÓRBITA · Time tracking, Time off, Expenses and Approvals for HCL DX
 
-**English** · [Español](README.es.md) · [Manual (PDF)](docs/manual/orbita-explained.en.pdf) · [Release history](CHANGELOG.md) · [Contact](#contact-and-services)
+**English** · [Español](README.es.md) · [Manual (PDF)](docs/manual/orbita-explained.en.pdf) · [FAQ](docs/faq.md) · [Release history](CHANGELOG.md) · [Contact](#contact-and-services)
 
 **ÓRBITA** is an intranet suite for **HCL DX Compose** (CF239) by **EUROPESIP**. Its React interface is published as
 six **Script Applications**; the logic and the data live in a REST API (**`orbita-api`**, Open Liberty) with
@@ -245,9 +245,9 @@ ui:
   header:
     title: true          # ÓRBITA logo, app title and subtitle
     homeLink: true       # "Mi intranet" link
-    assistant: true      # AI assistant button
+    assistant: auto      # AI assistant button (auto: hidden when the example theme shows it in the page header)
     notifications: true  # notification bell
-    user: false          # user's name, role and avatar (already in the theme)
+    user: auto           # user's name, role and avatar (auto: hidden with the example theme, which already shows it)
   footer: true
 ```
 
@@ -347,14 +347,9 @@ docs/                   illustrated manual (PDF, EN/ES), AI questions (EN/ES), f
 
 ## Licence
 
-ÓRBITA is **free and open source software** under the **[GNU Affero General Public License v3.0 or later](LICENSE)**
-(AGPL-3.0-or-later): you may use, study, **modify** and redistribute it, also for commercial purposes.
-
-It is a **copyleft** licence: if you distribute ÓRBITA, or a modified version, or **offer a modified version to
-other people over a network** (for example, as a service for your customers), you must give them the **complete
-source code** of your version under the same licence (section 13 of the AGPL). To make it easy, the footer of every
-application has a *Source code* link (value `ui.sourceUrl` of the chart): point it to the code of your version.
-Third-party components keep their own licences: see [NOTICE](NOTICE).
+ÓRBITA is **free and open source software** under the **[MIT licence](LICENSE)**: you may use, copy, **modify**,
+distribute and sell it, also for commercial purposes and in your own products, keeping the copyright and licence
+notice. Third-party components keep their own licences: see [NOTICE](NOTICE).
 
 ## Contact and services
 

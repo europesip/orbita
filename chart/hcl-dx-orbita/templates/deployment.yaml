@@ -77,9 +77,10 @@ spec:
             # What the apps show (ui.*): the API returns it in GET /v1/config
             - { name: ORBITA_HEADER_TITLE, value: {{ .Values.ui.header.title | quote }} }
             - { name: ORBITA_HEADER_HOMELINK, value: {{ .Values.ui.header.homeLink | quote }} }
-            - { name: ORBITA_HEADER_ASSISTANT, value: {{ .Values.ui.header.assistant | quote }} }
+            {{- $temaBoton := and .Values.theme.enabled .Values.theme.assistantButton }}
+            - { name: ORBITA_HEADER_ASSISTANT, value: {{ ternary (not $temaBoton) .Values.ui.header.assistant (eq (toString .Values.ui.header.assistant) "auto") | toString | quote }} }
             - { name: ORBITA_HEADER_NOTIFICATIONS, value: {{ .Values.ui.header.notifications | quote }} }
-            - { name: ORBITA_HEADER_USER, value: {{ .Values.ui.header.user | quote }} }
+            - { name: ORBITA_HEADER_USER, value: {{ ternary (not .Values.theme.enabled) .Values.ui.header.user (eq (toString .Values.ui.header.user) "auto") | toString | quote }} }
             - { name: ORBITA_FOOTER, value: {{ .Values.ui.footer | quote }} }
             - { name: ORBITA_SOURCE_URL, value: {{ .Values.ui.sourceUrl | default "https://github.com/europesip/orbita" | quote }} }
             - { name: ORBITA_KIOSK_PAGE, value: {{ printf "%squiosco" .Values.pages.base | quote }} }

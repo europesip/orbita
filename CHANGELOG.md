@@ -9,6 +9,10 @@
   Software"** and a **button that opens the ÓRBITA assistant**. Assigned to the ÓRBITA pages only.
 - The logos are in a **DAM collection** (`ÓRBITA`): change the company logo there, or give it at install time
   (`theme.logoBase64`). `theme.hclLogo` and `theme.assistantButton` can be turned off.
+- With the theme, nothing appears twice: `ui.header.assistant` and `ui.header.user` are `auto` by default and hide the
+  assistant button and the user in the apps when the theme header shows them.
+- **Frequently asked questions** in English and Spanish ([docs/faq.md](docs/faq.md)): cost, installation, theme and DAM,
+  AI (also with your own sovereign AI), languages, security, technology and services.
 
 ## 3.0.0 · 2026-11-06 · Its own assistant, in English and Spanish
 

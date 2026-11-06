@@ -9,6 +9,10 @@
   empresa**, **«Powered by HCL Software»** y un **botón que abre el asistente de ÓRBITA**. Solo en las páginas de ÓRBITA.
 - Los logos están en una **colección del DAM** (`ÓRBITA`): cambia ahí el logo de la empresa, o dalo al instalar
   (`theme.logoBase64`). `theme.hclLogo` y `theme.assistantButton` se pueden desactivar.
+- Con el theme, nada sale dos veces: `ui.header.assistant` y `ui.header.user` valen `auto` por defecto y ocultan en las
+  aplicaciones el botón del asistente y el usuario cuando la cabecera del theme ya los muestra.
+- **Preguntas frecuentes** en español e inglés ([docs/faq.es.md](docs/faq.es.md)): coste, instalación, theme y DAM, IA
+  (también con tu propia IA soberana), idiomas, seguridad, tecnología y servicios.
 
 ## 3.0.0 · 2026-11-06 · Asistente propio, en español e inglés
 

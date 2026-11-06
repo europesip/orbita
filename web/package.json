@@ -2,7 +2,7 @@
   "name": "orbita",
   "version": "3.1.0",
   "private": true,
-  "license": "AGPL-3.0-or-later",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "build:scriptapps": "vite build --config vite.scriptapp.config.js && node scripts/scriptapps.mjs"

@@ -1,18 +1,13 @@
 ÓRBITA
 Copyright (c) 2026 EuropeSIP (https://www.europesip.com)
 
-Licencia: GNU Affero General Public License v3.0 o posterior (AGPL-3.0-or-later, fichero LICENSE).
-ÓRBITA es software libre: puedes usarlo, estudiarlo, modificarlo y redistribuirlo, también con fines comerciales.
-Si lo modificas y lo ofreces a otras personas a través de una red (por ejemplo, como servicio para tus clientes),
-debes ofrecerles el código fuente completo de tu versión con la misma licencia (sección 13 de la AGPL).
+Licencia: MIT (fichero LICENSE). ÓRBITA es software libre y de código abierto: puedes usarlo, copiarlo, modificarlo,
+distribuirlo y venderlo, también con fines comerciales, manteniendo el aviso de copyright y de licencia.
 
-License: GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later, LICENSE file).
-ÓRBITA is free software: you may use, study, modify and redistribute it, also for commercial purposes. If you
-modify it and offer it to other people over a network (for example, as a service for your customers), you must
-offer them the complete source code of your version under the same licence (section 13 of the AGPL).
+License: MIT (LICENSE file). ÓRBITA is free and open source software: you may use, copy, modify, distribute and sell
+it, also for commercial purposes, keeping the copyright and licence notice.
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
-warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for details.
+The software is provided "as is", without warranty of any kind (see LICENSE).
 
 Componentes de terceros que usa ÓRBITA (no se incluyen en este repositorio; se descargan al construir o desplegar):
 
@@ -38,6 +33,6 @@ Componentes de terceros que usa ÓRBITA (no se incluyen en este repositorio; se 
     Los ficheros del theme Portal 8.5 de HCL DX NO están en este repositorio: el chart los copia de tu propio DX al
     instalar. The HCL DX Portal 8.5 theme files are NOT in this repository: the chart copies them from your own DX.
     chart/hcl-dx-orbita/files/theme/hcl-software.png: el logotipo "HCL Software" es una marca de HCL Technologies,
-    usada con su permiso para mostrar "Powered by HCL Software". No está cubierto por la licencia AGPL de ÓRBITA.
+    usada con su permiso para mostrar "Powered by HCL Software". No está cubierto por la licencia MIT de ÓRBITA.
     The "HCL Software" logo is a trademark of HCL Technologies, used with its permission to show "Powered by HCL
-    Software". It is not covered by the AGPL licence of ÓRBITA (value theme.hclLogo=false hides it).
+    Software". It is not covered by the MIT licence of ÓRBITA (value theme.hclLogo=false hides it).
