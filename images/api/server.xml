@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ÓRBITA en Open Liberty (imagen orbita-api, images/api/Dockerfile). Todo lo que cambia entre instalaciones llega por
+  variables de entorno, que pone el chart de Helm (chart/hcl-dx-orbita): esta configuración es la misma en todas.
+
+  9080  orbita-api.war en /orbita-api: API REST de las Script Applications (se publica en el Ingress, mismo host que DX)
+  9081  orbita-mcp.war en /: servidor MCP para HCL DX IQ (POST /mcp, GET /probe/ready). Solo dentro del clúster: no
+        está en el Ingress y una NetworkPolicy solo deja entrar al Integrator de DX IQ.
+
+  Sin seguridad de Liberty (ni LTPA ni registros de usuarios): quién es el usuario lo dice HCL DX a partir de su cookie
+  de sesión (SesionDx). TLS lo termina el Ingress.
+-->
+<server description="ÓRBITA">
+  <featureManager>
+    <feature>restfulWS-3.1</feature>
+    <feature>jsonp-2.1</feature>
+    <feature>servlet-6.0</feature>
+    <feature>jdbc-4.3</feature>
+    <feature>jndi-1.0</feature>
+  </featureManager>
+
+  <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="9080" httpsPort="-1"/>
+  <httpEndpoint id="mcpHttpEndpoint" host="*" httpPort="9081" httpsPort="-1"/>
+  <!-- Cada aplicación en su puerto: /mcp no responde en 9080 ni /orbita-api en 9081 -->
+  <virtualHost id="default_host" allowFromEndpointRef="defaultHttpEndpoint"/>
+  <virtualHost id="mcp_host" allowFromEndpointRef="mcpHttpEndpoint">
+    <hostAlias>*:9081</hostAlias>
+  </virtualHost>
+
+  <!-- Registro en la consola (kubectl logs), también los INFO de las aplicaciones (arranque, auditoría del MCP) -->
+  <logging consoleLogLevel="INFO" consoleFormat="SIMPLE"/>
+  <httpDispatcher enableWelcomePage="false"/>
+  <webContainer deferServletLoad="false"/>
+
+  <!-- Base de datos: las variables de entorno con el mismo nombre (las pone el chart) sustituyen estos valores -->
+  <variable name="ORBITA_DB_PORT" defaultValue="5432"/>
+  <variable name="ORBITA_DB_SSLMODE" defaultValue="prefer"/>
+
+  <library id="postgresql">
+    <fileset dir="${server.config.dir}/lib" includes="postgresql-*.jar"/>
+  </library>
+  <!-- stringtype=unspecified: PostgreSQL convierte los parámetros de texto (fechas y horas enviadas con setString) -->
+  <dataSource id="orbita" jndiName="jdbc/orbita">
+    <jdbcDriver libraryRef="postgresql"/>
+    <properties.postgresql serverName="${ORBITA_DB_HOST}" portNumber="${ORBITA_DB_PORT}" databaseName="${ORBITA_DB_NAME}"
+        user="${ORBITA_DB_USER}" password="${ORBITA_DB_PASSWORD}" stringType="unspecified" sslMode="${ORBITA_DB_SSLMODE}"/>
+    <connectionManager maxPoolSize="20" connectionTimeout="10s"/>
+  </dataSource>
+
+  <webApplication id="orbita-api" location="orbita-api.war" contextRoot="/orbita-api"/>
+  <webApplication id="orbita-mcp" location="orbita-mcp.war" contextRoot="/">
+    <web-bnd moduleName="orbita-mcp">
+      <virtual-host name="mcp_host"/>
+    </web-bnd>
+  </webApplication>
+</server>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ÓRBITA · orbita-mcp.war: servidor MCP para HCL DX IQ (POST /mcp, GET /probe/ready) -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.europesip.orbita</groupId>
+    <artifactId>orbita</artifactId>
+    <version>${revision}</version>
+  </parent>
+  <artifactId>orbita-mcp</artifactId>
+  <packaging>war</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.europesip.orbita</groupId>
+      <artifactId>orbita-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-web-api</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>orbita-mcp</finalName>
+  </build>
+</project>

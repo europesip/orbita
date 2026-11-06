@@ -1,0 +1,14 @@
+{{- /* Always rendered: the scriptapps Job mounts it (with pages.create=false the script does nothing) */}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-pages
+  labels: {{- include "orbita.labels" . | nindent 4 }}
+data:
+  after-push.sh: |
+{{ .Files.Get "files/after-push.sh" | indent 4 }}
+  paginas.mjs: |
+{{ .Files.Get "files/paginas.mjs" | indent 4 }}
+  paginas.json: |
+    {{- toJson (dict "create" .Values.pages.create "parent" .Values.pages.parent "base" .Values.pages.base
+          "layoutTemplate" .Values.pages.layoutTemplate "skin" .Values.pages.skin "titles" .Values.pages.items) | nindent 4 }}

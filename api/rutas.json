@@ -1,0 +1,49 @@
+{
+  "_comentario": "Contrato de la API REST de ÓRBITA (/orbita-api/v1/<ruta>): lo leen el servidor (orbita-api) y la interfaz (web/src/ui.jsx). Cada operación de la lógica (op) tiene un método y una ruta; los {parámetros} de la ruta, la consulta (GET y DELETE) o el cuerpo JSON (POST y PUT) llegan a la operación con su nombre. 'publica': sin sesión de DX (quiosco, protegido con su clave de dispositivo).",
+  "rutas": [
+    {"op": "yo",                 "metodo": "GET",    "ruta": "yo"},
+    {"op": "inicio.resumen",     "metodo": "GET",    "ruta": "inicio"},
+
+    {"op": "fichaje.estado",     "metodo": "GET",    "ruta": "fichaje/hoy"},
+    {"op": "fichaje.marcar",     "metodo": "POST",   "ruta": "fichaje/marcas"},
+    {"op": "fichaje.mes",        "metodo": "GET",    "ruta": "fichaje/meses/{anio}/{mes}"},
+    {"op": "fichaje.correccion", "metodo": "POST",   "ruta": "fichaje/correcciones"},
+    {"op": "fichaje.equipo",     "metodo": "GET",    "ruta": "fichaje/equipo"},
+    {"op": "fichaje.csv",        "metodo": "GET",    "ruta": "fichaje/informes/{anio}/{mes}"},
+
+    {"op": "vac.resumen",        "metodo": "GET",    "ruta": "vacaciones/resumen"},
+    {"op": "vac.solicitar",      "metodo": "POST",   "ruta": "vacaciones/solicitudes"},
+    {"op": "vac.cancelar",       "metodo": "DELETE", "ruta": "vacaciones/solicitudes/{id}"},
+    {"op": "vac.calendario",     "metodo": "GET",    "ruta": "vacaciones/calendario/{anio}/{mes}"},
+    {"op": "vac.anio",           "metodo": "GET",    "ruta": "vacaciones/anios/{anio}"},
+
+    {"op": "apr.pendientes",     "metodo": "GET",    "ruta": "aprobaciones"},
+    {"op": "apr.resolver",       "metodo": "POST",   "ruta": "aprobaciones/{clase}/{id}"},
+
+    {"op": "gastos.resumen",     "metodo": "GET",    "ruta": "gastos"},
+    {"op": "gastos.nuevaNota",   "metodo": "POST",   "ruta": "gastos/notas"},
+    {"op": "gastos.nota",        "metodo": "GET",    "ruta": "gastos/notas/{id}"},
+    {"op": "gastos.guardarNota", "metodo": "PUT",    "ruta": "gastos/notas/{id}"},
+    {"op": "gastos.borrarNota",  "metodo": "DELETE", "ruta": "gastos/notas/{id}"},
+    {"op": "gastos.enviar",      "metodo": "POST",   "ruta": "gastos/notas/{id}/envio"},
+    {"op": "gastos.guardarLinea","metodo": "POST",   "ruta": "gastos/lineas"},
+    {"op": "gastos.borrarLinea", "metodo": "DELETE", "ruta": "gastos/lineas/{id}"},
+    {"op": "gastos.ticket",      "metodo": "GET",    "ruta": "gastos/lineas/{id}/ticket"},
+    {"op": "gastos.pagos",       "metodo": "GET",    "ruta": "gastos/pagos"},
+    {"op": "gastos.pagar",       "metodo": "POST",   "ruta": "gastos/pagos"},
+    {"op": "gastos.exportar",    "metodo": "GET",    "ruta": "gastos/informes/{anio}/{mes}"},
+    {"op": "viaje.solicitar",    "metodo": "POST",   "ruta": "viajes"},
+    {"op": "viaje.cancelar",     "metodo": "DELETE", "ruta": "viajes/{id}"},
+
+    {"op": "avisos.lista",       "metodo": "GET",    "ruta": "avisos"},
+    {"op": "avisos.leer",        "metodo": "POST",   "ruta": "avisos/leidos"},
+    {"op": "com.lista",          "metodo": "GET",    "ruta": "comentarios/{clase}/{objeto}"},
+    {"op": "com.enviar",         "metodo": "POST",   "ruta": "comentarios/{clase}/{objeto}"},
+
+    {"op": "demo.reiniciar",     "metodo": "POST",   "ruta": "demo/restauracion"},
+
+    {"op": "kiosco.identificar", "metodo": "POST",   "ruta": "quiosco/identificacion", "publica": true},
+    {"op": "kiosco.marcar",      "metodo": "POST",   "ruta": "quiosco/marcas",         "publica": true},
+    {"op": "kiosco.demo",        "metodo": "POST",   "ruta": "quiosco/demo",           "publica": true}
+  ]
+}

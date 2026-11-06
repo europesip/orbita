@@ -1,0 +1,71 @@
+{{- if .Values.database.create.enabled }}
+{{- $su := required "database.create.superuserSecret is required (Secret with a PostgreSQL superuser), or set database.create.enabled=false" .Values.database.create.superuserSecret }}
+{{- $host := required "database.host is required" .Values.database.host }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "orbita.fullname" . }}-db
+  labels: {{- include "orbita.labels" . | nindent 4 }}
+  annotations:
+    # Before every install and upgrade: the user and the database must exist before the API starts.
+    # The tables are not created here: Flyway creates and migrates them when the API starts.
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  backoffLimit: 2
+  activeDeadlineSeconds: 600
+  template:
+    metadata:
+      labels: {{- include "orbita.labels" . | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 70            # postgres user of the alpine image
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: psql
+          image: {{ .Values.database.create.image }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: [ALL] }
+          env:
+            - { name: PGHOST, value: {{ $host | quote }} }
+            - { name: PGPORT, value: {{ .Values.database.port | quote }} }
+            - { name: PGDATABASE, value: postgres }
+            - { name: PGSSLMODE, value: {{ .Values.database.sslMode | quote }} }
+            - name: PGUSER
+              valueFrom: { secretKeyRef: { name: {{ $su }}, key: username } }
+            - name: PGPASSWORD
+              valueFrom: { secretKeyRef: { name: {{ $su }}, key: password } }
+            - { name: APP_DB, value: {{ .Values.database.name | quote }} }
+            - name: APP_USER
+              valueFrom: { secretKeyRef: { name: {{ include "orbita.dbSecret" . }}, key: username } }
+            - name: APP_PASSWORD
+              valueFrom: { secretKeyRef: { name: {{ include "orbita.dbSecret" . }}, key: password } }
+          command: ["sh", "-c"]
+          args:
+            - |
+              set -eu
+              echo "waiting for PostgreSQL at $PGHOST:$PGPORT"
+              until pg_isready -q; do sleep 3; done
+              # Idempotent: creates the user and the database only if they are missing, and (re)sets the password.
+              # The password is read from the environment (\getenv), never on a command line.
+              psql -v ON_ERROR_STOP=1 -q <<'SQL'
+              \getenv app_db APP_DB
+              \getenv app_user APP_USER
+              \getenv app_password APP_PASSWORD
+              SELECT format('CREATE ROLE %I LOGIN', :'app_user')
+                WHERE NOT EXISTS (SELECT FROM pg_roles WHERE rolname = :'app_user') \gexec
+              ALTER ROLE :"app_user" WITH LOGIN PASSWORD :'app_password';
+              SELECT format('CREATE DATABASE %I OWNER %I ENCODING ''UTF8'' TEMPLATE template0', :'app_db', :'app_user')
+                WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = :'app_db') \gexec
+              REVOKE ALL ON DATABASE :"app_db" FROM PUBLIC;
+              GRANT CONNECT, TEMPORARY ON DATABASE :"app_db" TO :"app_user";
+              SQL
+              echo "OK: database $APP_DB, owner $APP_USER"
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits: { cpu: 500m, memory: 128Mi }
+{{- end }}

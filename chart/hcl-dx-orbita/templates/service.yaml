@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "orbita.fullname" . }}-api
+  labels: {{- include "orbita.labels" . | nindent 4 }}
+spec:
+  selector: {{- include "orbita.selector" . | nindent 4 }}
+  ports:
+    - { name: http, port: 9080, targetPort: http }
+    {{- if .Values.mcp.enabled }}
+    - { name: mcp, port: 9081, targetPort: mcp }     # http://<this service>.<namespace>.svc.cluster.local:9081 for IQ
+    {{- end }}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ÓRBITA · orbita-api.war: API REST de las Script Applications (Jakarta REST), en /orbita-api -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.europesip.orbita</groupId>
+    <artifactId>orbita</artifactId>
+    <version>${revision}</version>
+  </parent>
+  <artifactId>orbita-api</artifactId>
+  <packaging>war</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.europesip.orbita</groupId>
+      <artifactId>orbita-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-web-api</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>orbita-api</finalName>
+    <resources>
+      <!-- Contrato de rutas compartido con la interfaz (web/src/ui.jsx lo importa del mismo sitio) -->
+      <resource>
+        <directory>${project.basedir}/..</directory>
+        <includes><include>rutas.json</include></includes>
+      </resource>
+    </resources>
+  </build>
+</project>

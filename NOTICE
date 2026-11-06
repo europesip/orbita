@@ -14,10 +14,12 @@ Componentes de terceros que usa ÓRBITA (no se incluyen en este repositorio; se 
     Vite 5, @vitejs/plugin-react ... MIT (solo para construir)
 
   Servidor (Java)
-    Open Liberty 26.0.0.8 .......... EPL-2.0            imagen icr.io/appcafe/open-liberty
-    PostgreSQL JDBC 42.7.11 ........ BSD-2-Clause       https://jdbc.postgresql.org
-    Servlet API 4.0.1, JSON-P 1.1 .. CDDL/GPL-2.0+CE    solo para compilar (las aporta Open Liberty)
+    Open Liberty 26.0.0.9 .......... EPL-2.0            imagen icr.io/appcafe/open-liberty
+    PostgreSQL JDBC 42.7.14 ........ BSD-2-Clause       https://jdbc.postgresql.org
+    Flyway 11.20.3 ................. Apache-2.0         https://github.com/flyway/flyway
+    Jackson 2.19 (de Flyway) ....... Apache-2.0         https://github.com/FasterXML/jackson
+    Jakarta EE 10 Web API .......... EPL-2.0/GPL-2.0+CE solo para compilar (las aporta Open Liberty)
 
   Plataforma
     HCL DX Compose, HCL DX IQ y DXClient son productos de HCL Software con su propia licencia: no forman
-    parte de ÓRBITA. DXClient exige aceptar su acuerdo de licencia (k8s/05-scriptapps.sh lo acepta).
+    parte de ÓRBITA. DXClient exige aceptar su acuerdo de licencia (valor scriptapps.dxclient.acceptLicense del chart).

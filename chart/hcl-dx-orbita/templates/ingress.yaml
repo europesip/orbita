@@ -1,0 +1,29 @@
+{{- if .Values.ingress.enabled }}
+# /orbita-api on the DX host: the Script Applications call it without CORS, and the browser sends the DX session
+# cookie. ingress-nginx merges the rules of every Ingress of a host: this path wins over DX's "/".
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "orbita.fullname" . }}-api
+  labels: {{- include "orbita.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations: {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- if .Values.ingress.tlsSecret }}
+  tls:
+    - hosts: [{{ .Values.dx.host | quote }}]
+      secretName: {{ .Values.ingress.tlsSecret }}
+  {{- end }}
+  rules:
+    - host: {{ required "dx.host is required" .Values.dx.host | quote }}
+      http:
+        paths:
+          - path: {{ .Values.api.path }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "orbita.fullname" . }}-api
+                port: { name: http }
+{{- end }}

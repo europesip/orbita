@@ -1,0 +1,96 @@
+{{- $dbHost := required "database.host is required (PostgreSQL host)" .Values.database.host }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "orbita.fullname" . }}-api
+  labels: {{- include "orbita.labels" . | nindent 4 }}
+    app.kubernetes.io/component: api
+spec:
+  replicas: {{ .Values.api.replicas }}
+  selector:
+    matchLabels: {{- include "orbita.selector" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "orbita.labels" . | nindent 8 }}
+        app.kubernetes.io/component: api
+      annotations:
+        checksum/people: {{ toJson .Values.demo.people | sha256sum | trunc 16 }}
+        {{- with .Values.api.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.api.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.api.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile: { type: RuntimeDefault }
+      {{- if .Values.dx.caSecret }}
+      volumes:
+        - name: dx-ca
+          secret:
+            secretName: {{ .Values.dx.caSecret }}
+            items: [{ key: ca.crt, path: ca.crt }]
+      {{- end }}
+      containers:
+        - name: liberty
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: [ALL] }
+          ports:
+            - { name: http, containerPort: 9080 }
+            - { name: mcp, containerPort: 9081 }
+          env:
+            - { name: TZ, value: {{ .Values.api.timezone | quote }} }
+            # Database (server.xml)
+            - { name: ORBITA_DB_HOST, value: {{ $dbHost | quote }} }
+            - { name: ORBITA_DB_PORT, value: {{ .Values.database.port | quote }} }
+            - { name: ORBITA_DB_NAME, value: {{ .Values.database.name | quote }} }
+            - { name: ORBITA_DB_SSLMODE, value: {{ .Values.database.sslMode | quote }} }
+            - name: ORBITA_DB_USER
+              valueFrom: { secretKeyRef: { name: {{ include "orbita.dbSecret" . }}, key: username } }
+            - name: ORBITA_DB_PASSWORD
+              valueFrom: { secretKeyRef: { name: {{ include "orbita.dbSecret" . }}, key: password } }
+            # Who the user is: DX answers, with the user's own session cookie
+            - { name: ORBITA_DX_URL, value: {{ include "orbita.dxUrl" . | quote }} }
+            - { name: ORBITA_SESSION_COOKIE, value: {{ .Values.dx.sessionCookie | quote }} }
+            {{- if .Values.dx.caSecret }}
+            - { name: ORBITA_DX_CA, value: /dx-ca/ca.crt }
+            {{- end }}
+            {{- if .Values.dx.insecureSkipTLSVerify }}
+            - { name: ORBITA_DX_INSECURE, value: "true" }
+            {{- end }}
+            # Demo, kiosk and pages
+            - { name: ORBITA_DEMO_SEED, value: {{ .Values.demo.seed | quote }} }
+            - { name: ORBITA_DEMO_PEOPLE, value: {{ toJson .Values.demo.people | quote }} }
+            - name: ORBITA_KIOSK_KEY
+              valueFrom: { secretKeyRef: { name: {{ include "orbita.fullname" . }}-kiosk, key: key } }
+            - { name: ORBITA_PAGES_BASE, value: {{ .Values.pages.base | quote }} }
+            - { name: ORBITA_KIOSK_PAGE, value: {{ printf "%squiosco" .Values.pages.base | quote }} }
+            {{- if .Values.mcp.tokenSecret }}
+            - name: ORBITA_MCP_TOKEN
+              valueFrom: { secretKeyRef: { name: {{ .Values.mcp.tokenSecret }}, key: token } }
+            {{- end }}
+          {{- if .Values.dx.caSecret }}
+          volumeMounts:
+            - { name: dx-ca, mountPath: /dx-ca, readOnly: true }
+          {{- end }}
+          startupProbe:          # first start: Liberty, then Flyway and the demo data
+            httpGet: { path: /orbita-api/v1/salud, port: http }
+            periodSeconds: 5
+            failureThreshold: 60
+          readinessProbe:
+            httpGet: { path: /orbita-api/v1/salud, port: http }
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket: { port: http }
+            periodSeconds: 20
+          resources: {{- toYaml .Values.api.resources | nindent 12 }}

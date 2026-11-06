@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ÓRBITA · back end (Java 21, Jakarta EE 10, Open Liberty).
+    core  lógica de la suite, sin dependencias del contenedor (JDBC, Flyway, sesión de DX)
+    rest  orbita-api.war: API REST de las Script Applications  (/orbita-api/v1/...)
+    mcp   orbita-mcp.war: servidor MCP para HCL DX IQ          (/mcp, /probe/ready, en su propio puerto)
+  Construcción: mvn -f api/pom.xml package  (lo hace images/api/Dockerfile)
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.europesip.orbita</groupId>
+  <artifactId>orbita</artifactId>
+  <version>${revision}</version>
+  <packaging>pom</packaging>
+  <name>ÓRBITA</name>
+
+  <modules>
+    <module>core</module>
+    <module>rest</module>
+    <module>mcp</module>
+  </modules>
+
+  <properties>
+    <revision>2.0.0</revision>
+    <maven.compiler.release>21</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jakartaee.version>10.0.0</jakartaee.version>
+    <flyway.version>11.20.3</flyway.version>
+    <postgresql.version>42.7.14</postgresql.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.europesip.orbita</groupId>
+        <artifactId>orbita-core</artifactId>
+        <version>${revision}</version>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.platform</groupId>
+        <artifactId>jakarta.jakartaee-web-api</artifactId>
+        <version>${jakartaee.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-core</artifactId>
+        <version>${flyway.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-database-postgresql</artifactId>
+        <version>${flyway.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${postgresql.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.14.0</version>
+          <configuration>
+            <compilerArgs><arg>-Xlint:all,-serial,-processing</arg></compilerArgs>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.4.0</version>
+          <configuration>
+            <failOnMissingWebXml>false</failOnMissingWebXml>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>3.8.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

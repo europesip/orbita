@@ -1,0 +1,145 @@
+# hcl-dx-orbita: ÓRBITA on HCL DX Compose.
+#
+#   orbita-api (Deployment, Open Liberty)  9080 /orbita-api  REST API of the Script Applications (Ingress, DX host)
+#                                          9081 /mcp         MCP server for HCL DX IQ (cluster only)
+#   PostgreSQL                             its own database and user, created by a Job (needs a superuser secret)
+#   Script Applications                    pushed to WCM by the subchart "scriptapps" (hcl-dx-scriptapp), which
+#                                          then creates the pages with XMLAccess
+#
+# Who the user is: ÓRBITA forwards the user's DX session cookie (LtpaToken2) to DX's profile API and DX answers.
+# No LTPA keys, LDAP settings or DX admin credentials are needed by the API.
+# Install it in the namespace of your third-party tools (the labs use dx-shared), next to PostgreSQL.
+
+# --- HCL DX -------------------------------------------------------------------------------------------------------
+dx:
+  # REQUIRED. Public host name of DX (the Script Applications call /orbita-api on this same host)
+  host: ""
+  # URL the API uses to ask DX who the user is. Default: https://<dx.host>
+  url: ""
+  # Secret with the CA of the DX certificate (key ca.crt), if self-signed or from a private CA
+  caSecret: ""
+  # Lab only: do not verify the DX certificate. Prefer caSecret.
+  insecureSkipTLSVerify: false
+  sessionCookie: LtpaToken2
+
+# --- Images -------------------------------------------------------------------------------------------------------
+image:
+  repository: ghcr.io/europesip/orbita/orbita-api
+  tag: ""                    # default: the chart appVersion
+  pullPolicy: IfNotPresent
+imagePullSecrets: []         # e.g. [{ name: ghcr-pull }] while the images are private
+
+# --- PostgreSQL ---------------------------------------------------------------------------------------------------
+database:
+  host: ""                   # REQUIRED, e.g. dx-pg-rw.dx-shared.svc.cluster.local
+  port: 5432
+  name: orbita
+  user: orbita
+  sslMode: prefer
+  # Existing Secret with "username" and "password" for ÓRBITA. Empty: the chart creates <release>-db with a
+  # random password and keeps it across upgrades.
+  existingSecret: ""
+  # Create the user and the database (a Job before install and upgrade; idempotent). Needs a PostgreSQL superuser.
+  create:
+    enabled: true
+    superuserSecret: ""      # REQUIRED if enabled: Secret with "username" and "password" (labs: dx-pg-superuser)
+    image: postgres:18.1-alpine
+
+# --- API ----------------------------------------------------------------------------------------------------------
+api:
+  replicas: 1
+  path: /orbita-api          # public path on the DX host (fixed in the image: do not change)
+  timezone: Europe/Madrid    # time tracking uses local time
+  resources:
+    requests: { cpu: 100m, memory: 384Mi }
+    limits: { memory: 1Gi }
+  podAnnotations: {}
+  nodeSelector: {}
+  tolerations: []
+
+ingress:
+  enabled: true
+  className: nginx
+  # TLS secret for dx.host in THIS namespace. Empty: no tls block (ingress-nginx serves the path with the certificate
+  # of the DX Ingress for the same host).
+  tlsSecret: ""
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "16m"     # expense receipt photos
+
+# --- MCP server for HCL DX IQ -------------------------------------------------------------------------------------
+mcp:
+  enabled: true
+  # Optional Secret with key "token": the MCP client must then send "Authorization: Bearer <token>"
+  tokenSecret: ""
+  # NetworkPolicy: only the IQ Integrator reaches the MCP port. Register http://<release>-api.<ns>.svc:9081 in IQ.
+  networkPolicy:
+    enabled: true
+    integratorNamespace: dx-demo
+    integratorPodLabels: { app: dx-iq-integrator }
+
+# --- Demo ---------------------------------------------------------------------------------------------------------
+demo:
+  # Load the demo data when the database is empty (and allow HR to restore it from the app)
+  seed: true
+  # Who plays each role of the demo story: DX users that already exist (these are the users of the HCL DX Compose
+  # labs OpenLDAP). Roles not listed keep a fictitious user: they appear in the data but nobody signs in with them.
+  # Roles: rrhh, ventas-responsable, ventas-1, ventas-2, tecnologia-responsable, tecnologia-1, tecnologia-2,
+  # tecnologia-3, administracion. Keys: uid, nombre, puesto.
+  people:
+    rrhh:                   { uid: patricia, nombre: Patricia }
+    ventas-responsable:     { uid: andres,   nombre: Andrés }
+    ventas-1:               { uid: macarena, nombre: Macarena }
+    ventas-2:               { uid: eduardo,  nombre: Eduardo }
+    tecnologia-responsable: { uid: enrique,  nombre: Enrique }
+    tecnologia-1:           { uid: jordi,    nombre: Jordi }
+    administracion:         { uid: german,   nombre: Germán }
+
+# Kiosk device key. Empty: random, kept across upgrades (Secret <release>-kiosk)
+kiosk:
+  key: ""
+
+# --- Pages in DX ----------------------------------------------------------------------------------------------------
+pages:
+  # Create (or update) one page per application with XMLAccess, after the push. Needs scriptapps.dx.credentialsSecret
+  # to be a DX administrator.
+  create: true
+  parent: ibm.portal.Home                 # unique name of the parent page
+  base: /wps/myportal/Home/               # URL of the parent page (the apps link to each other with it)
+  # Theme layout and skin of the pages (HCL DX default theme)
+  layoutTemplate: dav:fs-type1/themes/Portal8.5/layout-templates/1Column
+  skin: ibm.portal.85NoSkin
+  # The pages, in this order: friendly name and titles (es, en). The Script Application of each page is
+  # "orbita-<friendly name>" (scriptapps.apps).
+  items:
+    - { friendly: mi-intranet,  es: "Mi intranet",        en: "My intranet" }
+    - { friendly: fichaje,      es: "Fichaje",            en: "Time tracking" }
+    - { friendly: vacaciones,   es: "Vacaciones",         en: "Time off" }
+    - { friendly: gastos,       es: "Gastos y viajes",    en: "Expenses and travel" }
+    - { friendly: aprobaciones, es: "Aprobaciones",       en: "Approvals" }
+    - { friendly: quiosco,      es: "Quiosco de fichaje", en: "Time clock kiosk" }
+
+# --- Script Applications (subchart hcl-dx-scriptapp 0.2.0) -------------------------------------------------------
+# The subchart does not see the values above: repeat dx.host and the secrets here.
+scriptapps:
+  enabled: true
+  dx:
+    host: ""                 # REQUIRED: same as dx.host
+    credentialsSecret: ""    # REQUIRED: Secret with username/password of a DX administrator (pages need XMLAccess)
+    caSecret: ""
+  dxclient:
+    acceptLicense: false     # REQUIRED true: you accept the HCL DXClient license
+  bundle:
+    image: ghcr.io/europesip/orbita/orbita-scriptapps:2.0.0
+  job:
+    imagePullSecrets: []     # e.g. [{ name: ghcr-pull }] while the images are private
+  apps:
+    - { name: orbita-mi-intranet,  title: "ÓRBITA · Mi intranet",        path: mi-intranet }
+    - { name: orbita-fichaje,      title: "ÓRBITA · Fichaje",            path: fichaje }
+    - { name: orbita-vacaciones,   title: "ÓRBITA · Vacaciones",         path: vacaciones }
+    - { name: orbita-gastos,       title: "ÓRBITA · Gastos y viajes",    path: gastos }
+    - { name: orbita-aprobaciones, title: "ÓRBITA · Aprobaciones",       path: aprobaciones }
+    - { name: orbita-quiosco,      title: "ÓRBITA · Quiosco de fichaje", path: quiosco }
+  # Pages: the parent chart's ConfigMap <release>-pages (empty it to skip the pages: pages.create=false does it too)
+  afterPush:
+    configMap: "{{ .Release.Name }}-pages"
+    key: after-push.sh

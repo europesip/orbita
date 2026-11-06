@@ -1,0 +1,22 @@
+apiVersion: v2
+name: hcl-dx-orbita
+description: >-
+  ÓRBITA, intranet suite for HCL DX Compose: six Script Applications (time tracking, time off, expenses,
+  approvals, home and kiosk), their REST API and an MCP server for HCL DX IQ (Open Liberty + PostgreSQL).
+type: application
+version: 0.1.0
+appVersion: "2.0.0"
+home: https://github.com/europesip/orbita
+sources:
+  - https://github.com/europesip/orbita
+keywords: [hcl, dx, digital-experience, script-application, mcp, intranet]
+maintainers:
+  - name: EUROPESIP
+    url: https://www.europesip.com
+dependencies:
+  # Pushes the six Script Applications to WCM and creates the pages (after-push script)
+  - name: hcl-dx-scriptapp
+    alias: scriptapps
+    version: 0.2.0
+    repository: oci://ghcr.io/europesip/charts
+    condition: scriptapps.enabled

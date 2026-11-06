@@ -1,0 +1,14 @@
+# Contexto de las imágenes (images/*/Dockerfile): solo el código; nada generado ni local
+**/node_modules
+**/build
+**/target
+**/dist
+.git
+.vscode
+.idea
+chart
+docs
+scripts
+*.log
+.env
+.env.*

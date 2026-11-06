@@ -1,0 +1,143 @@
+# ÓRBITA · construye, prueba y publica en ghcr.io:
+#   - imagen orbita-api         (images/api/Dockerfile: Open Liberty + API REST + MCP)
+#   - imagen orbita-scriptapps  (images/scriptapps/Dockerfile: las seis Script Applications)
+#   - chart hcl-dx-orbita       (oci://ghcr.io/<owner>/charts)
+#
+#   pull request     -> construir y probar, sin publicar
+#   push a main/helm -> imágenes :<rama> y :sha-<commit>
+#   tag v2.0.0       -> imágenes :2.0.0 (debe coincidir con api/pom.xml, web/package.json y el appVersion del chart)
+#                       y el chart, si su versión aún no está publicada
+name: build
+
+on:
+  push:
+    branches: [main, helm]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io/${{ github.repository }}
+  CHARTS: oci://ghcr.io/${{ github.repository_owner }}/charts
+
+jobs:
+  versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Same version everywhere
+        run: |
+          api=$(sed -n 's:.*<revision>\(.*\)</revision>.*:\1:p' api/pom.xml)
+          web=$(jq -r .version web/package.json)
+          chart=$(sed -n 's/^appVersion: "\(.*\)"/\1/p' chart/hcl-dx-orbita/Chart.yaml)
+          bundle=$(sed -n 's|.*orbita-scriptapps:\(.*\)$|\1|p' chart/hcl-dx-orbita/values.yaml)
+          echo "api=$api web=$web chart=$chart bundle=$bundle"
+          [ "$api" = "$web" ] && [ "$api" = "$chart" ] && [ "$api" = "$bundle" ]
+          if [ "${GITHUB_REF_TYPE}" = tag ]; then [ "v$api" = "${GITHUB_REF_NAME}" ]; fi
+
+  image:
+    needs: versions
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        name: [orbita-api, orbita-scriptapps]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-qemu-action@v4
+      - uses: docker/setup-buildx-action@v4
+      - id: dir
+        run: echo "dir=images/${MATRIX_NAME#orbita-}" >> "$GITHUB_OUTPUT"
+        env: { MATRIX_NAME: "${{ matrix.name }}" }
+
+      - name: Build for the test
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ${{ steps.dir.outputs.dir }}/Dockerfile
+          load: true
+          tags: test:${{ matrix.name }}
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}
+
+      - name: Test orbita-scriptapps (what the chart's Job needs)
+        if: matrix.name == 'orbita-scriptapps'
+        run: |
+          docker run --rm test:orbita-scriptapps sh -c '
+            set -e
+            for a in mi-intranet fichaje vacaciones gastos aprobaciones quiosco; do
+              test -f /app/$a/index.html; test -f /app/$a/orbita.js; test -f /app/$a/orbita.css
+            done
+            big=$(find /app -type f -size +4500k); [ -z "$big" ] || { echo "files over 4.5 MB: $big"; exit 1; }
+            id -u; du -sh /app'
+
+      - name: Test orbita-api (Liberty starts both apps; without a database it is not ready)
+        if: matrix.name == 'orbita-api'
+        run: |
+          docker run -d --name api -p 9080:9080 -p 9081:9081 -e ORBITA_DB_HOST=127.0.0.1 -e ORBITA_DB_NAME=x \
+            -e ORBITA_DB_USER=x -e ORBITA_DB_PASSWORD=x -e ORBITA_DX_URL=https://dx.example.com test:orbita-api
+          for i in $(seq 1 60); do docker logs api 2>&1 | grep -q CWWKF0011I && break; sleep 2; done
+          docker logs api 2>&1 | grep -E "CWWKZ0001I|CWWKF0011I"
+          [ "$(curl -s -o /dev/null -w '%{http_code}' localhost:9080/orbita-api/v1/salud)" = 503 ]
+          [ "$(curl -s -o /dev/null -w '%{http_code}' localhost:9081/probe/ready)" = 503 ]
+          curl -sf -X POST -H 'Content-Type: application/json' localhost:9081/mcp \
+            -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | jq -e '.result.tools | length > 0'
+          docker rm -f api
+
+      - uses: docker/metadata-action@v6
+        id: meta
+        with:
+          images: ${{ env.REGISTRY }}/${{ matrix.name }}
+          tags: |
+            type=ref,event=branch
+            type=sha
+            type=semver,pattern={{version}}
+
+      - uses: docker/login-action@v4
+        if: github.event_name != 'pull_request'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish (amd64 + arm64)
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ${{ steps.dir.outputs.dir }}/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: VERSION=${{ steps.meta.outputs.version }}
+          cache-from: type=gha,scope=${{ matrix.name }}
+
+  chart:
+    needs: versions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: azure/setup-helm@v5
+      - name: Lint and render
+        run: |
+          C=chart/hcl-dx-orbita
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u "${{ github.actor }}" --password-stdin
+          helm dependency build $C
+          V="--set dx.host=dx.example.com --set database.host=pg --set database.create.superuserSecret=pg-su
+             --set scriptapps.dx.host=dx.example.com --set scriptapps.dx.credentialsSecret=dx --set scriptapps.dxclient.acceptLicense=true"
+          helm lint $C $V
+          helm template t $C $V > /dev/null
+          ! helm template t $C 2>/dev/null                          # dx.host, database... are required
+          sh -n $C/files/after-push.sh
+      - name: Publish (tags only, and only a chart version that is not published yet)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          v=$(helm show chart chart/hcl-dx-orbita | sed -n 's/^version: //p')
+          if helm show chart "$CHARTS/hcl-dx-orbita" --version "$v" >/dev/null 2>&1; then
+            echo "chart $v is already published: not overwritten (bump version in Chart.yaml to publish)"; exit 0
+          fi
+          helm package chart/hcl-dx-orbita
+          helm push hcl-dx-orbita-$v.tgz "$CHARTS"

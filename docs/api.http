@@ -1,0 +1,55 @@
+# Pruebas de la API REST de ÓRBITA con la extensión REST Client ("Send Request" encima de cada petición).
+# La API identifica al usuario con su sesión de DX: copia del navegador el valor de la cookie LtpaToken2 (con la sesión
+# iniciada en el portal). Se pide al enviar y no se guarda. Rutas: api/rutas.json.
+
+@host = https://dx-demo.apps.promox.europesip-lab.com
+@api = {{host}}/orbita-api/v1
+
+### Salud (sin sesión): 200 si la base de datos está lista
+GET {{api}}/salud
+
+### Sin sesión: 401
+GET {{api}}/yo
+
+### ¿Quién soy?
+# @prompt ltpa Valor de la cookie LtpaToken2 de DX
+GET {{api}}/yo
+Cookie: LtpaToken2={{ltpa}}
+
+### Configuración de la instalación (páginas, clave del quiosco)
+# @prompt ltpa Valor de la cookie LtpaToken2 de DX
+GET {{api}}/config
+Cookie: LtpaToken2={{ltpa}}
+
+### Resumen de "Mi intranet"
+# @prompt ltpa Valor de la cookie LtpaToken2 de DX
+GET {{api}}/inicio
+Cookie: LtpaToken2={{ltpa}}
+
+### Saldo de vacaciones
+# @prompt ltpa Valor de la cookie LtpaToken2 de DX
+GET {{api}}/vacaciones/resumen
+Cookie: LtpaToken2={{ltpa}}
+
+### Pedir vacaciones (crea una solicitud real: cancélala luego)
+# @prompt ltpa Valor de la cookie LtpaToken2 de DX
+POST {{api}}/vacaciones/solicitudes
+Cookie: LtpaToken2={{ltpa}}
+Content-Type: application/json
+
+{"tipo": "VACACIONES", "desde": "2026-12-09", "hasta": "2026-12-11", "comentario": "Prueba desde REST Client"}
+
+### Mes de fichajes
+# @prompt ltpa Valor de la cookie LtpaToken2 de DX
+GET {{api}}/fichaje/meses/2026/11
+Cookie: LtpaToken2={{ltpa}}
+
+### Solicitudes por aprobar (responsables, RRHH, administración)
+# @prompt ltpa Valor de la cookie LtpaToken2 de DX
+GET {{api}}/aprobaciones
+Cookie: LtpaToken2={{ltpa}}
+
+### Avisos de la campana
+# @prompt ltpa Valor de la cookie LtpaToken2 de DX
+GET {{api}}/avisos
+Cookie: LtpaToken2={{ltpa}}
