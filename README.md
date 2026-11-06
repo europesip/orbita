@@ -2,7 +2,7 @@
 
 # ÓRBITA · Time tracking, Time off, Expenses and Approvals for HCL DX
 
-**English** · [Español](README.es.md) · [Manual (PDF)](docs/manual/orbita-explained.en.pdf) · [FAQ](docs/faq.md) · [Release history](CHANGELOG.md) · [Contact](#contact-and-services)
+**English** · [Español](README.es.md) · [Manual (PDF)](docs/manual/orbita-explained.en.pdf) · [Presentation (PDF)](docs/presentation/orbita-presentation.en.pdf) · [FAQ](docs/faq.md) · [Release history](CHANGELOG.md) · [Contact](#contact-and-services)
 
 **ÓRBITA** is an intranet suite for **HCL DX Compose** (CF239) by **EUROPESIP**. Its React interface is published as
 six **Script Applications**; the logic and the data live in a REST API (**`orbita-api`**, Open Liberty) with

@@ -2,7 +2,7 @@
 
 # ÓRBITA · Fichaje, Vacaciones, Gastos y Aprobaciones para HCL DX
 
-[English](README.md) · **Español** · [Manual (PDF)](docs/manual/orbita-explicada.es.pdf) · [Preguntas frecuentes](docs/faq.es.md) · [Historial de versiones](CHANGELOG.es.md) · [Contacto](#contacto-y-servicios)
+[English](README.md) · **Español** · [Manual (PDF)](docs/manual/orbita-explicada.es.pdf) · [Presentación (PDF)](docs/presentation/orbita-presentacion.es.pdf) · [Preguntas frecuentes](docs/faq.es.md) · [Historial de versiones](CHANGELOG.es.md) · [Contacto](#contacto-y-servicios)
 
 **ÓRBITA** es una suite de intranet para **HCL DX Compose** (CF239), de **EUROPESIP**. Su interfaz React se publica
 como seis **Script Applications**; la lógica y los datos están en una API REST (**`orbita-api`**, Open Liberty) con
