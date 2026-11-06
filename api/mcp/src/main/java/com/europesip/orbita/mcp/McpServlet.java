@@ -43,7 +43,7 @@ public class McpServlet extends HttpServlet {
     /** Versiones del protocolo MCP que acepta este servidor (la primera es la preferida). */
     static final List<String> VERSIONES = Arrays.asList("2025-06-18", "2025-03-26", "2024-11-05");
     static final String NOMBRE = "orbita-mcp";
-    static final String VERSION = "2.1.0";
+    static final String VERSION = "2.2.0";
     static final String INSTRUCCIONES = "ÓRBITA es la intranet de la empresa (fichaje, vacaciones y ausencias, gastos y viajes, "
             + "aprobaciones). Las herramientas actúan siempre como el usuario que pregunta (su sesión de HCL DX) y solo "
             + "devuelven o cambian lo que esa persona puede ver o hacer. Las herramientas que modifican datos devuelven "
@@ -118,13 +118,13 @@ public class McpServlet extends HttpServlet {
 
     private JsonObject toolsList() {
         JsonArrayBuilder lista = Json.createArrayBuilder();
-        for (Herramienta h : Herramientas.TODAS) lista.add(h.definicion());
+        for (Herramienta h : Herramientas.activas()) lista.add(h.definicion());
         return Json.createObjectBuilder().add("tools", lista).build();
     }
 
     private JsonObject toolsCall(JsonValue id, JsonObject params, HttpServletRequest req) {
         String nombre = params.getString("name", null);
-        Herramienta h = Herramientas.buscar(nombre);
+        Herramienta h = Herramientas.buscar(nombre);   // solo las activas (Herramientas.activas)
         if (h == null) return error(id, INVALID_PARAMS, "Herramienta desconocida: " + nombre);
         JsonObject args = params.containsKey("arguments") && params.get("arguments").getValueType() == JsonValue.ValueType.OBJECT
                 ? params.getJsonObject("arguments") : JsonValue.EMPTY_JSON_OBJECT;

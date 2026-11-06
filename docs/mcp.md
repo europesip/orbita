@@ -17,6 +17,7 @@ gastos, aprobar solicitudes…
 | Auditoría de cada `tools/call` en el log | ✅ |
 | Confirmación previa en las herramientas que modifican datos | ✅ |
 | **26 herramientas**: día, fichaje, vacaciones, gastos y viajes, aprobaciones y avisos (catálogo de abajo) | ✅ (2.1.0) |
+| Elegir qué herramientas se publican (`mcp.tools` del chart) | ✅ (2.2.0) |
 | Registro en DX IQ | Manual: `scripts/registrar-mcp-en-iq.sh` (el chart de IQ no permite ampliar la lista) |
 
 ## Arquitectura
@@ -53,7 +54,7 @@ MCP de HCL DX IQ. Las respuestas siempre son `application/json`: no se abren flu
 
 | Petición | Respuesta |
 |---|---|
-| `initialize` | `protocolVersion`, `capabilities.tools`, `serverInfo` (`orbita-mcp` 2.1.0), `instructions` |
+| `initialize` | `protocolVersion`, `capabilities.tools`, `serverInfo` (`orbita-mcp` 2.2.0), `instructions` |
 | `notifications/*` (sin `id`) | `202 Accepted`, sin cuerpo |
 | `ping` | `{}` |
 | `tools/list` | Herramientas con `inputSchema` (JSON Schema) y `annotations` (`readOnlyHint`…) |
@@ -127,6 +128,22 @@ CSV. Son acciones masivas o irreversibles que no deberían quedar a una sola fra
 Valores: tipos de ausencia `VACACIONES`, `ASUNTOS_PROPIOS`, `PERMISO`, `BAJA`; marcas `ENTRADA`, `PAUSA`, `REANUDAR`,
 `SALIDA`; categorías de gasto `COMIDA`, `HOTEL`, `TRANSPORTE`, `KILOMETRAJE`, `PARKING`, `OTROS`; clases de solicitud
 `AUSENCIA`, `CORRECCION`, `NOTA`, `VIAJE`.
+
+## Qué herramientas se publican
+
+Por defecto, las 26. Cada definición va en el prompt de cada llamada al modelo (las 26: unos 4.700 tokens), así que
+el chart permite publicar menos (`mcp.tools`, que el pod recibe como variables de entorno):
+
+| Valor del chart | Variable | Efecto |
+|---|---|---|
+| `mcp.tools.enabled: [vacaciones, fichaje_hoy]` | `ORBITA_MCP_TOOLS` | Solo esas áreas o herramientas (vacío: todas). Una lista con solo nombres desconocidos no publica ninguna |
+| `mcp.tools.disabled: [gastos]` | `ORBITA_MCP_TOOLS_DISABLED` | Quita esas áreas o herramientas |
+| `mcp.tools.readOnly: true` | `ORBITA_MCP_READ_ONLY` | Solo las 14 de consulta |
+
+Áreas: `general` (4), `fichaje` (5), `vacaciones` (5), `gastos` (8), `aprobaciones` (4); la tabla del catálogo dice qué
+herramienta es de cada una (columna Área). Una herramienta no publicada tampoco se puede llamar. Al arrancar,
+`orbita-api` escribe en el log `ORBITA MCP: N de 26 herramientas activas: ...`. El Integrator lee la lista al arrancar:
+reinícialo después de cambiarla.
 
 ## Seguridad
 

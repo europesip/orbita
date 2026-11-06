@@ -2,6 +2,14 @@
 
 **English** · [Español](CHANGELOG.es.md)
 
+## 2.2.0 · 2026-11-06 · Choose the MCP tools
+
+- **`mcp.tools`** in the chart values: publish only some areas or tools (`enabled`), remove some (`disabled`) or only
+  the query ones (`readOnly`). All 26 by default (about 4,700 tokens in every prompt); areas `general`, `fichaje`,
+  `vacaciones`, `gastos`, `aprobaciones`. A tool that is not published cannot be called either.
+- Installation without registry login (images and chart are public), and Lab 5 in the
+  [HCL DX Compose labs](https://github.com/europesip/hcl-dx-compose-labs).
+
 ## 2.1.0 · 2026-11-06 · The AI can do much more
 
 - **MCP server with 26 tools** (2 before): my day and notifications, time tracking (status, month, team now, **clock

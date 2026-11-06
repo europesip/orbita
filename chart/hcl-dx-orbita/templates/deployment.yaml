@@ -75,6 +75,17 @@ spec:
               valueFrom: { secretKeyRef: { name: {{ include "orbita.fullname" . }}-kiosk, key: key } }
             - { name: ORBITA_PAGES_BASE, value: {{ .Values.pages.base | quote }} }
             - { name: ORBITA_KIOSK_PAGE, value: {{ printf "%squiosco" .Values.pages.base | quote }} }
+            {{- with .Values.mcp.tools }}
+            {{- if .enabled }}
+            - { name: ORBITA_MCP_TOOLS, value: {{ join "," .enabled | quote }} }
+            {{- end }}
+            {{- if .disabled }}
+            - { name: ORBITA_MCP_TOOLS_DISABLED, value: {{ join "," .disabled | quote }} }
+            {{- end }}
+            {{- if .readOnly }}
+            - { name: ORBITA_MCP_READ_ONLY, value: "true" }
+            {{- end }}
+            {{- end }}
             {{- if .Values.mcp.tokenSecret }}
             - name: ORBITA_MCP_TOKEN
               valueFrom: { secretKeyRef: { name: {{ .Values.mcp.tokenSecret }}, key: token } }

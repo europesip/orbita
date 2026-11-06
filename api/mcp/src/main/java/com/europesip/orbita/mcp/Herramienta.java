@@ -40,6 +40,10 @@ final class Herramienta {
         this.ejecutor = ejecutor;
     }
 
+    boolean soloLectura() {
+        return soloLectura;
+    }
+
     Resultado ejecutar(Llamada llamada) {
         return ejecutor.ejecutar(llamada);
     }

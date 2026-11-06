@@ -71,6 +71,13 @@ mcp:
   enabled: true
   # Optional Secret with key "token": the MCP client must then send "Authorization: Bearer <token>"
   tokenSecret: ""
+  # Which tools are published. Every tool definition goes into the prompt of EVERY call to the model (all 26: about
+  # 4,700 tokens), so publish only what you need. Names of tools or of areas: general (4 tools), fichaje (5),
+  # vacaciones (5), gastos (8), aprobaciones (4). See docs/mcp.md.
+  tools:
+    enabled: []              # only these, e.g. [vacaciones, fichaje_hoy]. Empty: all
+    disabled: []             # remove these, e.g. [gastos, solicitud_resolver]
+    readOnly: false          # true: only the 14 query tools (nothing that changes data)
   # NetworkPolicy: only the IQ Integrator reaches the MCP port. Register http://<release>-api.<ns>.svc:9081 in IQ.
   networkPolicy:
     enabled: true
@@ -129,7 +136,7 @@ scriptapps:
   dxclient:
     acceptLicense: false     # REQUIRED true: you accept the HCL DXClient license
   bundle:
-    image: ghcr.io/europesip/orbita/orbita-scriptapps:2.1.0
+    image: ghcr.io/europesip/orbita/orbita-scriptapps:2.2.0
   job:
     imagePullSecrets: []     # the bundle image is public; set it for a private mirror
   apps:

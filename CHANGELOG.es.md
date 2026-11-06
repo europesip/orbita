@@ -2,6 +2,14 @@
 
 [English](CHANGELOG.md) · **Español**
 
+## 2.2.0 · 2026-11-06 · Elegir las herramientas MCP
+
+- **`mcp.tools`** en los valores del chart: publicar solo algunas áreas o herramientas (`enabled`), quitar algunas
+  (`disabled`) o solo las de consulta (`readOnly`). Por defecto, las 26 (unos 4.700 tokens en cada prompt); áreas
+  `general`, `fichaje`, `vacaciones`, `gastos`, `aprobaciones`. Una herramienta no publicada tampoco se puede llamar.
+- Instalación sin iniciar sesión en el registro (imágenes y chart públicos), y Lab 5 en los
+  [labs de HCL DX Compose](https://github.com/europesip/hcl-dx-compose-labs).
+
 ## 2.1.0 · 2026-11-06 · La IA hace mucho más
 
 - **Servidor MCP con 26 herramientas** (antes 2): mi día y avisos, fichaje (estado, mes, equipo ahora, **fichar**,

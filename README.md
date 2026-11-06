@@ -9,7 +9,7 @@ six **Script Applications**; the logic and the data live in a REST API (**`orbit
 PostgreSQL, which also includes an **MCP server** so that **HCL DX IQ** can answer questions and act for the user.
 Everything is installed with **one Helm chart**, `hcl-dx-orbita`.
 
-> **Version 2.1.0.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
+> **Version 2.2.0.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
 > in later releases. The application interface is in Spanish.
 
 | Page (signed-in users only) | URL in the HCL DX Compose labs |
@@ -78,7 +78,7 @@ relative to the day they are loaded.
 ## Ask the AI about ÓRBITA
 
 With the MCP server registered in IQ ([HCL DX IQ integration](#hcl-dx-iq-integration-the-mcp-server)), the assistant
-can answer and act **as the user asking**, with **26 tools**: their day, time tracking (also clocking in and out),
+can answer and act **as the user asking**, with **26 tools** ([you choose which](#choosing-which-mcp-tools-to-publish)): their day, time tracking (also clocking in and out),
 time off (balance, requests, team calendar), expenses and travel (reports, adding expenses, sending them), approvals
 (approve, reject, comment) and notifications. A few examples:
 
@@ -159,7 +159,7 @@ scriptapps:                                       # subchart hcl-dx-scriptapp: r
 **3. Install**:
 
 ```bash
-helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 2.1.0 \
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 2.2.0 \
   -n dx-shared -f orbita-values.yaml --timeout 15m
 ```
 
@@ -214,6 +214,32 @@ In the labs, `scripts/registrar-mcp-en-iq.sh` does exactly this (and does not du
   `orbita-api` log (`ORBITA MCP auditoria herramienta=… usuario=…`).
 - Tools and security model: [docs/mcp.md](docs/mcp.md) (in Spanish).
 
+### Choosing which MCP tools to publish
+
+Every tool definition the Integrator receives goes into the prompt of **every** call to the model, so each tool costs
+tokens (and money) even when it is not used. All 26 ÓRBITA tools are about **4,700 tokens** (the HCL tools are about
+30,000). By default all of them are published; to publish fewer, use `mcp.tools` in your values:
+
+```yaml
+mcp:
+  tools:
+    enabled: [vacaciones, fichaje]   # only these areas or tools (empty: all)
+    disabled: [fichar]               # minus these
+    readOnly: false                  # true: only the 14 query tools
+```
+
+| Area | Tools | ≈ tokens |
+|---|---|---|
+| `general` | quien_soy, resumen_dia, avisos, avisos_marcar_leidos | 470 |
+| `fichaje` | fichaje_hoy, fichaje_mes, equipo_ahora, fichar, fichaje_corregir | 960 |
+| `vacaciones` | vacaciones_saldo, vacaciones_solicitudes, ausencias_equipo, vacaciones_solicitar, vacaciones_cancelar | 910 |
+| `gastos` | gastos_resumen, nota_gasto, nota_gasto_crear, gasto_anadir, nota_gasto_enviar, viaje_solicitar, viaje_cancelar, pagos_pendientes | 1,550 |
+| `aprobaciones` | aprobaciones_pendientes, solicitud_resolver, solicitud_comentarios, solicitud_comentar | 780 |
+| `readOnly: true` | the 14 query tools of all areas | 1,860 |
+
+After a `helm upgrade` that changes the tools, restart the Integrator (`kubectl -n dx-demo rollout restart
+deployment/dx-iq-integrator`) so that it reads the new list; the `orbita-api` log shows which tools are active.
+
 ## Upgrade and uninstall
 
 - **Upgrade**: `helm upgrade orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version <new> -n dx-shared -f
@@ -241,7 +267,7 @@ docs/                   AI questions (EN/ES), functional spec, MCP and REST Clie
 ## Development
 
 - **Back end**: `mvn -f api/pom.xml package` (Java 21). **Interface**: `cd web && npm ci && npm run build:scriptapps`.
-- **Images**: CI builds and tests both images; a push to `main` publishes `:main`, a tag `v2.1.0` publishes `:2.1.0`
+- **Images**: CI builds and tests both images; a push to `main` publishes `:main`, a tag `v2.2.0` publishes `:2.2.0`
   and the chart.
 - **A new operation**: method in `Api.java` (or `Gastos.java`), its route in `api/rutas.json`, and the interface calls
   it with `api('op', {...})`. **A schema change**: a new file `V<n>__description.sql` in `db/migration` (never edit a

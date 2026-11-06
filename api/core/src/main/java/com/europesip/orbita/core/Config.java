@@ -49,6 +49,12 @@ public final class Config {
     // --- MCP ------------------------------------------------------------------------------------------------------
     /** Token Bearer opcional que debe enviar el cliente MCP (además de la sesión de DX del usuario). */
     public static String tokenMcp() { return env("ORBITA_MCP_TOKEN", null); }
+    /** Herramientas del MCP que se publican (nombres o áreas, separados por comas); vacío: todas. */
+    public static String herramientasMcp() { return env("ORBITA_MCP_TOOLS", null); }
+    /** Herramientas del MCP que NO se publican (nombres o áreas). */
+    public static String herramientasMcpQuitadas() { return env("ORBITA_MCP_TOOLS_DISABLED", null); }
+    /** Publicar solo las herramientas de consulta. */
+    public static boolean mcpSoloLectura() { return si("ORBITA_MCP_READ_ONLY", false); }
     /** Solo desarrollo: usuario con el que actúa el MCP cuando la llamada no trae sesión de DX. */
     public static String usuarioMcpDesarrollo() { return env("ORBITA_MCP_DEV_USER", null); }
 }

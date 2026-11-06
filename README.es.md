@@ -10,7 +10,7 @@ PostgreSQL, que incluye también un **servidor MCP** para que **HCL DX IQ** resp
 se instala con **un chart de Helm**, `hcl-dx-orbita`. Qué hace cada aplicación:
 [docs/ESPECIFICACION.md](docs/ESPECIFICACION.md).
 
-> **Versión 2.1.0.** Necesita **PostgreSQL** (ver [Requisitos](#requisitos)); en las siguientes versiones se podrán
+> **Versión 2.2.0.** Necesita **PostgreSQL** (ver [Requisitos](#requisitos)); en las siguientes versiones se podrán
 > usar otras bases de datos.
 
 | Página (solo usuarios con sesión) | URL en los labs de HCL DX Compose |
@@ -80,7 +80,7 @@ Cada persona ve su PIN y su tarjeta QR en *Fichaje › Mi tarjeta de quiosco*. P
 ## Qué preguntarle a la IA sobre ÓRBITA
 
 Con el servidor MCP registrado en IQ ([Integración con HCL DX IQ](#integración-con-hcl-dx-iq-el-servidor-mcp)), el
-asistente responde y actúa **como el usuario que pregunta**, con **26 herramientas**: su día, el fichaje (también
+asistente responde y actúa **como el usuario que pregunta**, con **26 herramientas** ([eliges cuáles](#elegir-qué-herramientas-mcp-se-publican)): su día, el fichaje (también
 fichar), las vacaciones (saldo, solicitudes, calendario del equipo), los gastos y viajes (notas, añadir gastos,
 enviarlas), las aprobaciones (aprobar, rechazar, comentar) y los avisos. Algunos ejemplos:
 
@@ -163,7 +163,7 @@ scriptapps:                                       # subchart hcl-dx-scriptapp: s
 **3. Instalar**:
 
 ```bash
-helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 2.1.0 \
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 2.2.0 \
   -n dx-shared -f orbita-values.yaml --timeout 15m
 ```
 
@@ -219,6 +219,32 @@ En los labs, `scripts/registrar-mcp-en-iq.sh` hace exactamente esto (y no duplic
   auditada en el log de `orbita-api` (`ORBITA MCP auditoria herramienta=… usuario=…`).
 - Herramientas y modelo de seguridad: [docs/mcp.md](docs/mcp.md).
 
+### Elegir qué herramientas MCP se publican
+
+Cada definición de herramienta que recibe el Integrator va en el prompt de **cada** llamada al modelo, así que cada
+herramienta cuesta tokens (y dinero) aunque no se use. Las 26 de ÓRBITA son unos **4.700 tokens** (las de HCL, unos
+30.000). Por defecto se publican todas; para publicar menos, usa `mcp.tools` en tus valores:
+
+```yaml
+mcp:
+  tools:
+    enabled: [vacaciones, fichaje]   # solo estas áreas o herramientas (vacío: todas)
+    disabled: [fichar]               # menos estas
+    readOnly: false                  # true: solo las 14 de consulta
+```
+
+| Área | Herramientas | ≈ tokens |
+|---|---|---|
+| `general` | quien_soy, resumen_dia, avisos, avisos_marcar_leidos | 470 |
+| `fichaje` | fichaje_hoy, fichaje_mes, equipo_ahora, fichar, fichaje_corregir | 960 |
+| `vacaciones` | vacaciones_saldo, vacaciones_solicitudes, ausencias_equipo, vacaciones_solicitar, vacaciones_cancelar | 910 |
+| `gastos` | gastos_resumen, nota_gasto, nota_gasto_crear, gasto_anadir, nota_gasto_enviar, viaje_solicitar, viaje_cancelar, pagos_pendientes | 1.550 |
+| `aprobaciones` | aprobaciones_pendientes, solicitud_resolver, solicitud_comentarios, solicitud_comentar | 780 |
+| `readOnly: true` | las 14 de consulta de todas las áreas | 1.860 |
+
+Después de un `helm upgrade` que cambie las herramientas, reinicia el Integrator (`kubectl -n dx-demo rollout restart
+deployment/dx-iq-integrator`) para que lea la lista nueva; el log de `orbita-api` dice qué herramientas están activas.
+
 ## Actualizar y desinstalar
 
 - **Actualizar**: `helm upgrade orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version <nueva> -n dx-shared -f
@@ -246,8 +272,8 @@ docs/                   preguntas a la IA, especificación, MCP y pruebas con RE
 ## Desarrollo
 
 - **Back end**: `mvn -f api/pom.xml package` (Java 21). **Interfaz**: `cd web && npm ci && npm run build:scriptapps`.
-- **Imágenes**: CI construye y prueba las dos imágenes; un push a `main` publica `:main`, un tag `v2.1.0` publica
-  `:2.1.0` y el chart.
+- **Imágenes**: CI construye y prueba las dos imágenes; un push a `main` publica `:main`, un tag `v2.2.0` publica
+  `:2.2.0` y el chart.
 - **Una operación nueva**: método en `Api.java` (o `Gastos.java`), su ruta en `api/rutas.json`, y la interfaz la llama
   con `api('op', {...})`. **Un cambio de esquema**: un fichero nuevo `V<n>__descripcion.sql` en `db/migration` (nunca
   se edita uno publicado).

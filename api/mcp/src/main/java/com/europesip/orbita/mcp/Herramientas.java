@@ -1,8 +1,17 @@
 package com.europesip.orbita.mcp;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import com.europesip.orbita.core.Config;
 
 import com.europesip.orbita.mcp.Herramienta.Esquema;
 import com.europesip.orbita.mcp.Herramienta.Llamada;
@@ -19,6 +28,13 @@ import com.europesip.orbita.mcp.Herramienta.Resultado;
  *
  * Fuera a propósito: pagar notas, restaurar la demo, borrar notas o líneas y exportaciones CSV (acciones masivas o
  * irreversibles que no deberían quedar a una sola frase de la IA).
+ *
+ * QUÉ HERRAMIENTAS SE PUBLICAN (activas()): todas por defecto. Cada definición va en el prompt de cada llamada al
+ * modelo, así que se pueden limitar con variables de entorno (valores mcp.tools.* del chart):
+ *   ORBITA_MCP_TOOLS           solo estas (nombres o áreas, separados por comas); vacío: todas
+ *   ORBITA_MCP_TOOLS_DISABLED  quitar estas (nombres o áreas)
+ *   ORBITA_MCP_READ_ONLY=true  solo las de consulta
+ * Áreas: general, fichaje, vacaciones, gastos, aprobaciones (AREAS).
  */
 final class Herramientas {
 
@@ -273,8 +289,61 @@ final class Herramientas {
                 () -> l.api("com.enviar", "clase", l.texto("clase"), "objeto", l.texto("id"), "texto", l.texto("texto"))))
     );
 
+    /** Área de cada herramienta (para activar o desactivar grupos enteros). */
+    static final Map<String, List<String>> AREAS = new LinkedHashMap<>();
+    static {
+        AREAS.put("general", List.of("quien_soy", "resumen_dia", "avisos", "avisos_marcar_leidos"));
+        AREAS.put("fichaje", List.of("fichaje_hoy", "fichaje_mes", "equipo_ahora", "fichar", "fichaje_corregir"));
+        AREAS.put("vacaciones", List.of("vacaciones_saldo", "vacaciones_solicitudes", "ausencias_equipo", "vacaciones_solicitar",
+                "vacaciones_cancelar"));
+        AREAS.put("gastos", List.of("gastos_resumen", "nota_gasto", "nota_gasto_crear", "gasto_anadir", "nota_gasto_enviar",
+                "viaje_solicitar", "viaje_cancelar", "pagos_pendientes"));
+        AREAS.put("aprobaciones", List.of("aprobaciones_pendientes", "solicitud_resolver", "solicitud_comentarios", "solicitud_comentar"));
+    }
+
+    private static final Logger LOG = Logger.getLogger(Herramientas.class.getName());
+    private static volatile List<Herramienta> activas;
+
+    /** Las herramientas que se publican, según ORBITA_MCP_TOOLS, ORBITA_MCP_TOOLS_DISABLED y ORBITA_MCP_READ_ONLY. */
+    static List<Herramienta> activas() {
+        if (activas == null) {
+            activas = filtrar(Config.herramientasMcp(), Config.herramientasMcpQuitadas(), Config.mcpSoloLectura());
+            List<String> n = new ArrayList<>();
+            for (Herramienta h : activas) n.add(h.nombre);
+            LOG.info("ORBITA MCP: " + activas.size() + " de " + TODAS.size() + " herramientas activas: " + String.join(", ", n));
+        }
+        return activas;
+    }
+
+    static List<Herramienta> filtrar(String solo, String quitar, boolean soloLectura) {
+        Set<String> si = nombres(solo), no = nombres(quitar);
+        boolean todas = solo == null || solo.isBlank();   // una lista con solo erratas no publica nada (no todas)
+        List<Herramienta> l = new ArrayList<>();
+        for (Herramienta h : TODAS) {
+            if (!todas && !si.contains(h.nombre)) continue;
+            if (no.contains(h.nombre)) continue;
+            if (soloLectura && !h.soloLectura()) continue;
+            l.add(h);
+        }
+        return List.copyOf(l);
+    }
+
+    /** "fichaje, nota_gasto" → los nombres de las herramientas (un área son todas las suyas). */
+    private static Set<String> nombres(String lista) {
+        Set<String> s = new LinkedHashSet<>();
+        if (lista == null) return s;
+        for (String x : lista.split("[,\\s]+")) {
+            String k = x.trim().toLowerCase(Locale.ROOT);
+            if (k.isEmpty()) continue;
+            if (AREAS.containsKey(k)) s.addAll(AREAS.get(k));
+            else if (TODAS.stream().anyMatch(h -> h.nombre.equals(k))) s.add(k);
+            else LOG.warning("ORBITA MCP: herramienta o área desconocida en la configuración: " + k);
+        }
+        return s;
+    }
+
     static Herramienta buscar(String nombre) {
-        for (Herramienta h : TODAS) if (h.nombre.equals(nombre)) return h;
+        for (Herramienta h : activas()) if (h.nombre.equals(nombre)) return h;
         return null;
     }
 
