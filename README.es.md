@@ -246,7 +246,7 @@ en la nube (AWS). Elige **Todo** (o **Personalizado** con ÓRBITA) e instala DX 
 docker run --rm -p 8080:8080 ghcr.io/europesip/hcl-dx-compose-installer:2.0.0   # después abre http://localhost:8080
 ```
 
-> Es un asistente **experimental**, todavía en desarrollo. La vía recomendada es el `helm upgrade --install` de abajo,
+> Es un asistente **experimental**, todavía en desarrollo. La vía recomendada es el `helm upgrade --install` de arriba,
 > sobre un HCL DX Compose que ya tengas; para una PoC, un entorno de desarrollo o pruebas, el asistente es perfectamente
 > válido.
 

@@ -242,7 +242,7 @@ cloud (AWS). Choose **Everything** (or **Custom** with ÓRBITA) and it installs 
 docker run --rm -p 8080:8080 ghcr.io/europesip/hcl-dx-compose-installer:2.0.0   # then open http://localhost:8080
 ```
 
-> It is an **experimental** wizard, still in development. The recommended path is the `helm upgrade --install` below,
+> It is an **experimental** wizard, still in development. The recommended path is the `helm upgrade --install` above,
 > on an HCL DX Compose you already have; for a PoC, a development environment or tests the wizard is perfectly valid.
 
 ### Options: pages and what the apps show
