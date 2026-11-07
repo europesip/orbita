@@ -107,6 +107,13 @@ available from EUROPESIP as a service. ÓRBITA is not an HCL product and is not 
 
 ## Installation
 
+**I want to try ÓRBITA, but I have no access to any Kubernetes environment with DX Compose.**
+For those cases you can use the **[HCL DX Compose Installer](https://github.com/europesip/hcl-dx-compose-installer)**, a wizard by EUROPESIP that sets up HCL DX
+Compose, and ÓRBITA with it, in a local sandbox (your PC with WSL2 or Linux), on an existing Kubernetes cluster or in the
+cloud (AWS): `docker run --rm -p 8080:8080 ghcr.io/europesip/hcl-dx-compose-installer:2.0.0   # then open http://localhost:8080`. Please note that it is an **experimental wizard** for a fast, automated installation of HCL DX,
+**still in development**. The recommended option is a `helm upgrade` on an environment you already have; for a PoC,
+development environments or tests it is perfectly valid.
+
 **What do I need?**
 HCL DX Compose CF239, Helm, PostgreSQL (ÓRBITA creates its own database and user), a DX administrator for DXClient and
 the CA of the DX certificate. For the AI assistant, a LiteLLM or any OpenAI-compatible endpoint (optional).

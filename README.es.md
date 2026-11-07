@@ -28,7 +28,7 @@ se instala con **un chart de Helm**, `hcl-dx-orbita`. Qué hace cada aplicación
 ## Contenido
 
 - [Usuarios de la demo](#usuarios-de-la-demo) · [Funciones](#funciones) · [Arquitectura](#arquitectura)
-- [Preguntas a la IA](#qué-preguntarle-a-la-ia-sobre-órbita) · [Requisitos](#requisitos) · [Instalación con Helm](#instalación-con-helm) · [Integración con HCL DX IQ](#integración-con-hcl-dx-iq-el-servidor-mcp)
+- [Preguntas a la IA](#qué-preguntarle-a-la-ia-sobre-órbita) · [Requisitos](#requisitos) · [Instalación con Helm](#instalación-con-helm) ([sandbox: mi propio DX Compose](#sandbox--monta-mi-propio-dx-compose)) · [Integración con HCL DX IQ](#integración-con-hcl-dx-iq-el-servidor-mcp)
 - [Actualizar y desinstalar](#actualizar-y-desinstalar) · [Repositorio](#repositorio) · [Desarrollo](#desarrollo)
 - [Historial de versiones](CHANGELOG.es.md) · [Preguntas frecuentes](#preguntas-frecuentes) · [Licencia](#licencia) · [Contacto y servicios](#contacto-y-servicios)
 - **Manual ilustrado (PDF)**: [Español](docs/manual/orbita-explicada.es.pdf) · [English](docs/manual/orbita-explained.en.pdf)
@@ -153,6 +153,22 @@ pide antes tu confirmación; pagar, restaurar la demo, borrar y exportar se qued
 | **Herramientas** | `kubectl` y Helm 3.8 o superior (charts OCI) |
 
 ## Instalación con Helm
+
+### Sandbox · Monta mi propio DX Compose
+
+¿Aún no tienes un clúster Kubernetes con HCL DX Compose en el que probar ÓRBITA? El **[Instalador de HCL DX Compose](https://github.com/europesip/hcl-dx-compose-installer)**,
+también de EUROPESIP, te lo monta en un entorno sandbox: en tu PC (WSL2 o Linux), en un clúster Kubernetes existente o
+en la nube (AWS). Elige **Todo** (o **Personalizado** con ÓRBITA) e instala DX Compose y ÓRBITA juntos.
+
+```bash
+docker run --rm -p 8080:8080 ghcr.io/europesip/hcl-dx-compose-installer:2.0.0   # después abre http://localhost:8080
+```
+
+> Es un asistente **experimental**, todavía en desarrollo. La vía recomendada es el `helm upgrade --install` de abajo,
+> sobre un HCL DX Compose que ya tengas; para una PoC, un entorno de desarrollo o pruebas, el asistente es perfectamente
+> válido.
+
+### Sobre tu HCL DX Compose
 
 Se instala en el namespace de las herramientas de terceros, junto a PostgreSQL (en los labs, `dx-shared`).
 

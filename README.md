@@ -27,7 +27,7 @@ Everything is installed with **one Helm chart**, `hcl-dx-orbita`.
 ## Contents
 
 - [Demo users](#demo-users) · [Features](#features) · [Architecture](#architecture)
-- [Ask the AI](#ask-the-ai-about-órbita) · [Requirements](#requirements) · [Installation with Helm](#installation-with-helm) · [HCL DX IQ integration](#hcl-dx-iq-integration-the-mcp-server)
+- [Ask the AI](#ask-the-ai-about-órbita) · [Requirements](#requirements) · [Installation with Helm](#installation-with-helm) ([sandbox: my own DX Compose](#sandbox--set-up-my-own-dx-compose)) · [HCL DX IQ integration](#hcl-dx-iq-integration-the-mcp-server)
 - [Upgrade and uninstall](#upgrade-and-uninstall) · [Repository](#repository) · [Development](#development)
 - [Release history](CHANGELOG.md) · [FAQ](#faq) · [Licence](#licence) · [Contact and services](#contact-and-services)
 - **Illustrated manual (PDF)**: [English](docs/manual/orbita-explained.en.pdf) · [Español](docs/manual/orbita-explicada.es.pdf)
@@ -150,6 +150,21 @@ needs your confirmation first; paying, restoring the demo, deleting and exportin
 | **Tools** | `kubectl` and Helm 3.8+ (OCI charts) |
 
 ## Installation with Helm
+
+### Sandbox · Set up my own DX Compose
+
+No Kubernetes cluster with HCL DX Compose to try ÓRBITA yet? The **[HCL DX Compose Installer](https://github.com/europesip/hcl-dx-compose-installer)**, also by
+EUROPESIP, sets one up for you in a sandbox: on your PC (WSL2 or Linux), on an existing Kubernetes cluster or in the
+cloud (AWS). Choose **Everything** (or **Custom** with ÓRBITA) and it installs DX Compose and ÓRBITA together.
+
+```bash
+docker run --rm -p 8080:8080 ghcr.io/europesip/hcl-dx-compose-installer:2.0.0   # then open http://localhost:8080
+```
+
+> It is an **experimental** wizard, still in development. The recommended path is the `helm upgrade --install` below,
+> on an HCL DX Compose you already have; for a PoC, a development environment or tests the wizard is perfectly valid.
+
+### On your HCL DX Compose
 
 Install it in the namespace of your third-party tools, next to PostgreSQL (the labs use `dx-shared`).
 
