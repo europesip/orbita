@@ -2,6 +2,8 @@
 
 [English](ai-questions.md) · **Español**
 
+<p align="center"><img src="images/assistant.es.jpg" alt="El asistente de ÓRBITA con preguntas sugeridas" width="720"></p>
+
 Ejemplos para el **asistente propio de ÓRBITA** (el botón «✨ Pregúntale a ÓRBITA» de cada aplicación). También
 funcionan en el chat de **HCL DX IQ** (el botón ✨ de DX), con el servidor MCP de ÓRBITA registrado. La IA actúa **como el usuario que pregunta**: cada persona ve y cambia solo lo
 suyo (y su equipo, si es responsable). Lo que **cambia datos** nunca se hace a la primera: la IA enseña antes un

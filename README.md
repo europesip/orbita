@@ -9,6 +9,8 @@ six **Script Applications**; the logic and the data live in a REST API (**`orbit
 PostgreSQL, which also includes an **MCP server** so that **HCL DX IQ** can answer questions and act for the user.
 Everything is installed with **one Helm chart**, `hcl-dx-orbita`.
 
+<p align="center"><img src="docs/images/theme-home.en.jpg" alt="ÓRBITA in HCL DX Compose: the My intranet page with the example theme" width="100%"></p>
+
 > **Version 3.1.1.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
 > in later releases. The interface is in **English and Spanish**, in the language of each user's DX profile.
 > It has its **own AI assistant** ([below](#ask-the-ai-about-órbita)), and the integration with HCL DX IQ is optional.
@@ -61,6 +63,8 @@ relative to the day they are loaded.
 - **Time tracking**, **time off**, **expenses and travel** (receipts with in-browser OCR), **approvals** with
   conversations, **notifications** and a **time clock kiosk** (PIN or QR card).
 
+<p align="center"><img src="docs/images/approvals.en.jpg" alt="Approvals: the requests of the team, with overlaps, comments and the expense lines" width="760"></p>
+
 ## Architecture
 
 ```
@@ -84,6 +88,8 @@ The «✨ Ask ÓRBITA» button of every app opens **ÓRBITA's own assistant**. I
 asking**, with **26 tools** ([you choose which](#choosing-which-mcp-tools-to-publish)): their day, time tracking (also clocking in and out),
 time off (balance, requests, team calendar), expenses and travel (reports, adding expenses, sending them), approvals
 (approve, reject, comment) and notifications. A few examples:
+
+<p align="center"><img src="docs/images/assistant.en.jpg" alt="The ÓRBITA assistant answering how many days of holiday are left and who is away in December" width="340"></p>
 
 | Area | Ask, for example |
 |---|---|
@@ -350,7 +356,9 @@ docs/                   illustrated manual (PDF, EN/ES), AI questions (EN/ES), f
 ## FAQ
 
 Typical questions about installation, cost and licence, the theme and DAM, AI (including your own sovereign AI),
-languages, security, technology and services: **[FAQ](docs/faq.md)**.
+languages, security, technology and services: **[FAQ](docs/faq.md)**. It also explains the two editions of HCL DX
+(traditional on WebSphere, and DX Compose, cloud native), why we recommend DX Compose and why ÓRBITA uses Script
+Applications and not Java portlets.
 
 ## Licence
 

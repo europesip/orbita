@@ -3,6 +3,7 @@
 [English](faq.md) · **Español** · [README](../README.es.md)
 
 - [El producto](#el-producto)
+- [HCL DX tradicional y DX Compose](#hcl-dx-tradicional-y-dx-compose)
 - [Coste y licencia](#coste-y-licencia)
 - [Instalación](#instalación)
 - [Theme y DAM](#theme-y-dam)
@@ -27,7 +28,8 @@ Administración ven cada uno lo suyo.
 
 **¿Qué versión de HCL DX necesita?**
 **HCL DX Compose CF239** (Kubernetes u OpenShift). Usa las funciones de DX: Script Applications, la sesión de DX, el
-DAM, los themes por WebDAV y, opcionalmente, HCL DX IQ.
+DAM, los themes por WebDAV y, opcionalmente, HCL DX IQ. Por qué DX Compose y no la edición tradicional:
+[HCL DX tradicional y DX Compose](#hcl-dx-tradicional-y-dx-compose).
 
 **¿Sustituye a nuestro software de RR. HH. o de nóminas?**
 No. ÓRBITA cubre los procesos del día a día de la plantilla dentro del portal. Puede intercambiar datos con vuestros
@@ -38,6 +40,47 @@ sistemas de RR. HH., nóminas o ERP (incluye exportaciones CSV; las integracione
 Sí. Por defecto el chart carga datos de demostración (personas, fichajes, vacaciones, notas de gasto) asignados a tus
 usuarios de DX (valor `demo.people`), y RR. HH. puede restaurarlos desde la aplicación. Los datos de la demo están en
 español.
+
+## HCL DX tradicional y DX Compose
+
+<p align="center"><img src="images/dx-editions.es.svg" alt="HCL DX: la edición tradicional sobre WebSphere Application Server y la edición cloud native, HCL DX Compose, sobre Kubernetes" width="820"></p>
+
+**¿Hay dos versiones de HCL DX?**
+Sí. HCL Digital Experience tiene dos ediciones:
+- **HCL DX tradicional.** La evolución de WebSphere Portal. Se ejecuta sobre **WebSphere Application Server**, en
+  servidores y máquinas virtuales (o en contenedores), y se actualiza con Cumulative Fixes aplicados a su perfil.
+- **HCL DX Compose.** La edición **cloud native**. Se ejecuta **solo en Kubernetes u OpenShift**, con un Web Engine
+  más ligero sobre **Open Liberty** y Java 21. Se instala y actualiza con charts de Helm, e incluye en la plataforma
+  el DAM, la búsqueda y el asistente de IA (HCL DX IQ).
+
+**¿Cuál recomendáis?**
+**HCL DX Compose.** Usa una tecnología más moderna (contenedores, Kubernetes, Open Liberty, Java 21) y tiene muchas
+ventajas: instalaciones y actualizaciones más rápidas, escalado y alta disponibilidad de la mano de Kubernetes, el
+mismo despliegue en tus instalaciones o en cualquier nube, y las novedades, como HCL DX IQ, llegan antes ahí.
+EUROPESIP evaluó las dos ediciones y se decidió por la cloud native: ÓRBITA está hecha para HCL DX Compose.
+
+**¿Cuál es la mayor ventaja en la práctica?**
+**La rapidez.** Una versión nueva de DX Compose es una versión nueva del chart, que se aplica con `helm upgrade` en
+minutos; una instalación desde cero lleva menos de una hora. Eso es también lo que hace que ÓRBITA se instale de forma
+sencilla y rápida: un chart de Helm junto a DX, y los [laboratorios de HCL DX Compose](https://github.com/europesip/hcl-dx-compose-labs)
+instalan la plataforma entera paso a paso.
+
+**Usamos la versión tradicional de HCL DX. ¿Qué nos aconsejáis?**
+Nuestro consejo: **actualizar**, y dentro de ese proyecto abordar una **migración paulatina a HCL DX Compose**,
+llevando contenidos, aplicaciones y usuarios por etapas en lugar de todo a la vez. Si por cualquier motivo seguís en la
+edición tradicional y queréis usar ÓRBITA, EUROPESIP puede ayudaros, como [servicio](#servicios-de-europesip), a
+instalarla o adecuarla a vuestra plataforma actual.
+
+**¿Por qué usáis Script Applications y no portlets en Java?**
+Hacer la misma solución con portlets Java no nos hubiera costado nada: de hecho, ÓRBITA nació en **WebSphere Portal
+9.0** con esa tecnología. Al llevarla a HCL DX Compose, sobre Open Liberty, la pasamos a **Script Applications** por
+dos motivos:
+- **Los portlets Java propios necesitan una licencia aparte en DX Compose.** No se pueden desplegar portlets propios
+  sin haber comprado el **Java Transition Module for DX Compose** ([limitaciones de DX Compose](https://help.hcl-software.com/digital-experience/dx-compose/latest/getting_started/product_overview/limitations/)). Las Script
+  Applications forman parte de DX Compose, sin nada más que comprar.
+- **El mismo resultado, al alcance de más gente.** Con Script Applications (aquí, React) se consiguen las mismas
+  funciones, y cualquier desarrollador web puede mantener o ampliar la solución, sin conocer portlets Java ni
+  necesitar un runtime Java en DX.
 
 ## Coste y licencia
 
@@ -224,7 +267,7 @@ aprobaciones guardan quién hizo qué y cuándo.
 
 | Parte | Tecnología |
 |---|---|
-| Interfaz | React, publicado como seis **Script Applications de HCL DX** (un único paquete, sin portlets Java) |
+| Interfaz | React, publicado como seis **Script Applications de HCL DX** (un único paquete, sin portlets Java: [por qué](#hcl-dx-tradicional-y-dx-compose)) |
 | API y servidor MCP | Java 21, Jakarta EE 10 sobre **Open Liberty**, en un contenedor (`orbita-api`) |
 | Base de datos | **PostgreSQL**, con el esquema gestionado por migraciones **Flyway** |
 | IA | Llamadas a funciones compatibles con OpenAI a través de **LiteLLM**; **MCP** estándar (Streamable HTTP) para HCL DX IQ |

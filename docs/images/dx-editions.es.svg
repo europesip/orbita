@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="430" viewBox="0 0 1040 430" role="img" aria-label="HCL DX: dos ediciones">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#0040ff"/></linearGradient>
+<style>text{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif} .h{font-size:20px;font-weight:700} .i{font-size:14px;fill:#1e293b} .t{font-size:24px;font-weight:800;fill:#0b1b3a}</style></defs>
+<rect width="1040" height="430" rx="22" fill="#f8fafc"/>
+<text x="40" y="52" class="t">HCL DX: dos ediciones</text>
+<rect x="30" y="82" width="460" height="270" rx="16" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+<rect x="30" y="82" width="460" height="54" rx="16" fill="#e2e8f0"/><rect x="30" y="120" width="460" height="16" fill="#e2e8f0"/>
+<text x="52" y="116" class="h" fill="#334155">HCL DX · tradicional</text>
+<circle cx="54" cy="163" r="4" fill="#64748b"/><text x="68" y="168" class="i">WebSphere Application Server (Java EE completo)</text>
+<circle cx="54" cy="201" r="4" fill="#64748b"/><text x="68" y="206" class="i">En servidores y VMs, o en contenedores</text>
+<circle cx="54" cy="239" r="4" fill="#64748b"/><text x="68" y="244" class="i">Actualizaciones: Cumulative Fixes sobre el perfil</text>
+<circle cx="54" cy="277" r="4" fill="#64748b"/><text x="68" y="282" class="i">Portlets Java (JSR 168/286) incluidos</text>
+<circle cx="54" cy="315" r="4" fill="#64748b"/><text x="68" y="320" class="i">La evolución de WebSphere Portal</text>
+<rect x="550" y="82" width="460" height="270" rx="16" fill="#ffffff" stroke="url(#g)" stroke-width="3"/>
+<rect x="550" y="82" width="460" height="54" rx="16" fill="url(#g)"/><rect x="550" y="120" width="460" height="16" fill="url(#g)"/>
+<text x="572" y="116" class="h" fill="#ffffff">HCL DX Compose · cloud native</text>
+<rect x="872" y="62" width="128" height="28" rx="14" fill="#ff0a6c"/><text x="936" y="81" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Recomendada</text>
+<circle cx="574" cy="163" r="4" fill="#0040ff"/><text x="588" y="168" class="i">Solo Kubernetes u OpenShift</text>
+<circle cx="574" cy="201" r="4" fill="#0040ff"/><text x="588" y="206" class="i">Web Engine sobre Open Liberty, Java 21</text>
+<circle cx="574" cy="239" r="4" fill="#0040ff"/><text x="588" y="244" class="i">Se instala y actualiza con Helm (helm upgrade)</text>
+<circle cx="574" cy="277" r="4" fill="#0040ff"/><text x="588" y="282" class="i">Script Applications, DAM, búsqueda, IA (HCL DX IQ)</text>
+<circle cx="574" cy="315" r="4" fill="#0040ff"/><text x="588" y="320" class="i">Portlets Java: Java Transition Module (aparte)</text>
+<path d="M496 217 H536" stroke="#ff0a6c" stroke-width="4" fill="none"/><path d="M534 207 L546 217 L534 227 Z" fill="#ff0a6c"/>
+<text x="520" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#ff0a6c">migración</text>
+<text x="520" y="246" text-anchor="middle" font-size="12" font-weight="700" fill="#ff0a6c">paulatina</text>
+<text x="520" y="398" text-anchor="middle" font-size="15" font-weight="600" fill="#0b1b3a">ÓRBITA está hecha para HCL DX Compose · EUROPESIP recomienda la edición cloud native</text>
+</svg>

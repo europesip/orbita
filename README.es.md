@@ -10,6 +10,8 @@ PostgreSQL, que incluye también un **servidor MCP** para que **HCL DX IQ** resp
 se instala con **un chart de Helm**, `hcl-dx-orbita`. Qué hace cada aplicación:
 [docs/ESPECIFICACION.md](docs/ESPECIFICACION.md).
 
+<p align="center"><img src="docs/images/theme-home.es.jpg" alt="ÓRBITA en HCL DX Compose: la página Mi intranet con el theme de ejemplo" width="100%"></p>
+
 > **Versión 3.1.1.** Necesita **PostgreSQL** (ver [Requisitos](#requisitos)); en las siguientes versiones se podrán
 > usar otras bases de datos. La interfaz está en **español e inglés**, en el idioma del perfil de DX de cada usuario.
 > Tiene **asistente de IA propio** ([más abajo](#qué-preguntarle-a-la-ia-sobre-órbita)), y la integración con HCL DX IQ es opcional.
@@ -63,6 +65,8 @@ Cada persona ve su PIN y su tarjeta QR en *Fichaje › Mi tarjeta de quiosco*. P
 - **Fichaje**, **vacaciones y ausencias**, **gastos y viajes** (tickets con OCR en el navegador, con Tesseract.js),
   **aprobaciones** con conversación, **avisos** (campana) y **quiosco de fichaje** (PIN o tarjeta QR).
 
+<p align="center"><img src="docs/images/time-off.es.jpg" alt="Vacaciones y ausencias: saldo, solicitudes y calendario del año" width="760"></p>
+
 ## Arquitectura
 
 ```
@@ -86,6 +90,8 @@ El botón «✨ Pregúntale a ÓRBITA» de cada aplicación abre el **asistente 
 **como el usuario que pregunta**, con **26 herramientas** ([eliges cuáles](#elegir-qué-herramientas-mcp-se-publican)): su día, el fichaje (también
 fichar), las vacaciones (saldo, solicitudes, calendario del equipo), los gastos y viajes (notas, añadir gastos,
 enviarlas), las aprobaciones (aprobar, rechazar, comentar) y los avisos. Algunos ejemplos:
+
+<p align="center"><img src="docs/images/assistant.es.jpg" alt="El asistente de ÓRBITA abierto junto a la página de Fichaje, con preguntas sugeridas" width="760"></p>
 
 | Área | Pregunta, por ejemplo |
 |---|---|
@@ -358,7 +364,9 @@ docs/                   manual ilustrado (PDF, ES/EN), preguntas a la IA, especi
 ## Preguntas frecuentes
 
 Dudas habituales sobre instalación, coste y licencia, el theme y el DAM, la IA (también con tu propia IA soberana),
-idiomas, seguridad, tecnología y servicios: **[Preguntas frecuentes](docs/faq.es.md)**.
+idiomas, seguridad, tecnología y servicios: **[Preguntas frecuentes](docs/faq.es.md)**. También explica las dos ediciones de HCL
+DX (la tradicional sobre WebSphere y DX Compose, cloud native), por qué recomendamos DX Compose y por qué ÓRBITA usa
+Script Applications y no portlets Java.
 
 ## Licencia
 

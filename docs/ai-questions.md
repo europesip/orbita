@@ -2,6 +2,8 @@
 
 **English** · [Español](preguntas-ia.md)
 
+<p align="center"><img src="images/assistant.en.jpg" alt="The ÓRBITA assistant answering a question about holidays and the team calendar" width="320"></p>
+
 Examples for **ÓRBITA's own assistant** (the «✨ Ask ÓRBITA» button of each app). They also work in the **HCL DX IQ**
 chat (the ✨ button of DX), with the ÓRBITA MCP server registered. The AI acts **as the user asking**: each person sees and changes only their own data
 (and their team's, if they are a manager). Anything that **changes data** is never done at once: the AI first shows a
