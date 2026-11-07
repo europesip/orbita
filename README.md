@@ -136,6 +136,10 @@ needs your confirmation first; paying, restoring the demo, deleting and exportin
 
 ## Requirements
 
+> The instructions and guides of ÓRBITA are written for **HCL DX Compose**, the cloud native edition, which is the one
+> we recommend. To install it on the traditional HCL DX (WebSphere), [contact us](#contact-and-services) and we will help
+> you. Why: [HCL DX traditional and DX Compose](docs/faq.md#hcl-dx-traditional-and-dx-compose).
+
 | | |
 |---|---|
 | **HCL DX Compose** | CF239 on Kubernetes, with an Ingress (ingress-nginx) for its host name. A DX **administrator** user for DXClient (it pushes the Script Applications and creates the pages with XMLAccess) |

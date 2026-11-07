@@ -139,6 +139,10 @@ pide antes tu confirmación; pagar, restaurar la demo, borrar y exportar se qued
 
 ## Requisitos
 
+> Las instrucciones y guías de ÓRBITA están orientadas a **HCL DX Compose**, la edición cloud native, que es la que
+> aconsejamos. Si lo que deseas es instalarla en HCL DX tradicional (WebSphere), [contacta con nosotros](#contacto-y-servicios)
+> y te ayudaremos. Por qué: [HCL DX tradicional y DX Compose](docs/faq.es.md#hcl-dx-tradicional-y-dx-compose).
+
 | | |
 |---|---|
 | **HCL DX Compose** | CF239 en Kubernetes, con un Ingress (ingress-nginx) para su nombre de host. Un usuario **administrador** de DX para DXClient (sube las Script Applications y crea las páginas con XMLAccess) |

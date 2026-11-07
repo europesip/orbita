@@ -42,6 +42,10 @@ Yes. By default the chart loads demo data (people, clockings, holidays, expense 
 
 <p align="center"><img src="images/dx-editions.en.svg" alt="HCL DX: the traditional edition on WebSphere Application Server and the cloud native edition, HCL DX Compose, on Kubernetes" width="820"></p>
 
+**Why should I know that HCL DX has two editions?**
+Because it matters for ÓRBITA: the edition of HCL DX you run decides which version of ÓRBITA to install and how it is
+installed.
+
 **Are there two versions of HCL DX?**
 Yes. HCL Digital Experience comes in two editions:
 - **HCL DX traditional.** The evolution of WebSphere Portal. It runs on **WebSphere Application Server**, on servers
@@ -67,6 +71,10 @@ applications and users in stages instead of all at once. If, for any reason, you
 want to use ÓRBITA, EUROPESIP can help you, as a [service](#services-from-europesip), to install it or adapt it to your
 current platform.
 
+**Do the ÓRBITA instructions and guides work with the traditional HCL DX?**
+The instructions and guides of ÓRBITA are written for **HCL DX Compose**, the cloud native edition, which is the one
+we recommend. If you want to install ÓRBITA on the traditional HCL DX, [contact us](#contact) and we will help you.
+
 **Why do you use Script Applications and not Java portlets?**
 Building the same solution with Java portlets would have been easy for us: ÓRBITA was actually born on **WebSphere
 Portal 9.0** as Java portlets. When we moved it to HCL DX Compose, on Open Liberty, we turned it into **Script
@@ -75,7 +83,7 @@ Applications** for two reasons:
   purchased the **Java Transition Module for DX Compose** ([DX Compose limitations](https://help.hcl-software.com/digital-experience/dx-compose/latest/getting_started/product_overview/limitations/)). Script Applications are
   part of DX Compose, with nothing else to buy.
 - **The same result, open to more people.** With Script Applications (React here) we get the same features, and
-  any web developer can maintain or extend the solution, without Java portlet skills or a Java runtime in DX.
+  any web developer can maintain or extend the solution, without Java portlet skills or additional licences.
 
 ## Cost and licence
 
@@ -216,7 +224,8 @@ assistant is cheaper. See [mcp.md](mcp.md).
 
 **Can we use the assistant in Microsoft Teams or another chat?**
 The MCP server and the REST API are standard, so they can be connected to Teams, Copilot Studio or your own chatbot.
-The identity of the user must be exchanged securely: EUROPESIP offers this integration as a service.
+The identity of the user must be exchanged securely: EUROPESIP offers this integration as a service. In fact, it is
+the service our customers ask for most, because it is so easy to use and employees welcome it so well.
 
 ## Languages and localisation
 

@@ -45,6 +45,10 @@ español.
 
 <p align="center"><img src="images/dx-editions.es.svg" alt="HCL DX: la edición tradicional sobre WebSphere Application Server y la edición cloud native, HCL DX Compose, sobre Kubernetes" width="820"></p>
 
+**¿Por qué debería saber que HCL DX tiene dos ediciones?**
+Porque es importante para ÓRBITA: la edición de HCL DX que uses influye en la versión de ÓRBITA a instalar y en el
+proceso de instalación.
+
 **¿Hay dos versiones de HCL DX?**
 Sí. HCL Digital Experience tiene dos ediciones:
 - **HCL DX tradicional.** La evolución de WebSphere Portal. Se ejecuta sobre **WebSphere Application Server**, en
@@ -71,6 +75,11 @@ llevando contenidos, aplicaciones y usuarios por etapas en lugar de todo a la ve
 edición tradicional y queréis usar ÓRBITA, EUROPESIP puede ayudaros, como [servicio](#servicios-de-europesip), a
 instalarla o adecuarla a vuestra plataforma actual.
 
+**¿Las instrucciones y guías de ÓRBITA sirven para HCL DX tradicional?**
+Las instrucciones y guías de ÓRBITA están orientadas a **HCL DX Compose**, la edición cloud native, que es la que
+aconsejamos. No obstante, si lo que deseas es instalarla en HCL DX tradicional, [contacta con nosotros](#contacto) y
+te ayudaremos.
+
 **¿Por qué usáis Script Applications y no portlets en Java?**
 Hacer la misma solución con portlets Java no nos hubiera costado nada: de hecho, ÓRBITA nació en **WebSphere Portal
 9.0** con esa tecnología. Al llevarla a HCL DX Compose, sobre Open Liberty, la pasamos a **Script Applications** por
@@ -80,7 +89,7 @@ dos motivos:
   Applications forman parte de DX Compose, sin nada más que comprar.
 - **El mismo resultado, al alcance de más gente.** Con Script Applications (aquí, React) se consiguen las mismas
   funciones, y cualquier desarrollador web puede mantener o ampliar la solución, sin conocer portlets Java ni
-  necesitar un runtime Java en DX.
+  necesitar licencias adicionales.
 
 ## Coste y licencia
 
@@ -225,7 +234,8 @@ profesionales de DX; para la plantilla, el asistente propio es más barato. Ver 
 **¿Podemos usar el asistente en Microsoft Teams o en otro chat?**
 El servidor MCP y la API REST son estándar, así que se pueden conectar a Teams, a Copilot Studio o a vuestro propio
 chatbot. La identidad del usuario hay que intercambiarla de forma segura: EUROPESIP ofrece esta integración como
-servicio.
+servicio. De hecho, es el servicio que más nos suelen pedir nuestros clientes, por lo fácil que resulta de usar y la
+buena acogida que suele tener entre los empleados.
 
 ## Idiomas y localización
 
