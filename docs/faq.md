@@ -67,9 +67,10 @@ and the [HCL DX Compose labs](https://github.com/europesip/hcl-dx-compose-labs) 
 
 **We use the traditional HCL DX. What do you advise?**
 Our advice: **upgrade**, and in that project plan a **gradual migration to HCL DX Compose**, moving content,
-applications and users in stages instead of all at once. If, for any reason, you stay on the traditional edition and
-want to use ÓRBITA, EUROPESIP can help you, as a [service](#services-from-europesip), to install it or adapt it to your
-current platform.
+applications and users in stages instead of all at once. Our services team can help you with that upgrade. However, if
+for any reason you prefer not to change edition and to stay on the traditional one, but still want to use ÓRBITA,
+that is possible too: EUROPESIP can help you, as a [service](#services-from-europesip), to install it or adapt it to
+your current platform.
 
 **Do the ÓRBITA instructions and guides work with the traditional HCL DX?**
 The instructions and guides of ÓRBITA are written for **HCL DX Compose**, the cloud native edition, which is the one

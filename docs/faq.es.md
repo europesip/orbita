@@ -71,9 +71,10 @@ instalan la plataforma entera paso a paso.
 
 **Usamos la versión tradicional de HCL DX. ¿Qué nos aconsejáis?**
 Nuestro consejo: **actualizar**, y dentro de ese proyecto abordar una **migración paulatina a HCL DX Compose**,
-llevando contenidos, aplicaciones y usuarios por etapas en lugar de todo a la vez. Si por cualquier motivo seguís en la
-edición tradicional y queréis usar ÓRBITA, EUROPESIP puede ayudaros, como [servicio](#servicios-de-europesip), a
-instalarla o adecuarla a vuestra plataforma actual.
+llevando contenidos, aplicaciones y usuarios por etapas en lugar de todo a la vez. Nuestro equipo de servicios os puede
+ayudar en ese upgrade. No obstante, si por cualquier motivo preferís no cambiar de edición y seguir en la tradicional,
+pero a la vez queréis utilizar ÓRBITA, también es posible: EUROPESIP puede ayudaros, como
+[servicio](#servicios-de-europesip), a instalarla o adecuarla a vuestra plataforma actual.
 
 **¿Las instrucciones y guías de ÓRBITA sirven para HCL DX tradicional?**
 Las instrucciones y guías de ÓRBITA están orientadas a **HCL DX Compose**, la edición cloud native, que es la que
