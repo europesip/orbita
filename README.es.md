@@ -154,6 +154,88 @@ pide antes tu confirmación; pagar, restaurar la demo, borrar y exportar se qued
 
 ## Instalación con Helm
 
+### Sobre tu HCL DX Compose
+
+Se recomienda instalar ÓRBITA en un namespace diferente al de Digital Experience, a fin de separar ambos entornos,
+pero es perfectamente posible instalarlo en el mismo namespace. Simplemente adapta las variables de abajo a tu
+entorno:
+
+```bash
+# Ejemplo A (recomendado): ÓRBITA en su propio namespace, separado de DX
+NS_ORBITA=dx-shared                                  # namespace de ÓRBITA (en los labs, junto a PostgreSQL)
+NS_DX=dx-demo                                        # namespace de HCL DX Compose (y de HCL DX IQ)
+
+# Ejemplo B: ÓRBITA en el mismo namespace que DX
+NS_ORBITA=dx-demo
+NS_DX=dx-demo
+
+# En los dos casos
+DX_HOST=dx-demo.apps.promox.europesip-lab.com        # nombre de host público de DX
+PG_HOST=dx-pg-rw.dx-shared.svc.cluster.local         # PostgreSQL (requisito)
+```
+
+**1. Secrets** (una vez):
+
+```bash
+# Administrador de DX para DXClient (Script Applications y páginas)
+kubectl -n $NS_ORBITA create secret generic orbita-dx --from-literal=username=wpsadmin --from-literal=password='<contraseña>'
+# CA del certificado de DX (autofirmado o de una CA privada). En los labs: el propio certificado
+kubectl -n $NS_DX get secret dx-tls-cert -o jsonpath='{.data.tls\.crt}' | base64 -d > dx-ca.crt
+kubectl -n $NS_ORBITA create secret generic orbita-dx-ca --from-file=ca.crt=dx-ca.crt
+```
+
+**2. Valores** (`orbita-values.yaml`; cada valor está explicado en [values.yaml](chart/hcl-dx-orbita/values.yaml)):
+
+```bash
+cat > orbita-values.yaml <<VALUES
+dx:
+  host: $DX_HOST
+  caSecret: orbita-dx-ca
+database:
+  host: $PG_HOST
+  create:
+    superuserSecret: dx-pg-superuser    # crea la base y el usuario "orbita" (un Secret en $NS_ORBITA)
+mcp:
+  networkPolicy:
+    integratorNamespace: $NS_DX         # namespace de HCL DX IQ
+scriptapps:                             # subchart hcl-dx-scriptapp: se repiten los datos de DX
+  dx:
+    host: $DX_HOST
+    credentialsSecret: orbita-dx
+    caSecret: orbita-dx-ca
+  dxclient:
+    acceptLicense: true                 # aceptas la licencia de HCL DXClient
+# demo.people: quién hace cada papel (por defecto, los usuarios de los labs)
+VALUES
+```
+
+**3. Instalar**:
+
+```bash
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 3.1.1 \
+  -n $NS_ORBITA -f orbita-values.yaml --timeout 15m
+```
+
+Qué ocurre, por orden:
+
+1. Un **Job** crea el usuario y la base de datos en PostgreSQL (idempotente). La contraseña de ÓRBITA la genera el
+   chart y se conserva entre actualizaciones (Secret `orbita-db`).
+2. Arranca **`orbita-api`**: Flyway crea las tablas y se cargan los datos de la demo. Además, el Service, el Ingress en
+   `/orbita-api` del host de DX y la NetworkPolicy del MCP.
+3. El **Job de scriptapps** sube las seis Script Applications a WCM con HCL DXClient y crea las seis páginas bajo
+   *Home* con XMLAccess.
+
+**4. Comprobar**: `kubectl -n $NS_ORBITA logs job/orbita-scriptapps-push -c dxclient | tail -3`, y
+`https://<host de DX>/orbita-api/v1/salud` debe contestar `ok`. Después, entra en DX con un usuario de la demo y abre
+*Mi intranet*.
+
+**En los labs de HCL DX Compose**, lo mismo con un script (lee el `env.sh` de los labs y crea los secrets):
+
+```bash
+DXCLIENT_ACCEPT_LICENSE=yes scripts/instalar-en-labs.sh
+scripts/verificar.sh
+```
+
 ### Sandbox · Monta mi propio DX Compose
 
 ¿Aún no tienes un clúster Kubernetes con HCL DX Compose en el que probar ÓRBITA? El **[Instalador de HCL DX Compose](https://github.com/europesip/hcl-dx-compose-installer)**,
@@ -167,71 +249,6 @@ docker run --rm -p 8080:8080 ghcr.io/europesip/hcl-dx-compose-installer:2.0.0   
 > Es un asistente **experimental**, todavía en desarrollo. La vía recomendada es el `helm upgrade --install` de abajo,
 > sobre un HCL DX Compose que ya tengas; para una PoC, un entorno de desarrollo o pruebas, el asistente es perfectamente
 > válido.
-
-### Sobre tu HCL DX Compose
-
-Se instala en el namespace de las herramientas de terceros, junto a PostgreSQL (en los labs, `dx-shared`).
-
-**1. Secrets** (una vez):
-
-```bash
-NS=dx-shared
-# Administrador de DX para DXClient (Script Applications y páginas)
-kubectl -n $NS create secret generic orbita-dx --from-literal=username=wpsadmin --from-literal=password='<contraseña>'
-# CA del certificado de DX (autofirmado o de una CA privada). En los labs: el propio certificado
-kubectl -n dx-demo get secret dx-tls-cert -o jsonpath='{.data.tls\.crt}' | base64 -d > dx-ca.crt
-kubectl -n $NS create secret generic orbita-dx-ca --from-file=ca.crt=dx-ca.crt
-```
-
-**2. Valores** (`orbita-values.yaml`; cada valor está explicado en [values.yaml](chart/hcl-dx-orbita/values.yaml)):
-
-```yaml
-dx:
-  host: dx-demo.apps.promox.europesip-lab.com     # nombre de host público de DX
-  caSecret: orbita-dx-ca
-database:
-  host: dx-pg-rw.dx-shared.svc.cluster.local      # PostgreSQL (requisito)
-  create:
-    superuserSecret: dx-pg-superuser              # crea la base y el usuario "orbita"
-mcp:
-  networkPolicy:
-    integratorNamespace: dx-demo                  # namespace de HCL DX IQ
-scriptapps:                                       # subchart hcl-dx-scriptapp: se repiten los datos de DX
-  dx:
-    host: dx-demo.apps.promox.europesip-lab.com
-    credentialsSecret: orbita-dx
-    caSecret: orbita-dx-ca
-  dxclient:
-    acceptLicense: true                           # aceptas la licencia de HCL DXClient
-# demo.people: quién hace cada papel (por defecto, los usuarios de los labs)
-```
-
-**3. Instalar**:
-
-```bash
-helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 3.1.1 \
-  -n dx-shared -f orbita-values.yaml --timeout 15m
-```
-
-Qué ocurre, por orden:
-
-1. Un **Job** crea el usuario y la base de datos en PostgreSQL (idempotente). La contraseña de ÓRBITA la genera el
-   chart y se conserva entre actualizaciones (Secret `orbita-db`).
-2. Arranca **`orbita-api`**: Flyway crea las tablas y se cargan los datos de la demo. Además, el Service, el Ingress en
-   `/orbita-api` del host de DX y la NetworkPolicy del MCP.
-3. El **Job de scriptapps** sube las seis Script Applications a WCM con HCL DXClient y crea las seis páginas bajo
-   *Home* con XMLAccess.
-
-**4. Comprobar**: `kubectl -n dx-shared logs job/orbita-scriptapps-push -c dxclient | tail -3`, y
-`https://<host de DX>/orbita-api/v1/salud` debe contestar `ok`. Después, entra en DX con un usuario de la demo y abre
-*Mi intranet*.
-
-**En los labs de HCL DX Compose**, lo mismo con un script (lee el `env.sh` de los labs y crea los secrets):
-
-```bash
-DXCLIENT_ACCEPT_LICENSE=yes scripts/instalar-en-labs.sh
-scripts/verificar.sh
-```
 
 ### Opciones: páginas y qué muestran las aplicaciones
 
