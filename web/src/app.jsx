@@ -8,6 +8,7 @@ import {Aprobaciones} from './Aprobaciones.jsx';
 import {Gastos} from './Gastos.jsx';
 import {Inicio} from './Inicio.jsx';
 import {Kiosco} from './Kiosco.jsx';
+import {Comunicacion} from './Comunicacion.jsx';
 import {OrbitaIcono, PRODUCTO} from './marca.jsx';
 import {Asistente} from './asistente.jsx';
 import {fijarIdioma, t} from './i18n.js';
@@ -19,6 +20,7 @@ const APPS = {
   vacaciones: {titulo: 'Vacaciones y ausencias', subtitulo: 'Saldo, solicitudes y calendario del equipo', icono: '🌴', Vista: Vacaciones},
   aprobaciones: {titulo: 'Aprobaciones', subtitulo: 'Solicitudes de tu equipo', icono: '✔', Vista: Aprobaciones},
   gastos: {titulo: 'Gastos y viajes', subtitulo: 'Notas de gasto, tickets y solicitudes de viaje', icono: '🧾', Vista: Gastos},
+  comunicacion: {titulo: 'Comunicación con RRHH', subtitulo: 'Comunicados, consultas a RRHH y pulso', icono: '📣', Vista: Comunicacion},
 };
 const ROLES = {RRHH: 'RRHH', RESPONSABLE: 'Responsable', EMPLEADO: 'Empleado', ADMINISTRACION: 'Administración'};
 

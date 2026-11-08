@@ -5,7 +5,7 @@
 [English](README.md) · **Español** · [Manual (PDF)](docs/manual/orbita-explicada.es.pdf) · [Presentación (PDF)](docs/presentation/orbita-presentacion.es.pdf) · [Preguntas frecuentes](docs/faq.es.md) · [Historial de versiones](CHANGELOG.es.md) · [Contacto](#contacto-y-servicios)
 
 **ÓRBITA** es una suite de intranet para **HCL DX Compose** (CF239), de **EUROPESIP**. Su interfaz React se publica
-como seis **Script Applications**; la lógica y los datos están en una API REST (**`orbita-api`**, Open Liberty) con
+como siete **Script Applications**; la lógica y los datos están en una API REST (**`orbita-api`**, Open Liberty) con
 PostgreSQL, que incluye también un **servidor MCP** para que **HCL DX IQ** responda y actúe en nombre del usuario. Todo
 se instala con **un chart de Helm**, `hcl-dx-orbita`. Qué hace cada aplicación:
 [docs/ESPECIFICACION.md](docs/ESPECIFICACION.md).
@@ -23,6 +23,7 @@ se instala con **un chart de Helm**, `hcl-dx-orbita`. Qué hace cada aplicación
 | Vacaciones | .../wps/myportal/Home/vacaciones |
 | Gastos y viajes | .../wps/myportal/Home/gastos |
 | Aprobaciones | .../wps/myportal/Home/aprobaciones |
+| Comunicación con RRHH | .../wps/myportal/Home/comunicacion |
 | Quiosco de fichaje | .../wps/myportal/Home/quiosco |
 
 ## Contenido
@@ -64,13 +65,17 @@ Cada persona ve su PIN y su tarjeta QR en *Fichaje › Mi tarjeta de quiosco*. P
   categoría, solicitudes por aprobar, quién falta los próximos 14 días y últimos avisos.
 - **Fichaje**, **vacaciones y ausencias**, **gastos y viajes** (tickets con OCR en el navegador, con Tesseract.js),
   **aprobaciones** con conversación, **avisos** (campana) y **quiosco de fichaje** (PIN o tarjeta QR).
+- **Comunicación con RRHH**: comunicados de RRHH a toda la plantilla, a un departamento o a un rol (con control de
+  lectura y de confirmación), **consultas privadas a RRHH** que solo ven el empleado y RRHH (con respuestas sugeridas
+  mientras se escribe), **encuestas de pulso anónimas** (resultados solo a partir de un mínimo de respuestas) y las
+  **preguntas frecuentes**.
 
 <p align="center"><img src="docs/images/time-off.es.jpg" alt="Vacaciones y ausencias: saldo, solicitudes y calendario del año" width="760"></p>
 
 ## Arquitectura
 
 ```
- Navegador ── https://<host de DX> ──┬── /wps/...         HCL DX: páginas con las 6 Script Applications (WCM)
+ Navegador ── https://<host de DX> ──┬── /wps/...         HCL DX: páginas con las 7 Script Applications (WCM)
                                      └── /orbita-api/v1   Ingress ──► orbita-api (Open Liberty, :9080)
                                                                         │  ¿quién es? ── cookie LtpaToken2 ──► API de perfil de DX
                                                                         └─ PostgreSQL: base "orbita" (Flyway)
@@ -87,9 +92,10 @@ Cada persona ve su PIN y su tarjeta QR en *Fichaje › Mi tarjeta de quiosco*. P
 ## Qué preguntarle a la IA sobre ÓRBITA
 
 El botón «✨ Pregúntale a ÓRBITA» de cada aplicación abre el **asistente propio de ÓRBITA**, que responde y actúa
-**como el usuario que pregunta**, con **26 herramientas** ([eliges cuáles](#elegir-qué-herramientas-mcp-se-publican)): su día, el fichaje (también
+**como el usuario que pregunta**, con **33 herramientas** ([eliges cuáles](#elegir-qué-herramientas-mcp-se-publican)): su día, el fichaje (también
 fichar), las vacaciones (saldo, solicitudes, calendario del equipo), los gastos y viajes (notas, añadir gastos,
-enviarlas), las aprobaciones (aprobar, rechazar, comentar) y los avisos. Algunos ejemplos:
+enviarlas), las aprobaciones (aprobar, rechazar, comentar), la comunicación con RRHH (comunicados, consultas, pulso)
+y los avisos. Algunos ejemplos:
 
 <p align="center"><img src="docs/images/assistant.es.jpg" alt="El asistente de ÓRBITA abierto junto a la página de Fichaje, con preguntas sugeridas" width="760"></p>
 
@@ -100,6 +106,7 @@ enviarlas), las aprobaciones (aprobar, rechazar, comentar) y los avisos. Algunos
 | Vacaciones | «¿Cuántos días de vacaciones me quedan?» · «Pídeme vacaciones del 9 al 11 de diciembre» · «¿Quién del equipo falta en diciembre?» |
 | Gastos | «¿Cuánto me deben?» · «Crea una nota "Visita a Sevilla" y añade una comida de ayer de 42,80 €» · «Envíasela a mi responsable» |
 | Aprobaciones | «¿Qué tengo que aprobar?» · «Aprueba las vacaciones de macarena» · «Rechaza el viaje a Barcelona: presupuesto más ajustado» |
+| Comunicación con RRHH | «¿Tengo algo pendiente de RRHH?» · «¿Cómo cambio la cuenta bancaria de la nómina?» · «Pide a RRHH un certificado de empresa para el banco» · RRHH: «Resúmeme los comentarios del pulso de octubre» |
 
 **Pregunta en español o en inglés**: el asistente responde en el idioma de la pregunta. **Más de 60 preguntas de
 ejemplo, por áreas: [docs/preguntas-ia.md](docs/preguntas-ia.md)** (en inglés: [docs/ai-questions.md](docs/ai-questions.md)). Lo que cambia datos
@@ -222,7 +229,7 @@ Qué ocurre, por orden:
    chart y se conserva entre actualizaciones (Secret `orbita-db`).
 2. Arranca **`orbita-api`**: Flyway crea las tablas y se cargan los datos de la demo. Además, el Service, el Ingress en
    `/orbita-api` del host de DX y la NetworkPolicy del MCP.
-3. El **Job de scriptapps** sube las seis Script Applications a WCM con HCL DXClient y crea las seis páginas bajo
+3. El **Job de scriptapps** sube las siete Script Applications a WCM con HCL DXClient y crea las siete páginas bajo
    *Home* con XMLAccess.
 
 **4. Comprobar**: `kubectl -n $NS_ORBITA logs job/orbita-scriptapps-push -c dxclient | tail -3`, y
@@ -253,10 +260,10 @@ docker run --rm -p 8080:8080 ghcr.io/europesip/hcl-dx-compose-installer:2.0.0   
 ### Opciones: páginas y qué muestran las aplicaciones
 
 **Páginas (opcional).** Por defecto el chart crea una página de DX por aplicación bajo *Home* (`pages.create: true`).
-Para colocar tú las seis Script Applications (en tus propias páginas, con tu propio diseño), instala con
+Para colocar tú las siete Script Applications (en tus propias páginas, con tu propio diseño), instala con
 `pages.create: false`: las apps se suben igualmente a WCM (*Script Application Library › Script Applications*, títulos
 «ÓRBITA · …») y añades cada una a la página que quieras. Después ajusta `pages.base` (y mantén los nombres amigables
-`mi-intranet`, `fichaje`, `vacaciones`, `gastos`, `aprobaciones`, `quiosco`) para que las apps se enlacen bien entre sí.
+`mi-intranet`, `fichaje`, `vacaciones`, `gastos`, `aprobaciones`, `comunicacion`, `quiosco`) para que las apps se enlacen bien entre sí.
 
 **Idioma.** Cada usuario ve ÓRBITA en el idioma de su perfil de DX (`preferredLanguage`). Si no lo tiene, ÓRBITA usa el
 idioma con el que DX pinta la página y, después, el del navegador. Para cualquier idioma que no sea español ni inglés,
@@ -322,7 +329,7 @@ kubectl -n dx-demo patch configmap dx-iq-integrator --type merge \
 kubectl -n dx-demo rollout restart deployment/dx-iq-integrator
 # Comprobar: tienen que aparecer las herramientas de ÓRBITA
 kubectl -n dx-demo logs deploy/dx-iq-integrator | grep Fetched
-#  Fetched 26 tools from http://orbita-api.dx-shared.svc.cluster.local:9081
+#  Fetched 33 tools from http://orbita-api.dx-shared.svc.cluster.local:9081
 ```
 
 En los labs, `scripts/registrar-mcp-en-iq.sh` hace exactamente esto (y no duplica la entrada).
@@ -336,7 +343,7 @@ En los labs, `scripts/registrar-mcp-en-iq.sh` hace exactamente esto (y no duplic
 ### Elegir qué herramientas MCP se publican
 
 Cada definición de herramienta que recibe el Integrator va en el prompt de **cada** llamada al modelo, así que cada
-herramienta cuesta tokens (y dinero) aunque no se use. Las 26 de ÓRBITA son unos **4.700 tokens** (las de HCL, unos
+herramienta cuesta tokens (y dinero) aunque no se use. Las 33 de ÓRBITA son unos **5.800 tokens** (las de HCL, unos
 30.000). Por defecto se publican todas; para publicar menos, usa `mcp.tools` en tus valores:
 
 ```yaml
@@ -344,7 +351,7 @@ mcp:
   tools:
     enabled: [vacaciones, fichaje]   # solo estas áreas o herramientas (vacío: todas)
     disabled: [fichar]               # menos estas
-    readOnly: false                  # true: solo las 14 de consulta
+    readOnly: false                  # true: solo las 20 de consulta
 ```
 
 | Área | Herramientas | ≈ tokens |
@@ -354,7 +361,8 @@ mcp:
 | `vacaciones` | vacaciones_saldo, vacaciones_solicitudes, ausencias_equipo, vacaciones_solicitar, vacaciones_cancelar | 910 |
 | `gastos` | gastos_resumen, nota_gasto, nota_gasto_crear, gasto_anadir, nota_gasto_enviar, viaje_solicitar, viaje_cancelar, pagos_pendientes | 1.550 |
 | `aprobaciones` | aprobaciones_pendientes, solicitud_resolver, solicitud_comentarios, solicitud_comentar | 780 |
-| `readOnly: true` | las 14 de consulta de todas las áreas | 1.860 |
+| `comunicacion` | comunicados_pendientes, comunicado_leer, rrhh_buscar_respuesta, consultas_mias, consulta_crear, pulso_pendientes, pulso_resultados | 1.140 |
+| `readOnly: true` | las 20 de consulta de todas las áreas | 2.750 |
 
 Después de un `helm upgrade` que cambie las herramientas, reinicia el Integrator (`kubectl -n dx-demo rollout restart
 deployment/dx-iq-integrator`) para que lea la lista nueva; el log de `orbita-api` dice qué herramientas están activas.
@@ -379,7 +387,7 @@ api/                    back end (Maven, Java 21, Jakarta EE 10)
   core/                 lógica (com.europesip.orbita.core): operaciones, permisos, Flyway, demo, sesión de DX
   rest/                 orbita-api.war: API REST (/orbita-api/v1)
   mcp/                  orbita-mcp.war: servidor MCP
-web/                    interfaz React (Vite); scripts/scriptapps.mjs genera las 6 Script Applications
+web/                    interfaz React (Vite); scripts/scriptapps.mjs genera las 7 Script Applications
 images/                 Dockerfiles: orbita-api (Open Liberty) y orbita-scriptapps (las apps construidas)
 chart/hcl-dx-orbita/    chart de Helm
 scripts/                ayudas para los labs (instalar, verificar, registrar el MCP en IQ)
@@ -391,7 +399,7 @@ docs/                   manual ilustrado (PDF, ES/EN), preguntas a la IA, especi
 - **Back end**: `mvn -f api/pom.xml package` (Java 21). **Interfaz**: `cd web && npm ci && npm run build:scriptapps`.
 - **Imágenes**: CI construye y prueba las dos imágenes; un push a `main` publica `:main`, un tag `v3.1.1` publica
   `:3.1.1` y el chart.
-- **Una operación nueva**: método en `Api.java` (o `Gastos.java`), su ruta en `api/rutas.json`, y la interfaz la llama
+- **Una operación nueva**: método en `Api.java` (o `Gastos.java`, `Comunicacion.java`), su ruta en `api/rutas.json`, y la interfaz la llama
   con `api('op', {...})`. **Un cambio de esquema**: un fichero nuevo `V<n>__descripcion.sql` en `db/migration` (nunca
   se edita uno publicado).
 - La API responde 401 sin sesión de DX, 422 con `{"error", "aviso": true}` para los errores de negocio y 500 si algo

@@ -6,11 +6,16 @@ import {lang, locale, t, tPlural} from './i18n.js';
 /** Páginas de ÓRBITA en DX (nombres amigables). */
 export const PAGINAS = {
   inicio: 'mi-intranet', fichaje: 'fichaje', vacaciones: 'vacaciones', gastos: 'gastos', aprobaciones: 'aprobaciones', kiosco: 'quiosco',
+  comunicacion: 'comunicacion',
 };
 /** Dónde están las páginas en DX: lo dice la API (GET /config, valores pages.* del chart). */
 export const RUTAS = {paginas: '/wps/myportal/Home/', quiosco: '/wps/myportal/Home/quiosco', sufijo: ''};
 export const urlApp = (app) => (app === 'kiosco' ? RUTAS.quiosco : `${RUTAS.paginas}${PAGINAS[app] || app}${RUTAS.sufijo}`);
-const ICONO_APP = {fichaje: '⏱', vacaciones: '🌴', gastos: '🧾', aprobaciones: '✔', inicio: '🏠'};
+const ICONO_APP = {fichaje: '⏱', vacaciones: '🌴', gastos: '🧾', aprobaciones: '✔', inicio: '🏠', comunicacion: '📣'};
+/** Pestaña de Comunicación a la que lleva un aviso, por su clase. */
+const PESTANA_AVISO = {COMUNICADO: 'comunicados', CONSULTA: 'consultas', ENCUESTA: 'pulso'};
+/** Enlace de un aviso: la aplicación y, en Comunicación, su pestaña. */
+export const urlAviso = (a) => `${urlApp(a.app)}${a.app === 'comunicacion' && PESTANA_AVISO[a.clase] ? `#${PESTANA_AVISO[a.clase]}` : ''}`;
 
 /** Hace cuánto: «hace 5 min», «ayer», «3 nov». */
 export function haceCuanto(isoFechaHora) {
@@ -59,8 +64,8 @@ export function Campana({inicial, app}) {
   }, [abierta]); // eslint-disable-line
   const abrir = async (a) => {
     try { const d = await api('avisos.leer', {id: a.id}); setDatos(d); setN(d.noLeidos); } catch (e) { /* sin conexión */ }
-    if (a.app !== app) window.location.href = urlApp(a.app);
-    else setAbierta(false);
+    if (a.app !== app) window.location.href = urlAviso(a);
+    else { if (a.app === 'comunicacion') window.location.hash = PESTANA_AVISO[a.clase] || ''; setAbierta(false); }
   };
   const leerTodo = async () => { try { const d = await api('avisos.leer'); setDatos(d); setN(d.noLeidos); } catch (e) { /* */ } };
   return (

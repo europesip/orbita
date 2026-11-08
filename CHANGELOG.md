@@ -2,6 +2,26 @@
 
 **English** · [Español](CHANGELOG.es.md)
 
+## Unreleased · HR communication
+
+- A seventh app, **HR communication** (page `comunicacion`, after Approvals), with four tabs: **Notices** from HR to
+  everybody, a department or a role, with read tracking, an optional **acknowledgement** with a deadline and reminders
+  to whoever is missing; private **Questions to HR** (sent, in progress, resolved; the employee rates and can reopen)
+  with **suggested answers** from the FAQ and the notices while typing; anonymous **Pulse** surveys (1–5, eNPS, free
+  text); and the **FAQ**, maintained by HR.
+- **Privacy**: a question to HR is seen only by the employee and HR, **not by their manager**. **Anonymity by design**
+  in the pulse: answers are stored without user or time, results are shown only from a minimum number of answers
+  (`minimo`, default 5, never below 3), and a department is hidden when it could be worked out by subtraction. A manager
+  sees only their own department.
+- **My intranet** shows an HR communication card and a shortcut; the bell notifications open the right tab.
+- **AI**: new area **`comunicacion`** with **7 tools** (now **33 tools**, about 5,800 tokens; `readOnly: true` publishes
+  20). `solicitud_comentarios` and `solicitud_comentar` also take questions to HR (`clase` = `CONSULTA`). Acknowledging
+  a notice, answering the pulse and publishing notices or surveys stay in the app.
+- Flyway migration **`V3__comunicacion.sql`** (8 new tables) and demo data for the new app; restoring the demo also
+  empties them. Tested on PostgreSQL 17 with 66 automated checks and in the browser.
+- **Not yet in a release**: the chart still pins the 3.1.2 images, which do not contain this app. A new release (tag
+  `v*`) must build the images before installing it on DX Compose.
+
 ## 3.1.2 · 2026-11-08 · DX with OpenID Connect
 
 - ÓRBITA works when DX users sign in through **OpenID Connect** (Keycloak, Entra ID...): with the OIDC client of

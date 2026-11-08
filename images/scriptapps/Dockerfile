@@ -1,5 +1,5 @@
 # ÓRBITA · imagen orbita-scriptapps: solo las Script Applications YA CONSTRUIDAS, una carpeta por aplicación en /app
-# (mi-intranet, fichaje, vacaciones, gastos, aprobaciones, quiosco). El Job del chart (subchart hcl-dx-scriptapp) las
+# (mi-intranet, fichaje, vacaciones, gastos, aprobaciones, quiosco, comunicacion). El Job del chart (subchart hcl-dx-scriptapp) las
 # copia de esta imagen y las sube a WCM con DXClient. Construir desde la raíz del repositorio:
 #   docker build -f images/scriptapps/Dockerfile -t orbita-scriptapps .
 

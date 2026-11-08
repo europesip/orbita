@@ -644,6 +644,7 @@
 .si-app .si-kpi-inicio.destacado strong { color: var(--si-violeta); }
 .si-app .si-inicio-rejilla { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .si-app .si-ancho-2 { grid-column: span 2; }
+.si-app .si-ancho-3 { grid-column: 1 / -1; }
 .si-app .si-grafico svg { width: 100%; display: block; }
 .si-app .si-g-rejilla { stroke: #eef0f4; stroke-width: .4; vector-effect: non-scaling-stroke; }
 .si-app .si-g-objetivo { stroke: #111827; stroke-width: 1.5; stroke-dasharray: 3 2; opacity: .45; vector-effect: non-scaling-stroke; }
@@ -873,7 +874,7 @@
   .si-app .si-anio { grid-template-columns: repeat(2, 1fr); }
   .si-app .si-kpis { grid-template-columns: 1fr 1fr; }
   .si-app .si-inicio-rejilla { grid-template-columns: 1fr; }
-  .si-app .si-ancho-2 { grid-column: auto; }
+  .si-app .si-ancho-2, .si-app .si-ancho-3 { grid-column: auto; }
   .si-app .si-accesos { grid-template-columns: 1fr 1fr; }
   .si-app .si-k-cuerpo { grid-template-columns: 1fr; padding: 0 20px 20px; }
   .si-app .si-k-hora { font-size: 72px; }
@@ -953,3 +954,69 @@
 .si-ajustes-barra { display: flex; justify-content: flex-end; margin-bottom: 8px; }
 .si-ajustes-lista { display: grid; gap: 6px; }
 .si-ajustes-lista label { display: flex; gap: 8px; align-items: center; font-weight: 400; }
+
+/* ---------------------------------------------------------------- Comunicación con RRHH */
+.si-app .si-crece { flex: 1; min-width: 0; }
+.si-app .si-al-final { justify-content: flex-end; }
+.si-app .si-banner-ambar { background: #fffbeb; color: #92400e; }
+.si-app .si-comunicados { display: flex; flex-direction: column; gap: 10px; }
+.si-app .si-comunicado { border: 1px solid var(--si-borde); border-left: 4px solid var(--c, var(--si-acento)); border-radius: 10px; background: #fff; }
+.si-app .si-comunicado.si-no-leido { background: #f8f9ff; }
+.si-app .si-comunicado-abrir { display: flex; gap: 12px; width: 100%; text-align: left; background: none; border: 0; padding: 12px 14px; cursor: pointer; font: inherit; color: inherit; }
+.si-app .si-comunicado-abrir:hover strong { color: var(--si-acento); }
+.si-app .si-comunicado-icono { font-size: 22px; width: 40px; height: 40px; flex: none; display: grid; place-items: center; background: #f3f4f6; border-radius: 10px; }
+.si-app .si-comunicado-cuerpo { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.si-app .si-comunicado-cuerpo strong { font-size: 15px; }
+.si-app .si-comunicado-pie { display: flex; align-items: center; gap: 10px; padding: 0 14px 12px 66px; }
+.si-app .si-comunicado-pie .si-barra { flex: 1; max-width: 260px; }
+.si-app .si-comunicado-detalle { display: flex; flex-direction: column; gap: 10px; }
+.si-app .si-comunicado-texto { white-space: pre-wrap; line-height: 1.6; font-size: 14px; }
+.si-app .si-consulta-nueva { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 16px; }
+.si-app .si-sugerencias { background: #f8f9ff; border: 1px dashed #c7d2fe; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.si-app .si-sugerencias h4 { margin: 0; font-size: 14px; }
+.si-app .si-faq { border: 1px solid var(--si-borde); border-radius: 8px; padding: 8px 12px; background: #fff; margin-bottom: 6px; }
+.si-app .si-faq summary { cursor: pointer; font-weight: 500; }
+.si-app .si-faq p { margin: 8px 0 0; color: var(--si-texto); line-height: 1.5; }
+.si-app .si-sugerencia-comunicado { display: flex; flex-direction: column; gap: 2px; text-align: left; border: 1px solid var(--si-borde); border-radius: 8px; padding: 8px 12px; background: #fff; cursor: pointer; font: inherit; color: inherit; }
+.si-app .si-consultas { display: flex; flex-direction: column; gap: 8px; }
+.si-app .si-consulta { border: 1px solid var(--si-borde); border-radius: 10px; background: #fff; }
+.si-app .si-consulta-abierta { border-left: 4px solid var(--si-ambar); }
+.si-app .si-consulta-en_curso { border-left: 4px solid var(--si-azul); }
+.si-app .si-consulta-resuelta { border-left: 4px solid var(--si-verde); }
+.si-app .si-consulta-cab { display: flex; align-items: center; gap: 10px; width: 100%; background: none; border: 0; padding: 10px 14px; cursor: pointer; text-align: left; font: inherit; color: inherit; }
+.si-app .si-consulta-cab .si-crece { display: flex; flex-direction: column; gap: 2px; }
+.si-app .si-consulta-cuerpo { padding: 0 14px 12px; display: flex; flex-direction: column; gap: 10px; }
+.si-app .si-consulta-cuerpo q { display: block; background: #f9fafb; border-radius: 8px; padding: 8px 12px; quotes: none; white-space: pre-wrap; }
+.si-app .si-estrellas { display: inline-flex; }
+.si-app .si-estrellas button { border: 0; background: none; font-size: 20px; color: #d1d5db; cursor: pointer; padding: 0 1px; }
+.si-app .si-estrellas button.activa { color: #f59e0b; }
+.si-app .si-estrellas button:disabled { cursor: default; }
+.si-app .si-pulso { border-top: 4px solid var(--si-acento); }
+.si-app .si-pulso-preguntas { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 14px; }
+.si-app .si-pulso-preguntas p { margin: 0 0 6px; font-weight: 500; }
+.si-app .si-escala { display: inline-flex; flex-direction: column; gap: 2px; }
+.si-app .si-escala-botones { display: flex; gap: 6px; flex-wrap: wrap; }
+.si-app .si-escala-botones button { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--si-borde); background: #fff; cursor: pointer; font: inherit; font-weight: 600; }
+.si-app .si-escala-enps .si-escala-botones button { width: 34px; height: 34px; }
+.si-app .si-escala-botones button:hover { border-color: var(--si-acento); }
+.si-app .si-escala-botones button.activa { background: var(--si-acento); border-color: var(--si-acento); color: #fff; }
+.si-app .si-escala-extremos { display: flex; justify-content: space-between; }
+.si-app .si-encuestas li { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f1f2f5; }
+.si-app .si-encuestas li .si-crece { display: flex; flex-direction: column; gap: 2px; }
+.si-app .si-resultados { display: flex; flex-direction: column; gap: 10px; }
+.si-app .si-resultados h4 { margin: 6px 0 0; }
+.si-app .si-resultado-preguntas li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 12px; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f2f5; }
+.si-app .si-media { display: flex; align-items: center; gap: 8px; }
+.si-app .si-media strong { font-size: 20px; }
+.si-app .si-distribucion { display: inline-flex; align-items: flex-end; gap: 2px; height: 26px; }
+.si-app .si-distribucion i { width: 6px; background: #c7d2fe; border-radius: 2px; }
+.si-app .si-enps { display: flex; align-items: center; gap: 10px; }
+.si-app .si-enps-valor { font-size: 24px; font-weight: 700; min-width: 56px; }
+.si-app .si-enps-barra { display: flex; height: 10px; border-radius: 99px; overflow: hidden; background: #f3f4f6; margin-bottom: 4px; }
+.si-app .si-comentarios-pulso { margin: 0; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.si-app .si-comentarios-pulso li { background: #f9fafb; border-radius: 8px; padding: 8px 12px; font-style: italic; }
+.si-app .si-editor-preguntas { margin: 0 0 8px; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+@media (max-width: 860px) {
+  .si-app .si-consulta-nueva, .si-app .si-resultado-preguntas li { grid-template-columns: 1fr; }
+  .si-app .si-comunicado-pie { padding-left: 14px; }
+}

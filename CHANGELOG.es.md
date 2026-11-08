@@ -2,6 +2,29 @@
 
 [English](CHANGELOG.md) · **Español**
 
+## Sin publicar · Comunicación con RRHH
+
+- Una séptima aplicación, **Comunicación con RRHH** (página `comunicacion`, después de Aprobaciones), con cuatro
+  pestañas: **Comunicados** de RRHH a toda la plantilla, a un departamento o a un rol, con control de lectura,
+  **confirmación** opcional con plazo y recordatorio a quien falte; **Consultas a RRHH** privadas (enviada, en curso,
+  resuelta; el empleado la valora y puede reabrirla) con **respuestas sugeridas** de las preguntas frecuentes y los
+  comunicados mientras se escribe; encuestas de **Pulso** anónimas (1–5, eNPS, texto libre); y las **Preguntas
+  frecuentes**, que mantiene RRHH.
+- **Privacidad**: una consulta a RRHH solo la ven el empleado y RRHH, **no su responsable**. **Anonimato por diseño**
+  en el pulso: las respuestas se guardan sin usuario ni hora, los resultados solo se muestran a partir de un mínimo de
+  respuestas (`minimo`, 5 por defecto, nunca menos de 3) y se oculta un departamento si se pudiera deducir por resta. Un
+  responsable solo ve su departamento.
+- **Mi intranet** muestra una tarjeta de comunicación con RRHH y un acceso directo; los avisos de la campana abren la
+  pestaña adecuada.
+- **IA**: nueva área **`comunicacion`** con **7 herramientas** (ahora **33 herramientas**, unos 5.800 tokens;
+  `readOnly: true` publica 20). `solicitud_comentarios` y `solicitud_comentar` admiten también las consultas a RRHH
+  (`clase` = `CONSULTA`). Confirmar un comunicado, responder el pulso y publicar comunicados o encuestas se quedan en la
+  aplicación.
+- Migración de Flyway **`V3__comunicacion.sql`** (8 tablas nuevas) y datos de demo de la nueva aplicación; restaurar la
+  demo también las vacía. Probado en PostgreSQL 17 con 66 comprobaciones automáticas y en el navegador.
+- **Aún sin versión publicada**: el chart sigue fijando las imágenes 3.1.2, que no contienen esta aplicación. Una nueva
+  versión (tag `v*`) debe construir las imágenes antes de instalarla en DX Compose.
+
 ## 3.1.2 · 2026-11-08 · DX con OpenID Connect
 
 - ÓRBITA funciona cuando los usuarios de DX entran por **OpenID Connect** (Keycloak, Entra ID...): con el cliente OIDC

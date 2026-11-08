@@ -27,21 +27,26 @@ import com.europesip.orbita.ia.Herramienta.Resultado;
  *  - Para ejecutar: l.api("<op>", "clave", valor, ...) con las operaciones de la lógica (api/rutas.json).
  *
  * Fuera a propósito: pagar notas, restaurar la demo, borrar notas o líneas y exportaciones CSV (acciones masivas o
- * irreversibles que no deberían quedar a una sola frase de la IA).
+ * irreversibles que no deberían quedar a una sola frase de la IA). En Comunicación con RRHH, tampoco: confirmar la
+ * lectura de un comunicado (el acuse lo hace la persona), responder al pulso (el anonimato no puede pasar por el chat)
+ * ni publicar comunicados o encuestas (envíos masivos).
  *
  * QUÉ HERRAMIENTAS SE PUBLICAN (activas()): todas por defecto. Cada definición va en el prompt de cada llamada al
  * modelo, así que se pueden limitar con variables de entorno (valores mcp.tools.* del chart):
  *   ORBITA_MCP_TOOLS           solo estas (nombres o áreas, separados por comas); vacío: todas
  *   ORBITA_MCP_TOOLS_DISABLED  quitar estas (nombres o áreas)
  *   ORBITA_MCP_READ_ONLY=true  solo las de consulta
- * Áreas: general, fichaje, vacaciones, gastos, aprobaciones (AREAS).
+ * Áreas: general, fichaje, vacaciones, gastos, aprobaciones, comunicacion (AREAS).
  */
 public final class Herramientas {
 
     private Herramientas() {}
 
     private static final String[] TIPOS_AUSENCIA = {"VACACIONES", "ASUNTOS_PROPIOS", "PERMISO", "BAJA"};
-    private static final String[] CLASES = {"AUSENCIA", "CORRECCION", "NOTA", "VIAJE"};
+    private static final String[] CLASES_APROBACION = {"AUSENCIA", "CORRECCION", "NOTA", "VIAJE"};
+    /** Clases con conversación: las solicitudes y las consultas a RRHH. */
+    private static final String[] CLASES = {"AUSENCIA", "CORRECCION", "NOTA", "VIAJE", "CONSULTA"};
+    private static final String[] CATEGORIAS_CONSULTA = {"NOMINA", "CERTIFICADO", "DATOS", "CONTRATO", "FORMACION", "OTRA"};
     private static final String[] MARCAS = {"ENTRADA", "PAUSA", "REANUDAR", "SALIDA"};
     private static final String[] CATEGORIAS = {"COMIDA", "HOTEL", "TRANSPORTE", "KILOMETRAJE", "PARKING", "OTROS"};
 
@@ -260,7 +265,7 @@ public final class Herramientas {
                 + "aprobaciones_pendientes. Rechazar exige un comentario con el motivo. Primero devuelve un resumen; "
                 + "repítela con confirmar=true cuando el usuario lo confirme.",
             Esquema.nuevo()
-                .opciones("clase", "Tipo de solicitud", true, CLASES)
+                .opciones("clase", "Tipo de solicitud", true, CLASES_APROBACION)
                 .entero("id", "id de la solicitud", true)
                 .opciones("decision", "Qué hacer", true, "APROBAR", "RECHAZAR")
                 .texto("comentario", "Comentario para la persona (obligatorio al rechazar)", false)
@@ -286,7 +291,61 @@ public final class Herramientas {
                 .confirmar(),
             false,
             l -> confirmado(l, String.format("Comentar en %s %s: «%s».", lower(l.texto("clase")), l.texto("id"), l.texto("texto")),
-                () -> l.api("com.enviar", "clase", l.texto("clase"), "objeto", l.texto("id"), "texto", l.texto("texto"))))
+                () -> l.api("com.enviar", "clase", l.texto("clase"), "objeto", l.texto("id"), "texto", l.texto("texto")))),
+
+        // ------------------------------------------------------------------------------------------- Comunicación con RRHH
+        new Herramienta("comunicados_pendientes", "Mis comunicados de RRHH",
+            "Comunicados de RRHH dirigidos al usuario: cuáles no ha leído y cuáles tiene que confirmar (acuse de lectura) y "
+                + "su fecha límite. Úsala para '¿tengo algo pendiente de RRHH?' o '¿qué comunicados tengo sin leer?'.",
+            Esquema.nuevo(), true,
+            l -> l.api("comunicados.lista")),
+
+        new Herramienta("comunicado_leer", "Leer un comunicado de RRHH",
+            "Texto completo de un comunicado de RRHH (el id sale de comunicados_pendientes), para resumirlo o responder dudas "
+                + "sobre él. No cuenta como leído ni como confirmado: el acuse de lectura lo hace la persona en la aplicación "
+                + "Comunicación (díselo si el comunicado pide confirmación).",
+            Esquema.nuevo().entero("id", "id del comunicado", true), true,
+            l -> l.api("comunicados.detalle", "id", l.texto("id"), "marcar", "false")),
+
+        new Herramienta("rrhh_buscar_respuesta", "Buscar respuesta de RRHH",
+            "Busca la respuesta a una duda de RRHH (nómina, certificados, cuenta bancaria, contrato, teletrabajo, bajas, "
+                + "formación...) en las preguntas frecuentes de RRHH y en los comunicados del usuario. Úsala SIEMPRE antes de "
+                + "consulta_crear: si encuentras la respuesta, dásela y no abras una consulta.",
+            Esquema.nuevo().texto("q", "La duda, con sus palabras clave", true), true,
+            l -> l.api("consultas.buscar", "q", l.texto("q"))),
+
+        new Herramienta("consultas_mias", "Mis consultas a RRHH",
+            "Consultas del usuario a RRHH con su estado (ABIERTA, EN_CURSO, RESUELTA) y quién de RRHH la atiende. Para RRHH, "
+                + "también la bandeja con las consultas de la plantilla. La conversación de una consulta: solicitud_comentarios "
+                + "con clase CONSULTA.",
+            Esquema.nuevo(), true,
+            l -> l.api("consultas.lista")),
+
+        new Herramienta("consulta_crear", "Enviar una consulta a RRHH",
+            "Envía una consulta privada a RRHH (la ven solo el usuario y RRHH, no su responsable). Antes, busca la respuesta "
+                + "con rrhh_buscar_respuesta. La primera llamada no cambia nada: devuelve un resumen; repítela con "
+                + "confirmar=true cuando el usuario lo confirme.",
+            Esquema.nuevo()
+                .opciones("categoria", "Categoría", true, CATEGORIAS_CONSULTA)
+                .texto("asunto", "Asunto breve", true)
+                .texto("texto", "La consulta, explicada", true)
+                .confirmar(),
+            false,
+            l -> confirmado(l, String.format("Consulta a RRHH (%s): «%s».", lower(l.texto("categoria")), l.texto("asunto")),
+                () -> l.api("consultas.crear", "categoria", l.texto("categoria"), "asunto", l.texto("asunto"), "texto", l.texto("texto")))),
+
+        new Herramienta("pulso_pendientes", "Mis encuestas de pulso",
+            "Encuestas de pulso (cortas y anónimas) del usuario y si tiene alguna abierta sin responder. Las respuestas solo "
+                + "se dan en la aplicación Comunicación, para mantener el anonimato: no puedes responderlas por el usuario.",
+            Esquema.nuevo(), true,
+            l -> l.api("pulso.lista")),
+
+        new Herramienta("pulso_resultados", "Resultados del pulso",
+            "Resultados de una encuesta de pulso (el id sale de pulso_pendientes): medias, eNPS y, para RRHH, el total, cada "
+                + "departamento y los comentarios; un responsable ve solo su departamento. Un bloque sin el mínimo de respuestas "
+                + "no tiene datos (anonimato). Úsala para resumir el clima o los comentarios.",
+            Esquema.nuevo().entero("id", "id de la encuesta", true), true,
+            l -> l.api("pulso.resultados", "id", l.texto("id")))
     );
 
     /** Área de cada herramienta (para activar o desactivar grupos enteros). */
@@ -299,6 +358,8 @@ public final class Herramientas {
         AREAS.put("gastos", List.of("gastos_resumen", "nota_gasto", "nota_gasto_crear", "gasto_anadir", "nota_gasto_enviar",
                 "viaje_solicitar", "viaje_cancelar", "pagos_pendientes"));
         AREAS.put("aprobaciones", List.of("aprobaciones_pendientes", "solicitud_resolver", "solicitud_comentarios", "solicitud_comentar"));
+        AREAS.put("comunicacion", List.of("comunicados_pendientes", "comunicado_leer", "rrhh_buscar_respuesta", "consultas_mias",
+                "consulta_crear", "pulso_pendientes", "pulso_resultados"));
     }
 
     private static final Logger LOG = Logger.getLogger(Herramientas.class.getName());

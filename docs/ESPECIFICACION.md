@@ -9,7 +9,7 @@ Suite de aplicaciones de intranet para HCL DX. Cada aplicación es una Script Ap
 |---|---|---|
 | Empleado | Toda la plantilla | Fichar, consultar su registro, pedir correcciones y ausencias, ver el calendario de su equipo |
 | Responsable | Quien tiene personas a su cargo | Lo anterior + ver el estado de su equipo y aprobar o rechazar sus solicitudes |
-| RRHH | Departamento de Personas | Lo anterior + ver a toda la plantilla y exportar el registro de jornada |
+| RRHH | Departamento de Personas | Lo anterior + ver a toda la plantilla, exportar el registro de jornada, publicar comunicados y encuestas y atender las consultas |
 | Administración | Contabilidad | Lo de empleado + pagar las notas de gasto aprobadas y exportarlas a contabilidad |
 
 El responsable de cada persona y su rol se guardan en la ficha de empleado de la suite. Quien no tiene responsable
@@ -119,10 +119,54 @@ Bandeja única del responsable con las solicitudes de su equipo: ausencias, corr
   días**.
 - Aprobar o rechazar con comentario; historial de lo resuelto.
 
+## Comunicación con RRHH
+
+Canal entre RRHH y la plantilla, en cuatro pestañas.
+
+**Comunicados**
+- RRHH publica un comunicado para **toda la plantilla**, un **departamento** o un **rol**, con categoría (política,
+  aviso, evento, beneficio) y un enlace opcional (`https://` o una ruta del portal que empiece por `/`).
+- Puede pedir **confirmación** («He leído y acepto»), con un plazo opcional. Cada destinatario recibe un aviso en la
+  campana.
+- RRHH ve quién lo ha leído y quién lo ha confirmado, envía un **recordatorio** a quien falta y archiva los comunicados
+  que ya no aplican.
+
+**Consultas a RRHH**
+- El empleado envía una consulta privada con categoría (nómina, certificados, datos personales, contrato y jornada,
+  formación, otra). **Solo la ven el empleado y RRHH, no su responsable.**
+- Mientras escribe, la aplicación le **sugiere respuestas** de las preguntas frecuentes y de los comunicados, de modo que
+  muchas consultas no llegan a enviarse.
+- Estados: abierta (enviada; RRHH la ve «sin atender») → en curso → resuelta. Se habla en la conversación de la
+  consulta; cuando RRHH comenta una consulta abierta, pasa a en curso y queda asignada a esa persona. RRHH la resuelve
+  con una respuesta final; el empleado la **valora** de 1 a 5 y puede **reabrirla**.
+
+**Pulso**
+- Encuestas cortas y **anónimas** de RRHH: hasta 10 preguntas de escala 1–5, eNPS (0–10) y texto libre opcional.
+- **Anonimato por diseño**: las respuestas se guardan sin usuario ni hora (solo un identificador aleatorio de envío y
+  el departamento); aparte, solo se anota quién ha respondido, para no preguntárselo dos veces.
+- Los resultados (total, por departamento y comentarios) solo se muestran a partir de un **mínimo de respuestas** (5 por
+  defecto, nunca menos de 3). Un departamento también se oculta si se pudiera deducir restando los demás del total.
+- RRHH ve el total, los departamentos y los comentarios; un responsable, solo su departamento. La IA no puede responder
+  encuestas: el anonimato no puede pasar por el chat.
+
+**Preguntas frecuentes**: las mantiene RRHH (crear, editar, borrar); alimentan las respuestas sugeridas de las consultas.
+
+En **Mi intranet**, una tarjeta muestra el comunicado por confirmar, el pulso pendiente y las consultas abiertas (para
+RRHH, las consultas sin atender de la plantilla), con un acceso directo y el contador «n comunicados por confirmar». Los
+avisos de la campana abren la pestaña que corresponde.
+
 ## Datos de demostración
 
 Empresa ficticia con dos equipos (Ventas y Tecnología), Dirección de Personas y Administración: fichajes de las
 últimas semanas, vacaciones disfrutadas y pendientes, un día sin fichaje de salida y solicitudes esperando aprobación.
+
+Comunicación con RRHH: RRHH ha publicado la «Nueva política de teletrabajo», que hay que confirmar en 10 días (Lucía no
+la ha abierto; Javier la ha leído pero no la ha confirmado); Tecnología tiene por confirmar un comunicado de formación
+obligatoria en seguridad; además, «Calendario laboral», «Revisión médica anual» y «Cena de empresa de fin de año».
+Javier tiene una consulta de nómina (IRPF) en curso con RRHH; David acaba de preguntar cómo cambiar su cuenta bancaria
+(sin atender); Lucía tiene una resuelta y valorada con un 5. El «Pulso de octubre» está cerrado y con resultados
+(Tecnología llega al mínimo de 4 respuestas; los demás departamentos no) y el «Pulso de noviembre» está abierto, sin
+respuesta de Lucía. Hay 7 preguntas frecuentes.
 
 La historia se escribe por **papeles**; cada papel lo hace un usuario de DX que ya existe (valor `demo.people` del
 chart). Los nombres del recorrido de abajo son los de la historia; entre paréntesis, quién los hace en los labs.
@@ -156,9 +200,16 @@ Las contraseñas son las de cada usuario en el directorio de DX (en los labs, la
    tickets y aprueba.
 3. **Rosa (Administración**, `german`**)** marca las notas aprobadas como pagadas y exporta el fichero para contabilidad.
 
+**Comunicación con RRHH** (3 minutos más):
+1. **Lucía** (`macarena`) ve en *Mi intranet* la nueva política de teletrabajo por confirmar, la lee y la confirma;
+   responde el pulso de noviembre.
+2. **David** (`jordi`) empieza a escribir una consulta y ve las respuestas sugeridas de las preguntas frecuentes.
+3. **Ana (RRHH**, `patricia`**)** ve quién falta por confirmar la política y le envía un recordatorio, responde la
+   consulta de David y revisa los resultados del pulso de octubre (solo Tecnología llega al mínimo).
+
 ## Técnica
 
-- Seis Script Applications de HCL DX (interfaz React) y una API REST propia (`orbita-api`, Open Liberty) en el mismo
+- Siete Script Applications de HCL DX (interfaz React) y una API REST propia (`orbita-api`, Open Liberty) en el mismo
   host que DX; la API sabe quién es el usuario preguntándoselo a DX con su cookie de sesión.
 - Base de datos PostgreSQL con migraciones Flyway.
 - Servidor MCP para HCL DX IQ en el mismo servidor, que actúa como el usuario del chat.

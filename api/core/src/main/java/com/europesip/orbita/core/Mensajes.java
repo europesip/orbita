@@ -152,4 +152,72 @@ public final class Mensajes {
         patron("(Aprobada|Rechazada) la solicitud de (.+)\\.", "$2's request has been $1.");
         patron("(\\d+) notas marcadas como pagadas\\.", "$1 reports marked as paid.");
     }
+
+    // Comunicación con RRHH (Comunicacion)
+    static {
+        en("Solo RRHH puede publicar comunicados.", "Only HR can publish notices.");
+        en("Solo RRHH puede ver quién ha leído un comunicado.", "Only HR can see who has read a notice.");
+        en("Solo RRHH puede enviar recordatorios.", "Only HR can send reminders.");
+        en("Solo RRHH puede archivar comunicados.", "Only HR can archive notices.");
+        en("Solo RRHH puede cambiar el estado de una consulta.", "Only HR can change the status of a question.");
+        en("Solo RRHH puede editar las preguntas frecuentes.", "Only HR can edit the FAQ.");
+        en("Solo RRHH puede crear encuestas.", "Only HR can create surveys.");
+        en("Solo RRHH puede cerrar encuestas.", "Only HR can close surveys.");
+        en("Ese departamento no existe.", "That department does not exist.");
+        en("Destinatarios no válidos.", "Invalid recipients.");
+        en("El comunicado ya no existe.", "The notice no longer exists.");
+        en("Ese comunicado no va dirigido a ti.", "That notice is not addressed to you.");
+        en("Este comunicado no necesita confirmación.", "This notice does not need to be acknowledged.");
+        en("Lectura confirmada.", "Reading acknowledged.");
+        en("Escribe el título del comunicado.", "Write the title of the notice.");
+        en("Escribe el texto del comunicado.", "Write the text of the notice.");
+        en("Categoría no válida.", "Invalid category.");
+        en("El enlace tiene que empezar por https:// o por /.", "The link must start with https:// or /.");
+        en("La fecha límite no puede ser anterior a hoy.", "The deadline cannot be earlier than today.");
+        en("No hay nadie en esos destinatarios.", "There is nobody in those recipients.");
+        en("Todos los destinatarios lo han confirmado.", "All recipients have acknowledged it.");
+        en("Todos los destinatarios lo han leído.", "All recipients have read it.");
+        en("Comunicado archivado.", "Notice archived.");
+        en("La consulta ya no existe.", "The question no longer exists.");
+        en("No tienes acceso a esa consulta.", "You do not have access to that question.");
+        en("Escribe el asunto de la consulta.", "Write the subject of the question.");
+        en("Explica tu consulta.", "Explain your question.");
+        en("Consulta enviada a RRHH.", "Question sent to HR.");
+        en("Solo quien hizo la consulta puede reabrirla.", "Only the person who asked can reopen it.");
+        en("La consulta no está resuelta.", "The question is not resolved.");
+        en("Consulta reabierta.", "Question reopened.");
+        en("La consulta ya está resuelta.", "The question is already resolved.");
+        en("Consulta asignada a ti.", "Question assigned to you.");
+        en("Consulta resuelta.", "Question resolved.");
+        en("Estado no válido.", "Invalid status.");
+        en("Solo quien hizo la consulta puede valorarla.", "Only the person who asked can rate it.");
+        en("La valoración va de 1 a 5.", "The rating goes from 1 to 5.");
+        en("Gracias por tu valoración.", "Thank you for your rating.");
+        en("Escribe la pregunta y la respuesta.", "Write the question and the answer.");
+        en("La pregunta ya no existe.", "The question no longer exists.");
+        en("Pregunta frecuente guardada.", "FAQ entry saved.");
+        en("Pregunta frecuente borrada.", "FAQ entry deleted.");
+        en("La encuesta no existe o no va dirigida a ti.", "The survey does not exist or is not addressed to you.");
+        en("Esta encuesta no va dirigida a ti.", "This survey is not addressed to you.");
+        en("La encuesta ya está cerrada.", "The survey is already closed.");
+        en("Ya has respondido a esta encuesta.", "You have already answered this survey.");
+        en("Respuestas no válidas.", "Invalid answers.");
+        en("Responde a todas las preguntas (el comentario es opcional).", "Answer every question (the comment is optional).");
+        en("Respuesta fuera de escala.", "Answer out of scale.");
+        en("Gracias: tus respuestas son anónimas.", "Thank you: your answers are anonymous.");
+        en("Escribe el título de la encuesta.", "Write the title of the survey.");
+        en("El mínimo de respuestas para ver resultados va de 3 a 50.", "The minimum number of answers to see results goes from 3 to 50.");
+        en("La fecha de cierre no puede ser anterior a hoy.", "The closing date cannot be earlier than today.");
+        en("Tipo de pregunta no válido.", "Invalid question type.");
+        en("Preguntas no válidas.", "Invalid questions.");
+        en("Añade al menos una pregunta.", "Add at least one question.");
+        en("Un pulso tiene como mucho 10 preguntas: que sea corto.", "A pulse has 10 questions at most: keep it short.");
+        en("Hay menos destinatarios que el mínimo de respuestas: nunca se verían resultados.", "There are fewer recipients than the minimum number of answers: results would never be shown.");
+        en("Encuesta cerrada.", "Survey closed.");
+        en("Solo RRHH y los responsables ven los resultados del pulso.", "Only HR and managers see the pulse results.");
+        en("No tienes acceso a esa conversación.", "You do not have access to that conversation.");
+        patron("Comunicado publicado para (\\d+) personas\\.", "Notice published for $1 people.");
+        patron("Recordatorio enviado a (\\d+) personas\\.", "Reminder sent to $1 people.");
+        patron("Encuesta abierta para (\\d+) personas\\.", "Survey opened for $1 people.");
+    }
 }

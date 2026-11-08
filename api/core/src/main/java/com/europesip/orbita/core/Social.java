@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Conversación en cada solicitud (ausencias, correcciones, notas de gasto y viajes) y avisos para cada persona.
+ * Conversación en cada solicitud (ausencias, correcciones, notas de gasto y viajes) y en cada consulta a RRHH, y avisos
+ * para cada persona.
  * Los avisos se crean desde Api y Gastos al pedir, resolver, pagar o comentar.
  */
 final class Social {
@@ -28,12 +29,13 @@ final class Social {
             case "CORRECCION": return "CORRECCION";
             case "NOTA": return "NOTA_GASTO";
             case "VIAJE": return "VIAJE";
+            case "CONSULTA": return "CONSULTA";
             default: throw new Api.Aviso("Tipo de solicitud desconocido.");
         }
     }
 
     static String appDe(String clase) {
-        return "AUSENCIA".equals(clase) ? "vacaciones" : "CORRECCION".equals(clase) ? "fichaje" : "gastos";
+        return "AUSENCIA".equals(clase) ? "vacaciones" : "CORRECCION".equals(clase) ? "fichaje" : "CONSULTA".equals(clase) ? "comunicacion" : "gastos";
     }
 
     // ---------------------------------------------------------------- Avisos
@@ -109,7 +111,10 @@ final class Social {
 
     // ---------------------------------------------------------------- Conversación
 
-    /** Dueño de la solicitud, comprobando que el usuario puede verla (dueño, su responsable, RRHH o, en notas, Administración). */
+    /**
+     * Dueño de la solicitud, comprobando que el usuario puede verla (dueño, su responsable, RRHH o, en notas,
+     * Administración). Una consulta a RRHH la ven solo quien pregunta y RRHH: su responsable no.
+     */
     private static String dueno(Connection c, Api api, String clase, int objeto) throws SQLException {
         String dueno;
         try (PreparedStatement ps = c.prepareStatement("SELECT USUARIO FROM " + tabla(clase) + " WHERE ID = ?")) {
@@ -120,7 +125,8 @@ final class Social {
             }
         }
         Api.Emp yo = api.yo();
-        boolean ok = dueno.equals(yo.usuario) || api.aprueboA().contains(dueno) || "RRHH".equals(yo.rol)
+        boolean ok = "CONSULTA".equals(clase) ? dueno.equals(yo.usuario) || "RRHH".equals(yo.rol)
+                : dueno.equals(yo.usuario) || api.aprueboA().contains(dueno) || "RRHH".equals(yo.rol)
                 || ("NOTA".equals(clase) && "ADMINISTRACION".equals(yo.rol));
         if (!ok) throw new Api.Aviso("No tienes acceso a esa conversación.");
         return dueno;
@@ -150,16 +156,16 @@ final class Social {
         if (texto.length() > 1000) texto = texto.substring(0, 1000);
         String dueno = dueno(c, api, clase, objeto);
         Api.Emp yo = api.yo();
-        try (PreparedStatement ps = c.prepareStatement("INSERT INTO COMENTARIO (CLASE, OBJETO, USUARIO, TEXTO, CREADO) VALUES (?,?,?,?,?)")) {
-            ps.setString(1, clase);
-            ps.setInt(2, objeto);
-            ps.setString(3, yo.usuario);
-            ps.setString(4, texto);
-            ps.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
-            ps.executeUpdate();
-        }
+        comentarSinAviso(c, clase, objeto, yo.usuario, texto);
         String corto = texto.length() > 120 ? texto.substring(0, 117) + "…" : texto;
-        if (dueno.equals(yo.usuario)) {
+        if ("CONSULTA".equals(clase)) {
+            // Consultas a RRHH: si comenta RRHH, al dueño (y la consulta pasa a "en curso"); si comenta el dueño, a RRHH
+            for (String u : Comunicacion.alComentar(c, api, objeto, dueno)) {
+                boolean alDueno = u.equals(dueno);
+                avisar(c, u, "comunicacion", clase, objeto, alDueno ? "consulta.respuesta" : "consulta.comentario", obj("quien", yo.nombre, "texto", corto),
+                        alDueno ? "RRHH ha respondido a tu consulta: «" + corto + "»" : yo.nombre + " ha comentado su consulta: «" + corto + "»");
+            }
+        } else if (dueno.equals(yo.usuario)) {
             Api.Emp d = api.emp(dueno);
             avisar(c, d.responsable, "aprobaciones", clase, objeto, "comentario.suya", obj("quien", yo.nombre, "texto", corto),
                     yo.nombre + " ha comentado su solicitud: «" + corto + "»");
@@ -168,6 +174,18 @@ final class Social {
                     yo.nombre + " ha comentado tu solicitud: «" + corto + "»");
         }
         return comentarios(c, api, clase, objeto);
+    }
+
+    /** Guarda un comentario sin comprobar permisos ni avisar (lo usan comentar y Comunicacion al resolver una consulta). */
+    static void comentarSinAviso(Connection c, String clase, int objeto, String usuario, String texto) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("INSERT INTO COMENTARIO (CLASE, OBJETO, USUARIO, TEXTO, CREADO) VALUES (?,?,?,?,?)")) {
+            ps.setString(1, clase);
+            ps.setInt(2, objeto);
+            ps.setString(3, usuario);
+            ps.setString(4, texto);
+            ps.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
+            ps.executeUpdate();
+        }
     }
 
     /** Número de comentarios por "CLASE:ID". */

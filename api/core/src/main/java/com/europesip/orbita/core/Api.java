@@ -129,6 +129,10 @@ final class Api {
             case "inicio.resumen": return inicio();
             default:
                 if (op.startsWith("gastos.") || op.startsWith("viaje.")) return new Gastos(this, c).ejecutar(op, p);
+                if (op.startsWith("comunicados.") || op.startsWith("consultas.") || op.startsWith("faq.") || op.startsWith("pulso.")
+                        || op.equals("comunicacion.resumen")) {
+                    return new Comunicacion(this, c).ejecutar(op, p);
+                }
                 throw new Aviso("Operación desconocida: " + op);
         }
     }
@@ -136,6 +140,9 @@ final class Api {
     Emp yo() { return yo; }
 
     Emp emp(String usuario) { return plantilla.get(usuario); }
+
+    /** Toda la plantilla, en orden alfabético. */
+    java.util.Collection<Emp> plantilla() { return plantilla.values(); }
 
     // ---------------------------------------------------------------- Personas
 
@@ -202,7 +209,7 @@ final class Api {
                 "vacaciones", vac.get("vacaciones"), "propios", vac.get("propios"), "proxima", vac.get("proxima"),
                 "gastos", gastos.get("kpi"), "gastosPorCategoria", cats,
                 "pendientes", pend.subList(0, Math.min(4, pend.size())), "numPendientes", pend.size(),
-                "fuera", fuera, "avisos", Social.avisos(c, yo.usuario));
+                "fuera", fuera, "avisos", Social.avisos(c, yo.usuario), "comunicacion", new Comunicacion(this, c).resumen());
     }
 
     /** Personas a cargo directo (RRHH ve a toda la plantilla). */

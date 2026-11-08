@@ -147,11 +147,12 @@ public final class Asistente {
         String hoy = ahora.getDayOfWeek().getDisplayName(TextStyle.FULL, loc) + " " + ahora.format(DateTimeFormatter.ISO_LOCAL_DATE)
                 + " " + ahora.format(DateTimeFormatter.ofPattern("HH:mm"));
         return "Eres el asistente de ÓRBITA, la intranet de la empresa (fichaje, vacaciones y ausencias, gastos y viajes, "
-                + "aprobaciones). Ayudas a la persona que te escribe con SUS datos y gestiones, usando las herramientas de "
+                + "aprobaciones y comunicación con RRHH). Ayudas a la persona que te escribe con SUS datos y gestiones, usando las herramientas de "
                 + "ÓRBITA: actúan siempre como esa persona y con sus permisos. No inventes datos: consúltalos con las "
                 + "herramientas. Las herramientas que modifican datos devuelven primero un resumen: enséñaselo y repite la "
                 + "llamada con confirmar=true solo cuando la persona lo confirme. Si algo no se puede hacer con las "
-                + "herramientas (por ejemplo, pagar notas o borrar datos), indica que se hace en la aplicación. Sé breve y "
+                + "herramientas (por ejemplo, pagar notas, borrar datos, confirmar la lectura de un comunicado o responder al pulso), "
+                + "indica que se hace en la aplicación. Ante una duda para RRHH, busca antes la respuesta (rrhh_buscar_respuesta). Sé breve y "
                 + "claro; usa listas o tablas cuando ayuden.\n"
                 + "Ahora es " + hoy + " (hora de la empresa). Usa esta fecha para entender 'hoy', 'mañana', 'el viernes'...\n"
                 + "La persona que te escribe (ficha de ÓRBITA, JSON): " + yo + "\n"

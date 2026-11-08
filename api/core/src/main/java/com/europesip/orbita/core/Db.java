@@ -22,7 +22,8 @@ import org.flywaydb.core.api.output.MigrateResult;
 public final class Db {
 
     private static final Logger LOG = Logger.getLogger(Db.class.getName());
-    private static final String[] TABLAS = {"AVISO", "COMENTARIO", "LINEA_GASTO", "NOTA_GASTO", "VIAJE", "FICHAJE",
+    private static final String[] TABLAS = {"ENCUESTA_RESPUESTA", "ENCUESTA_PARTICIPACION", "ENCUESTA_PREGUNTA", "ENCUESTA",
+        "PREGUNTA_FRECUENTE", "CONSULTA", "COMUNICADO_LECTURA", "COMUNICADO", "AVISO", "COMENTARIO", "LINEA_GASTO", "NOTA_GASTO", "VIAJE", "FICHAJE",
         "CORRECCION", "AUSENCIA", "FESTIVO", "EMPLEADO"};
 
     private static volatile DataSource ds;

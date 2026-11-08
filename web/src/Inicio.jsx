@@ -5,7 +5,7 @@ import {
   dosCifras, euros, eurosRedondo, fecha, horas, hm, plural, rango, useDatos, useReloj, useSuite,
 } from './ui.jsx';
 import {Anillo, Barras} from './graficos.jsx';
-import {haceCuanto, textoAviso, urlApp} from './social.jsx';
+import {haceCuanto, textoAviso, urlApp, urlAviso} from './social.jsx';
 import {locale, t} from './i18n.js';
 
 const COLORES_GASTO = {COMIDA: '#f97316', HOTEL: '#6366f1', TRANSPORTE: '#0ea5e9', KILOMETRAJE: '#10b981', PARKING: '#a855f7', OTROS: '#64748b'};
@@ -13,6 +13,35 @@ const COLORES_GASTO = {COMIDA: '#f97316', HOTEL: '#6366f1', TRANSPORTE: '#0ea5e9
 function saludo(d) {
   const h = d.getHours();
   return t(h < 6 ? 'Buenas noches' : h < 14 ? 'Buenos días' : h < 21 ? 'Buenas tardes' : 'Buenas noches');
+}
+
+/** Comunicación con RRHH en Mi intranet: lo pendiente de leer o confirmar, el pulso y las consultas. */
+function ComunicacionRrhh({c}) {
+  const url = (p) => `${urlApp('comunicacion')}#${p}`;
+  const filas = [];
+  if (c.comunicado) {
+    filas.push(<li key="c"><a href={url('comunicados')}><span className="si-aviso-icono">{c.comunicado.confirmar ? '✍' : '📣'}</span>
+      <span><strong>{c.comunicado.titulo}</strong><small>{c.comunicado.confirmar
+        ? (c.comunicado.limite ? t('Confirma que lo has leído antes del {fecha}', {fecha: fecha(c.comunicado.limite, {day: 'numeric', month: 'long'})}) : t('Confirma que lo has leído'))
+        : t('Comunicado nuevo de RRHH')}</small></span></a></li>);
+  }
+  if (c.encuestasPendientes > 0) {
+    filas.push(<li key="p"><a href={url('pulso')}><span className="si-aviso-icono">📊</span>
+      <span><strong>{plural(c.encuestasPendientes, 'encuesta de pulso por responder', 'encuestas de pulso por responder')}</strong><small>{t('Anónima, un minuto')}</small></span></a></li>);
+  }
+  if (c.consultasAbiertas > 0) {
+    filas.push(<li key="q"><a href={url('consultas')}><span className="si-aviso-icono">💬</span>
+      <span><strong>{plural(c.consultasAbiertas, 'consulta abierta con RRHH', 'consultas abiertas con RRHH')}</strong><small>{t('Mira si te han respondido')}</small></span></a></li>);
+  }
+  if (c.rrhh && c.consultasSinAtender > 0) {
+    filas.push(<li key="r"><a href={url('consultas')}><span className="si-aviso-icono">📥</span>
+      <span><strong>{plural(c.consultasSinAtender, 'consulta de la plantilla sin atender', 'consultas de la plantilla sin atender')}</strong><small>{t('Bandeja de RRHH')}</small></span></a></li>);
+  }
+  return (
+    <Tarjeta titulo={t('Comunicación con RRHH')} accion={<a className="si-enlace" href={urlApp('comunicacion')}>{t('Comunicación')} ›</a>}>
+      {filas.length ? <ul className="si-lista si-mini-lista">{filas}</ul> : <Vacio icono="📭">{t('Nada pendiente con RRHH.')}</Vacio>}
+    </Tarjeta>
+  );
 }
 
 export function Inicio() {
@@ -33,6 +62,8 @@ export function Inicio() {
             {d.avisos.noLeidos > 0 && <Insignia tono="ambar">🔔 {plural(d.avisos.noLeidos, 'aviso sin leer', 'avisos sin leer')}</Insignia>}
             {responsable && d.numPendientes > 0 && <Insignia tono="violeta">✔ {t('{n} de tu equipo por revisar', {n: plural(d.numPendientes, 'solicitud', 'solicitudes')})}</Insignia>}
             {d.proxima && <Insignia tono="azul">🌴 {t('Próxima ausencia:')} {rango(d.proxima.desde, d.proxima.hasta)}</Insignia>}
+            {d.comunicacion && d.comunicacion.comunicadosPorConfirmar > 0 && <a href={`${urlApp('comunicacion')}#comunicados`}><Insignia tono="ambar">
+              ✍ {plural(d.comunicacion.comunicadosPorConfirmar, 'comunicado por confirmar', 'comunicados por confirmar')}</Insignia></a>}
           </div>
         </div>
         <FichajeRapido est={d.fichaje} onCambio={(f) => fijar({...d, fichaje: f})} />
@@ -92,15 +123,16 @@ export function Inicio() {
             )}
           </Tarjeta>
         )}
+        {d.comunicacion && <ComunicacionRrhh c={d.comunicacion} />}
         <Tarjeta titulo={t('Quién falta los próximos 14 días')} accion={<a className="si-enlace" href={urlApp('vacaciones')}>{t('Calendario')} ›</a>}>
           <Fuera dias={d.fuera} />
         </Tarjeta>
-        <Tarjeta titulo={t('Últimos avisos')} className={responsable ? '' : 'si-ancho-2'}>
+        <Tarjeta titulo={t('Últimos avisos')} className={responsable ? 'si-ancho-3' : ''}>
           {!d.avisos.avisos.length ? <Vacio icono="🔔">{t('Sin avisos.')}</Vacio> : (
             <ul className="si-lista si-mini-lista">
               {d.avisos.avisos.slice(0, 5).map((a) => (
                 <li key={a.id} className={a.leido ? '' : 'si-no-leido'}>
-                  <a href={urlApp(a.app)}><span>{textoAviso(a)}<small>{haceCuanto(a.creado)}</small></span></a>
+                  <a href={urlAviso(a)}><span>{textoAviso(a)}<small>{haceCuanto(a.creado)}</small></span></a>
                 </li>
               ))}
             </ul>
@@ -111,7 +143,7 @@ export function Inicio() {
       <nav className="si-accesos">
         {[['fichaje', '⏱', 'Fichaje', 'Registro de jornada'], ['vacaciones', '🌴', 'Vacaciones', 'Ausencias y calendario'],
           ['gastos', '🧾', 'Gastos y viajes', 'Notas y tickets'], ['aprobaciones', '✔', 'Aprobaciones', 'Bandeja del responsable'],
-          ['kiosco', '📟', 'Quiosco', 'Fichar en la entrada']].map(([app, i, tit, s]) => (
+          ['comunicacion', '📣', 'Comunicación', 'Comunicados, consultas y pulso'], ['kiosco', '📟', 'Quiosco', 'Fichar en la entrada']].map(([app, i, tit, s]) => (
           <a key={app} href={urlApp(app)} className="si-acceso">
             <span>{i}</span><strong>{t(tit)}</strong><small>{t(s)}</small>
           </a>

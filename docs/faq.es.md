@@ -18,7 +18,7 @@
 
 **¿Qué es ÓRBITA?**
 Una intranet de autoservicio para la plantilla sobre **HCL DX Compose**: fichaje (también desde un quiosco con PIN o
-tarjeta QR), vacaciones y ausencias, gastos y viajes, aprobaciones, una página de inicio con el día de cada persona y un
+tarjeta QR), vacaciones y ausencias, gastos y viajes, aprobaciones, comunicación con RR. HH., una página de inicio con el día de cada persona y un
 asistente de IA que responde y actúa por cada empleado. La hace **EUROPESIP**.
 
 **¿Para quién es?**
@@ -35,6 +35,13 @@ DAM, los themes por WebDAV y, opcionalmente, HCL DX IQ. Por qué DX Compose y no
 No. ÓRBITA cubre los procesos del día a día de la plantilla dentro del portal. Puede intercambiar datos con vuestros
 sistemas de RR. HH., nóminas o ERP (incluye exportaciones CSV; las integraciones directas son un
 [servicio](#servicios-de-europesip)).
+
+**¿Puede RR. HH. comunicarse con la plantilla con ÓRBITA? ¿Las encuestas de pulso son anónimas de verdad?**
+Sí. La aplicación **Comunicación con RRHH** tiene comunicados (a toda la plantilla, a un departamento o a un rol, con
+control de lectura y de confirmación), consultas privadas a RR. HH. (solo las ven el empleado y RR. HH., no su
+responsable), encuestas de pulso anónimas y preguntas frecuentes. El pulso es **anónimo por diseño**: las respuestas se
+guardan sin usuario ni hora, los resultados solo se muestran cuando ha respondido un mínimo de personas (5 por defecto,
+nunca menos de 3), se oculta un departamento si se pudiera deducir por resta y la IA no puede responder encuestas.
 
 **¿Se puede probar con datos de ejemplo?**
 Sí. Por defecto el chart carga datos de demostración (personas, fichajes, vacaciones, notas de gasto) asignados a tus
@@ -120,7 +127,7 @@ DXClient y la CA del certificado de DX. Para el asistente de IA, un LiteLLM o cu
 
 **¿Cómo se instala? ¿Cuánto tarda?**
 Con **un comando de Helm** (README, *Instalación con Helm*), en unos 3 minutos. El chart crea la base de datos, despliega
-la API, sube las seis Script Applications con DXClient y crea sus páginas y el theme de ejemplo. Hay una guía paso a
+la API, sube las siete Script Applications con DXClient y crea sus páginas y el theme de ejemplo. Hay una guía paso a
 paso en el **Lab 5** de los [HCL DX Compose labs](https://github.com/europesip/hcl-dx-compose-labs).
 
 **Quiero probar ÓRBITA, pero no tengo acceso a ningún entorno Kubernetes con DX Compose.**
@@ -187,13 +194,15 @@ esa aplicación en esa página. Los ajustes se mantienen al actualizar.
 
 **¿Qué puede hacer el asistente?**
 Responder y actuar por el empleado que pregunta: su día, fichar entrada y salida, saldo y solicitudes de vacaciones,
-notas de gasto (crear, añadir gastos, enviar), aprobaciones para los responsables y avisos. 26 herramientas en total;
+notas de gasto (crear, añadir gastos, enviar), aprobaciones para los responsables, comunicados, consultas a RR. HH. y
+encuestas de pulso, y avisos. 33 herramientas en total;
 tú eliges cuáles se publican (`mcp.tools`). Más de 60 preguntas de ejemplo: [preguntas-ia.md](preguntas-ia.md).
 
 **¿Qué es un servidor MCP?**
 MCP (Model Context Protocol) es el estándar abierto que permite a un asistente de IA usar las herramientas de una
 aplicación: consultar sus datos y actuar en ella, en nombre del usuario. ÓRBITA incluye su propio **servidor MCP con más
-de 20 herramientas** (26) para trabajar con ÓRBITA: fichaje, vacaciones, gastos, aprobaciones y avisos. Las usa su
+de 30 herramientas** (33) para trabajar con ÓRBITA: fichaje, vacaciones, gastos, aprobaciones, comunicación con RR. HH. y
+avisos. Las usa su
 asistente propio, y también HCL DX IQ o cualquier otro cliente MCP.
 
 **¿Se puede ampliar la IA más allá de las herramientas de ÓRBITA?**
@@ -227,7 +236,7 @@ resultados de las herramientas que el modelo pide para ese usuario. Nada más de
 usuarios.
 
 **¿Cuánto cuesta cada pregunta?**
-El prompt es pequeño (solo las herramientas de ÓRBITA, unos 4.700 tokens con las 26), mucho menos que un chat de
+El prompt es pequeño (solo las herramientas de ÓRBITA, unos 5.800 tokens con las 33), mucho menos que un chat de
 propósito general. Publicar menos herramientas (`mcp.tools.enabled`, `mcp.tools.readOnly`) lo reduce aún más. Con tu
 propio modelo no hay coste por token.
 
@@ -282,7 +291,7 @@ aprobaciones guardan quién hizo qué y cuándo.
 
 | Parte | Tecnología |
 |---|---|
-| Interfaz | React, publicado como seis **Script Applications de HCL DX** (un único paquete, sin portlets Java: [por qué](#hcl-dx-tradicional-y-dx-compose)) |
+| Interfaz | React, publicado como siete **Script Applications de HCL DX** (un único paquete, sin portlets Java: [por qué](#hcl-dx-tradicional-y-dx-compose)) |
 | API y servidor MCP | Java 21, Jakarta EE 10 sobre **Open Liberty**, en un contenedor (`orbita-api`) |
 | Base de datos | **PostgreSQL**, con el esquema gestionado por migraciones **Flyway** |
 | IA | Llamadas a funciones compatibles con OpenAI a través de **LiteLLM**; **MCP** estándar (Streamable HTTP) para HCL DX IQ |

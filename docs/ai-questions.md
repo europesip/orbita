@@ -67,6 +67,19 @@ In brackets, the MCP tool the AI uses ([mcp.md](mcp.md)) and who can ask it in t
 - What was said in eduardo's expense report? (`solicitud_comentarios`)
 - Ask eduardo whether the Toledo car park was during the customer visit (`solicitud_comentar`)
 
+## HR communication
+
+- Do I have anything pending from HR? Any notice to acknowledge? (`comunicados_pendientes`, `pulso_pendientes`; `macarena`)
+- What does the new remote work policy say? When is the deadline to acknowledge it? (`comunicado_leer`: it does not mark it as read or acknowledged)
+- How do I change my bank account for payroll? (`rrhh_buscar_respuesta`, before opening a question)
+- When is payroll paid? How many remote working days do I have? (`rrhh_buscar_respuesta`)
+- Ask HR for a company certificate for the bank (`rrhh_buscar_respuesta` + `consulta_crear`)
+- How is my income tax (IRPF) question going? What did HR answer? (`consultas_mias` + `solicitud_comentarios` with class CONSULTA; `eduardo`)
+- Tell HR thanks, the details of the calculation are enough (`solicitud_comentar`, CONSULTA; `eduardo`)
+- Do I have a pulse survey to answer? (`pulso_pendientes`; it is answered in the app)
+- *HR:* Which staff questions are not handled yet? (`consultas_mias`; `patricia`)
+- *HR:* Summarise the comments of the October pulse (`pulso_resultados`; `patricia`; `enrique` sees only Tecnología)
+
 ## Combined questions
 
 - Can I take Friday off? Check my balance and whether someone in the team is away that day.
@@ -76,6 +89,7 @@ In brackets, the MCP tool the AI uses ([mcp.md](mcp.md)) and who can ask it in t
 
 ## What the AI does not do (on purpose)
 
-Pay expense reports, restore the demo data, delete reports or lines, and export CSV files: they are bulk or
-irreversible actions done in the app, not with one sentence. Nor can it act as somebody else: the identity is your DX
+Pay expense reports, restore the demo data, delete reports or lines, export CSV files, and publish notices or
+surveys: they are bulk or irreversible actions done in the app, not with one sentence. Acknowledging a notice («I have
+read and accept») is done by the person in the app, and the pulse is answered there so that it stays anonymous. Nor can it act as somebody else: the identity is your DX
 session.

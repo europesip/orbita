@@ -77,6 +77,19 @@ Entre paréntesis, la herramienta del MCP que usa la IA ([mcp.md](mcp.md)) y qui
 - ¿Qué se ha dicho en la nota de gasto de eduardo? (`solicitud_comentarios`)
 - Pregúntale a eduardo si el parking de Toledo fue durante la visita al cliente (`solicitud_comentar`)
 
+## Comunicación con RRHH
+
+- ¿Tengo algo pendiente de RRHH? ¿Algún comunicado por confirmar? (`comunicados_pendientes`, `pulso_pendientes`; `macarena`)
+- ¿Qué dice la nueva política de teletrabajo? ¿Hasta cuándo tengo para confirmarla? (`comunicado_leer`: no la marca como leída ni confirmada)
+- ¿Cómo cambio la cuenta bancaria de la nómina? (`rrhh_buscar_respuesta`, antes de abrir una consulta)
+- ¿Qué día se paga la nómina? ¿Cuántos días de teletrabajo tengo? (`rrhh_buscar_respuesta`)
+- Pide a RRHH un certificado de empresa para el banco (`rrhh_buscar_respuesta` + `consulta_crear`)
+- ¿Cómo va mi consulta sobre el IRPF? ¿Qué me ha contestado RRHH? (`consultas_mias` + `solicitud_comentarios` con clase CONSULTA; `eduardo`)
+- Dile a RRHH que gracias, que con el detalle del cálculo me basta (`solicitud_comentar`, CONSULTA; `eduardo`)
+- ¿Tengo alguna encuesta de pulso pendiente? (`pulso_pendientes`; para responderla, la aplicación)
+- *RRHH:* ¿Qué consultas de la plantilla están sin atender? (`consultas_mias`; `patricia`)
+- *RRHH:* Resúmeme los comentarios del pulso de octubre (`pulso_resultados`; `patricia`; `enrique` ve solo Tecnología)
+
 ## Preguntas que combinan varias cosas
 
 - ¿Puedo cogerme el viernes libre? Mira mi saldo y si alguien del equipo falta ese día.
@@ -86,6 +99,8 @@ Entre paréntesis, la herramienta del MCP que usa la IA ([mcp.md](mcp.md)) y qui
 
 ## Lo que la IA no hace (a propósito)
 
-Pagar notas de gasto, restaurar los datos de la demo, borrar notas o líneas y exportar ficheros CSV: son acciones
-masivas o irreversibles que se hacen en la aplicación, no con una frase. Tampoco puede actuar como otra persona: la
+Pagar notas de gasto, restaurar los datos de la demo, borrar notas o líneas, exportar ficheros CSV y publicar
+comunicados o encuestas: son acciones masivas o irreversibles que se hacen en la aplicación, no con una frase.
+Confirmar un comunicado («He leído y acepto») lo hace la persona en la aplicación, y el pulso se responde allí para que
+siga siendo anónimo. Tampoco puede actuar como otra persona: la
 identidad es tu sesión de DX.
