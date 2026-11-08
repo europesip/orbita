@@ -7,6 +7,8 @@
 - ÓRBITA works when DX users sign in through **OpenID Connect** (Keycloak, Entra ID...): with the OIDC client of
   Liberty the DX session cookie gets a generated name (`WAS_n...`) instead of `LtpaToken2`. `dx.sessionCookie` now takes
   several names and `*` prefixes, by default `LtpaToken2,WAS_n*`. Tested with DX Compose CF239 and Keycloak 26.8.
+- The theme step of the installation also works then: it signs in with the portal login form when the DX REST
+  login answers without a session cookie.
 
 ## 3.1.1 · 2026-11-07 · Nothing twice with the theme
 

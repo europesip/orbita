@@ -200,7 +200,7 @@ scriptapps:
   dxclient:
     acceptLicense: false     # REQUIRED true: you accept the HCL DXClient license
   bundle:
-    image: ghcr.io/europesip/orbita/orbita-scriptapps:3.1.1
+    image: ghcr.io/europesip/orbita/orbita-scriptapps:3.1.2
   job:
     imagePullSecrets: []     # the bundle image is public; set it for a private mirror
   apps:

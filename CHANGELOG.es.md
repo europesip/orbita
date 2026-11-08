@@ -8,6 +8,8 @@
   de Liberty la cookie de sesión de DX recibe un nombre generado (`WAS_n...`) en lugar de `LtpaToken2`.
   `dx.sessionCookie` admite ahora varios nombres y prefijos con `*`, por defecto `LtpaToken2,WAS_n*`. Probado con DX
   Compose CF239 y Keycloak 26.8.
+- El paso del tema de la instalación también funciona entonces: entra con el formulario de login del portal cuando el
+  login REST de DX responde sin cookie de sesión.
 
 ## 3.1.1 · 2026-11-07 · Nada repetido con el theme
 

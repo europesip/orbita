@@ -25,13 +25,24 @@ const WORK = '/tmp/orbita-theme';
 const log = (m) => console.log(`theme: ${m}`);
 const fail = (m) => { console.error(`theme: ERROR ${m}`); process.exit(1); };
 
-// ---- Session (LtpaToken2), the same DX administrator as the push
+// ---- Session (LtpaToken2, or WAS_n... with OpenID Connect), the same DX administrator as the push
 let cookie = '';
 async function login() {
   const r = await fetch(`${CORE}/auth/login`, {method: 'POST', headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({username: e.DX_USERNAME, password: e.DX_PASSWORD})});
   if (!r.ok) fail(`DX login answered ${r.status}`);
-  cookie = r.headers.getSetCookie().map((c) => c.split(';')[0]).join('; ');
+  cookie = r.headers.getSetCookie().map((c) => c.split(';')[0]).filter((c) => !/=$/.test(c)).join('; ');
+  // With OpenID Connect (Keycloak, Entra ID...) Liberty names the SSO cookie WAS_n... and the REST login answers
+  // without a cookie: sign in with the portal login form instead (not redirected to the identity provider).
+  if (!/(^|; )(LtpaToken2|WAS_n[^=]*)=[^;]/.test(cookie)) {
+    const root = (e.DX_CONTENT_HANDLER_PATH || '/wps/mycontenthandler').replace(/\/mycontenthandler$/, '');
+    const f = await fetch(`${BASE}${root}/j_security_check`, {method: 'POST', redirect: 'manual',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: new URLSearchParams({j_username: e.DX_USERNAME, j_password: e.DX_PASSWORD})});
+    // Only the SSO cookie: Liberty also sends WASReqURL (already expired, to delete it) and the DAM API answers 401 with it
+    cookie = f.headers.getSetCookie().map((c) => c.split(';')[0]).filter((c) => /^(LtpaToken2|WAS_n[^=]*)=[^;]/.test(c)).join('; ');
+    if (!/(^|; )(LtpaToken2|WAS_n[^=]*)=[^;]/.test(cookie)) fail(`DX did not open a session (form login answered ${f.status})`);
+  }
 }
 async function call(method, url, body, headers = {}) {
   const r = await fetch(url, {method, headers: {Cookie: cookie, ...headers}, body});
