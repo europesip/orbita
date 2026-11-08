@@ -61,7 +61,7 @@ spec:
               valueFrom: { secretKeyRef: { name: {{ include "orbita.dbSecret" . }}, key: password } }
             # Who the user is: DX answers, with the user's own session cookie
             - { name: ORBITA_DX_URL, value: {{ include "orbita.dxUrl" . | quote }} }
-            - { name: ORBITA_SESSION_COOKIE, value: {{ .Values.dx.sessionCookie | quote }} }
+            - { name: ORBITA_SESSION_COOKIE, value: {{ .Values.dx.sessionCookie | default (ternary "LtpaToken2" "LtpaToken2,WAS_n*" (eq (toString .Values.dx.oidcSupport) "false")) | quote }} }
             {{- if .Values.dx.caSecret }}
             - { name: ORBITA_DX_CA, value: /dx-ca/ca.crt }
             {{- end }}

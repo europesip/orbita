@@ -21,7 +21,8 @@ data:
           "damCollection" .Values.theme.damCollection "hclLogo" .Values.theme.hclLogo
           "assistantButton" .Values.theme.assistantButton "logoAlt" .Values.theme.logoAlt
           "headerBackground" .Values.theme.headerBackground
-          "homeUrl" (printf "%s%s" .Values.pages.base "mi-intranet")) | nindent 4 }}
+          "homeUrl" (printf "%s%s" .Values.pages.base "mi-intranet")
+          "formLogin" (ne (toString .Values.dx.oidcSupport) "false")) | nindent 4 }}
 binaryData:
   # Default images of the example theme, uploaded once to the DAM collection theme.damCollection
   company-logo.png: {{ ternary (.Files.Get "files/theme/company-logo.png" | b64enc) .Values.theme.logoBase64 (empty .Values.theme.logoBase64) }}

@@ -8,6 +8,11 @@
   de Liberty la cookie de sesión de DX recibe un nombre generado (`WAS_n...`) en lugar de `LtpaToken2`.
   `dx.sessionCookie` admite ahora varios nombres y prefijos con `*`, por defecto `LtpaToken2,WAS_n*`. Probado con DX
   Compose CF239 y Keycloak 26.8.
+- Nuevo valor del chart **`dx.oidcSupport`** (por defecto `true`); con `false` se vuelve al comportamiento de la 3.1.1
+  (solo `LtpaToken2` y el login REST). `dx.sessionCookie` queda vacío por defecto (sigue a `dx.oidcSupport`). Para volver
+  a la versión anterior: `helm upgrade orbita ... --version 3.1.1 --reuse-values`.
+- **Por qué:** con la feature de cliente OIDC, Liberty llama a la cookie de SSO `WAS_n<hash>` y no se puede cambiar (issue
+  18803 de Open Liberty); ÓRBITA respondía «no hay sesión de DX» a los usuarios que entraban por Keycloak.
 - El paso del tema de la instalación también funciona entonces: entra con el formulario de login del portal cuando el
   login REST de DX responde sin cookie de sesión.
 

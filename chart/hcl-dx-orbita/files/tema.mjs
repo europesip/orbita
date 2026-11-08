@@ -34,7 +34,7 @@ async function login() {
   cookie = r.headers.getSetCookie().map((c) => c.split(';')[0]).filter((c) => !/=$/.test(c)).join('; ');
   // With OpenID Connect (Keycloak, Entra ID...) Liberty names the SSO cookie WAS_n... and the REST login answers
   // without a cookie: sign in with the portal login form instead (not redirected to the identity provider).
-  if (!/(^|; )(LtpaToken2|WAS_n[^=]*)=[^;]/.test(cookie)) {
+  if (!/(^|; )(LtpaToken2|WAS_n[^=]*)=[^;]/.test(cookie) && cfg.formLogin !== false) {
     const root = (e.DX_CONTENT_HANDLER_PATH || '/wps/mycontenthandler').replace(/\/mycontenthandler$/, '');
     const f = await fetch(`${BASE}${root}/j_security_check`, {method: 'POST', redirect: 'manual',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},

@@ -7,6 +7,11 @@
 - ÓRBITA works when DX users sign in through **OpenID Connect** (Keycloak, Entra ID...): with the OIDC client of
   Liberty the DX session cookie gets a generated name (`WAS_n...`) instead of `LtpaToken2`. `dx.sessionCookie` now takes
   several names and `*` prefixes, by default `LtpaToken2,WAS_n*`. Tested with DX Compose CF239 and Keycloak 26.8.
+- New chart value **`dx.oidcSupport`** (default `true`); `false` restores the behaviour of 3.1.1 (only `LtpaToken2` and the
+  REST login). `dx.sessionCookie` is now empty by default (it follows `dx.oidcSupport`). To go back to the previous
+  release: `helm upgrade orbita ... --version 3.1.1 --reuse-values`.
+- **Why:** with the OIDC client feature, Liberty names the SSO cookie `WAS_n<hash>` and it cannot be changed (Open Liberty
+  issue 18803); ÓRBITA answered "no DX session" to users who signed in through Keycloak.
 - The theme step of the installation also works then: it signs in with the portal login form when the DX REST
   login answers without a session cookie.
 
