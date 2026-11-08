@@ -35,7 +35,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * Quién es el usuario: lo dice HCL DX. ÓRBITA no guarda claves LTPA ni consulta el LDAP; reenvía la cookie de sesión
- * del usuario (LtpaToken2) a la API de perfil de DX y DX contesta con el perfil de ese usuario, o no contesta si la
+ * del usuario (LtpaToken2, o WAS_n... si DX usa OpenID Connect) a la API de perfil de DX y DX contesta con el perfil de ese usuario, o no contesta si la
  * sesión no es válida. Sirve igual para las Script Applications (el navegador envía la cookie, mismo host que DX) y
  * para el MCP (el Integrator de DX IQ reenvía las cookies del usuario en cada tools/call).
  *
@@ -67,17 +67,40 @@ public final class SesionDx {
 
     /** El perfil (uid e idioma) del usuario de la sesión de DX, o null si no hay sesión o DX no la acepta. */
     public static Perfil perfil(String cabeceraCookie) {
-        String valor = cookie(cabeceraCookie, Config.cookieSesion());
-        if (valor == null) return null;
-        String clave = hash(valor);
+        String[] sesion = cookieSesion(cabeceraCookie, Config.cookieSesion());
+        if (sesion == null) return null;
+        String valor = sesion[1];
+        String clave = hash(sesion[0] + "=" + valor);
         long ahora = System.currentTimeMillis();
         Entrada e = CACHE.get(clave);
         if (e != null && e.caduca() > ahora) return e.perfil();
-        Perfil p = preguntarADx(Config.cookieSesion() + "=" + valor);
+        Perfil p = preguntarADx(sesion[0] + "=" + valor);
         // Las sesiones no válidas también se recuerdan (poco tiempo): una página con muchas llamadas no repite la consulta
         CACHE.put(clave, new Entrada(p, ahora + (p != null ? Config.cacheSesionSegundos() * 1000L : 10_000L)));
         if (CACHE.size() > 5000) CACHE.entrySet().removeIf(x -> x.getValue().caduca() <= ahora);
         return p;
+    }
+
+    /**
+     * La cookie de sesión de DX en la cabecera Cookie: {nombre, valor}, o null. Los nombres admitidos van separados
+     * por comas y pueden acabar en * (prefijo). Por defecto "LtpaToken2,WAS_n*": con OpenID Connect (Keycloak, Entra
+     * ID...) Liberty da a la cookie de SSO un nombre generado (WAS_n...) en lugar de LtpaToken2.
+     */
+    static String[] cookieSesion(String cabecera, String nombres) {
+        if (cabecera == null || nombres == null) return null;
+        for (String n : nombres.split(",")) {
+            String nombre = n.trim();
+            if (nombre.isEmpty()) continue;
+            boolean prefijo = nombre.endsWith("*");
+            String base = prefijo ? nombre.substring(0, nombre.length() - 1) : nombre;
+            for (String parte : cabecera.split(";")) {
+                int igual = parte.indexOf('=');
+                if (igual <= 0) continue;
+                String k = parte.substring(0, igual).trim(), v = parte.substring(igual + 1).trim();
+                if (!v.isEmpty() && (prefijo ? k.startsWith(base) && k.length() > base.length() : k.equals(base))) return new String[] {k, v};
+            }
+        }
+        return null;
     }
 
     /** Valor de una cookie en la cabecera Cookie ("a=1; LtpaToken2=xyz"). */

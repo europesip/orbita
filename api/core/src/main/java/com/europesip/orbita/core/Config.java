@@ -27,7 +27,8 @@ public final class Config {
     /** Solo laboratorio: no verificar el certificado de DX. */
     static boolean dxInseguro() { return si("ORBITA_DX_INSECURE", false); }
     /** Cookie de sesión de DX que se reenvía a DX para saber quién es el usuario. */
-    public static String cookieSesion() { return env("ORBITA_SESSION_COOKIE", "LtpaToken2"); }
+    /** Nombres admitidos de la cookie de sesión de DX, separados por comas; "*" final = prefijo (ver SesionDx). */
+    public static String cookieSesion() { return env("ORBITA_SESSION_COOKIE", "LtpaToken2,WAS_n*"); }
     /** Segundos que se recuerda una sesión ya validada (evita una llamada a DX en cada petición). */
     static int cacheSesionSegundos() { return Integer.parseInt(env("ORBITA_SESSION_CACHE_SECONDS", "60")); }
 

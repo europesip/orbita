@@ -11,7 +11,7 @@ Everything is installed with **one Helm chart**, `hcl-dx-orbita`.
 
 <p align="center"><img src="docs/images/theme-home.en.jpg" alt="ÓRBITA in HCL DX Compose: the My intranet page with the example theme" width="100%"></p>
 
-> **Version 3.1.1.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
+> **Version 3.1.2.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
 > in later releases. The interface is in **English and Spanish**, in the language of each user's DX profile.
 > It has its **own AI assistant** ([below](#ask-the-ai-about-órbita)), and the integration with HCL DX IQ is optional.
 
@@ -209,7 +209,7 @@ VALUES
 **3. Install**:
 
 ```bash
-helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 3.1.1 \
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 3.1.2 \
   -n $NS_ORBITA -f orbita-values.yaml --timeout 15m
 ```
 

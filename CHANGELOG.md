@@ -2,6 +2,12 @@
 
 **English** · [Español](CHANGELOG.es.md)
 
+## 3.1.2 · 2026-11-08 · DX with OpenID Connect
+
+- ÓRBITA works when DX users sign in through **OpenID Connect** (Keycloak, Entra ID...): with the OIDC client of
+  Liberty the DX session cookie gets a generated name (`WAS_n...`) instead of `LtpaToken2`. `dx.sessionCookie` now takes
+  several names and `*` prefixes, by default `LtpaToken2,WAS_n*`. Tested with DX Compose CF239 and Keycloak 26.8.
+
 ## 3.1.1 · 2026-11-07 · Nothing twice with the theme
 
 - With the example theme, nothing appears twice: `ui.header.assistant`, `ui.header.user` and `ui.header.homeLink` are

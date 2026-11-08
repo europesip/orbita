@@ -6,7 +6,8 @@
 #   Script Applications                    pushed to WCM by the subchart "scriptapps" (hcl-dx-scriptapp), which
 #                                          then creates the pages with XMLAccess
 #
-# Who the user is: ÓRBITA forwards the user's DX session cookie (LtpaToken2) to DX's profile API and DX answers.
+# Who the user is: ÓRBITA forwards the user's DX session cookie (LtpaToken2, or WAS_n... when DX signs in through
+# OpenID Connect) to DX's profile API and DX answers.
 # No LTPA keys, LDAP settings or DX admin credentials are needed by the API.
 # Install it in the namespace of your third-party tools (the labs use dx-shared), next to PostgreSQL.
 
@@ -20,7 +21,9 @@ dx:
   caSecret: ""
   # Lab only: do not verify the DX certificate. Prefer caSecret.
   insecureSkipTLSVerify: false
-  sessionCookie: LtpaToken2
+  # Names of the DX session cookie, comma separated, "*" = prefix. With OpenID Connect (Keycloak, Entra ID...) Liberty
+  # gives the SSO cookie a generated name (WAS_n...) instead of LtpaToken2.
+  sessionCookie: "LtpaToken2,WAS_n*"
 
 # --- Images -------------------------------------------------------------------------------------------------------
 image:
