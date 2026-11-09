@@ -38,7 +38,7 @@ export function Anillo({segmentos, tam = 120, grosor = 16, centro, sub}) {
   return (
     <div className="si-anillo" style={{width: tam, height: tam}}>
       <svg width={tam} height={tam} viewBox={`0 0 ${tam} ${tam}`} role="img" aria-label={t('Gráfico de anillo')}>
-        <circle cx={tam / 2} cy={tam / 2} r={r} fill="none" stroke="#eef0f4" strokeWidth={grosor} />
+        <circle cx={tam / 2} cy={tam / 2} r={r} fill="none" stroke="#e7e7ed" strokeWidth={grosor} />
         {segmentos.filter((s) => s.valor > 0).map((s, i) => {
           const largo = (s.valor / total) * c;
           const el = (

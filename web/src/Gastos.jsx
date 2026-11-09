@@ -4,6 +4,7 @@ import {
   Boton, Campo, Cargando, ESTADOS, Fallo, ICONOS_GASTO, Insignia, Modal, Pestanas, SelectorMes, Tarjeta, Vacio, VerTicket,
   centimosDe, descargar, euros, eurosRedondo, fecha, importeTexto, iso, plural, rango, useDatos, useSuite,
 } from './ui.jsx';
+import {Icono} from './iconos.jsx';
 import {locale, t} from './i18n.js';
 import {leerTicket as leerOCR} from './ocr.js';
 import {Anillo, Barras} from './graficos.jsx';
@@ -11,7 +12,8 @@ import {BotonConversacion, Conversacion} from './social.jsx';
 
 const nombreCategoria = (politica, id) => t((politica.categorias.find((c) => c.id === id) || {nombre: id}).nombre);
 
-const COLOR_GASTO = {COMIDA: '#f97316', HOTEL: '#8b5cf6', TRANSPORTE: '#0ea5e9', KILOMETRAJE: '#10b981', PARKING: '#64748b', OTROS: '#ec4899'};
+// Paleta categórica de DX (distinguible entre sí), la misma que en Mi intranet
+const COLOR_GASTO = {COMIDA: '#0b5fff', HOTEL: '#13838f', TRANSPORTE: '#b95000', KILOMETRAJE: '#6f5bd6', PARKING: '#c2307a', OTROS: '#287d3c'};
 const mesCorto = (m) => new Date(2000, m, 1).toLocaleDateString(locale(), {month: 'short'}).replace('.', '');
 
 export function Gastos({yo}) {
@@ -45,20 +47,20 @@ export function Gastos({yo}) {
         <div className="si-gas-flujo">
           <span className="si-etiqueta">{t('Tu dinero')}</span>
           <div className="si-flujo">
-            <div className="si-flujo-paso ambar"><span>📤</span><small>{t('En aprobación')}</small><strong>{euros(k.pendienteAprobar)}</strong></div>
-            <i>›</i>
-            <div className="si-flujo-paso verde"><span>✅</span><small>{t('Por cobrar')}</small><strong>{euros(k.pendienteCobro)}</strong></div>
-            <i>›</i>
-            <div className="si-flujo-paso azul"><span>💶</span><small>{t('Cobrado {anio}', {anio: res.anio})}</small><strong>{euros(k.cobrado)}</strong></div>
+            <div className="si-flujo-paso ambar"><span><Icono n="reloj_arena" /></span><small>{t('En aprobación')}</small><strong>{euros(k.pendienteAprobar)}</strong></div>
+            <i><Icono n="derecha" /></i>
+            <div className="si-flujo-paso verde"><span><Icono n="checkCirculo" /></span><small>{t('Por cobrar')}</small><strong>{euros(k.pendienteCobro)}</strong></div>
+            <i><Icono n="derecha" /></i>
+            <div className="si-flujo-paso azul"><span><Icono n="euro" /></span><small>{t('Cobrado {anio}', {anio: res.anio})}</small><strong>{euros(k.cobrado)}</strong></div>
           </div>
-          <small className="si-tenue">{k.borradores ? `📝 ${t('{n} sin enviar', {n: plural(k.borradores, 'borrador', 'borradores')})}` : t('Sin borradores pendientes')}
+          <small className="si-tenue">{k.borradores ? <><Icono n="nota" /> {t('{n} sin enviar', {n: plural(k.borradores, 'borrador', 'borradores')})}</> : t('Sin borradores pendientes')}
             {res.aprobador ? ` · ${t('aprueba {quien}', {quien: res.aprobador.split(' ')[0]})}` : ''}</small>
         </div>
         <div className="si-gas-acciones">
           <button type="button" className="si-escanear" onClick={escanear}>
-            <span>📸</span><strong>{t('Escanear ticket')}</strong><small>{t('Foto del ticket y los datos se rellenan solos')}</small>
+            <span><Icono n="escanear" /></span><strong>{t('Escanear ticket')}</strong><small>{t('Foto del ticket y los datos se rellenan solos')}</small>
           </button>
-          <button type="button" className="si-gas-secundario" onClick={() => setNuevaNota(true)}>＋ {t('Nueva nota de gasto')}</button>
+          <button type="button" className="si-gas-secundario" onClick={() => setNuevaNota(true)}><Icono n="mas" /> {t('Nueva nota de gasto')}</button>
         </div>
       </div>
 
@@ -70,7 +72,7 @@ export function Gastos({yo}) {
             <ul>
               {[...res.porCategoria].sort((a, b) => b.importe - a.importe).map((c) => (
                 <li key={c.id}>
-                  <span className="si-cat-icono" style={{background: COLOR_GASTO[c.id] + '22'}}>{ICONOS_GASTO[c.id]}</span>
+                  <span className="si-cat-icono"><Icono n={ICONOS_GASTO[c.id]} /></span>
                   <div><span>{t(c.nombre)}</span><div className="si-cat-barra"><i style={{width: `${(c.importe / res.gastadoAnio) * 100}%`, background: COLOR_GASTO[c.id]}} /></div></div>
                   <strong>{euros(c.importe)}</strong>
                 </li>
@@ -79,7 +81,7 @@ export function Gastos({yo}) {
           </div>
         </Tarjeta>
         <Tarjeta titulo={t('Últimos 6 meses')}>
-          <Barras alto={150} color="#0ea5e9" formato={(v) => eurosRedondo(v)}
+          <Barras alto={150} color="var(--si-acento)" formato={(v) => eurosRedondo(v)}
             datos={res.porMes.map((m) => ({etiqueta: mesCorto(Number(m.mes.slice(5)) - 1), valor: m.importe, enCurso: true}))} />
         </Tarjeta>
       </div>}
@@ -118,7 +120,7 @@ const PASO_NUM = {BORRADOR: 0, ENVIADA: 1, APROBADA: 2, RECHAZADA: 2, PAGADA: 3}
 
 // ---------- Mis notas ----------
 function ListaNotas({notas, onAbrir}) {
-  if (!notas.length) return <Tarjeta><Vacio icono="🧾">{t('Aún no tienes notas de gasto. Escanea tu primer ticket.')}</Vacio></Tarjeta>;
+  if (!notas.length) return <Tarjeta><Vacio icono="recibo">{t('Aún no tienes notas de gasto. Escanea tu primer ticket.')}</Vacio></Tarjeta>;
   return (
     <div className="si-notas-tarjetas">
       {notas.map((n) => {
@@ -130,10 +132,10 @@ function ListaNotas({notas, onAbrir}) {
               <span className="si-tenue">GAS-{String(n.id).padStart(5, '0')}</span>
             </div>
             <strong className="si-nt-titulo">{n.titulo}</strong>
-            <span className="si-nt-sub">{n.viaje ? `✈ ${n.viaje.destino} · ` : ''}{plural(n.numLineas, 'gasto', 'gastos')} · {fecha(n.enviado || n.creado)}</span>
+            <span className="si-nt-sub">{n.viaje ? <><Icono n="avion" /> {n.viaje.destino} · </> : ''}{plural(n.numLineas, 'gasto', 'gastos')} · {fecha(n.enviado || n.creado)}</span>
             <div className="si-nt-medio">
               <div className="si-nt-iconos">
-                {(n.categorias || []).slice(0, 4).map((c) => <span key={c} style={{background: COLOR_GASTO[c] + '22'}} title={t(c)}>{ICONOS_GASTO[c]}</span>)}
+                {(n.categorias || []).slice(0, 4).map((c) => <span key={c} title={t(c)}><Icono n={ICONOS_GASTO[c]} /></span>)}
               </div>
               <span className="si-nt-total">{euros(n.total)}</span>
             </div>
@@ -141,8 +143,8 @@ function ListaNotas({notas, onAbrir}) {
               {[0, 1, 2, 3].map((i) => <i key={i} className={i <= paso ? 'hecho' : ''} />)}
             </div>
             {n.estado === 'RECHAZADA' && n.comentarioResp && <em className="si-negativo">{n.aprobador}: {n.comentarioResp}</em>}
-            {n.estado === 'BORRADOR' && n.sinJustificar > 0 && <em className="si-ambar-texto">⚠ {t('{n} la política', {n: plural(n.sinJustificar, 'gasto supera', 'gastos superan')})}</em>}
-            {n.comentarios > 0 && <em className="si-tenue">💬 {plural(n.comentarios, 'comentario', 'comentarios')}</em>}
+            {n.estado === 'BORRADOR' && n.sinJustificar > 0 && <em className="si-ambar-texto"><Icono n="alerta" /> {t('{n} la política', {n: plural(n.sinJustificar, 'gasto supera', 'gastos superan')})}</em>}
+            {n.comentarios > 0 && <em className="si-tenue"><Icono n="chat" /> {plural(n.comentarios, 'comentario', 'comentarios')}</em>}
           </button>
         );
       })}
@@ -188,7 +190,7 @@ function Pasos({n}) {
         const hecho = i < actual || (i === actual && !rechazo);
         return (
           <li key={id} className={`${hecho ? 'hecho' : ''}${i === actual ? ' actual' : ''}${rechazo ? ' rechazo' : ''}`}>
-            <span className="si-paso-punto">{rechazo ? '✕' : hecho ? '✓' : i + 1}</span>
+            <span className="si-paso-punto">{rechazo ? <Icono n="x" /> : hecho ? <Icono n="check" /> : i + 1}</span>
             <span>{t(rechazo ? 'Rechazada' : nombre)}</span>
             <small>{rechazo ? fecha(n.resuelto) : hecho && n[campo] ? fecha(n[campo]) : ''}</small>
           </li>
@@ -232,7 +234,7 @@ function EditorNota({id, escanear, res, onVolver, onBorrada}) {
   return (
     <Tarjeta className="si-editor">
       <div className="si-editor-cab">
-        <button type="button" className="si-enlace" onClick={onVolver}>‹ {t('Mis notas de gasto')}</button>
+        <button type="button" className="si-enlace" onClick={onVolver}><Icono n="izquierda" /> {t('Mis notas de gasto')}</button>
         <span className="si-tenue">GAS-{String(n.id).padStart(5, '0')}</span>
       </div>
       <div className="si-editor-titulo">
@@ -243,9 +245,9 @@ function EditorNota({id, escanear, res, onVolver, onBorrada}) {
         {editable && viajes.length > 0
           ? <select className="si-select" value={n.viaje ? n.viaje.id : ''} onChange={(e) => guardarCabecera({viaje: e.target.value})} aria-label={t('Viaje')}>
             <option value="">{t('Sin viaje asociado')}</option>
-            {viajes.map((v) => <option key={v.id} value={v.id}>✈ {v.destino} · {rango(v.desde, v.hasta)}</option>)}
+            {viajes.map((v) => <option key={v.id} value={v.id}>{v.destino} · {rango(v.desde, v.hasta)}</option>)}
           </select>
-          : n.viaje && <Insignia tono="azul">✈ {t('Viaje a {destino} · {rango}', {destino: n.viaje.destino, rango: rango(n.viaje.desde, n.viaje.hasta)})}</Insignia>}
+          : n.viaje && <Insignia tono="azul"><Icono n="avion" /> {t('Viaje a {destino} · {rango}', {destino: n.viaje.destino, rango: rango(n.viaje.desde, n.viaje.hasta)})}</Insignia>}
       </div>
       <Pasos n={n} />
       {n.estado === 'RECHAZADA' && n.comentarioResp && (
@@ -255,25 +257,25 @@ function EditorNota({id, escanear, res, onVolver, onBorrada}) {
 
       <LineasNota n={n} politica={res.politica} onTicket={setTicket}
         acciones={editable && ((l) => <>
-          <button type="button" className="si-icono-boton" title={t('Editar')} onClick={() => setLinea(l)}>✎</button>
+          <button type="button" className="si-icono-boton" title={t('Editar')} onClick={() => setLinea(l)} aria-label={t('Editar')}><Icono n="lapiz" /></button>
           <button type="button" className="si-icono-boton" title={t('Eliminar')} onClick={() => {
             if (window.confirm(t('¿Eliminar «{desc}»?', {desc: l.descripcion}))) llamar('gastos.borrarLinea', {id: l.id}, t('Gasto eliminado'));
-          }}>🗑</button>
+          }} aria-label={t('Eliminar')}><Icono n="papelera" /></button>
         </>)} />
-      {editable && <Boton icono="＋" onClick={() => setLinea({})}>{t('Añadir gasto')}</Boton>}
+      {editable && <Boton icono="mas" onClick={() => setLinea({})}>{t('Añadir gasto')}</Boton>}
 
       <footer className="si-editor-pie">
         <div className="si-total"><span>{t('Total')}</span><strong>{euros(n.total)}</strong></div>
         {editable && <div className="si-fila">
           {n.estado === 'BORRADOR' && <Boton tipo="peligro" onClick={borrar}>{t('Eliminar borrador')}</Boton>}
           <Boton tipo="primario" disabled={enviando || !n.numLineas} onClick={enviar}>
-            {res.aprobador ? t('Enviar a {quien}', {quien: res.aprobador.split(' ')[0]}) : t('Registrar')} ▸
+            {res.aprobador ? t('Enviar a {quien}', {quien: res.aprobador.split(' ')[0]}) : t('Registrar')} <Icono n="flecha" />
           </Boton>
         </div>}
       </footer>
       {n.estado !== 'BORRADOR' && (
         <section className="si-seccion-chat">
-          <h4>💬 {t('Conversación con {quien}', {quien: n.estado === 'PAGADA' || n.estado === 'APROBADA' ? t('tu responsable y Administración') : res.aprobador || t('tu responsable')})}</h4>
+          <h4><Icono n="chat" /> {t('Conversación con {quien}', {quien: n.estado === 'PAGADA' || n.estado === 'APROBADA' ? t('tu responsable y Administración') : res.aprobador || t('tu responsable')})}</h4>
           <Conversacion clase="NOTA" objeto={n.id} compacta />
         </section>
       )}
@@ -297,7 +299,7 @@ function Miniatura({linea, onClick}) {
 
 /** Tabla de líneas de una nota (la usan el editor, Aprobaciones y Pagos). */
 export function LineasNota({n, politica, onTicket, acciones}) {
-  if (!n.lineas.length) return <Vacio icono="🧾">{t('Añade el primer gasto de la nota con su ticket.')}</Vacio>;
+  if (!n.lineas.length) return <Vacio icono="recibo">{t('Añade el primer gasto de la nota con su ticket.')}</Vacio>;
   return (
     <div className="si-tabla-envoltura">
       <table className="si-tabla si-lineas">
@@ -308,13 +310,13 @@ export function LineasNota({n, politica, onTicket, acciones}) {
               <td className="si-dia">{fecha(l.fecha)}</td>
               <td>
                 <div className="si-gasto">
-                  <span className="si-gasto-icono" title={nombreCategoria(politica, l.categoria)}>{ICONOS_GASTO[l.categoria]}</span>
+                  <span className="si-gasto-icono" title={nombreCategoria(politica, l.categoria)}><Icono n={ICONOS_GASTO[l.categoria]} /></span>
                   <div>
                     <strong>{l.descripcion}</strong>
                     <small>{nombreCategoria(politica, l.categoria)}{l.km ? ` · ${l.km} km × ${euros(politica.tarifaKm)}` : ''}
                       {l.iva ? ` · ${t('IVA')} ${euros(l.iva)}` : ''}</small>
                     {l.excede && <span className={`si-politica${l.justificacion ? '' : ' sin'}`}>
-                      ⚠ {t('Supera la política ({limite})', {limite: euros(l.limite)})}{l.justificacion ? `: ${l.justificacion}` : ` · ${t('falta justificarlo')}`}
+                      <Icono n="alerta" /> {t('Supera la política ({limite})', {limite: euros(l.limite)})}{l.justificacion ? `: ${l.justificacion}` : ` · ${t('falta justificarlo')}`}
                     </span>}
                   </div>
                 </div>
@@ -415,14 +417,14 @@ function LineaModal({nota, linea, politica, destacar, onCerrar, onHecho}) {
         <div className={`si-subida${arrastrando ? ' encima' : ''}${leyendo !== null ? ' leyendo' : ''}${destacar && !tieneTicket ? ' destacada' : ''}`}
           onDragOver={(e) => { e.preventDefault(); setArrastrando(true); }} onDragLeave={() => setArrastrando(false)}
           onDrop={(e) => { e.preventDefault(); setArrastrando(false); elegir(e.dataTransfer.files[0]); }}>
-          {ticket && ticket.vista ? <img src={ticket.vista} alt="" /> : <span className="si-subida-icono">{tieneTicket ? '📎' : '📷'}</span>}
+          {ticket && ticket.vista ? <img src={ticket.vista} alt="" /> : <span className="si-subida-icono"><Icono n={tieneTicket ? 'clip' : 'camara'} /></span>}
           <div>
             <strong>{ticket ? ticket.nombre : linea.ticket && !quitar ? linea.ticket : t('Empieza por el ticket')}</strong>
             <small>{leyendo !== null ? `${t('Leyendo el ticket…')} ${leyendo}%`
               : t(tieneTicket ? 'Se guardará con el gasto' : 'Haz una foto o arrastra la imagen: los datos se rellenan solos')}</small>
             {leyendo !== null && <div className="si-barra fina"><div style={{width: `${Math.max(5, leyendo)}%`}} /></div>}
             <div className="si-fila">
-              <label className="si-boton">{tieneTicket ? t('Cambiar') : `📷 ${t('Foto o PDF del ticket')}`}
+              <label className="si-boton">{tieneTicket ? t('Cambiar') : <><Icono n="camara" /> {t('Foto o PDF del ticket')}</>}
                 <input type="file" accept="image/*,application/pdf" capture="environment" hidden onChange={(e) => elegir(e.target.files[0])} />
               </label>
               {tieneTicket && leyendo === null && <button type="button" className="si-enlace" onClick={() => { setTicket(null); setQuitar(true); setLeido(null); }}>{t('Quitar')}</button>}
@@ -433,18 +435,18 @@ function LineaModal({nota, linea, politica, destacar, onCerrar, onHecho}) {
       {leido && (leido.error
         ? <div className="si-banner si-banner-rojo">{t('No se ha podido leer el ticket ({error}). Rellena los datos a mano.', {error: leido.error})}</div>
         : <div className="si-ocr">
-          <span>✨ {t('Leído del ticket')}</span>
+          <span><Icono n="chispas" /> {t('Leído del ticket')}</span>
           {leido.comercio && <Insignia tono="violeta">{leido.comercio}</Insignia>}
           {leido.fecha && <Insignia tono="violeta">{fecha(leido.fecha)}</Insignia>}
           {leido.total !== null && <Insignia tono="violeta">{t('Total')} {euros(leido.total)}</Insignia>}
           {leido.iva !== null && <Insignia tono="violeta">{t('IVA')} {euros(leido.iva)}</Insignia>}
-          {leido.categoria && <Insignia tono="violeta">{ICONOS_GASTO[leido.categoria]} {nombreCategoria(politica, leido.categoria)}</Insignia>}
+          {leido.categoria && <Insignia tono="violeta"><Icono n={ICONOS_GASTO[leido.categoria]} /> {nombreCategoria(politica, leido.categoria)}</Insignia>}
           <small>{t('Revisa que los datos son correctos.')}</small>
         </div>)}
       <div className="si-categorias">
         {politica.categorias.map((x) => (
           <button key={x.id} type="button" className={cat === x.id ? 'activa' : ''} onClick={() => setCat(x.id)}>
-            <span>{ICONOS_GASTO[x.id]}</span>{t(x.nombre)}
+            <span><Icono n={ICONOS_GASTO[x.id]} /></span>{t(x.nombre)}
           </button>
         ))}
       </div>
@@ -486,8 +488,8 @@ function Viajes({res, onCambio}) {
     try { const r = await api('viaje.cancelar', {id: v.id}); avisar(r.mensaje); onCambio(r); } catch (e) { avisar(e.message, 'rojo'); }
   };
   return (
-    <Tarjeta titulo={t('Solicitudes de viaje')} accion={<Boton tipo="primario" icono="✈" onClick={() => setNuevo(true)}>{t('Solicitar viaje')}</Boton>}>
-      {!res.viajes.length ? <Vacio icono="✈">{t('Pide aquí la aprobación de un viaje antes de hacerlo; después podrás asociarle la nota de gastos.')}</Vacio> : (
+    <Tarjeta titulo={t('Solicitudes de viaje')} accion={<Boton tipo="primario" icono="avion" onClick={() => setNuevo(true)}>{t('Solicitar viaje')}</Boton>}>
+      {!res.viajes.length ? <Vacio icono="avion">{t('Pide aquí la aprobación de un viaje antes de hacerlo; después podrás asociarle la nota de gastos.')}</Vacio> : (
         <div className="si-embarques">
           {res.viajes.map((v) => {
             const e = ESTADOS[v.estado];
@@ -498,12 +500,12 @@ function Viajes({res, onCambio}) {
               <div key={v.id} className={`si-embarque${v.estado === 'CANCELADA' || v.estado === 'RECHAZADA' ? ' si-apagado' : ''}`}>
                 <div className="si-emb-principal">
                   <div className="si-emb-cab">
-                    <span>✈ {t('Tarjeta de viaje')} · VIA-{String(v.id).padStart(4, '0')}</span>
+                    <span><Icono n="avion" /> {t('Tarjeta de viaje')} · VIA-{String(v.id).padStart(4, '0')}</span>
                     <Insignia tono={e.tono}>{e.nombre}</Insignia>
                   </div>
                   <div className="si-emb-ruta">
                     <div><b>MAD</b><small>Madrid</small></div>
-                    <span className="si-emb-avion"><i />✈<i /></span>
+                    <span className="si-emb-avion"><i /><Icono n="avion" /><i /></span>
                     <div><b>{codigo}</b><small>{v.destino}</small></div>
                   </div>
                   <q>{v.motivo}</q>
@@ -522,7 +524,7 @@ function Viajes({res, onCambio}) {
                   <div className="si-emb-gasto">
                     <small>{t('Gastado')} {gastado ? `· ${pct}%` : ''}</small>
                     <b className={pct > 100 ? 'si-negativo' : ''}>{euros(gastado)}</b>
-                    <div className="si-cat-barra"><i style={{width: `${Math.min(100, pct)}%`, background: pct > 100 ? 'var(--si-rojo)' : '#0ea5e9'}} /></div>
+                    <div className="si-cat-barra"><i style={{width: `${Math.min(100, pct)}%`, background: pct > 100 ? 'var(--si-rojo)' : 'var(--si-acento)'}} /></div>
                   </div>
                   <small className="si-tenue">{v.estado === 'PENDIENTE' ? t('Pedido el {fecha}', {fecha: fecha(v.creado)}) : v.aprobador ? t(v.estado === 'RECHAZADA' ? 'Rechazó {quien}' : 'Aprobó {quien}', {quien: v.aprobador.split(' ')[0]}) : ''}</small>
                 </div>
@@ -631,7 +633,7 @@ function Pagos({politica}) {
       </Tarjeta>
       <Tarjeta titulo={t('Exportar a contabilidad')} accion={<SelectorMes anio={anio} mes={mes} onCambiar={(a, m) => { setAnio(a); setMes(m); }} />}>
         <p>{t('Fichero CSV con las líneas de las notas pagadas en el mes: empleado, departamento, categoría, base imponible, IVA y total.')}</p>
-        <Boton tipo="primario" icono="⤓" onClick={exportar}>{t('Exportar (CSV)')}</Boton>
+        <Boton tipo="primario" icono="descargar" onClick={exportar}>{t('Exportar (CSV)')}</Boton>
       </Tarjeta>
       {d.pagadas.length > 0 && (
         <Tarjeta titulo={t('Pagadas recientemente')}>

@@ -135,12 +135,12 @@ function cabecera(html, fichero, url) {
 .wpthemeHeader .wpthemeInner{display:flex;align-items:center;flex-wrap:wrap;gap:16px 24px}
 .wpthemeLogo.orbitaThemeMarca{display:flex!important;align-items:center;gap:20px;background:none!important;width:auto!important;height:auto!important;margin:10px 0!important;float:none!important}
 .orbitaThemeLogo img{height:44px;width:auto;display:block}
-.orbitaThemeHcl{display:flex;align-items:center;gap:10px;padding-left:20px;border-left:1px solid rgba(255,255,255,.3);color:#c7d2fe;font:600 11px/1 Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.orbitaThemeHcl{display:flex;align-items:center;gap:10px;padding-left:20px;border-left:1px solid rgba(255,255,255,.3);color:#b3cdff;font:600 11px/1 Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase}
 .orbitaThemeHcl img{height:15px;width:auto;filter:brightness(0) invert(1)}
-.orbitaThemeChat{display:none;margin-left:auto;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:5px 16px 5px 5px;font:600 14px/1 Arial,sans-serif;cursor:pointer}
+.orbitaThemeChat{display:none;margin-left:auto;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;border-radius:4px;padding:5px 16px 5px 5px;font:600 14px/1 Arial,sans-serif;cursor:pointer}
 html.orbita-asistente .orbitaThemeChat{display:inline-flex}
 .orbitaThemeChat:hover,.orbitaThemeChat:focus-visible{background:rgba(255,255,255,.2)}
-.orbitaThemeChat img{width:30px;height:30px;border-radius:9px;display:block}
+.orbitaThemeChat img{width:30px;height:30px;border-radius:4px;display:block}
 </style>`;
   const titulo = es ? 'Pregúntale a ÓRBITA' : 'Ask ÓRBITA';
   const marca = `<div class="wpthemeLogo wpthemeLeft orbitaThemeMarca">

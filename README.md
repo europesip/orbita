@@ -5,7 +5,7 @@
 **English** · [Español](README.es.md) · [Manual (PDF)](docs/manual/orbita-explained.en.pdf) · [Presentation (PDF)](docs/presentation/orbita-presentation.en.pdf) · [FAQ](docs/faq.md) · [Release history](CHANGELOG.md) · [Contact](#contact-and-services)
 
 **ÓRBITA** is an intranet suite for **HCL DX Compose** (CF239) by **EUROPESIP**. Its React interface is published as
-six **Script Applications**; the logic and the data live in a REST API (**`orbita-api`**, Open Liberty) with
+ten **Script Applications**; the logic and the data live in a REST API (**`orbita-api`**, Open Liberty) with
 PostgreSQL, which also includes an **MCP server** so that **HCL DX IQ** can answer questions and act for the user.
 Everything is installed with **one Helm chart**, `hcl-dx-orbita`.
 
@@ -22,6 +22,10 @@ Everything is installed with **one Helm chart**, `hcl-dx-orbita`.
 | Time off | .../wps/myportal/Home/vacaciones |
 | Expenses and travel | .../wps/myportal/Home/gastos |
 | Approvals | .../wps/myportal/Home/aprobaciones |
+| HR communication | .../wps/myportal/Home/comunicacion |
+| Surveys | .../wps/myportal/Home/encuestas |
+| People | .../wps/myportal/Home/personas |
+| My documents | .../wps/myportal/Home/documentos |
 | Time clock kiosk | .../wps/myportal/Home/quiosco |
 
 ## Contents
@@ -62,13 +66,34 @@ relative to the day they are loaded.
   approvals, who is away in the next 14 days and the latest notifications.
 - **Time tracking**, **time off**, **expenses and travel** (receipts with in-browser OCR), **approvals** with
   conversations, **notifications** and a **time clock kiosk** (PIN or QR card).
+- **HR communication**: notices from HR to everybody, a department or a role (with read and acknowledgement
+  tracking), private **questions to HR** that only the employee and HR see (with suggested answers while typing) and
+  the **FAQ**.
+- **Surveys**: **anonymous** engagement surveys with **templates** (monthly pulse, annual engagement, wellbeing, remote
+  work, onboarding), **eight question types** (agreement scale, scale, eNPS, yes/no, single and multiple choice,
+  matrix and text), **dimensions** and sections, drafts, **preview** and **scheduled opening**. Staff answer step by
+  step, with a progress bar and a draft kept in the browser. The **report** shows participation, the **favourability
+  index**, each dimension with its **trend** against the previous survey, a **heat map** by department, eNPS and the
+  comments (with their themes and an optional AI summary), and can be exported to CSV or PDF. Results are only shown
+  above a minimum number of answers. The **action plan** tells staff what is being done with them.
+- **People**: the staff **directory** with search (name, job title, skill, language or office) and everyone's
+  **availability today** (in the office, working remotely, on a break, out and when they are back, never the reason),
+  their **profile** (contact, reporting line, team, a profile each person edits), the **org chart**, **celebrations**
+  (visible birthdays, work anniversaries and new joiners) and public **recognition** between colleagues. HR adds new
+  records and changes the organisation details.
+- **My documents**: each person's documentation. **Payslips** with their amounts (the latest one compared with the
+  previous one, and the year in a chart with gross, income tax, social security and net), **social security reports**,
+  **tax withholding certificates**, **contracts** and **certificates**, with a PDF viewer and a **receipt** to sign
+  when requested. HR and Accounting publish one by one or **in a batch** (each file is assigned by its name and the
+  amounts come in a CSV). Each person **sends HR** their doctor's notes, qualifications or bank details, and HR
+  reviews them or returns them with a reason. **Their manager sees none of this.**
 
 <p align="center"><img src="docs/images/approvals.en.jpg" alt="Approvals: the requests of the team, with overlaps, comments and the expense lines" width="760"></p>
 
 ## Architecture
 
 ```
- Browser ── https://<DX host> ──┬── /wps/...         HCL DX: pages with the 6 Script Applications (WCM)
+ Browser ── https://<DX host> ──┬── /wps/...         HCL DX: pages with the 7 Script Applications (WCM)
                                 └── /orbita-api/v1   Ingress ──► orbita-api (Open Liberty, :9080)
                                                                    │  who is it? ── LtpaToken2 cookie ──► DX profile API
                                                                    └─ PostgreSQL: database "orbita" (Flyway)
@@ -85,9 +110,11 @@ relative to the day they are loaded.
 ## Ask the AI about ÓRBITA
 
 The «✨ Ask ÓRBITA» button of every app opens **ÓRBITA's own assistant**. It can answer and act **as the user
-asking**, with **26 tools** ([you choose which](#choosing-which-mcp-tools-to-publish)): their day, time tracking (also clocking in and out),
+asking**, with **43 tools** ([you choose which](#choosing-which-mcp-tools-to-publish)): their day, time tracking (also clocking in and out),
 time off (balance, requests, team calendar), expenses and travel (reports, adding expenses, sending them), approvals
-(approve, reject, comment) and notifications. A few examples:
+(approve, reject, comment), HR communication (notices, questions to HR), surveys (pending, reports, action plan), the people directory (search, org chart,
+recognition), their documents and payslips, and notifications. A few
+examples:
 
 <p align="center"><img src="docs/images/assistant.en.jpg" alt="The ÓRBITA assistant answering how many days of holiday are left and who is away in December" width="340"></p>
 
@@ -98,6 +125,10 @@ time off (balance, requests, team calendar), expenses and travel (reports, addin
 | Time off | «How many days of holiday do I have left?» · «Book me holidays from 9 to 11 December» · «Who in the team is away in December?» |
 | Expenses | «How much am I owed?» · «Create a report "Visit to Seville" and add a €42.80 lunch from yesterday» · «Send it to my manager» |
 | Approvals | «What do I have to approve?» · «Approve macarena's holidays» · «Reject the Barcelona trip: tighter budget» |
+| HR communication | «Do I have anything pending from HR?» · «How do I change my bank account for payroll?» · «Ask HR for a company certificate for the bank» · HR: «Summarise the comments of the October pulse» |
+| Surveys | «Do I have a survey to answer?» · *HR:* «Which dimensions got worse in this year's engagement survey?» · «What is being done with the engagement survey?» |
+| People | «Who knows about Kubernetes?» · «What is Marta's extension?» · «Who from Sales is in the office today?» · «Whose birthday is it this week?» · «Thank Javier for covering my customer visit» |
+| My documents | «How much was I paid in October?» · «How much income tax have I paid this year?» · «Do I have any document to sign?» · «Has HR reviewed my doctor's note?» |
 
 **Ask in English or in Spanish**: the assistant answers in the language of the question (the ÓRBITA data, such as
 categories and statuses, are in Spanish and the AI translates them). **More than 60 example questions, by area:
@@ -219,7 +250,7 @@ What happens, in order:
    and kept across upgrades (Secret `orbita-db`).
 2. **`orbita-api`** starts: Flyway creates the tables and the demo data are loaded. Then the Service, the Ingress on
    `/orbita-api` of the DX host and the MCP NetworkPolicy.
-3. The **scriptapps Job** pushes the six Script Applications to WCM with HCL DXClient and creates the six pages under
+3. The **scriptapps Job** pushes the ten Script Applications to WCM with HCL DXClient and creates the ten pages under
    *Home* with XMLAccess.
 
 **4. Check**: `kubectl -n $NS_ORBITA logs job/orbita-scriptapps-push -c dxclient | tail -3`, and
@@ -248,10 +279,10 @@ docker run --rm -p 8080:8080 ghcr.io/europesip/hcl-dx-compose-installer:2.0.0   
 ### Options: pages and what the apps show
 
 **Pages (optional).** By default the chart creates one DX page per app under *Home* (`pages.create: true`). To place
-the six Script Applications yourself (in your own pages, with your own layout), install with `pages.create: false`:
+the ten Script Applications yourself (in your own pages, with your own layout), install with `pages.create: false`:
 the apps are still pushed to WCM (*Script Application Library › Script Applications*, titles «ÓRBITA · …»), and you
 add each one to the page you want. Then set `pages.base` (and keep the friendly names `mi-intranet`, `fichaje`,
-`vacaciones`, `gastos`, `aprobaciones`, `quiosco`), so that the apps link to each other correctly.
+`vacaciones`, `gastos`, `aprobaciones`, `comunicacion`, `encuestas`, `personas`, `documentos`, `quiosco`), so that the apps link to each other correctly.
 
 **Language.** Each user sees ÓRBITA in the language of their DX profile (`preferredLanguage`). Without one, ÓRBITA uses
 the language DX chose for the page, and then the browser language. English is used for any language other than
@@ -278,7 +309,7 @@ theme:
   enabled: true          # false: the pages keep the theme they have
   hclLogo: true          # "Powered by HCL Software"
   assistantButton: true  # assistant button in the header (only on pages with an ÓRBITA app)
-  headerBackground: "linear-gradient(90deg, #15123B 0%, #2A1B6B 55%, #0B2A6F 100%)"
+  headerBackground: "#002c56"
 ```
 
 **Header and footer.** The apps run inside DX pages, so your DX theme may already show some of their header, such as
@@ -316,7 +347,7 @@ kubectl -n dx-demo patch configmap dx-iq-integrator --type merge \
 kubectl -n dx-demo rollout restart deployment/dx-iq-integrator
 # Check: the ÓRBITA tools must be there
 kubectl -n dx-demo logs deploy/dx-iq-integrator | grep Fetched
-#  Fetched 26 tools from http://orbita-api.dx-shared.svc.cluster.local:9081
+#  Fetched 43 tools from http://orbita-api.dx-shared.svc.cluster.local:9081
 ```
 
 In the labs, `scripts/registrar-mcp-en-iq.sh` does exactly this (and does not duplicate the entry).
@@ -330,7 +361,7 @@ In the labs, `scripts/registrar-mcp-en-iq.sh` does exactly this (and does not du
 ### Choosing which MCP tools to publish
 
 Every tool definition the Integrator receives goes into the prompt of **every** call to the model, so each tool costs
-tokens (and money) even when it is not used. All 26 ÓRBITA tools are about **4,700 tokens** (the HCL tools are about
+tokens (and money) even when it is not used. All 43 ÓRBITA tools are about **7,800 tokens** (the HCL tools are about
 30,000). By default all of them are published; to publish fewer, use `mcp.tools` in your values:
 
 ```yaml
@@ -338,7 +369,7 @@ mcp:
   tools:
     enabled: [vacaciones, fichaje]   # only these areas or tools (empty: all)
     disabled: [fichar]               # minus these
-    readOnly: false                  # true: only the 14 query tools
+    readOnly: false                  # true: only the 29 query tools
 ```
 
 | Area | Tools | ≈ tokens |
@@ -348,7 +379,11 @@ mcp:
 | `vacaciones` | vacaciones_saldo, vacaciones_solicitudes, ausencias_equipo, vacaciones_solicitar, vacaciones_cancelar | 910 |
 | `gastos` | gastos_resumen, nota_gasto, nota_gasto_crear, gasto_anadir, nota_gasto_enviar, viaje_solicitar, viaje_cancelar, pagos_pendientes | 1,550 |
 | `aprobaciones` | aprobaciones_pendientes, solicitud_resolver, solicitud_comentarios, solicitud_comentar | 780 |
-| `readOnly: true` | the 14 query tools of all areas | 1,860 |
+| `comunicacion` | comunicados_pendientes, comunicado_leer, rrhh_buscar_respuesta, consultas_mias, consulta_crear | 840 |
+| `encuestas` | pulso_pendientes, pulso_resultados, encuestas_plan_accion | 580 |
+| `personas` | persona_buscar, persona_ficha, organigrama, celebraciones, reconocimientos, reconocimiento_enviar | 1,120 |
+| `documentos` | mis_documentos, mis_nominas, documentos_por_revisar | 610 |
+| `readOnly: true` | the 29 query tools of all areas | 4,500 |
 
 After a `helm upgrade` that changes the tools, restart the Integrator (`kubectl -n dx-demo rollout restart
 deployment/dx-iq-integrator`) so that it reads the new list; the `orbita-api` log shows which tools are active.
@@ -373,7 +408,7 @@ api/                    back end (Maven, Java 21, Jakarta EE 10)
   core/                 logic (com.europesip.orbita.core): operations, permissions, Flyway, demo, DX session
   rest/                 orbita-api.war: REST API (/orbita-api/v1)
   mcp/                  orbita-mcp.war: MCP server
-web/                    React interface (Vite); scripts/scriptapps.mjs builds the 6 Script Applications
+web/                    React interface (Vite); scripts/scriptapps.mjs builds the 7 Script Applications
 images/                 Dockerfiles: orbita-api (Open Liberty) and orbita-scriptapps (the built apps)
 chart/hcl-dx-orbita/    Helm chart
 scripts/                helpers for the labs (install, verify, register the MCP in IQ)
@@ -385,7 +420,7 @@ docs/                   illustrated manual (PDF, EN/ES), AI questions (EN/ES), f
 - **Back end**: `mvn -f api/pom.xml package` (Java 21). **Interface**: `cd web && npm ci && npm run build:scriptapps`.
 - **Images**: CI builds and tests both images; a push to `main` publishes `:main`, a tag `v3.1.1` publishes `:3.1.1`
   and the chart.
-- **A new operation**: method in `Api.java` (or `Gastos.java`), its route in `api/rutas.json`, and the interface calls
+- **A new operation**: method in `Api.java` (or `Gastos.java`, `Comunicacion.java`, `Directorio.java`, `Documentos.java`, `Encuestas.java`), its route in `api/rutas.json`, and the interface calls
   it with `api('op', {...})`. **A schema change**: a new file `V<n>__description.sql` in `db/migration` (never edit a
   published one).
 

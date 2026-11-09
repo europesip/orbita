@@ -2,7 +2,7 @@
 
 Servidor [MCP](https://modelcontextprotocol.io) dentro del back de ÓRBITA. Sirve para que HCL DX IQ (u otro asistente
 de IA) consulte y haga gestiones **del usuario que pregunta**: cuántas vacaciones le quedan, pedir unos días, ver sus
-gastos, aprobar solicitudes…
+gastos, aprobar solicitudes, ver los comunicados de RRHH o hacerle una consulta…
 
 ## Estado
 
@@ -16,7 +16,7 @@ gastos, aprobar solicitudes…
 | Token Bearer opcional (`mcp.tokenSecret`) | ✅ (desactivado por defecto) |
 | Auditoría de cada `tools/call` en el log | ✅ |
 | Confirmación previa en las herramientas que modifican datos | ✅ |
-| **26 herramientas**: día, fichaje, vacaciones, gastos y viajes, aprobaciones y avisos (catálogo de abajo) | ✅ (2.1.0) |
+| **43 herramientas**: día, fichaje, vacaciones, gastos y viajes, aprobaciones, comunicación con RRHH, encuestas, personas, documentos y avisos (catálogo de abajo) | ✅ (2.1.0; comunicación con RRHH, encuestas, personas y documentos: sin publicar) |
 | Elegir qué herramientas se publican (`mcp.tools` del chart) | ✅ (2.2.0) |
 | Registro en DX IQ | Manual: `scripts/registrar-mcp-en-iq.sh` (el chart de IQ no permite ampliar la lista) |
 
@@ -121,28 +121,51 @@ resumen y solo actúan con `confirmar: true`.
 | | `solicitud_resolver` | `apr.resolver` (`clase`, `id`, `decision`, `comentario`) | Modifica | Responsables, RRHH |
 | | `solicitud_comentarios` | `com.lista` (`clase`, `id`) | Consulta | Las partes de la solicitud |
 | | `solicitud_comentar` | `com.enviar` (`clase`, `id`, `texto`) | Modifica | Las partes de la solicitud |
+| Comunicación con RRHH | `comunicados_pendientes` | `comunicados.lista` | Consulta | Todos |
+| | `comunicado_leer` | `comunicados.detalle` (`id`; con `marcar=false`: no cuenta como leído ni confirmado) | Consulta | Destinatarios, RRHH |
+| | `rrhh_buscar_respuesta` | `consultas.buscar` (`q`; el modelo la usa ANTES de `consulta_crear`) | Consulta | Todos |
+| | `consultas_mias` | `consultas.lista` | Consulta | Todos (RRHH, también su bandeja) |
+| | `consulta_crear` | `consultas.crear` (`categoria`, `asunto`, `texto`) | Modifica | Todos |
+| Encuestas | `pulso_pendientes` | `pulso.lista` (= `encuestas.lista`) | Consulta | Todos (RRHH, también borradores y programadas) |
+| | `pulso_resultados` | `pulso.resultados` (= `encuestas.informe`, `id`): favorabilidad, dimensiones, eNPS, tendencia | Consulta | RRHH, responsables (solo su departamento) |
+| | `encuestas_plan_accion` | `encuestas.acciones` (`encuesta` opcional) | Consulta | Todos (las de sus encuestas y su departamento) |
+| Personas | `persona_buscar` | `personas.directorio` (`q`, `departamento`; disponibilidad de hoy sin motivo) | Consulta | Todos |
+| | `persona_ficha` | `personas.ficha` (`usuario`; sin él, la propia) | Consulta | Todos |
+| | `organigrama` | `personas.organigrama` | Consulta | Todos |
+| | `celebraciones` | `personas.celebraciones` (próximos 30 días) | Consulta | Todos |
+| | `reconocimientos` | `reconocimientos.lista` (`usuario` opcional) | Consulta | Todos |
+| | `reconocimiento_enviar` | `reconocimientos.enviar` (`para`, `valor`, `texto`) | Modifica | Todos (no a uno mismo) |
+| Mis documentos | `mis_documentos` | `docs.lista` (`categoria`, `anio`) | Consulta | Todos (solo los suyos) |
+| | `mis_nominas` | `docs.nominas` (`anio`; importes en céntimos) | Consulta | Todos (solo las suyas) |
+| | `documentos_por_revisar` | `docs.bandeja` | Consulta | RRHH |
 
-Fuera de alcance a propósito: `demo.reiniciar`, pagos (`gastos.pagar`), borrados de notas o líneas y exportaciones
-CSV. Son acciones masivas o irreversibles que no deberían quedar a una sola frase de la IA.
+Fuera de alcance a propósito: `demo.reiniciar`, pagos (`gastos.pagar`), borrados de notas o líneas, exportaciones
+CSV y publicar comunicados o encuestas. Son acciones masivas o irreversibles que no deberían quedar a una sola frase de
+la IA. Tampoco hay herramienta para **confirmar un comunicado** («He leído y acepto» lo tiene que hacer la persona en la
+aplicación) ni para **responder una encuesta** (el anonimato no puede pasar por el chat), ni para prepararlas,
+publicarlas o cambiar el plan de acción. En Personas, editar el perfil propio,
+dar de alta una ficha y cambiar los datos de organización (RRHH) se hacen en la aplicación. En Mis documentos, firmar el
+recibí, publicar, enviar, revisar o retirar documentos: los ficheros no pasan por el chat.
 
 Valores: tipos de ausencia `VACACIONES`, `ASUNTOS_PROPIOS`, `PERMISO`, `BAJA`; marcas `ENTRADA`, `PAUSA`, `REANUDAR`,
 `SALIDA`; categorías de gasto `COMIDA`, `HOTEL`, `TRANSPORTE`, `KILOMETRAJE`, `PARKING`, `OTROS`; clases de solicitud
-`AUSENCIA`, `CORRECCION`, `NOTA`, `VIAJE`.
+`AUSENCIA`, `CORRECCION`, `NOTA`, `VIAJE` y `CONSULTA` (consulta a RRHH: la conversación solo la ven el empleado y
+RRHH, no su responsable).
 
 ## Qué herramientas se publican
 
-Por defecto, las 26. Cada definición va en el prompt de cada llamada al modelo (las 26: unos 4.700 tokens), así que
+Por defecto, las 43. Cada definición va en el prompt de cada llamada al modelo (las 43: unos 7.800 tokens), así que
 el chart permite publicar menos (`mcp.tools`, que el pod recibe como variables de entorno):
 
 | Valor del chart | Variable | Efecto |
 |---|---|---|
 | `mcp.tools.enabled: [vacaciones, fichaje_hoy]` | `ORBITA_MCP_TOOLS` | Solo esas áreas o herramientas (vacío: todas). Una lista con solo nombres desconocidos no publica ninguna |
 | `mcp.tools.disabled: [gastos]` | `ORBITA_MCP_TOOLS_DISABLED` | Quita esas áreas o herramientas |
-| `mcp.tools.readOnly: true` | `ORBITA_MCP_READ_ONLY` | Solo las 14 de consulta |
+| `mcp.tools.readOnly: true` | `ORBITA_MCP_READ_ONLY` | Solo las 29 de consulta |
 
-Áreas: `general` (4), `fichaje` (5), `vacaciones` (5), `gastos` (8), `aprobaciones` (4); la tabla del catálogo dice qué
+Áreas: `general` (4), `fichaje` (5), `vacaciones` (5), `gastos` (8), `aprobaciones` (4), `comunicacion` (5), `encuestas` (3), `personas` (6), `documentos` (3); la tabla del catálogo dice qué
 herramienta es de cada una (columna Área). Una herramienta no publicada tampoco se puede llamar. Al arrancar,
-`orbita-api` escribe en el log `ORBITA MCP: N de 26 herramientas activas: ...`. El Integrator lee la lista al arrancar:
+`orbita-api` escribe en el log `ORBITA MCP: N de 43 herramientas activas: ...`. El Integrator lee la lista al arrancar:
 reinícialo después de cambiarla.
 
 ## Seguridad

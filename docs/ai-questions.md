@@ -67,6 +67,45 @@ In brackets, the MCP tool the AI uses ([mcp.md](mcp.md)) and who can ask it in t
 - What was said in eduardo's expense report? (`solicitud_comentarios`)
 - Ask eduardo whether the Toledo car park was during the customer visit (`solicitud_comentar`)
 
+## HR communication
+
+- Do I have anything pending from HR? Any notice to acknowledge? (`comunicados_pendientes`, `pulso_pendientes`; `macarena`)
+- What does the new remote work policy say? When is the deadline to acknowledge it? (`comunicado_leer`: it does not mark it as read or acknowledged)
+- How do I change my bank account for payroll? (`rrhh_buscar_respuesta`, before opening a question)
+- When is payroll paid? How many remote working days do I have? (`rrhh_buscar_respuesta`)
+- Ask HR for a company certificate for the bank (`rrhh_buscar_respuesta` + `consulta_crear`)
+- How is my income tax (IRPF) question going? What did HR answer? (`consultas_mias` + `solicitud_comentarios` with class CONSULTA; `eduardo`)
+- Tell HR thanks, the details of the calculation are enough (`solicitud_comentar`, CONSULTA; `eduardo`)
+- *HR:* Which staff questions are not handled yet? (`consultas_mias`; `patricia`)
+
+## Surveys
+
+- Do I have a survey to answer? Until when is it open? (`pulso_pendientes`; it is answered in the app)
+- *HR:* How did this year's engagement survey go? Which dimensions improved and which got worse? (`pulso_resultados`; `patricia`)
+- *HR:* Summarise the comments of the engagement survey (`pulso_resultados`; `patricia`)
+- *Manager:* How did my department do in the engagement survey? (`pulso_resultados`; `enrique` sees only Tecnología)
+- What is being done with the engagement survey? Which actions are assigned to me? (`encuestas_plan_accion`)
+
+## People
+
+- Who knows about Kubernetes? And who speaks French? (`persona_buscar`)
+- What is Marta's extension? Give me her email (`persona_buscar`)
+- Who from Sales is in the office today? Who is working remotely? (`persona_buscar` with `departamento`; it never says the reason for an absence)
+- Who does Javier report to? Who is in his team? (`persona_ficha`)
+- How many people are below Marta in the org chart? (`organigrama`)
+- Whose birthday is it this week? Are there any new joiners? (`celebraciones`)
+- What recognition have I received? (`reconocimientos`; `macarena`)
+- Thank Javier for covering my customer visit on Thursday (`persona_buscar` + `reconocimiento_enviar`, reason AYUDA)
+
+## My documents
+
+- How much was I paid in October? And in the whole year? (`mis_nominas`; amounts in cents)
+- How much income tax has been withheld this year? What average rate? (`mis_nominas`)
+- Why was I paid more in June? (`mis_nominas`: the extra payment)
+- Do I have any new document or anything to sign? (`mis_documentos`; `pablo` has his contract to sign)
+- Has HR reviewed my doctor's note? (`mis_documentos`; `macarena`)
+- *HR:* Which staff documents do I have to review? (`documentos_por_revisar`; `patricia`)
+
 ## Combined questions
 
 - Can I take Friday off? Check my balance and whether someone in the team is away that day.
@@ -76,6 +115,9 @@ In brackets, the MCP tool the AI uses ([mcp.md](mcp.md)) and who can ask it in t
 
 ## What the AI does not do (on purpose)
 
-Pay expense reports, restore the demo data, delete reports or lines, and export CSV files: they are bulk or
-irreversible actions done in the app, not with one sentence. Nor can it act as somebody else: the identity is your DX
+Pay expense reports, restore the demo data, delete reports or lines, export CSV files, and publish notices or
+surveys: they are bulk or irreversible actions done in the app, not with one sentence. Acknowledging a notice («I have
+read and accept») is done by the person in the app, and the pulse is answered there so that it stays anonymous. Your profile and the organisation details (HR) in People are also changed in the app, and documents are signed,
+published and sent there: files do not go through the chat.
+Nor can it act as somebody else: the identity is your DX
 session.

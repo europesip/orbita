@@ -8,17 +8,26 @@ import {Aprobaciones} from './Aprobaciones.jsx';
 import {Gastos} from './Gastos.jsx';
 import {Inicio} from './Inicio.jsx';
 import {Kiosco} from './Kiosco.jsx';
-import {OrbitaIcono, PRODUCTO} from './marca.jsx';
+import {Comunicacion} from './Comunicacion.jsx';
+import {Personas} from './Personas.jsx';
+import {Documentos} from './Documentos.jsx';
+import {Encuestas} from './Encuestas.jsx';
+import {IconoApp, PRODUCTO} from './marca.jsx';
+import {Icono} from './iconos.jsx';
 import {Asistente} from './asistente.jsx';
 import {fijarIdioma, t} from './i18n.js';
 import {ayudante, enEdicion, guardarAjustes, idiomasDx, leerAjustes, vigilarEdicion} from './preferencias.js';
 
 const APPS = {
-  inicio: {titulo: 'Mi intranet', subtitulo: 'Tu día de un vistazo', icono: '🏠', Vista: Inicio},
-  fichaje: {titulo: 'Fichaje', subtitulo: 'Registro de jornada', icono: '⏱', Vista: Fichaje},
-  vacaciones: {titulo: 'Vacaciones y ausencias', subtitulo: 'Saldo, solicitudes y calendario del equipo', icono: '🌴', Vista: Vacaciones},
-  aprobaciones: {titulo: 'Aprobaciones', subtitulo: 'Solicitudes de tu equipo', icono: '✔', Vista: Aprobaciones},
-  gastos: {titulo: 'Gastos y viajes', subtitulo: 'Notas de gasto, tickets y solicitudes de viaje', icono: '🧾', Vista: Gastos},
+  inicio: {titulo: 'Mi intranet', subtitulo: 'Tu día de un vistazo', icono: 'inicio', Vista: Inicio},
+  fichaje: {titulo: 'Fichaje', subtitulo: 'Registro de jornada', icono: 'reloj', Vista: Fichaje},
+  vacaciones: {titulo: 'Vacaciones y ausencias', subtitulo: 'Saldo, solicitudes y calendario del equipo', icono: 'sol', Vista: Vacaciones},
+  aprobaciones: {titulo: 'Aprobaciones', subtitulo: 'Solicitudes de tu equipo', icono: 'aprobar', Vista: Aprobaciones},
+  gastos: {titulo: 'Gastos y viajes', subtitulo: 'Notas de gasto, tickets y solicitudes de viaje', icono: 'recibo', Vista: Gastos},
+  comunicacion: {titulo: 'Comunicación con RRHH', subtitulo: 'Comunicados, consultas a RRHH y pulso', icono: 'megafono', Vista: Comunicacion},
+  encuestas: {titulo: 'Encuestas', subtitulo: 'Clima laboral, pulso y plan de acción', icono: 'grafico', Vista: Encuestas},
+  personas: {titulo: 'Personas', subtitulo: 'Directorio, organigrama y reconocimientos', icono: 'personas', Vista: Personas},
+  documentos: {titulo: 'Mis documentos', subtitulo: 'Nóminas, cotizaciones, certificados y documentos para RRHH', icono: 'documento', Vista: Documentos},
 };
 const ROLES = {RRHH: 'RRHH', RESPONSABLE: 'Responsable', EMPLEADO: 'Empleado', ADMINISTRACION: 'Administración'};
 
@@ -68,7 +77,7 @@ function AjustesInstancia() {
   if (!instancia || !edicion) return null;
   return (
     <div className="si-ajustes-barra">
-      <Boton icono="⚙" onClick={() => setAbierto(true)}>{t('Ajustes de esta aplicación')}</Boton>
+      <Boton icono="ajustes" onClick={() => setAbierto(true)}>{t('Ajustes de esta aplicación')}</Boton>
       {abierto && <VentanaAjustes instancia={instancia} config={config} avisar={avisar} onCerrar={() => setAbierto(false)} />}
     </div>
   );
@@ -141,17 +150,17 @@ function Contenido({app}) {
         <header className="si-cabecera">
           {c.titulo ? (
             <div className="si-marca">
-              <OrbitaIcono tam={46} />
+              <span className="si-app-icono"><IconoApp app={app} tam={40} /></span>
               <div>
                 <span className="si-producto">{PRODUCTO}</span>
-                <h2><span className="si-titulo-icono" aria-hidden="true">{def.icono}</span>{t(def.titulo)}</h2>
+                <h2>{t(def.titulo)}</h2>
                 <p>{t(def.subtitulo)}</p>
               </div>
             </div>
           ) : <div />}
           {derecha && (
             <div className="si-usuario">
-              {c.inicio && app !== 'inicio' && <a className="si-enlace si-a-inicio" href={urlApp('inicio')}>🏠 {t('Mi intranet')}</a>}
+              {c.inicio && app !== 'inicio' && <a className="si-enlace si-a-inicio" href={urlApp('inicio')}><Icono n="inicio" /> {t('Mi intranet')}</a>}
               {c.asistente && <Asistente app={app} yo={yo} />}
               {c.avisos && <Campana inicial={yo.avisos} app={app} />}
               {c.usuario && <div><strong>{yo.nombre}</strong><span>{yo.puesto} · {ROLES[yo.rol] ? t(ROLES[yo.rol]) : yo.rol}</span></div>}

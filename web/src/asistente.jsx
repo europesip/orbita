@@ -15,6 +15,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 import {OrbitaIcono, PRODUCTO} from './marca.jsx';
 import {useSuite} from './ui.jsx';
+import {Icono} from './iconos.jsx';
 import {lang, t} from './i18n.js';
 
 const SUGERENCIAS = {
@@ -43,7 +44,7 @@ export function Asistente({app, yo, boton = true}) {
   return (
     <>
       {boton && <button type="button" className="si-iq-boton" onClick={() => setAbierto(true)} title={t('Pregúntale a {p}', {p: PRODUCTO}) + (modo === 'iq' ? ' (HCL DX IQ)' : '')}>
-        <span aria-hidden="true">✨</span><span className="si-iq-boton-texto">{t('Pregúntale a {p}', {p: PRODUCTO})}</span>
+        <Icono n="chispas" /><span className="si-iq-boton-texto">{t('Pregúntale a {p}', {p: PRODUCTO})}</span>
       </button>}
       {abierto && <Panel app={app} yo={yo} onCerrar={() => setAbierto(false)} />}
     </>
@@ -242,7 +243,7 @@ function Panel({app, yo, onCerrar}) {
             <textarea ref={entrada} rows={2} value={texto} placeholder={t('Escribe tu pregunta…')} disabled={ocupado}
               onChange={(e) => setTexto(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviar(texto); } }} />
-            <button type="submit" disabled={ocupado || !texto.trim()} aria-label={t('Enviar')}>➤</button>
+            <button type="submit" disabled={ocupado || !texto.trim()} aria-label={t('Enviar')}><Icono n="enviar" /></button>
           </form>
           <small className="si-iq-aviso">{t('Respuestas generadas con IA. Revisa los datos antes de confirmar una solicitud.')}</small>
         </aside>

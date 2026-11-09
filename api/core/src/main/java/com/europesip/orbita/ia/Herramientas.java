@@ -27,23 +27,33 @@ import com.europesip.orbita.ia.Herramienta.Resultado;
  *  - Para ejecutar: l.api("<op>", "clave", valor, ...) con las operaciones de la lógica (api/rutas.json).
  *
  * Fuera a propósito: pagar notas, restaurar la demo, borrar notas o líneas y exportaciones CSV (acciones masivas o
- * irreversibles que no deberían quedar a una sola frase de la IA).
+ * irreversibles que no deberían quedar a una sola frase de la IA). En Comunicación con RRHH, tampoco: confirmar la
+ * lectura de un comunicado (el acuse lo hace la persona), responder al pulso (el anonimato no puede pasar por el chat)
+ * ni publicar comunicados o encuestas (envíos masivos). En Personas, tampoco: editar el perfil propio ni dar de alta o
+ * cambiar los datos de organización (RRHH), que se hacen en la aplicación. En Mis documentos, tampoco: firmar el recibí,
+ * publicar, enviar, revisar o retirar documentos (los ficheros no pasan por el chat).
  *
  * QUÉ HERRAMIENTAS SE PUBLICAN (activas()): todas por defecto. Cada definición va en el prompt de cada llamada al
  * modelo, así que se pueden limitar con variables de entorno (valores mcp.tools.* del chart):
  *   ORBITA_MCP_TOOLS           solo estas (nombres o áreas, separados por comas); vacío: todas
  *   ORBITA_MCP_TOOLS_DISABLED  quitar estas (nombres o áreas)
  *   ORBITA_MCP_READ_ONLY=true  solo las de consulta
- * Áreas: general, fichaje, vacaciones, gastos, aprobaciones (AREAS).
+ * Áreas: general, fichaje, vacaciones, gastos, aprobaciones, comunicacion, encuestas, personas, documentos (AREAS).
  */
 public final class Herramientas {
 
     private Herramientas() {}
 
     private static final String[] TIPOS_AUSENCIA = {"VACACIONES", "ASUNTOS_PROPIOS", "PERMISO", "BAJA"};
-    private static final String[] CLASES = {"AUSENCIA", "CORRECCION", "NOTA", "VIAJE"};
+    private static final String[] CLASES_APROBACION = {"AUSENCIA", "CORRECCION", "NOTA", "VIAJE"};
+    /** Clases con conversación: las solicitudes y las consultas a RRHH. */
+    private static final String[] CLASES = {"AUSENCIA", "CORRECCION", "NOTA", "VIAJE", "CONSULTA"};
+    private static final String[] CATEGORIAS_CONSULTA = {"NOMINA", "CERTIFICADO", "DATOS", "CONTRATO", "FORMACION", "OTRA"};
     private static final String[] MARCAS = {"ENTRADA", "PAUSA", "REANUDAR", "SALIDA"};
     private static final String[] CATEGORIAS = {"COMIDA", "HOTEL", "TRANSPORTE", "KILOMETRAJE", "PARKING", "OTROS"};
+    private static final String[] VALORES = {"EQUIPO", "CLIENTE", "IDEA", "AYUDA", "LOGRO"};
+    private static final String[] CATEGORIAS_DOCUMENTO = {"NOMINA", "COTIZACION", "RETENCIONES", "CONTRATO", "CERTIFICADO", "OTRO",
+        "JUSTIFICANTE", "TITULACION", "BANCARIO", "PERSONAL"};
 
     public static final List<Herramienta> TODAS = Arrays.asList(
 
@@ -260,7 +270,7 @@ public final class Herramientas {
                 + "aprobaciones_pendientes. Rechazar exige un comentario con el motivo. Primero devuelve un resumen; "
                 + "repítela con confirmar=true cuando el usuario lo confirme.",
             Esquema.nuevo()
-                .opciones("clase", "Tipo de solicitud", true, CLASES)
+                .opciones("clase", "Tipo de solicitud", true, CLASES_APROBACION)
                 .entero("id", "id de la solicitud", true)
                 .opciones("decision", "Qué hacer", true, "APROBAR", "RECHAZAR")
                 .texto("comentario", "Comentario para la persona (obligatorio al rechazar)", false)
@@ -286,7 +296,148 @@ public final class Herramientas {
                 .confirmar(),
             false,
             l -> confirmado(l, String.format("Comentar en %s %s: «%s».", lower(l.texto("clase")), l.texto("id"), l.texto("texto")),
-                () -> l.api("com.enviar", "clase", l.texto("clase"), "objeto", l.texto("id"), "texto", l.texto("texto"))))
+                () -> l.api("com.enviar", "clase", l.texto("clase"), "objeto", l.texto("id"), "texto", l.texto("texto")))),
+
+        // ------------------------------------------------------------------------------------------- Comunicación con RRHH
+        new Herramienta("comunicados_pendientes", "Mis comunicados de RRHH",
+            "Comunicados de RRHH dirigidos al usuario: cuáles no ha leído y cuáles tiene que confirmar (acuse de lectura) y "
+                + "su fecha límite. Úsala para '¿tengo algo pendiente de RRHH?' o '¿qué comunicados tengo sin leer?'.",
+            Esquema.nuevo(), true,
+            l -> l.api("comunicados.lista")),
+
+        new Herramienta("comunicado_leer", "Leer un comunicado de RRHH",
+            "Texto completo de un comunicado de RRHH (el id sale de comunicados_pendientes), para resumirlo o responder dudas "
+                + "sobre él. No cuenta como leído ni como confirmado: el acuse de lectura lo hace la persona en la aplicación "
+                + "Comunicación (díselo si el comunicado pide confirmación).",
+            Esquema.nuevo().entero("id", "id del comunicado", true), true,
+            l -> l.api("comunicados.detalle", "id", l.texto("id"), "marcar", "false")),
+
+        new Herramienta("rrhh_buscar_respuesta", "Buscar respuesta de RRHH",
+            "Busca la respuesta a una duda de RRHH (nómina, certificados, cuenta bancaria, contrato, teletrabajo, bajas, "
+                + "formación...) en las preguntas frecuentes de RRHH y en los comunicados del usuario. Úsala SIEMPRE antes de "
+                + "consulta_crear: si encuentras la respuesta, dásela y no abras una consulta.",
+            Esquema.nuevo().texto("q", "La duda, con sus palabras clave", true), true,
+            l -> l.api("consultas.buscar", "q", l.texto("q"))),
+
+        new Herramienta("consultas_mias", "Mis consultas a RRHH",
+            "Consultas del usuario a RRHH con su estado (ABIERTA, EN_CURSO, RESUELTA) y quién de RRHH la atiende. Para RRHH, "
+                + "también la bandeja con las consultas de la plantilla. La conversación de una consulta: solicitud_comentarios "
+                + "con clase CONSULTA.",
+            Esquema.nuevo(), true,
+            l -> l.api("consultas.lista")),
+
+        new Herramienta("consulta_crear", "Enviar una consulta a RRHH",
+            "Envía una consulta privada a RRHH (la ven solo el usuario y RRHH, no su responsable). Antes, busca la respuesta "
+                + "con rrhh_buscar_respuesta. La primera llamada no cambia nada: devuelve un resumen; repítela con "
+                + "confirmar=true cuando el usuario lo confirme.",
+            Esquema.nuevo()
+                .opciones("categoria", "Categoría", true, CATEGORIAS_CONSULTA)
+                .texto("asunto", "Asunto breve", true)
+                .texto("texto", "La consulta, explicada", true)
+                .confirmar(),
+            false,
+            l -> confirmado(l, String.format("Consulta a RRHH (%s): «%s».", lower(l.texto("categoria")), l.texto("asunto")),
+                () -> l.api("consultas.crear", "categoria", l.texto("categoria"), "asunto", l.texto("asunto"), "texto", l.texto("texto")))),
+
+        new Herramienta("pulso_pendientes", "Mis encuestas",
+            "Encuestas anónimas de clima (pulso mensual, clima anual, bienestar...) que ve el usuario: si tiene alguna abierta "
+                + "sin responder, su fecha de cierre, la participación y, para RRHH, también los borradores y las programadas. "
+                + "Las respuestas solo se dan en la aplicación Encuestas, para mantener el anonimato: no puedes responderlas "
+                + "por el usuario.",
+            Esquema.nuevo(), true,
+            l -> l.api("pulso.lista")),
+
+        new Herramienta("pulso_resultados", "Informe de una encuesta",
+            "Informe de una encuesta (el id sale de pulso_pendientes): participación, índice de favorabilidad (% de respuestas "
+                + "4-5), favorabilidad por dimensión (LIDERAZGO, CARGA, BIENESTAR...), eNPS, resultados de cada pregunta y la "
+                + "comparación con la encuesta anterior de la misma serie; para RRHH, también cada departamento y los "
+                + "comentarios con sus palabras más repetidas. Un responsable ve solo su departamento. Un bloque sin el mínimo "
+                + "de respuestas no tiene datos (anonimato). Úsala para resumir el clima, los puntos fuertes y los de mejora.",
+            Esquema.nuevo().entero("id", "id de la encuesta", true), true,
+            l -> l.api("pulso.resultados", "id", l.texto("id"))),
+
+        new Herramienta("encuestas_plan_accion", "Plan de acción de las encuestas",
+            "Lo que la empresa está haciendo con los resultados de las encuestas: acciones con su dimensión, departamento, "
+                + "responsable, fecha límite y estado (PENDIENTE, EN_CURSO, HECHA). Úsala para '¿qué se está haciendo con la "
+                + "encuesta de clima?' o '¿qué acciones tengo asignadas?'.",
+            Esquema.nuevo().entero("encuesta", "Solo las de esta encuesta (id)", false), true,
+            l -> l.api("encuestas.acciones", "encuesta", l.texto("encuesta"))),
+
+        // ------------------------------------------------------------------------------------------- Personas
+        new Herramienta("persona_buscar", "Buscar en el directorio",
+            "Busca compañeros en el directorio de la empresa por nombre, puesto, departamento, sede, habilidad o idioma (q, "
+                + "varias palabras: todas deben coincidir) y devuelve su contacto (correo, teléfono, extensión), su responsable "
+                + "y su disponibilidad de hoy (OFICINA, TELETRABAJO, PAUSA, FUERA o AUSENTE con la fecha de vuelta). Úsala para "
+                + "'¿quién sabe de Kubernetes?', '¿cuál es la extensión de Marta?' o '¿quién de Ventas está hoy en la oficina?'. "
+                + "Sin q devuelve toda la plantilla. Nunca dice el motivo de una ausencia.",
+            Esquema.nuevo().texto("q", "Palabras a buscar", false).texto("departamento", "Solo este departamento (nombre exacto)", false), true,
+            l -> l.api("personas.directorio", "q", l.texto("q"), "departamento", l.texto("departamento"))),
+
+        new Herramienta("persona_ficha", "Ficha de una persona",
+            "Ficha completa de una persona del directorio (el usuario sale de persona_buscar; sin él, la del propio usuario): "
+                + "contacto, sede, sobre mí, habilidades, idiomas, antigüedad, su línea de responsables, su equipo, sus compañeros "
+                + "y los reconocimientos que ha recibido.",
+            Esquema.nuevo().texto("usuario", "Usuario de la persona (de persona_buscar)", false), true,
+            l -> l.api("personas.ficha", "usuario", l.texto("usuario"))),
+
+        new Herramienta("organigrama", "Organigrama",
+            "El organigrama de la empresa como árbol de responsables (cada persona con su equipo y el total de personas por "
+                + "debajo). Úsala para '¿de quién depende Ventas?' o '¿cuánta gente hay en el equipo de Marta?'.",
+            Esquema.nuevo(), true,
+            l -> l.api("personas.organigrama")),
+
+        new Herramienta("celebraciones", "Celebraciones",
+            "Cumpleaños (solo de quien lo hace visible), aniversarios en la empresa e incorporaciones de los próximos 30 días. "
+                + "Úsala para '¿quién cumple años esta semana?' o '¿quién se ha incorporado?'.",
+            Esquema.nuevo(), true,
+            l -> l.api("personas.celebraciones")),
+
+        new Herramienta("reconocimientos", "Reconocimientos",
+            "Reconocimientos entre compañeros (los últimos de toda la empresa o los recibidos por una persona) con su motivo "
+                + "(EQUIPO, CLIENTE, IDEA, AYUDA, LOGRO), y cuántos ha recibido y enviado el usuario.",
+            Esquema.nuevo().texto("usuario", "Solo los recibidos por esta persona (usuario de persona_buscar)", false), true,
+            l -> l.api("reconocimientos.lista", "usuario", l.texto("usuario"))),
+
+        new Herramienta("reconocimiento_enviar", "Hacer un reconocimiento",
+            "Da las gracias públicamente a un compañero (lo ve toda la empresa; la persona y su responsable reciben un aviso). "
+                + "valor: EQUIPO (trabajo en equipo), CLIENTE (pasión por el cliente), IDEA (gran idea), AYUDA (siempre ayuda) "
+                + "o LOGRO (objetivo cumplido). Busca antes el usuario con persona_buscar. La primera llamada no cambia nada: "
+                + "devuelve un resumen; repítela con confirmar=true cuando el usuario lo confirme.",
+            Esquema.nuevo()
+                .texto("para", "Usuario del compañero (de persona_buscar)", true)
+                .opciones("valor", "Motivo", true, VALORES)
+                .texto("texto", "Por qué, en una o dos frases", true)
+                .confirmar(),
+            false,
+            l -> confirmado(l, String.format("Reconocimiento para %s (%s): «%s».", l.texto("para"), lower(l.texto("valor")), l.texto("texto")),
+                () -> l.api("reconocimientos.enviar", "para", l.texto("para"), "valor", l.texto("valor"), "texto", l.texto("texto")))),
+
+        // ------------------------------------------------------------------------------------------- Mis documentos
+        new Herramienta("mis_documentos", "Mis documentos",
+            "Documentos del usuario: los que le ha publicado la empresa (NOMINA, COTIZACION, RETENCIONES, CONTRATO, "
+                + "CERTIFICADO, OTRO), con si los ha abierto y si tiene pendiente firmar el recibí, y los que él ha enviado a "
+                + "RRHH con su estado (PENDIENTE, REVISADO, RECHAZADO y el comentario de RRHH). Úsala para '¿tengo algún documento "
+                + "nuevo?', '¿tengo que firmar algo?' o '¿ha revisado RRHH mi justificante?'. Los ficheros se abren en la aplicación "
+                + "Mis documentos.",
+            Esquema.nuevo()
+                .opciones("categoria", "Solo esta categoría", false, CATEGORIAS_DOCUMENTO)
+                .entero("anio", "Solo este año", false),
+            true,
+            l -> l.api("docs.lista", "categoria", l.texto("categoria"), "anio", l.texto("anio"))),
+
+        new Herramienta("mis_nominas", "Mis nóminas",
+            "Las nóminas del usuario de un año (por defecto, el actual), mes a mes y con las pagas extra: bruto, retención de "
+                + "IRPF, Seguridad Social, otras deducciones y neto (en CÉNTIMOS de euro), y los totales del año con el tipo medio "
+                + "de IRPF. Úsala para '¿cuánto cobré en octubre?', '¿cuánto IRPF llevo este año?' o '¿por qué este mes he "
+                + "cobrado menos?'. Son datos privados: solo los del propio usuario.",
+            Esquema.nuevo().entero("anio", "Año (por defecto, el actual)", false), true,
+            l -> l.api("docs.nominas", "anio", l.texto("anio"))),
+
+        new Herramienta("documentos_por_revisar", "Documentos por revisar (RRHH)",
+            "Solo RRHH: documentos que la plantilla ha enviado a RRHH (justificantes, titulaciones, datos bancarios...) y "
+                + "están pendientes de revisar, y los últimos revisados. Revisarlos o devolverlos se hace en la aplicación.",
+            Esquema.nuevo(), true,
+            l -> l.api("docs.bandeja"))
     );
 
     /** Área de cada herramienta (para activar o desactivar grupos enteros). */
@@ -299,6 +450,12 @@ public final class Herramientas {
         AREAS.put("gastos", List.of("gastos_resumen", "nota_gasto", "nota_gasto_crear", "gasto_anadir", "nota_gasto_enviar",
                 "viaje_solicitar", "viaje_cancelar", "pagos_pendientes"));
         AREAS.put("aprobaciones", List.of("aprobaciones_pendientes", "solicitud_resolver", "solicitud_comentarios", "solicitud_comentar"));
+        AREAS.put("comunicacion", List.of("comunicados_pendientes", "comunicado_leer", "rrhh_buscar_respuesta", "consultas_mias",
+                "consulta_crear"));
+        AREAS.put("encuestas", List.of("pulso_pendientes", "pulso_resultados", "encuestas_plan_accion"));
+        AREAS.put("personas", List.of("persona_buscar", "persona_ficha", "organigrama", "celebraciones", "reconocimientos",
+                "reconocimiento_enviar"));
+        AREAS.put("documentos", List.of("mis_documentos", "mis_nominas", "documentos_por_revisar"));
     }
 
     private static final Logger LOG = Logger.getLogger(Herramientas.class.getName());

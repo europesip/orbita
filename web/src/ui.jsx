@@ -3,6 +3,7 @@ import React, {createContext, useCallback, useContext, useEffect, useRef, useSta
 import {createPortal} from 'react-dom';
 import {lang, locale, t} from './i18n.js';
 import CONTRATO from '../../api/rutas.json';
+import {Icono, icono as iconoDe} from './iconos.jsx';
 
 export const Suite = createContext(null);
 export const useSuite = () => useContext(Suite);
@@ -128,7 +129,8 @@ export function centimosDe(texto) {
 /** Céntimos → texto para un campo de importe ("12,30" en español, "12.30" en inglés). */
 export const importeTexto = (cent) => (cent ? (cent / 100).toFixed(2).replace('.', lang() === 'en' ? '.' : ',') : '');
 
-export const ICONOS_GASTO = {COMIDA: '🍽', HOTEL: '🏨', TRANSPORTE: '🚆', KILOMETRAJE: '🚗', PARKING: '🅿', OTROS: '📦'};
+/** Icono de cada categoría de gasto (nombres de src/iconos.jsx; se pintan con icono()). */
+export const ICONOS_GASTO = {COMIDA: 'cubiertos', HOTEL: 'cama', TRANSPORTE: 'tren', KILOMETRAJE: 'coche', PARKING: 'parking', OTROS: 'paquete'};
 
 /** Ver el ticket de una línea de gasto (imagen o PDF) en una ventana. */
 export function VerTicket({linea, onCerrar}) {
@@ -136,7 +138,7 @@ export function VerTicket({linea, onCerrar}) {
   const src = tk && `data:${tk.tipo};base64,${tk.datos}`;
   return (
     <Modal titulo={tk ? tk.nombre : t('Ticket')} onCerrar={onCerrar}
-      pie={tk && <><a className="si-boton" href={src} download={tk.nombre}>⤓ {t('Descargar')}</a><Boton onClick={onCerrar}>{t('Cerrar')}</Boton></>}>
+      pie={tk && <><a className="si-boton" href={src} download={tk.nombre}><Icono n="descargar" /> {t('Descargar')}</a><Boton onClick={onCerrar}>{t('Cerrar')}</Boton></>}>
       {error && <Fallo>{error}</Fallo>}
       {!tk ? <Cargando /> : tk.tipo === 'application/pdf'
         ? <object className="si-ticket-pdf" data={src} type="application/pdf"><p>{t('Descarga el PDF para verlo.')}</p></object>
@@ -161,7 +163,8 @@ export function laborables(desde, hasta, festivos) {
 }
 
 // ---------- Componentes ----------
-const COLORES = ['#4f46e5', '#0891b2', '#059669', '#d97706', '#db2777', '#7c3aed', '#2563eb', '#dc2626'];
+// Colores de avatar: tonos oscuros de la paleta de DX, legibles con texto blanco
+const COLORES = ['#0b5fff', '#13838f', '#287d3c', '#9f4500', '#a3266a', '#5a49c4', '#002c56', '#2e5aac'];
 export function Avatar({nombre, tam = 36}) {
   const ini = nombre.split(' ').map((p) => p[0]).slice(0, 2).join('');
   let h = 0;
@@ -172,7 +175,7 @@ export function Avatar({nombre, tam = 36}) {
 export const Insignia = ({tono = 'gris', children}) => <span className={`si-insignia si-${tono}`}>{children}</span>;
 
 export function Boton({tipo = 'secundario', icono, children, ...p}) {
-  return <button type="button" className={`si-boton si-boton-${tipo}`} {...p}>{icono && <span className="si-icono">{icono}</span>}{children}</button>;
+  return <button type="button" className={`si-boton si-boton-${tipo}`} {...p}>{icono && <span className="si-icono">{iconoDe(icono)}</span>}{children}</button>;
 }
 
 export function Tarjeta({titulo, accion, children, className = ''}) {
@@ -208,7 +211,7 @@ export function Modal({titulo, onCerrar, children, pie, ancho}) {
     <div className="si-app">
       <div className="si-modal-fondo" onMouseDown={(e) => { if (e.target === e.currentTarget) onCerrar(); }}>
         <div className={`si-modal${ancho ? ' si-modal-ancho' : ''}`} role="dialog" aria-label={titulo}>
-          <header><h3>{titulo}</h3><button type="button" className="si-cerrar" onClick={onCerrar} aria-label={t('Cerrar')}>×</button></header>
+          <header><h3>{titulo}</h3><button type="button" className="si-cerrar" onClick={onCerrar} aria-label={t('Cerrar')}><Icono n="x" /></button></header>
           <div className="si-modal-cuerpo">{children}</div>
           {pie && <footer>{pie}</footer>}
         </div>
@@ -226,14 +229,14 @@ export function SelectorMes({anio, mes, onCambiar}) {
   const mover = (n) => { const d = new Date(anio, mes - 1 + n, 1); onCambiar(d.getFullYear(), d.getMonth() + 1); };
   return (
     <div className="si-selector-mes">
-      <button type="button" onClick={() => mover(-1)} aria-label={t('Mes anterior')}>‹</button>
+      <button type="button" onClick={() => mover(-1)} aria-label={t('Mes anterior')}><Icono n="izquierda" /></button>
       <span>{nombreMes(anio, mes)}</span>
-      <button type="button" onClick={() => mover(1)} aria-label={t('Mes siguiente')}>›</button>
+      <button type="button" onClick={() => mover(1)} aria-label={t('Mes siguiente')}><Icono n="derecha" /></button>
     </div>
   );
 }
 
-export const Vacio = ({icono = '✓', children}) => <div className="si-vacio"><span>{icono}</span><p>{children}</p></div>;
+export const Vacio = ({icono: i = 'checkCirculo', children}) => <div className="si-vacio"><span>{iconoDe(i)}</span><p>{children}</p></div>;
 export const Cargando = () => <p className="si-cargando">{t('Cargando…')}</p>;
 export const Fallo = ({children}) => <p className="si-error">{children}</p>;
 

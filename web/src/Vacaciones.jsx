@@ -6,8 +6,9 @@ import {
 } from './ui.jsx';
 import {BotonConversacion, Conversacion} from './social.jsx';
 import {lang, locale, t} from './i18n.js';
+import {Icono} from './iconos.jsx';
 
-const ICONO_AUSENCIA = {VACACIONES: '🌴', ASUNTOS_PROPIOS: '🗓️', PERMISO: '📄', BAJA: '🩹'};
+const ICONO_AUSENCIA = {VACACIONES: 'sol', ASUNTOS_PROPIOS: 'calendario', PERMISO: 'documento', BAJA: 'salud'};
 const mayuscula = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 const MESES = () => Array.from({length: 12}, (_, m) => mayuscula(new Date(2000, m, 1).toLocaleDateString(locale(), {month: 'long'})));
 /** Iniciales de los días de la semana, empezando en lunes y en domingo. */
@@ -27,11 +28,11 @@ export function Vacaciones({yo}) {
   return (
     <>
       <div className="si-vac-cabecera">
-        <AnilloSaldo titulo={t('Vacaciones {anio}', {anio: res.anio})} s={res.vacaciones} color="#0ea5e9" />
+        <AnilloSaldo titulo={t('Vacaciones {anio}', {anio: res.anio})} s={res.vacaciones} color="#0b5fff" />
         <div className="si-vac-mini">
-          <MiniSaldo titulo={t('Asuntos propios')} s={res.propios} color="var(--si-violeta)" icono="🗓️" />
+          <MiniSaldo titulo={t('Asuntos propios')} s={res.propios} color="var(--si-violeta)" icono="calendario" />
           <div className="si-vac-pendientes">
-            <span>⏳</span>
+            <span><Icono n="reloj_arena" /></span>
             <div><strong>{plural(res.vacaciones.pendientes + res.propios.pendientes, 'día', 'días')}</strong>
               <small>{res.aprobador ? t('esperando aprobación de {quien}', {quien: res.aprobador.split(' ')[0]}) : t('esperando aprobación')}</small></div>
           </div>
@@ -81,7 +82,7 @@ function AnilloSaldo({titulo, s, color}) {
 function MiniSaldo({titulo, s, color, icono}) {
   return (
     <div className="si-vac-minisaldo">
-      <span className="si-vac-mini-icono">{icono}</span>
+      <span className="si-vac-mini-icono"><Icono n={icono} /></span>
       <div>
         <small>{titulo}</small>
         <strong>{s.disponibles} <em>{t('de {total}', {total: s.total})}</em></strong>
@@ -101,22 +102,22 @@ function CuentaAtras({proxima, onPedir}) {
   let titulo, sub;
   if (!proxima) { titulo = t('¿Planeamos algo?'); sub = t('No tienes ausencias aprobadas próximamente.'); }
   else if (proxima.desde <= hoy) {
-    titulo = `${t('¡Disfruta!')} ${ICONO_AUSENCIA[proxima.tipo]}`;
+    titulo = t('¡Disfruta!');
     sub = t('Estás de {tipo} hasta el {fecha}', {tipo: TIPOS_AUSENCIA[proxima.tipo].nombre.toLowerCase(), fecha: fecha(proxima.hasta)});
   }
   else {
     const n = diasEntre(hoy, proxima.desde);
     titulo = n === 1 ? t('¡Mañana empiezan!') : t('Faltan {n} días', {n});
     sub = `${TIPOS_AUSENCIA[proxima.tipo].nombre} · ${rango(proxima.desde, proxima.hasta)} · ${plural(proxima.dias, 'día laborable', 'días laborables')}`
-      + (proxima.estado === 'PENDIENTE' ? ` · ⏳ ${t('pendiente de aprobar')}` : '');
+      + (proxima.estado === 'PENDIENTE' ? ` · ${t('pendiente de aprobar')}` : '');
   }
   return (
     <div className={`si-vac-cuenta${proxima ? '' : ' vacia'}`}>
-      <span className="si-vac-cuenta-icono">{proxima ? ICONO_AUSENCIA[proxima.tipo] : '🏖️'}</span>
+      <span className="si-vac-cuenta-icono"><Icono n={proxima ? ICONO_AUSENCIA[proxima.tipo] : 'calendario'} /></span>
       <small>{t('Próxima ausencia')}</small>
       <strong>{titulo}</strong>
       <span>{sub}</span>
-      <button type="button" className="si-vac-pedir" onClick={onPedir}>＋ {t('Solicitar ausencia')}</button>
+      <button type="button" className="si-vac-pedir" onClick={onPedir}><Icono n="mas" /> {t('Solicitar ausencia')}</button>
     </div>
   );
 }
@@ -154,14 +155,14 @@ function MiAnio({version, yo, onPedir}) {
   return (
     <Tarjeta className="si-mi-anio"
       titulo={<div className="si-selector-mes">
-        <button type="button" onClick={() => setAnio(anio - 1)} aria-label={t('Año anterior')}>‹</button>
+        <button type="button" onClick={() => setAnio(anio - 1)} aria-label={t('Año anterior')}><Icono n="izquierda" /></button>
         <span>{anio}</span>
-        <button type="button" onClick={() => setAnio(anio + 1)} aria-label={t('Año siguiente')}>›</button>
+        <button type="button" onClick={() => setAnio(anio + 1)} aria-label={t('Año siguiente')}><Icono n="derecha" /></button>
       </div>}
-      accion={<span className="si-tenue si-pista">🖱️ {t('Arrastra sobre los días para pedirlos')}</span>}>
+      accion={<span className="si-tenue si-pista"><Icono n="puntero" /> {t('Arrastra sobre los días para pedirlos')}</span>}>
       <div className="si-anio-resumen">
         {Object.entries(TIPOS_AUSENCIA).map(([k, ti]) => (
-          <span key={k}><i style={{background: ti.color}} />{ICONO_AUSENCIA[k]} {ti.nombre} <b>{usados[k] || 0}</b></span>
+          <span key={k}><i style={{background: ti.color}} />{ti.nombre} <b>{usados[k] || 0}</b></span>
         ))}
         <span><i className="pendiente" />{t('Pendiente')}</span>
         <span><i className="festivo" />{t('Festivo')}</span>
@@ -221,7 +222,7 @@ function Solicitudes({res, onCambio}) {
       onCambio(r);
     } catch (e) { avisar(e.message, 'rojo'); }
   };
-  if (!res.solicitudes.length) return <Tarjeta><Vacio icono="🌴">{t('Todavía no has pedido ninguna ausencia.')}</Vacio></Tarjeta>;
+  if (!res.solicitudes.length) return <Tarjeta><Vacio icono="calendario">{t('Todavía no has pedido ninguna ausencia.')}</Vacio></Tarjeta>;
   return (
     <Tarjeta>
       <ul className="si-lista">
@@ -290,7 +291,7 @@ function NuevaSolicitud({yo, res, inicial, onCerrar, onHecho}) {
       <div className="si-tipos">
         {Object.entries(TIPOS_AUSENCIA).map(([k, ti]) => (
           <button key={k} type="button" className={tipo === k ? 'activa' : ''} onClick={() => setTipo(k)} style={{'--c': ti.color}}>
-            <span className="si-tipo-icono">{ICONO_AUSENCIA[k]}</span>{ti.nombre}
+            <span className="si-tipo-icono"><Icono n={ICONO_AUSENCIA[k]} /></span>{ti.nombre}
           </button>
         ))}
       </div>
@@ -307,10 +308,10 @@ function NuevaSolicitud({yo, res, inicial, onCerrar, onHecho}) {
       </div>
       {anioEq && (Object.keys(coinciden).length
         ? <div className="si-coinciden">
-          <span>👥 {t('Esos días también faltan:')}</span>
+          <span><Icono n="personas" /> {t('Esos días también faltan:')}</span>
           {Object.entries(coinciden).map(([n, d]) => <span key={n} className="si-coincide"><Avatar nombre={n} tam={22} />{n} <small>{plural(d, 'día', 'días')}</small></span>)}
         </div>
-        : <div className="si-coinciden ok">✅ {t('Nadie de tu equipo falta esos días.')}</div>)}
+        : <div className="si-coinciden ok"><Icono n="checkCirculo" /> {t('Nadie de tu equipo falta esos días.')}</div>)}
       <Campo etiqueta={t('Comentario (opcional)')}>
         <textarea className="si-input" rows={2} value={comentario} onChange={(e) => setComentario(e.target.value)} placeholder={t('Ej.: viaje familiar')} />
       </Campo>

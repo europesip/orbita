@@ -8,6 +8,7 @@ import {
 import {urlApp} from './social.jsx';
 import {locale, t} from './i18n.js';
 import {OrbitaLogo} from './marca.jsx';
+import {Icono} from './iconos.jsx';
 
 const ESTADO_DIA = traducido({
   COMPLETO: {nombre: 'Completo', tono: 'verde'},
@@ -42,12 +43,12 @@ export function Fichaje({yo}) {
 
 // ---------- Incidencias (motivo de cada pausa) y línea de tiempo del día ----------
 export const INCIDENCIAS = traducido({
-  DESAYUNO: {nombre: 'Desayuno', icono: '☕'},
-  COMIDA: {nombre: 'Comida', icono: '🍽️'},
-  MEDICO: {nombre: 'Médico', icono: '🩺', retribuida: true},
-  VISITA: {nombre: 'Visita a cliente', icono: '🚗', retribuida: true},
-  GESTION: {nombre: 'Gestión personal', icono: '📝'},
-  OTRA: {nombre: 'Otro motivo', icono: '⏸️'},
+  DESAYUNO: {nombre: 'Desayuno', icono: 'cafe'},
+  COMIDA: {nombre: 'Comida', icono: 'cubiertos'},
+  MEDICO: {nombre: 'Médico', icono: 'salud', retribuida: true},
+  VISITA: {nombre: 'Visita a cliente', icono: 'coche', retribuida: true},
+  GESTION: {nombre: 'Gestión personal', icono: 'nota'},
+  OTRA: {nombre: 'Otro motivo', icono: 'pausa'},
 });
 const incid = (k) => INCIDENCIAS[k] || INCIDENCIAS.OTRA;
 const aMin = (h) => { const [a, b] = h.split(':'); return Number(a) * 60 + Number(b); };
@@ -90,7 +91,7 @@ function LineaDia({marcas, ahora, prevista, mini, de = 7, a = 21}) {
         {tr.map((x, i) => (
           <div key={i} className={`si-tramo si-tramo-${x.tipo}${x.abierto ? ' abierto' : ''}`} title={titulo(x)}
             style={{left: pos(x.desde), width: ancho(x)}}>
-            {!mini && x.tipo !== 'trabajo' && x.tipo !== 'sincierre' && x.hasta - x.desde >= 25 && <span>{incid(x.inc).icono}</span>}
+            {!mini && x.tipo !== 'trabajo' && x.tipo !== 'sincierre' && x.hasta - x.desde >= 25 && <Icono n={incid(x.inc).icono} />}
           </div>
         ))}
         {prevista != null && <div className="si-linea-prevista" style={{left: pos(prevista)}} title={`${t('Salida prevista')} ${deMin(prevista)}`} />}
@@ -113,9 +114,9 @@ const urlMapa = (g) => `https://www.openstreetmap.org/?mlat=${g.lat}&mlon=${g.lo
 /** Botón redondo de fichar con el anillo de la jornada cumplida. */
 function BotonFichar({estado, pct, minHoy, disabled, onClick}) {
   const conf = {
-    FUERA: {clase: 'entrar', icono: '▶', texto: t('Entrar')},
-    TRABAJANDO: {clase: 'salir', icono: '■', texto: t('Salir')},
-    PAUSA: {clase: 'volver', icono: '↻', texto: t('Volver|pausa')},
+    FUERA: {clase: 'entrar', icono: 'entrar', texto: t('Entrar')},
+    TRABAJANDO: {clase: 'salir', icono: 'salir', texto: t('Salir')},
+    PAUSA: {clase: 'volver', icono: 'play', texto: t('Volver|pausa')},
   }[estado];
   const r = 98, l = 2 * Math.PI * r;
   return (
@@ -126,7 +127,7 @@ function BotonFichar({estado, pct, minHoy, disabled, onClick}) {
           transform="rotate(-90 110 110)" />
       </svg>
       <button type="button" className={`si-redondo ${conf.clase}`} disabled={disabled} onClick={onClick}>
-        <span className="si-redondo-icono">{conf.icono}</span>
+        <span className="si-redondo-icono"><Icono n={conf.icono} /></span>
         <strong>{conf.texto}</strong>
         <small>{horas(minHoy)} · {pct}%</small>
       </button>
@@ -168,8 +169,8 @@ function PanelHoy({onFichado}) {
       fijar(r);
       onFichado();
       const hora =`${dosCifras(new Date().getHours())}:${dosCifras(new Date().getMinutes())}`;
-      avisar(tipo === 'PAUSA' ? `${incid(incidencia).icono} ${t('Pausa por {motivo} a las {hora}', {motivo: incid(incidencia).nombre.toLowerCase(), hora})}`
-        : t('{tipo} registrada a las {hora}', {tipo: MARCAS[tipo], hora}) + (g ? ` · 📍 ${t('con ubicación')}` : ''));
+      avisar(tipo === 'PAUSA' ? t('Pausa por {motivo} a las {hora}', {motivo: incid(incidencia).nombre.toLowerCase(), hora})
+        : t('{tipo} registrada a las {hora}', {tipo: MARCAS[tipo], hora}) + (g ? ` · ${t('con ubicación')}` : ''));
     } catch (e) {
       avisar(e.message, 'rojo');
       recargar();
@@ -180,7 +181,7 @@ function PanelHoy({onFichado}) {
   const principal = {FUERA: 'ENTRADA', TRABAJANDO: 'SALIDA', PAUSA: 'REANUDAR'}[est.estado];
   const estadoTexto = {
     TRABAJANDO: <><i className="si-punto verde" />{t('Trabajando desde las {hora}', {hora: est.desde})}</>,
-    PAUSA: <><i className="si-punto ambar" />{incid(est.incidencia).icono} {t('{motivo} desde las {hora}', {motivo: incid(est.incidencia).nombre, hora: est.desde})} · {horas(minPausa)}</>,
+    PAUSA: <><i className="si-punto ambar" /><Icono n={incid(est.incidencia).icono} /> {t('{motivo} desde las {hora}', {motivo: incid(est.incidencia).nombre, hora: est.desde})} · {horas(minPausa)}</>,
     FUERA: <><i className="si-punto gris" />{t(est.marcas.length ? 'Jornada terminada' : 'Aún no has fichado hoy')}</>,
   }[est.estado];
   const maxSemana = Math.max(480, ...est.semana.map((d) => d.minutos));
@@ -207,9 +208,9 @@ function PanelHoy({onFichado}) {
             {est.estado === 'FUERA' && <>
               <span className="si-etiqueta">{t('¿Dónde trabajas hoy?')}</span>
               <div className="si-modalidad" role="radiogroup" aria-label={t('Modalidad')}>
-                {[['OFICINA', `🏢 ${t('Oficina')}`], ['TELETRABAJO', `🏠 ${t('Teletrabajo')}`]].map(([v, texto]) => (
+                {[['OFICINA', 'oficina', t('Oficina')], ['TELETRABAJO', 'inicio', t('Teletrabajo')]].map(([v, ic, texto]) => (
                   <button key={v} type="button" role="radio" aria-checked={modalidad === v} className={modalidad === v ? 'activa' : ''}
-                    onClick={() => setModalidad(v)}>{texto}</button>
+                    onClick={() => setModalidad(v)}><Icono n={ic} /> {texto}</button>
                 ))}
               </div>
             </>}
@@ -219,18 +220,18 @@ function PanelHoy({onFichado}) {
                 {Object.entries(INCIDENCIAS).map(([k, v]) => (
                   <button key={k} type="button" disabled={enviando} onClick={() => marcar('PAUSA', k)}
                     title={t(v.retribuida ? 'Cuenta como tiempo de trabajo' : 'No cuenta como tiempo de trabajo')}>
-                    <span>{v.icono}</span>{v.nombre}{v.retribuida && <em>{t('retribuida')}</em>}
+                    <Icono n={v.icono} />{v.nombre}{v.retribuida && <em>{t('retribuida')}</em>}
                   </button>
                 ))}
               </div>
             </>}
             {est.estado === 'PAUSA' && <>
               <span className="si-etiqueta">{t(incid(est.incidencia).retribuida ? 'Incidencia retribuida: el tiempo cuenta como trabajo' : 'Pausa: el tiempo no cuenta como trabajo')}</span>
-              <button type="button" className="si-fichar-secundario" disabled={enviando} onClick={() => marcar('SALIDA')}>■ {t('Terminar la jornada')}</button>
+              <button type="button" className="si-fichar-secundario" disabled={enviando} onClick={() => marcar('SALIDA')}><Icono n="salir" /> {t('Terminar la jornada')}</button>
             </>}
             <span className={`si-geo si-geo-${geo.estado}`}>
-              {geo.estado === 'ok' ? <>📍 {t('Ubicación lista')} · ±{geo.precision} m</>
-                : geo.estado === 'buscando' ? <>📍 {t('Buscando ubicación…')}</> : <>📍 {t('Sin ubicación: se fichará igualmente')}</>}
+              <Icono n="ubicacion" /> {geo.estado === 'ok' ? <>{t('Ubicación lista')} · ±{geo.precision} m</>
+                : geo.estado === 'buscando' ? t('Buscando ubicación…') : t('Sin ubicación: se fichará igualmente')}
             </span>
           </div>
         </div>
@@ -247,13 +248,13 @@ function PanelHoy({onFichado}) {
           ? <ol className="si-marcajes">{[...est.marcas].reverse().map((m, i) => (
             <li key={i} className={`si-marcaje-${m.tipo.toLowerCase()}`}>
               <span className="si-marcaje-hora">{m.hora}</span>
-              <span className="si-marcaje-icono">{m.tipo === 'PAUSA' ? incid(m.incidencia).icono : {ENTRADA: '▶', REANUDAR: '↻', SALIDA: '■'}[m.tipo]}</span>
+              <span className="si-marcaje-icono"><Icono n={m.tipo === 'PAUSA' ? incid(m.incidencia).icono : {ENTRADA: 'entrar', REANUDAR: 'play', SALIDA: 'salir'}[m.tipo]} /></span>
               <span className="si-marcaje-texto">
                 <strong>{m.tipo === 'PAUSA' ? `${t('Pausa')} · ${incid(m.incidencia).nombre}` : MARCAS[m.tipo]}</strong>
                 <small>
-                  {m.modalidad === 'TELETRABAJO' ? `🏠 ${t('Teletrabajo')}` : `🏢 ${t('Oficina')}`}
+                  {m.modalidad === 'TELETRABAJO' ? <><Icono n="inicio" /> {t('Teletrabajo')}</> : <><Icono n="oficina" /> {t('Oficina')}</>}
                   {' · '}{t(m.origen === 'KIOSCO' ? 'Quiosco' : m.origen === 'CORRECCION' ? 'Corrección' : 'Web')}
-                  {m.geo && <> · <a href={urlMapa(m.geo)} target="_blank" rel="noreferrer">📍 ±{m.geo.precision} m</a></>}
+                  {m.geo && <> · <a href={urlMapa(m.geo)} target="_blank" rel="noreferrer"><Icono n="ubicacion" /> ±{m.geo.precision} m</a></>}
                 </small>
               </span>
             </li>
@@ -330,7 +331,7 @@ function Registro({yo, version}) {
             {equipo.map((p) => <option key={p.usuario} value={p.usuario}>{p.nombre}</option>)}
           </select>
         )}
-        {propio && <Boton icono="⤓" onClick={exportar}>{t('Descargar CSV')}</Boton>}
+        {propio && <Boton icono="descargar" onClick={exportar}>{t('Descargar CSV')}</Boton>}
       </div>}>
       {error && <Fallo>{error}</Fallo>}
       {!datos ? <Cargando /> : <>
@@ -360,10 +361,10 @@ function Registro({yo, version}) {
                     <td>{d.salida || (d.estado === 'INCOMPLETO' ? <span className="si-negativo">—</span> : '–')}</td>
                     <td>{d.pausas ? `${d.pausas} min` : '–'}</td>
                     <td><strong>{d.minutos ? hm(d.minutos) : '–'}</strong>{d.objetivo > 0 && <small className="si-tenue"> / {hm(d.objetivo)}</small>}</td>
-                    <td>{d.modalidad === 'TELETRABAJO' ? `🏠 ${t('Teletrabajo')}` : d.modalidad ? `🏢 ${t('Oficina')}` : ''}</td>
+                    <td className="si-modalidad-celda">{d.modalidad === 'TELETRABAJO' ? <><Icono n="inicio" /> {t('Teletrabajo')}</> : d.modalidad ? <><Icono n="oficina" /> {t('Oficina')}</> : ''}</td>
                     <td>
                       <Insignia tono={e.tono}>{d.festivo || (d.estado === 'AUSENCIA' ? nombreAusencia(d.ausencia) : e.nombre)}</Insignia>
-                      {retrib.map((k) => <Insignia key={k} tono="azul">{incid(k).icono} {incid(k).nombre}</Insignia>)}
+                      {retrib.map((k) => <Insignia key={k} tono="azul"><Icono n={incid(k).icono} /> {incid(k).nombre}</Insignia>)}
                       {d.corregido && <Insignia tono="azul">{t('Corregido')}</Insignia>}
                       {d.correccionPendiente && <Insignia tono="ambar">{t('Corrección pendiente')}</Insignia>}
                     </td>
@@ -409,7 +410,7 @@ function Correccion({dia, onCerrar, onHecho}) {
       pie={<><Boton onClick={onCerrar}>{t('Cancelar')}</Boton><Boton tipo="primario" disabled={enviando || !motivo.trim()} onClick={enviar}>{t('Enviar corrección')}</Boton></>}>
       <div className="si-marcas-dia">
         <span>{t('Marcas registradas:')}</span>
-        {dia.marcas.length ? dia.marcas.map((m, i) => <Insignia key={i}>{m.tipo === 'PAUSA' ? `${incid(m.incidencia).icono} ${t('Pausa')}` : MARCAS[m.tipo]} {m.hora}</Insignia>) : <em>{t('ninguna')}</em>}
+        {dia.marcas.length ? dia.marcas.map((m, i) => <Insignia key={i}>{m.tipo === 'PAUSA' ? <><Icono n={incid(m.incidencia).icono} /> {t('Pausa')}</> : MARCAS[m.tipo]} {m.hora}</Insignia>) : <em>{t('ninguna')}</em>}
       </div>
       <div className="si-rejilla-2">
         <Campo etiqueta={t('Marca que falta o es incorrecta')}>
@@ -449,7 +450,7 @@ function Equipo() {
                 <strong>{p.nombre}</strong><span>{p.puesto}</span>
                 <em>{{
                   TRABAJANDO: t('Trabajando desde las {hora}', {hora: p.desde}) + (p.modalidad === 'TELETRABAJO' ? ` · ${t('Teletrabajo')}` : ''),
-                  PAUSA: `${incid(p.incidencia).icono} ${t('{motivo} desde las {hora}', {motivo: incid(p.incidencia).nombre, hora: p.desde})}`,
+                  PAUSA: <><Icono n={incid(p.incidencia).icono} /> {t('{motivo} desde las {hora}', {motivo: incid(p.incidencia).nombre, hora: p.desde})}</>,
                   FUERA: p.desde ? t('Salió a las {hora}', {hora: p.desde}) : t('Sin fichar hoy'),
                   AUSENTE: t('Ausencia aprobada'),
                 }[p.estado]}</em>
@@ -484,8 +485,8 @@ function Informes() {
     <Tarjeta titulo={t('Registro de jornada')} accion={<SelectorMes anio={anio} mes={mes} onCambiar={(a, m) => { setAnio(a); setMes(m); }} />}>
       <p>{t('Exporta el registro diario de jornada de')} <strong>{nombreMes(anio, mes)}</strong>{t(': hora de entrada y salida, pausas, tiempo trabajado, modalidad e incidencias de cada persona. Es el registro que se debe conservar cuatro años y poner a disposición de la plantilla, sus representantes y la Inspección de Trabajo.')}</p>
       <div className="si-fila">
-        <Boton tipo="primario" icono="⤓" onClick={() => exportar('todos')}>{t('Toda la plantilla (CSV)')}</Boton>
-        <Boton icono="⤓" onClick={() => exportar('yo')}>{t('Solo mi registro')}</Boton>
+        <Boton tipo="primario" icono="descargar" onClick={() => exportar('todos')}>{t('Toda la plantilla (CSV)')}</Boton>
+        <Boton icono="descargar" onClick={() => exportar('yo')}>{t('Solo mi registro')}</Boton>
       </div>
       <hr className="si-separador" />
       <p className="si-tenue">{t('Demo: deja la suite como recién instalada (fichajes de las últimas semanas, vacaciones y solicitudes pendientes).')}</p>
@@ -501,7 +502,7 @@ function Informes() {
 function MiTarjeta({yo}) {
   const [qr, setQr] = useState(null);
   useEffect(() => {
-    QRCode.toDataURL(yo.tarjeta || yo.usuario, {width: 220, margin: 1, color: {dark: '#1f2937', light: '#ffffff'}}).then(setQr);
+    QRCode.toDataURL(yo.tarjeta || yo.usuario, {width: 220, margin: 1, color: {dark: '#272833', light: '#ffffff'}}).then(setQr);
   }, [yo.tarjeta, yo.usuario]);
   return (
     <Tarjeta titulo={t('Mi tarjeta de quiosco')}>
@@ -523,7 +524,7 @@ function MiTarjeta({yo}) {
             <li>{t('O teclea tu PIN personal:')} <span className="si-pin">{yo.pin}</span></li>
           </ol>
           <p className="si-tenue">{t('El fichaje queda en tu registro de jornada como «Quiosco», igual que si fichases desde aquí.')}</p>
-          <a className="si-boton" href={urlApp('kiosco')} target="_blank" rel="noreferrer">{t('Abrir el quiosco')} ↗</a>
+          <a className="si-boton" href={urlApp('kiosco')} target="_blank" rel="noreferrer">{t('Abrir el quiosco')} <Icono n="externo" /></a>
         </div>
       </div>
     </Tarjeta>

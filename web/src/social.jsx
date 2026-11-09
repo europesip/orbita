@@ -2,15 +2,38 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Avatar, Boton, Cargando, Fallo, MARCAS, TIPOS_AUSENCIA, euros, fecha, rango, useDatos, useSuite} from './ui.jsx';
 import {lang, locale, t, tPlural} from './i18n.js';
+import {Icono} from './iconos.jsx';
+import {IconoApp} from './marca.jsx';
 
 /** Páginas de ÓRBITA en DX (nombres amigables). */
 export const PAGINAS = {
   inicio: 'mi-intranet', fichaje: 'fichaje', vacaciones: 'vacaciones', gastos: 'gastos', aprobaciones: 'aprobaciones', kiosco: 'quiosco',
+  comunicacion: 'comunicacion', encuestas: 'encuestas', personas: 'personas', documentos: 'documentos',
 };
 /** Dónde están las páginas en DX: lo dice la API (GET /config, valores pages.* del chart). */
 export const RUTAS = {paginas: '/wps/myportal/Home/', quiosco: '/wps/myportal/Home/quiosco', sufijo: ''};
 export const urlApp = (app) => (app === 'kiosco' ? RUTAS.quiosco : `${RUTAS.paginas}${PAGINAS[app] || app}${RUTAS.sufijo}`);
-const ICONO_APP = {fichaje: '⏱', vacaciones: '🌴', gastos: '🧾', aprobaciones: '✔', inicio: '🏠'};
+const ICONO_APP = {fichaje: 'reloj', vacaciones: 'sol', gastos: 'recibo', aprobaciones: 'aprobar', inicio: 'inicio', comunicacion: 'megafono',
+  personas: 'personas', documentos: 'documento', encuestas: 'grafico'};
+/** Pestaña a la que lleva un aviso, por su aplicación y su clase (Comunicación y Personas tienen pestañas con enlace). */
+const PESTANA_AVISO = {
+  comunicacion: {COMUNICADO: 'comunicados', CONSULTA: 'consultas', ENCUESTA: 'pulso'},
+  personas: {RECONOCER: 'reconocimientos', PERSONA: 'organigrama'},
+  encuestas: {ENCUESTA: 'mias', ACCION: 'plan'},
+};
+/** En Mis documentos la pestaña depende del aviso: la bandeja de RRHH, lo enviado a RRHH, lo publicado o los míos. */
+const PESTANA_DOCUMENTO = {'documento.enviado': 'bandeja', 'documento.revisado': 'enviar', 'documento.rechazado': 'enviar', 'documento.recibi': 'gestion'};
+const pestanaAviso = (a) => (a.app === 'documentos' ? PESTANA_DOCUMENTO[a.clave] || 'mios' : (PESTANA_AVISO[a.app] || {})[a.clase]);
+/** Enlace de un aviso: la aplicación y, si tiene, su pestaña. */
+export const urlAviso = (a) => `${urlApp(a.app)}${pestanaAviso(a) ? `#${pestanaAviso(a)}` : ''}`;
+/** Motivos de un reconocimiento entre compañeros (Personas). */
+export const VALORES_RECONOCIMIENTO = {
+  EQUIPO: {nombre: 'Trabajo en equipo', icono: 'personas', color: '#0550dc'},
+  CLIENTE: {nombre: 'Pasión por el cliente', icono: 'estrella', color: '#b45000'},
+  IDEA: {nombre: 'Gran idea', icono: 'bombilla', color: '#6f5bd6'},
+  AYUDA: {nombre: 'Siempre ayuda', icono: 'corazon', color: '#c2307a'},
+  LOGRO: {nombre: 'Objetivo cumplido', icono: 'trofeo', color: '#1e7d32'},
+};
 
 /** Hace cuánto: «hace 5 min», «ayer», «3 nov». */
 export function haceCuanto(isoFechaHora) {
@@ -37,6 +60,7 @@ export function textoAviso(a) {
   if (p.dias !== undefined) p.dias = tPlural(p.dias, 'día', 'días');
   if (p.tipo) p.tipo = (TIPOS_AUSENCIA[p.tipo] ? TIPOS_AUSENCIA[p.tipo].nombre : MARCAS[p.tipo] || p.tipo).toLowerCase();
   p.comentario = p.comentario ? `: “${p.comentario}”` : '.';
+  if (p.valor && VALORES_RECONOCIMIENTO[p.valor]) p.valor = t(VALORES_RECONOCIMIENTO[p.valor].nombre);
   const clave = `aviso.${a.clave}`;
   const s = t(clave, p);
   return s === clave ? a.texto : s;
@@ -59,14 +83,14 @@ export function Campana({inicial, app}) {
   }, [abierta]); // eslint-disable-line
   const abrir = async (a) => {
     try { const d = await api('avisos.leer', {id: a.id}); setDatos(d); setN(d.noLeidos); } catch (e) { /* sin conexión */ }
-    if (a.app !== app) window.location.href = urlApp(a.app);
-    else setAbierta(false);
+    if (a.app !== app) window.location.href = urlAviso(a);
+    else { if (PESTANA_AVISO[a.app] || a.app === 'documentos') window.location.hash = pestanaAviso(a) || ''; setAbierta(false); }
   };
   const leerTodo = async () => { try { const d = await api('avisos.leer'); setDatos(d); setN(d.noLeidos); } catch (e) { /* */ } };
   return (
     <div className="si-campana" ref={caja}>
       <button type="button" className="si-campana-boton" onClick={() => setAbierta(!abierta)} aria-label={t('Avisos ({n} sin leer)', {n})}>
-        🔔{n > 0 && <span className="si-campana-n">{n > 9 ? '9+' : n}</span>}
+        <Icono n="campana" />{n > 0 && <span className="si-campana-n">{n > 9 ? '9+' : n}</span>}
       </button>
       {abierta && (
         <div className="si-avisos-panel">
@@ -76,7 +100,7 @@ export function Campana({inicial, app}) {
               {datos.avisos.map((a) => (
                 <li key={a.id}>
                   <button type="button" className={a.leido ? '' : 'nuevo'} onClick={() => abrir(a)}>
-                    <span className="si-aviso-icono">{ICONO_APP[a.app] || '•'}</span>
+                    <span className="si-aviso-icono">{ICONO_APP[a.app] ? <IconoApp app={a.app} tam={28} /> : <Icono n="campana" />}</span>
                     <span className="si-aviso-texto">{textoAviso(a)}<small>{haceCuanto(a.creado)}</small></span>
                   </button>
                 </li>
@@ -135,11 +159,11 @@ export function Conversacion({clase, objeto, onCuenta, compacta}) {
   );
 }
 
-/** Botón «💬 n» que despliega la conversación debajo. */
+/** Botón «comentarios (n)» que despliega la conversación debajo. */
 export function BotonConversacion({clase, objeto, cuenta = 0, abierta, onAlternar}) {
   return (
     <button type="button" className={`si-boton-chat${abierta ? ' activa' : ''}`} onClick={onAlternar}>
-      💬 {cuenta ? tPlural(cuenta, 'comentario', 'comentarios') : t('Comentar')}
+      <Icono n="chat" /> {cuenta ? tPlural(cuenta, 'comentario', 'comentarios') : t('Comentar')}
     </button>
   );
 }

@@ -77,6 +77,45 @@ Entre paréntesis, la herramienta del MCP que usa la IA ([mcp.md](mcp.md)) y qui
 - ¿Qué se ha dicho en la nota de gasto de eduardo? (`solicitud_comentarios`)
 - Pregúntale a eduardo si el parking de Toledo fue durante la visita al cliente (`solicitud_comentar`)
 
+## Comunicación con RRHH
+
+- ¿Tengo algo pendiente de RRHH? ¿Algún comunicado por confirmar? (`comunicados_pendientes`, `pulso_pendientes`; `macarena`)
+- ¿Qué dice la nueva política de teletrabajo? ¿Hasta cuándo tengo para confirmarla? (`comunicado_leer`: no la marca como leída ni confirmada)
+- ¿Cómo cambio la cuenta bancaria de la nómina? (`rrhh_buscar_respuesta`, antes de abrir una consulta)
+- ¿Qué día se paga la nómina? ¿Cuántos días de teletrabajo tengo? (`rrhh_buscar_respuesta`)
+- Pide a RRHH un certificado de empresa para el banco (`rrhh_buscar_respuesta` + `consulta_crear`)
+- ¿Cómo va mi consulta sobre el IRPF? ¿Qué me ha contestado RRHH? (`consultas_mias` + `solicitud_comentarios` con clase CONSULTA; `eduardo`)
+- Dile a RRHH que gracias, que con el detalle del cálculo me basta (`solicitud_comentar`, CONSULTA; `eduardo`)
+- *RRHH:* ¿Qué consultas de la plantilla están sin atender? (`consultas_mias`; `patricia`)
+
+## Encuestas
+
+- ¿Tengo alguna encuesta pendiente? ¿Hasta cuándo está abierta? (`pulso_pendientes`; para responderla, la aplicación)
+- *RRHH:* ¿Cómo ha salido el clima laboral de este año? ¿Qué dimensiones han mejorado y cuáles han empeorado? (`pulso_resultados`; `patricia`)
+- *RRHH:* Resúmeme los comentarios de la encuesta de clima (`pulso_resultados`; `patricia`)
+- *Responsable:* ¿Cómo ha salido mi departamento en el clima? (`pulso_resultados`; `enrique` ve solo Tecnología)
+- ¿Qué se está haciendo con la encuesta de clima? ¿Qué acciones tengo asignadas? (`encuestas_plan_accion`)
+
+## Personas
+
+- ¿Quién sabe de Kubernetes? ¿Y quién habla francés? (`persona_buscar`)
+- ¿Cuál es la extensión de Marta? Dame su correo (`persona_buscar`)
+- ¿Quién de Ventas está hoy en la oficina? ¿Quién teletrabaja? (`persona_buscar` con `departamento`; nunca dice el motivo de una ausencia)
+- ¿De quién depende Javier? ¿Quién está en su equipo? (`persona_ficha`)
+- ¿Cuánta gente hay por debajo de Marta en el organigrama? (`organigrama`)
+- ¿Quién cumple años esta semana? ¿Hay alguna incorporación nueva? (`celebraciones`)
+- ¿Qué reconocimientos he recibido? (`reconocimientos`; `macarena`)
+- Dale las gracias a Javier por cubrirme la visita del jueves (`persona_buscar` + `reconocimiento_enviar`, motivo AYUDA)
+
+## Mis documentos
+
+- ¿Cuánto cobré en octubre? ¿Y en todo el año? (`mis_nominas`; importes en céntimos)
+- ¿Cuánto IRPF llevo retenido este año? ¿Qué tipo medio me están aplicando? (`mis_nominas`)
+- ¿Por qué en junio cobré más? (`mis_nominas`: la paga extra)
+- ¿Tengo algún documento nuevo o algo por firmar? (`mis_documentos`; `pablo` tiene su contrato por firmar)
+- ¿Ha revisado RRHH mi justificante? (`mis_documentos`; `macarena`)
+- *RRHH:* ¿Qué documentos de la plantilla tengo por revisar? (`documentos_por_revisar`; `patricia`)
+
 ## Preguntas que combinan varias cosas
 
 - ¿Puedo cogerme el viernes libre? Mira mi saldo y si alguien del equipo falta ese día.
@@ -86,6 +125,10 @@ Entre paréntesis, la herramienta del MCP que usa la IA ([mcp.md](mcp.md)) y qui
 
 ## Lo que la IA no hace (a propósito)
 
-Pagar notas de gasto, restaurar los datos de la demo, borrar notas o líneas y exportar ficheros CSV: son acciones
-masivas o irreversibles que se hacen en la aplicación, no con una frase. Tampoco puede actuar como otra persona: la
+Pagar notas de gasto, restaurar los datos de la demo, borrar notas o líneas, exportar ficheros CSV y publicar
+comunicados o encuestas: son acciones masivas o irreversibles que se hacen en la aplicación, no con una frase.
+Confirmar un comunicado («He leído y acepto») lo hace la persona en la aplicación, y el pulso se responde allí para que
+siga siendo anónimo. Tu perfil y los datos de organización (RRHH) de Personas también se cambian en la aplicación, y los documentos se
+firman, publican y envían allí: los ficheros no pasan por el chat.
+Tampoco puede actuar como otra persona: la
 identidad es tu sesión de DX.

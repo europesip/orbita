@@ -3,6 +3,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import jsQR from 'jsqr';
 import {Avatar, dosCifras, horas, useReloj, useSuite} from './ui.jsx';
 import {OrbitaLogo} from './marca.jsx';
+import {Icono} from './iconos.jsx';
 import {locale, t} from './i18n.js';
 
 const DESPEDIDA = {
@@ -60,7 +61,7 @@ export function Kiosco({clave, raiz}) {
   };
   const tecla = (k) => {
     if (ocupado) return;
-    if (k === '⌫') { setPin(pin.slice(0, -1)); return; }
+    if (k === 'B') { setPin(pin.slice(0, -1)); return; } // B: borrar la última cifra
     if (k === 'C') { setPin(''); return; }
     const nuevo = (pin + k).slice(0, 4);
     setPin(nuevo);
@@ -71,7 +72,7 @@ export function Kiosco({clave, raiz}) {
     const k = (e) => {
       if (persona || hecho || modo !== 'pin') return;
       if (/^[0-9]$/.test(e.key)) tecla(e.key);
-      else if (e.key === 'Backspace') tecla('⌫');
+      else if (e.key === 'Backspace') tecla('B');
     };
     document.addEventListener('keydown', k);
     return () => document.removeEventListener('keydown', k);
@@ -100,14 +101,14 @@ export function Kiosco({clave, raiz}) {
                 FUERA: persona.fichaje.marcas.length ? t('Hoy llevas {h}', {h: horas(persona.fichaje.minutosHoy)}) : t('Aún no has fichado hoy'),
               }[persona.fichaje.estado]}</p>
               <div className="si-k-acciones">
-                {persona.fichaje.estado === 'FUERA' && <button type="button" className="si-k-boton verde" disabled={ocupado} onClick={() => marcar('ENTRADA')}>▶ {t('Entrada')}</button>}
+                {persona.fichaje.estado === 'FUERA' && <button type="button" className="si-k-boton verde" disabled={ocupado} onClick={() => marcar('ENTRADA')}><Icono n="entrar" /> {t('Entrada')}</button>}
                 {persona.fichaje.estado === 'TRABAJANDO' && <>
-                  <button type="button" className="si-k-boton ambar" disabled={ocupado} onClick={() => marcar('PAUSA')}>❚❚ {t('Pausa')}</button>
-                  <button type="button" className="si-k-boton rojo" disabled={ocupado} onClick={() => marcar('SALIDA')}>■ {t('Salida')}</button>
+                  <button type="button" className="si-k-boton ambar" disabled={ocupado} onClick={() => marcar('PAUSA')}><Icono n="pausa" /> {t('Pausa')}</button>
+                  <button type="button" className="si-k-boton rojo" disabled={ocupado} onClick={() => marcar('SALIDA')}><Icono n="salir" /> {t('Salida')}</button>
                 </>}
                 {persona.fichaje.estado === 'PAUSA' && <>
-                  <button type="button" className="si-k-boton verde" disabled={ocupado} onClick={() => marcar('REANUDAR')}>▶ {t('Volver|pausa')}</button>
-                  <button type="button" className="si-k-boton rojo" disabled={ocupado} onClick={() => marcar('SALIDA')}>■ {t('Salida')}</button>
+                  <button type="button" className="si-k-boton verde" disabled={ocupado} onClick={() => marcar('REANUDAR')}><Icono n="play" /> {t('Volver|pausa')}</button>
+                  <button type="button" className="si-k-boton rojo" disabled={ocupado} onClick={() => marcar('SALIDA')}><Icono n="salir" /> {t('Salida')}</button>
                 </>}
               </div>
               {error && <p className="si-k-error">{error}</p>}
@@ -116,16 +117,16 @@ export function Kiosco({clave, raiz}) {
           ) : (
             <>
               <nav className="si-k-modos">
-                <button type="button" className={modo === 'pin' ? 'activa' : ''} onClick={() => { setModo('pin'); setError(''); }}>🔢 PIN</button>
-                <button type="button" className={modo === 'tarjeta' ? 'activa' : ''} onClick={() => { setModo('tarjeta'); setError(''); }}>📷 {t('Tarjeta QR')}</button>
+                <button type="button" className={modo === 'pin' ? 'activa' : ''} onClick={() => { setModo('pin'); setError(''); }}><Icono n="teclado" /> PIN</button>
+                <button type="button" className={modo === 'tarjeta' ? 'activa' : ''} onClick={() => { setModo('tarjeta'); setError(''); }}><Icono n="qr" /> {t('Tarjeta QR')}</button>
               </nav>
               {modo === 'pin' ? (
                 <div className="si-k-pin">
                   <div className="si-k-puntos">{[0, 1, 2, 3].map((i) => <span key={i} className={i < pin.length ? 'lleno' : ''} />)}</div>
                   {error && <p className="si-k-error">{error}</p>}
                   <div className="si-k-teclado">
-                    {['1', '2', '3', '4', '5', '6', '7', '8', '9', 'C', '0', '⌫'].map((k) => (
-                      <button key={k} type="button" onClick={() => tecla(k)} disabled={ocupado}>{k}</button>
+                    {['1', '2', '3', '4', '5', '6', '7', '8', '9', 'C', '0', 'B'].map((k) => (
+                      <button key={k} type="button" onClick={() => tecla(k)} disabled={ocupado} aria-label={k === 'B' ? t('Borrar') : undefined}>{k === 'B' ? <Icono n="borrar" /> : k}</button>
                     ))}
                   </div>
                   {pistas.length > 0 && <p className="si-k-demo">{t('Demo:')} {pistas.map((x) => `${x.nombre} ${x.pin}`).join(' · ')}</p>}
@@ -143,7 +144,7 @@ function Hecho({h, onSalir}) {
   const salida = h.tipo === 'SALIDA';
   return (
     <div className="si-k-hecho" onClick={onSalir} role="button" tabIndex={0}>
-      <span className="si-k-check">✓</span>
+      <span className="si-k-check"><Icono n="check" /></span>
       <h2>{t('{tipo} registrada', {tipo: t(NOMBRE[h.tipo])})}</h2>
       <p className="si-k-cuando">{dosCifras(new Date().getHours())}:{dosCifras(new Date().getMinutes())} · {h.completo}</p>
       {salida && <p className="si-k-resumen">{t('Hoy has trabajado')} <b>{horas(h.fichaje.minutosHoy)}</b></p>}
