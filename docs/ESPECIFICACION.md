@@ -62,7 +62,7 @@ disponibles, disfrutados y pendientes de aprobar.
 - Validaciones: fechas futuras, saldo suficiente, sin solaparse con otra ausencia.
 - Estados: pendiente → aprobada / rechazada (con comentario del responsable) · cancelada por la persona.
 
-**Cabecera** (inspirada en planificadores de vacaciones como Timetastic o Factorial, con diseño propio): anillo con los
+**Cabecera** (diseño propio): anillo con los
 días disfrutados, pendientes y por planificar; asuntos propios; días esperando aprobación y cuenta atrás hasta la
 próxima ausencia.
 
@@ -94,7 +94,7 @@ descripción, importe (IVA incluido), IVA (opcional) y foto o PDF del ticket.
   ese viaje quedan asociadas a él.
 - Resumen personal: pendiente de aprobar, pendiente de cobro y cobrado en el año.
 
-**Diseño** (inspirado en aplicaciones de gastos como Pleo o Expensify, con diseño propio): tarjeta de empresa con lo
+**Diseño** (diseño propio): tarjeta de empresa con lo
 gastado en el año; el dinero como flujo (en aprobación → por cobrar → cobrado); botón **Escanear ticket** que abre
 directamente la foto del ticket en el borrador del mes; gasto por categoría y de los últimos seis meses; notas como
 tarjetas con su progreso y miniaturas de los tickets; viajes como **tarjeta de embarque** con presupuesto frente a gastado.
