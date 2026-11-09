@@ -34,27 +34,21 @@ import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
 
 /**
- * Comunicación con RRHH (op=comunicados.* / consultas.* / faq.* / pulso.*):
+ * Comunicación con RRHH (op=comunicados.* / consultas.* / faq.*; las encuestas están en Encuestas):
  *
  *  - Comunicados de RRHH a la plantilla, a todos, a un departamento o a un rol, con acuse de lectura opcional
  *    («He leído y acepto»). RRHH ve quién lo ha leído y confirmado, y puede enviar un recordatorio.
  *  - Consultas de los empleados a RRHH (nómina, certificados, datos...), con su conversación (COMENTARIO, clase
  *    CONSULTA). Las ven solo quien pregunta y RRHH: su responsable no. Antes de preguntar se sugieren respuestas de
  *    las preguntas frecuentes y de los comunicados.
- *  - Pulso: encuestas cortas y anónimas (escala de 1 a 5, eNPS de 0 a 10 y texto libre). Las respuestas se guardan sin
- *    usuario ni hora; ENCUESTA_PARTICIPACION solo dice quién ha respondido. Un resultado (total, por departamento o los
- *    comentarios) solo se muestra si han respondido al menos MINIMO personas.
  *
- * Publican y gestionan RRHH; los responsables ven los resultados del pulso de su departamento.
+ * Publica y gestiona RRHH. Las encuestas de clima (el antiguo «pulso») tienen su propia aplicación: Encuestas.
  */
 final class Comunicacion {
 
     static final List<String> CATEGORIAS_COMUNICADO = Arrays.asList("POLITICA", "AVISO", "EVENTO", "BENEFICIO");
     static final List<String> CATEGORIAS_CONSULTA = Arrays.asList("NOMINA", "CERTIFICADO", "DATOS", "CONTRATO", "FORMACION", "OTRA");
-    static final List<String> TIPOS_PREGUNTA = Arrays.asList("ESCALA", "ENPS", "TEXTO");
     static final List<String> ROLES = Arrays.asList("EMPLEADO", "RESPONSABLE", "RRHH", "ADMINISTRACION");
-    /** Mínimo de respuestas que se puede fijar en una encuesta (anonimato). */
-    static final int MINIMO_ANONIMATO = 3;
 
     private final Api api;
     private final Connection c;
@@ -85,12 +79,6 @@ final class Comunicacion {
             case "faq.lista": return obj("preguntas", preguntasFrecuentes());
             case "faq.guardar": return guardarPregunta(p);
             case "faq.borrar": return borrarPregunta(Api.entero(p, "id"));
-            case "pulso.lista": return encuestas();
-            case "pulso.detalle": return encuesta(Api.entero(p, "id"));
-            case "pulso.responder": return responder(Api.entero(p, "id"), p.get("respuestas"));
-            case "pulso.crear": return crearEncuesta(p);
-            case "pulso.resultados": return resultados(Api.entero(p, "id"));
-            case "pulso.cerrar": return cerrarEncuesta(Api.entero(p, "id"));
             default: throw new Api.Aviso("Operación desconocida: " + op);
         }
     }
@@ -152,8 +140,7 @@ final class Comunicacion {
             if (confirmarlo && (ultimo == null || !(Boolean) ultimo.get("confirmar") || ((Boolean) ultimo.get("confirmado")))) ultimo = m;
             else if (ultimo == null && !leido) ultimo = m;
         }
-        int encuestas = 0;
-        for (Map<String, Object> e : listaEncuestas()) if ("ABIERTA".equals(e.get("estado")) && !(Boolean) e.get("respondida") && (Boolean) e.get("paraMi")) encuestas++;
+        int encuestas = new Encuestas(api, c).pendientes();
         int abiertas = contar("SELECT COUNT(*) FROM CONSULTA WHERE USUARIO = ? AND ESTADO <> 'RESUELTA'", yo.usuario);
         Map<String, Object> r = obj("comunicadosPorLeer", porLeer, "comunicadosPorConfirmar", porConfirmar,
                 "comunicado", ultimo == null ? null : obj("id", ultimo.get("id"), "titulo", ultimo.get("titulo"), "confirmar", ultimo.get("confirmar"),
@@ -691,325 +678,6 @@ final class Comunicacion {
             for (Object o : x.getValue()) if (l.size() < n) l.add(o);
         }
         return l;
-    }
-
-    // ---------------------------------------------------------------- Pulso (encuestas anónimas)
-
-    private List<Map<String, Object>> listaEncuestas() throws SQLException {
-        Set<Integer> respondidas = new HashSet<>();
-        try (PreparedStatement ps = c.prepareStatement("SELECT ENCUESTA FROM ENCUESTA_PARTICIPACION WHERE USUARIO = ?")) {
-            ps.setString(1, yo.usuario);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) respondidas.add(rs.getInt(1));
-            }
-        }
-        Map<Integer, Integer> participantes = new HashMap<>();
-        try (PreparedStatement ps = c.prepareStatement("SELECT ENCUESTA, COUNT(*) FROM ENCUESTA_PARTICIPACION GROUP BY ENCUESTA");
-                ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) participantes.put(rs.getInt(1), rs.getInt(2));
-        }
-        List<Map<String, Object>> l = new ArrayList<>();
-        LocalDate hoy = LocalDate.now();
-        try (PreparedStatement ps = c.prepareStatement("SELECT E.*, (SELECT COUNT(*) FROM ENCUESTA_PREGUNTA P WHERE P.ENCUESTA = E.ID) AS PREGUNTAS"
-                + " FROM ENCUESTA E ORDER BY E.ABIERTA DESC, E.ID DESC"); ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                String ambito = rs.getString("AMBITO");
-                boolean paraMi = incluye(ambito, yo);
-                boolean ver = paraMi || rrhh() || ("RESPONSABLE".equals(yo.rol) && incluyeDepartamento(ambito, yo.departamento));
-                if (!ver) continue;
-                int id = rs.getInt("ID");
-                Date cierre = rs.getDate("CIERRE");
-                boolean abierta = "ABIERTA".equals(rs.getString("ESTADO")) && (cierre == null || !cierre.toLocalDate().isBefore(hoy));
-                l.add(obj("id", id, "titulo", rs.getString("TITULO"), "descripcion", rs.getString("DESCRIPCION"), "ambito", ambito,
-                        "estado", abierta ? "ABIERTA" : "CERRADA", "cierre", cierre == null ? null : cierre.toString(),
-                        "abierta", rs.getTimestamp("ABIERTA").toLocalDateTime().toLocalDate().toString(),
-                        "minimo", rs.getInt("MINIMO"), "preguntas", rs.getInt("PREGUNTAS"),
-                        "paraMi", paraMi, "respondida", respondidas.contains(id),
-                        "participantes", participantes.getOrDefault(id, 0), "destinatarios", destinatarios(ambito).size(),
-                        "resultados", rrhh() || "RESPONSABLE".equals(yo.rol)));
-            }
-        }
-        return l;
-    }
-
-    /** true si una encuesta con ese ámbito llega a alguien del departamento. */
-    private boolean incluyeDepartamento(String ambito, String departamento) {
-        for (Api.Emp e : api.plantilla()) if (departamento != null && departamento.equals(e.departamento) && incluye(ambito, e)) return true;
-        return false;
-    }
-
-    private Map<String, Object> encuestas() throws SQLException {
-        return obj("encuestas", listaEncuestas(), "rrhh", rrhh(), "departamentos", departamentos(), "minimo", MINIMO_ANONIMATO);
-    }
-
-    private Map<String, Object> filaEncuesta(int id) throws SQLException {
-        for (Map<String, Object> e : listaEncuestas()) if (((Integer) e.get("id")) == id) return e;
-        throw new Api.Aviso("La encuesta no existe o no va dirigida a ti.");
-    }
-
-    private List<Map<String, Object>> preguntas(int encuesta) throws SQLException {
-        List<Map<String, Object>> l = new ArrayList<>();
-        try (PreparedStatement ps = c.prepareStatement("SELECT * FROM ENCUESTA_PREGUNTA WHERE ENCUESTA = ? ORDER BY ORDEN, ID")) {
-            ps.setInt(1, encuesta);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) l.add(obj("id", rs.getInt("ID"), "tipo", rs.getString("TIPO"), "texto", rs.getString("TEXTO")));
-            }
-        }
-        return l;
-    }
-
-    private Map<String, Object> encuesta(int id) throws SQLException {
-        Map<String, Object> e = filaEncuesta(id);
-        e.put("lista", preguntas(id));
-        return e;
-    }
-
-    private Map<String, Object> responder(int id, String json) throws SQLException {
-        Map<String, Object> e = filaEncuesta(id);
-        if (!(Boolean) e.get("paraMi")) throw new Api.Aviso("Esta encuesta no va dirigida a ti.");
-        if (!"ABIERTA".equals(e.get("estado"))) throw new Api.Aviso("La encuesta ya está cerrada.");
-        if ((Boolean) e.get("respondida")) throw new Api.Aviso("Ya has respondido a esta encuesta.");
-        JsonObject r;
-        try (JsonReader jr = jakarta.json.Json.createReader(new StringReader(json == null ? "{}" : json))) {
-            r = jr.readObject();
-        } catch (RuntimeException ex) {
-            throw new Api.Aviso("Respuestas no válidas.");
-        }
-        List<Object[]> filas = new ArrayList<>();   // pregunta, valor, texto
-        for (Map<String, Object> q : preguntas(id)) {
-            String k = String.valueOf(q.get("id"));
-            JsonValue v = r.get(k);
-            String tipo = (String) q.get("tipo");
-            if ("TEXTO".equals(tipo)) {
-                String t = v instanceof JsonString s ? limpio(s.getString(), 1000) : null;
-                if (t != null) filas.add(new Object[] {q.get("id"), null, t});
-                continue;
-            }
-            Integer n = v instanceof JsonNumber num ? Integer.valueOf(num.intValue())
-                    : v instanceof JsonString s && s.getString().matches("\\d{1,2}") ? Integer.valueOf(s.getString()) : null;
-            int max = "ENPS".equals(tipo) ? 10 : 5, min = "ENPS".equals(tipo) ? 0 : 1;
-            if (n == null) throw new Api.Aviso("Responde a todas las preguntas (el comentario es opcional).");
-            if (n < min || n > max) throw new Api.Aviso("Respuesta fuera de escala.");
-            filas.add(new Object[] {q.get("id"), n, null});
-        }
-        boolean auto = c.getAutoCommit();
-        c.setAutoCommit(false);
-        try {
-            try (PreparedStatement ps = c.prepareStatement("INSERT INTO ENCUESTA_PARTICIPACION (ENCUESTA, USUARIO) VALUES (?,?)")) {
-                ps.setInt(1, id);
-                ps.setString(2, yo.usuario);
-                ps.executeUpdate();
-            }
-            // Sin usuario ni hora: un identificador aleatorio agrupa el envío
-            String envio = UUID.randomUUID().toString();
-            try (PreparedStatement ps = c.prepareStatement("INSERT INTO ENCUESTA_RESPUESTA (ENVIO, ENCUESTA, PREGUNTA, DEPARTAMENTO, VALOR, TEXTO)"
-                    + " VALUES (?,?,?,?,?,?)")) {
-                for (Object[] f : filas) {
-                    ps.setString(1, envio);
-                    ps.setInt(2, id);
-                    ps.setInt(3, (Integer) f[0]);
-                    ps.setString(4, yo.departamento);
-                    if (f[1] == null) ps.setNull(5, java.sql.Types.SMALLINT); else ps.setInt(5, (Integer) f[1]);
-                    ps.setString(6, (String) f[2]);
-                    ps.addBatch();
-                }
-                ps.executeBatch();
-            }
-            c.commit();
-        } catch (SQLException ex) {
-            c.rollback();
-            if ("23505".equals(ex.getSQLState())) throw new Api.Aviso("Ya has respondido a esta encuesta.");
-            throw ex;
-        } finally {
-            c.setAutoCommit(auto);
-        }
-        Map<String, Object> res = encuesta(id);
-        res.put("mensaje", "Gracias: tus respuestas son anónimas.");
-        return res;
-    }
-
-    private Map<String, Object> crearEncuesta(Map<String, String> p) throws SQLException {
-        soloRrhh("crear encuestas");
-        String titulo = limpio(p.get("titulo"), 160), descripcion = limpio(p.get("descripcion"), 500);
-        if (titulo == null) throw new Api.Aviso("Escribe el título de la encuesta.");
-        String ambito = ambito(p.get("ambito"));
-        int minimo = p.get("minimo") == null || p.get("minimo").isBlank() ? 5 : Api.entero(p, "minimo");
-        if (minimo < MINIMO_ANONIMATO || minimo > 50) throw new Api.Aviso("El mínimo de respuestas para ver resultados va de 3 a 50.");
-        LocalDate cierre = p.get("cierre") == null || p.get("cierre").isBlank() ? null : Api.fecha(p.get("cierre"));
-        if (cierre != null && cierre.isBefore(LocalDate.now())) throw new Api.Aviso("La fecha de cierre no puede ser anterior a hoy.");
-        List<String[]> qs = new ArrayList<>();
-        try (JsonReader jr = jakarta.json.Json.createReader(new StringReader(p.get("preguntas") == null ? "[]" : p.get("preguntas")))) {
-            JsonArray a = jr.readArray();
-            for (JsonValue v : a) {
-                JsonObject o = v.asJsonObject();
-                String tipo = o.getString("tipo", "ESCALA"), texto = limpio(o.getString("texto", ""), 300);
-                if (!TIPOS_PREGUNTA.contains(tipo)) throw new Api.Aviso("Tipo de pregunta no válido.");
-                if (texto != null) qs.add(new String[] {tipo, texto});
-            }
-        } catch (Api.Aviso ex) {
-            throw ex;
-        } catch (RuntimeException ex) {
-            throw new Api.Aviso("Preguntas no válidas.");
-        }
-        if (qs.isEmpty()) throw new Api.Aviso("Añade al menos una pregunta.");
-        if (qs.size() > 10) throw new Api.Aviso("Un pulso tiene como mucho 10 preguntas: que sea corto.");
-        List<Api.Emp> dest = destinatarios(ambito);
-        if (dest.size() < minimo) throw new Api.Aviso("Hay menos destinatarios que el mínimo de respuestas: nunca se verían resultados.");
-        int id;
-        try (PreparedStatement ps = c.prepareStatement("INSERT INTO ENCUESTA (TITULO, DESCRIPCION, AMBITO, MINIMO, ESTADO, AUTOR, ABIERTA, CIERRE)"
-                + " VALUES (?,?,?,?,'ABIERTA',?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, titulo);
-            ps.setString(2, descripcion);
-            ps.setString(3, ambito);
-            ps.setInt(4, minimo);
-            ps.setString(5, yo.usuario);
-            ps.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
-            ps.setDate(7, cierre == null ? null : Date.valueOf(cierre));
-            ps.executeUpdate();
-            id = clave(ps);
-        }
-        try (PreparedStatement ps = c.prepareStatement("INSERT INTO ENCUESTA_PREGUNTA (ENCUESTA, ORDEN, TIPO, TEXTO) VALUES (?,?,?,?)")) {
-            for (int i = 0; i < qs.size(); i++) {
-                ps.setInt(1, id);
-                ps.setInt(2, i + 1);
-                ps.setString(3, qs.get(i)[0]);
-                ps.setString(4, qs.get(i)[1]);
-                ps.addBatch();
-            }
-            ps.executeBatch();
-        }
-        for (Api.Emp e : dest) {
-            if (e == yo) continue;
-            Social.avisar(c, e.usuario, "comunicacion", "ENCUESTA", id, "pulso.nueva", obj("titulo", titulo),
-                    "Nueva encuesta anónima de RRHH: «" + titulo + "». Es un minuto.");
-        }
-        return obj("ok", true, "id", id, "mensaje", "Encuesta abierta para " + dest.size() + " personas.");
-    }
-
-    private Map<String, Object> cerrarEncuesta(int id) throws SQLException {
-        soloRrhh("cerrar encuestas");
-        filaEncuesta(id);
-        try (PreparedStatement ps = c.prepareStatement("UPDATE ENCUESTA SET ESTADO = 'CERRADA', CIERRE = ? WHERE ID = ?")) {
-            ps.setDate(1, Date.valueOf(LocalDate.now()));
-            ps.setInt(2, id);
-            ps.executeUpdate();
-        }
-        return obj("ok", true, "mensaje", "Encuesta cerrada.");
-    }
-
-    /**
-     * Resultados: RRHH ve el total, cada departamento y los comentarios; un responsable, solo su departamento. Cada
-     * bloque solo se calcula si tiene al menos MINIMO envíos (si no, "suficientes": false y sin datos).
-     */
-    private Map<String, Object> resultados(int id) throws SQLException {
-        Map<String, Object> e = filaEncuesta(id);
-        if (!(Boolean) e.get("resultados")) throw new Api.Aviso("Solo RRHH y los responsables ven los resultados del pulso.");
-        int minimo = (Integer) e.get("minimo");
-        List<Map<String, Object>> qs = preguntas(id);
-        // envío → (pregunta → valor | texto), y departamento de cada envío
-        Map<String, Map<Integer, Object>> envios = new LinkedHashMap<>();
-        Map<String, String> depto = new HashMap<>();
-        try (PreparedStatement ps = c.prepareStatement("SELECT ENVIO, PREGUNTA, DEPARTAMENTO, VALOR, TEXTO FROM ENCUESTA_RESPUESTA WHERE ENCUESTA = ?")) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    int v = rs.getInt(4);
-                    Object valor = rs.wasNull() ? rs.getString(5) : (Object) v;
-                    envios.computeIfAbsent(rs.getString(1), k -> new HashMap<>()).put(rs.getInt(2), valor);
-                    depto.put(rs.getString(1), rs.getString(3));
-                }
-            }
-        }
-        // Los envíos sin ninguna respuesta numérica (solo comentario) también cuentan como envío
-        boolean todo = rrhh();
-        Map<String, List<Map<Integer, Object>>> porDepto = new TreeMap<>();
-        for (Map.Entry<String, Map<Integer, Object>> x : envios.entrySet()) {
-            porDepto.computeIfAbsent(depto.get(x.getKey()) == null ? "—" : depto.get(x.getKey()), k -> new ArrayList<>()).add(x.getValue());
-        }
-        Map<String, Object> r = obj("encuesta", e, "preguntas", qs, "minimo", minimo);
-        if (todo) {
-            List<Map<Integer, Object>> lista = new ArrayList<>(envios.values());
-            r.put("total", bloque(qs, lista, minimo, true));
-            List<Map<String, Object>> deptos = new ArrayList<>();
-            for (String d : departamentos()) {
-                if (!incluyeDepartamento((String) e.get("ambito"), d)) continue;
-                Map<String, Object> b = bloque(qs, porDepto.getOrDefault(d, List.of()), minimo, false);
-                b.put("departamento", d);
-                deptos.add(b);
-            }
-            ocultarPorDiferencia(deptos, envios.size(), minimo);
-            r.put("departamentos", deptos);
-        } else {
-            Map<String, Object> b = bloque(qs, porDepto.getOrDefault(yo.departamento, List.of()), minimo, false);
-            b.put("departamento", yo.departamento);
-            r.put("departamentos", List.of(b));
-        }
-        return r;
-    }
-
-    /**
-     * Anonimato por diferencia: con el total visible, los departamentos ocultos se podrían deducir restando los
-     * visibles. Si lo que queda oculto suma entre 1 y MINIMO-1 respuestas, se oculta también el departamento visible
-     * con menos respuestas, hasta que lo oculto sea 0 o al menos MINIMO.
-     */
-    static void ocultarPorDiferencia(List<Map<String, Object>> deptos, int total, int minimo) {
-        while (true) {
-            int visibles = 0;
-            Map<String, Object> menor = null;
-            for (Map<String, Object> b : deptos) {
-                if (!(Boolean) b.get("suficientes")) continue;
-                int n = (Integer) b.get("respuestas");
-                visibles += n;
-                if (menor == null || n < (Integer) menor.get("respuestas")) menor = b;
-            }
-            int ocultas = total - visibles;
-            if (ocultas == 0 || ocultas >= minimo || menor == null) return;
-            String d = (String) menor.get("departamento");
-            menor.clear();
-            menor.putAll(obj("respuestas", null, "suficientes", false, "departamento", d));
-        }
-    }
-
-    /** Resultados de un conjunto de envíos: medias, distribución, eNPS y (con comentarios=true) los textos. */
-    private static Map<String, Object> bloque(List<Map<String, Object>> qs, List<Map<Integer, Object>> envios, int minimo, boolean comentarios) {
-        int n = envios.size();
-        if (n < minimo) return obj("respuestas", null, "suficientes", false);
-        List<Object> porPregunta = new ArrayList<>();
-        for (Map<String, Object> q : qs) {
-            int qid = (Integer) q.get("id");
-            String tipo = (String) q.get("tipo");
-            if ("TEXTO".equals(tipo)) {
-                if (!comentarios) continue;
-                List<String> textos = new ArrayList<>();
-                for (Map<Integer, Object> en : envios) if (en.get(qid) instanceof String s) textos.add(s);
-                Collections.shuffle(textos);   // sin el orden de llegada
-                porPregunta.add(obj("id", qid, "tipo", tipo, "comentarios", textos));
-                continue;
-            }
-            int max = "ENPS".equals(tipo) ? 10 : 5, min = "ENPS".equals(tipo) ? 0 : 1;
-            int[] dist = new int[max + 1];
-            int suma = 0, cuenta = 0, prom = 0, det = 0;
-            for (Map<Integer, Object> en : envios) {
-                if (!(en.get(qid) instanceof Integer v)) continue;
-                dist[v]++;
-                suma += v;
-                cuenta++;
-                if (v >= 9) prom++;
-                if (v <= 6) det++;
-            }
-            List<Integer> d = new ArrayList<>();
-            for (int i = min; i <= max; i++) d.add(dist[i]);
-            Map<String, Object> m = obj("id", qid, "tipo", tipo, "respuestas", cuenta,
-                    "media", cuenta == 0 ? null : Math.round(suma * 10.0 / cuenta) / 10.0, "distribucion", d);
-            if ("ENPS".equals(tipo) && cuenta > 0) {
-                m.put("enps", Math.round((prom - det) * 100.0 / cuenta));
-                m.put("promotores", prom);
-                m.put("pasivos", cuenta - prom - det);
-                m.put("detractores", det);
-            }
-            porPregunta.add(m);
-        }
-        return obj("respuestas", n, "suficientes", true, "preguntas", porPregunta);
     }
 
     // ---------------------------------------------------------------- Ayudas

@@ -4,6 +4,7 @@ import {
   Avatar, Boton, Cargando, ESTADOS, Fallo, ICONOS_GASTO, Insignia, MARCAS, Tarjeta, TIPOS_AUSENCIA, Vacio, VerTicket,
   euros, fecha, plural, rango, useDatos, useSuite,
 } from './ui.jsx';
+import {Icono} from './iconos.jsx';
 import {BotonConversacion, Conversacion} from './social.jsx';
 import {t} from './i18n.js';
 
@@ -21,7 +22,7 @@ function resumenHistorial(h) {
 export function Aprobaciones({yo}) {
   const [datos, error, , fijar] = useDatos('apr.pendientes', {}, []);
   const [filtro, setFiltro] = useState('');
-  if (!yo.tieneEquipo) return <Tarjeta><Vacio icono="👥">{t('No tienes personas a tu cargo: aquí verás sus solicitudes cuando las tengas.')}</Vacio></Tarjeta>;
+  if (!yo.tieneEquipo) return <Tarjeta><Vacio icono="personas">{t('No tienes personas a tu cargo: aquí verás sus solicitudes cuando las tengas.')}</Vacio></Tarjeta>;
   if (error) return <Fallo>{error}</Fallo>;
   if (!datos) return <Cargando />;
   const grupos = [['', 'Todas'], ['AUSENCIA', 'Ausencias'], ['CORRECCION', 'Fichajes'], ['NOTA', 'Gastos'], ['VIAJE', 'Viajes']]
@@ -92,7 +93,7 @@ function Solicitud({it, politica, onHecho}) {
             {it.coincidencias.length === 0
               ? <Insignia tono="verde">{t('Nadie más del equipo falta esos días')}</Insignia>
               : it.coincidencias.map((c, i) => (
-                <Insignia key={i} tono="ambar">⚠ {t('Coincide con {nombre}', {nombre: c.nombre})} ({rango(c.desde, c.hasta)}{c.estado === 'PENDIENTE' ? `, ${t('pendiente')}` : ''})</Insignia>
+                <Insignia key={i} tono="ambar"><Icono n="alerta" /> {t('Coincide con {nombre}', {nombre: c.nombre})} ({rango(c.desde, c.hasta)}{c.estado === 'PENDIENTE' ? `, ${t('pendiente')}` : ''})</Insignia>
               ))}
           </div>
         </>}
@@ -107,16 +108,16 @@ function Solicitud({it, politica, onHecho}) {
         </>}
         {it.clase === 'NOTA' && <>
           <h4>{t('Nota de gasto')} · {euros(it.total)}</h4>
-          <p className="si-fechas">{it.titulo}{it.viaje ? ` · ✈ ${it.viaje.destino}` : ''}</p>
+          <p className="si-fechas">{it.titulo}{it.viaje ? <> · <Icono n="avion" /> {it.viaje.destino}</> : ''}</p>
           <ul className="si-lineas-mini">
             {it.lineas.map((l) => (
               <li key={l.id} className={l.excede ? 'excede' : ''}>
-                <span className="si-gasto-icono">{ICONOS_GASTO[l.categoria]}</span>
+                <span className="si-gasto-icono"><Icono n={ICONOS_GASTO[l.categoria]} /></span>
                 <span className="si-lm-desc">
                   {l.descripcion}<small>{fecha(l.fecha)}{l.km ? ` · ${l.km} km` : ''}</small>
-                  {l.excede && <em>⚠ {t('Supera la política ({limite})', {limite: euros(l.limite)})}: {l.justificacion}</em>}
+                  {l.excede && <em><Icono n="alerta" /> {t('Supera la política ({limite})', {limite: euros(l.limite)})}: {l.justificacion}</em>}
                 </span>
-                {l.ticket ? <button type="button" className="si-enlace" onClick={() => setTicket(l.id)}>📎</button>
+                {l.ticket ? <button type="button" className="si-enlace" onClick={() => setTicket(l.id)} title={t('Ver el ticket')} aria-label={t('Ver el ticket')}><Icono n="clip" /></button>
                   : <span className="si-tenue" title={t(l.categoria === 'KILOMETRAJE' ? 'Kilometraje' : 'Sin ticket')}>{l.categoria === 'KILOMETRAJE' ? '' : '—'}</span>}
                 <strong>{euros(l.importe)}</strong>
               </li>

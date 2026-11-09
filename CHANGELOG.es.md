@@ -2,6 +2,93 @@
 
 [English](CHANGELOG.md) · **Español**
 
+## Sin publicar · Encuestas
+
+- El pulso de Comunicación con RRHH pasa a ser una aplicación propia, **Encuestas** (página `encuestas`), más
+  profesional. Las encuestas y respuestas que ya había se conservan (serie `PULSO`); la pestaña de Comunicación lleva
+  ahora a la aplicación nueva.
+- **Preparar** (RRHH): **plantillas** (pulso mensual, clima laboral anual, bienestar, teletrabajo y flexibilidad,
+  incorporación o en blanco), **ocho tipos de pregunta** (escala de acuerdo, escala de 1 a 5, eNPS, sí o no, opción única,
+  opción múltiple, matriz de afirmaciones y texto), preguntas obligatorias u opcionales, **secciones** y diez
+  **dimensiones**; **borrador**, **vista previa**, apertura **ya o programada**, **duplicar**, **recordatorio** a quien no
+  ha respondido (uno al día como mucho) y cierre. Hasta 30 preguntas.
+- **Responder**: paso a paso por secciones, con barra de progreso, borrador en el navegador y pantalla final que explica
+  qué pasa con las respuestas.
+- **Informe**: participación (total y por departamento), **índice de favorabilidad**, eNPS, **dimensiones** con
+  fortalezas y puntos de mejora, **tendencia** frente a la encuesta anterior de la misma serie, **mapa de calor** por
+  departamento, resultados de cada pregunta, comentarios con buscador y palabras frecuentes, **resumen por IA** (si el
+  asistente está configurado) y exportación a **CSV** e **impresión o PDF**. Un responsable ve solo su departamento.
+- **Plan de acción**: RRHH y los responsables publican acciones (dimensión, departamento, responsable, fecha límite y
+  estado) que ve quien recibió la encuesta, en un tablero por estado y en el informe.
+- El **anonimato por diseño** no cambia: respuestas sin usuario ni hora, mínimo de respuestas para ver cualquier
+  resultado y protección frente a la deducción por diferencia.
+- **IA**: nueva área **`encuestas`** con `pulso_pendientes`, `pulso_resultados` (ahora con favorabilidad, dimensiones y
+  tendencia) y la nueva `encuestas_plan_accion` (ahora **43 herramientas**, unos 7.800 tokens; `readOnly: true` publica
+  29). Las herramientas `pulso_*` salen del área `comunicacion`.
+- Migración de Flyway **`V6__encuestas.sql`** (columnas nuevas en las tablas del pulso y la tabla `ENCUESTA_ACCION`) y
+  datos de demo: clima laboral de este año y del anterior, tres pulsos mensuales, un borrador, una encuesta programada y
+  un plan de acción. Probado en PostgreSQL 17 con 70 comprobaciones automáticas y en el navegador.
+
+## Sin publicar · Mis documentos
+
+- Una novena aplicación, **Mis documentos** (página `documentos`, después de Personas), con la documentación de cada
+  persona:
+  - **Nóminas con sus importes** (bruto, IRPF, Seguridad Social, otras deducciones y neto): la última, comparada con la
+    anterior y con el reparto del bruto, y el **año en un gráfico** con sus totales y el tipo medio de IRPF.
+  - **Informes de cotización**, **certificados de retenciones**, **contratos**, **certificados** y otros documentos,
+    agrupados por año y filtrables por tipo, con un **visor de PDF** y descarga. Lo nuevo se marca hasta que se abre.
+  - **Recibí**: quien publica puede pedirlo (los contratos, por defecto); la persona lo firma en el visor y quien lo
+    publicó recibe un aviso. Un documento firmado ya no se puede retirar.
+  - **Enviar a RRHH**: justificantes, titulaciones, datos bancarios y documentos personales, que RRHH **revisa o
+    devuelve** con un motivo (bandeja «Recibidos de la plantilla»).
+- **Publicar** (RRHH y Administración): de uno en uno, con los importes de la nómina y el neto calculado, o **en
+  lote**: cada PDF se asigna a su persona por el nombre del fichero (usuario de DX o nombre y apellidos) y los importes
+  de las nóminas llegan en un CSV (`usuario;bruto;irpf;ss;otras`). Se ve la plantilla con su última nómina y lo que
+  falta por abrir o firmar.
+- **Privacidad**: cada persona ve solo lo suyo; RRHH y Administración, los documentos de la empresa; lo que envía la
+  plantilla, solo RRHH. **El responsable no ve nada de su equipo.** Solo se admiten PDF, JPG y PNG (comprobados por su
+  contenido), de hasta 6 MB.
+- **Mi intranet** avisa de la nómina nueva y de los documentos por firmar.
+- **IA**: nueva área **`documentos`** con **3 herramientas de consulta** (ahora **42**, unos 7.500 tokens;
+  `readOnly: true` publica 28): `mis_documentos`, `mis_nominas` («¿cuánto cobré en octubre?») y
+  `documentos_por_revisar` (RRHH). Firmar, publicar, enviar o revisar documentos se queda en la aplicación.
+- Migración de Flyway **`V5__documentos.sql`** (tablas `DOCUMENTO` y `NOMINA`) y datos de demo: nóminas en PDF de los
+  últimos 10 meses con su paga extra, informes de cotización, certificados de retenciones, un contrato por firmar y
+  documentos enviados a RRHH en los tres estados. Los PDF los genera ÓRBITA y dicen que son de demostración, sin
+  validez. Probado en PostgreSQL 17 con 60 comprobaciones automáticas y en el navegador (con ficheros reales y un lote
+  con CSV).
+
+## Sin publicar · Personas
+
+- Una octava aplicación, **Personas** (página `personas`, después de Comunicación), con tres pestañas:
+  - **Directorio**: buscador por nombre, puesto, departamento, sede, habilidad o idioma (sin tildes ni mayúsculas), con
+    filtros por departamento y por **disponibilidad de hoy**. El anillo del avatar dice si cada persona está en la
+    oficina, teletrabajando, en pausa, no disponible o fuera (con la fecha de vuelta).
+  - **Organigrama**: el árbol de responsables (`EMPLEADO.RESPONSABLE`), plegable, con buscador; se abre por la rama de
+    quien mira.
+  - **Reconocimientos**: agradecimientos públicos entre compañeros con un motivo (trabajo en equipo, pasión por el
+    cliente, gran idea, siempre ayuda, objetivo cumplido); avisan a la persona y a su responsable, y quien lo envía (o
+    RRHH) puede quitarlo.
+- **Ficha** de cada persona: contacto (correo, teléfono, extensión, sede y ubicación), antigüedad, línea de
+  responsables, equipo, compañeros, perfil (sobre mí, habilidades, idiomas, cumpleaños si lo hace visible) y los
+  reconocimientos recibidos. Cada persona **edita su perfil**; **RRHH da de alta** la ficha de un usuario de DX que aún
+  no la tiene y cambia los **datos de organización** (puesto, departamento, responsable, rol, sede, días de
+  vacaciones), sin permitir círculos en el organigrama ni que RRHH cambie su propio rol.
+- **Privacidad**: el directorio no muestra nunca el motivo de una pausa ni el tipo de una ausencia (una baja se ve como
+  «fuera»), ni horas de fichaje, PIN o tarjeta; las ausencias pendientes no se publican y el cumpleaños solo aparece si
+  la persona lo marca como visible.
+- **Celebraciones** de los próximos 30 días (cumpleaños visibles, aniversarios en la empresa e incorporaciones) en el
+  directorio, y una tarjeta **Personas** en Mi intranet con el último reconocimiento recibido.
+- **IA**: nueva área **`personas`** con **6 herramientas** (ahora **39**, unos 6.900 tokens; `readOnly: true` publica
+  25): `persona_buscar`, `persona_ficha`, `organigrama`, `celebraciones`, `reconocimientos` y
+  `reconocimiento_enviar`. Editar el perfil y los datos de RRHH se quedan en la aplicación.
+- **Iconos propios de cada aplicación** con la marca ÓRBITA (el cuadrado con el degradado azul, la órbita, el satélite
+  y un dibujo propio en blanco) en la cabecera, en los accesos de Mi intranet y en los avisos; los iconos pequeños de
+  botones y listas siguen siendo los de IBM Carbon que usa DX.
+- Migración de Flyway **`V4__personas.sql`** (columnas de contacto y perfil en `EMPLEADO` y la tabla
+  `RECONOCIMIENTO`) y datos de demo; restaurar la demo también vacía los reconocimientos. Probado en PostgreSQL 17 con 91
+  comprobaciones automáticas y en el navegador (escritorio, móvil, español e inglés).
+
 ## Sin publicar · Comunicación con RRHH
 
 - Una séptima aplicación, **Comunicación con RRHH** (página `comunicacion`, después de Aprobaciones), con cuatro
@@ -22,6 +109,18 @@
   aplicación.
 - Migración de Flyway **`V3__comunicacion.sql`** (8 tablas nuevas) y datos de demo de la nueva aplicación; restaurar la
   demo también las vacía. Probado en PostgreSQL 17 con 66 comprobaciones automáticas y en el navegador.
+- **Aspecto de HCL DX Compose** en las siete aplicaciones, con los valores medidos en su Dashboard, Content Composer
+  y Reporting: tipografía Inter (la que carga DX), texto negro al 87 % y 60 %, azul `#0550dc`, bordes grises finos sin
+  sombras, botones rectangulares (radio 2 px; el secundario, azul con contorno), etiquetas de estado como el chip
+  «Published», títulos de sección en peso normal y cabecera de página plana en blanco. Sin degradados, sin etiquetas
+  en mayúsculas y los **iconos IBM Carbon** que usa DX (`web/src/iconos.jsx`, Apache 2.0) en lugar de emojis. La cabecera del theme de ejemplo pasa
+  al azul marino del theme Portal 8.5 (`theme.headerBackground: "#002c56"`) y el logotipo de ÓRBITA, al azul de DX (en
+  una instalación que ya lo tenga en el DAM, se sube una nueva versión de `company-logo.png` para verlo).
+- **Comunicación con RRHH** con diseño de intranet corporativa: comunicados como **noticias** (destacada, columna y
+  lista) con las confirmaciones pendientes como **tareas**; el comunicado abierto como una página de noticia con su
+  bloque de **acuse de lectura**; consultas con un buscador **«¿En qué podemos ayudarte?»** antes de escribir y una
+  **lista de casos** (RRHH empieza en su bandeja); el pulso como un **formulario** de preguntas numeradas, con la
+  distribución de respuestas en los resultados; y preguntas frecuentes con **buscador** y secciones plegables.
 - **Aún sin versión publicada**: el chart sigue fijando las imágenes 3.1.2, que no contienen esta aplicación. Una nueva
   versión (tag `v*`) debe construir las imágenes antes de instalarla en DX Compose.
 

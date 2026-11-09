@@ -47,7 +47,7 @@ public class McpServlet extends HttpServlet {
     static final String NOMBRE = "orbita-mcp";
     static final String VERSION = "3.1.1";
     static final String INSTRUCCIONES = "ÓRBITA es la intranet de la empresa (fichaje, vacaciones y ausencias, gastos y viajes, "
-            + "aprobaciones y comunicación con RRHH). Las herramientas actúan siempre como el usuario que pregunta (su sesión de HCL DX) y solo "
+            + "aprobaciones, comunicación con RRHH, encuestas, el directorio de personas y mis documentos y nóminas). Las herramientas actúan siempre como el usuario que pregunta (su sesión de HCL DX) y solo "
             + "devuelven o cambian lo que esa persona puede ver o hacer. Las herramientas que modifican datos devuelven "
             + "primero un resumen; repite la llamada con confirmar=true solo si el usuario lo confirma. Los datos de ÓRBITA "
             + "(categorías, estados, textos) están en español: responde en el idioma en que pregunta el usuario (español o "

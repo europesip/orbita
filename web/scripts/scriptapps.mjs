@@ -20,6 +20,9 @@ const APPS = [
   ['aprobaciones', 'aprobaciones'],
   ['quiosco', 'kiosco'],
   ['comunicacion', 'comunicacion'],
+  ['encuestas', 'encuestas'],
+  ['personas', 'personas'],
+  ['documentos', 'documentos'],
 ];
 const FUENTE = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">';
 

@@ -117,13 +117,14 @@ mcp:
   enabled: true
   # Optional Secret with key "token": the MCP client must then send "Authorization: Bearer <token>"
   tokenSecret: ""
-  # Which tools are published. Every tool definition goes into the prompt of EVERY call to the model (all 33: about
-  # 5,800 tokens), so publish only what you need. Names of tools or of areas: general (4 tools), fichaje (5),
-  # vacaciones (5), gastos (8), aprobaciones (4), comunicacion (7). See docs/mcp.md.
+  # Which tools are published. Every tool definition goes into the prompt of EVERY call to the model (all 43: about
+  # 7,800 tokens), so publish only what you need. Names of tools or of areas: general (4 tools), fichaje (5),
+  # vacaciones (5), gastos (8), aprobaciones (4), comunicacion (5), encuestas (3), personas (6),
+  # documentos (3). See docs/mcp.md.
   tools:
     enabled: []              # only these, e.g. [vacaciones, fichaje_hoy]. Empty: all
     disabled: []             # remove these, e.g. [gastos, solicitud_resolver]
-    readOnly: false          # true: only the 20 query tools (nothing that changes data)
+    readOnly: false          # true: only the 29 query tools (nothing that changes data)
   # NetworkPolicy: only the IQ Integrator reaches the MCP port. Register http://<release>-api.<ns>.svc:9081 in IQ.
   networkPolicy:
     enabled: true
@@ -170,6 +171,9 @@ pages:
     - { friendly: gastos,       es: "Gastos y viajes",    en: "Expenses and travel" }
     - { friendly: aprobaciones, es: "Aprobaciones",       en: "Approvals" }
     - { friendly: comunicacion, es: "Comunicación",       en: "HR communication" }
+    - { friendly: encuestas,    es: "Encuestas",          en: "Surveys" }
+    - { friendly: personas,     es: "Personas",           en: "People" }
+    - { friendly: documentos,   es: "Mis documentos",     en: "My documents" }
     - { friendly: quiosco,      es: "Quiosco de fichaje", en: "Time clock kiosk" }
 
 # --- Example theme for the ÓRBITA pages ----------------------------------------------------------------------------
@@ -192,7 +196,7 @@ theme:
   logoAlt: ÓRBITA
   hclLogo: true                     # "Powered by HCL Software" in the header
   assistantButton: true             # button that opens the ÓRBITA assistant (only on pages with an ÓRBITA app)
-  headerBackground: "linear-gradient(90deg, #15123B 0%, #2A1B6B 55%, #0B2A6F 100%)"
+  headerBackground: "#002c56"
 
 # --- Script Applications (subchart hcl-dx-scriptapp 0.2.0) -------------------------------------------------------
 # The subchart does not see the values above: repeat dx.host and the secrets here.
@@ -215,6 +219,9 @@ scriptapps:
     - { name: orbita-gastos,       title: "ÓRBITA · Gastos y viajes",    path: gastos }
     - { name: orbita-aprobaciones, title: "ÓRBITA · Aprobaciones",       path: aprobaciones }
     - { name: orbita-comunicacion, title: "ÓRBITA · Comunicación",       path: comunicacion }
+    - { name: orbita-encuestas,    title: "ÓRBITA · Encuestas",          path: encuestas }
+    - { name: orbita-personas,     title: "ÓRBITA · Personas",           path: personas }
+    - { name: orbita-documentos,   title: "ÓRBITA · Mis documentos",     path: documentos }
     - { name: orbita-quiosco,      title: "ÓRBITA · Quiosco de fichaje", path: quiosco }
   # Pages: the parent chart's ConfigMap <release>-pages (empty it to skip the pages: pages.create=false does it too)
   afterPush:

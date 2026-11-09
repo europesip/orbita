@@ -183,6 +183,9 @@ final class Demo {
         gastos(c, hoy, festivos);
         social(c);
         DemoComunicacion.cargar(c, hoy);
+        DemoPersonas.cargar(c, hoy);
+        DemoDocumentos.cargar(c, hoy);
+        DemoEncuestas.cargar(c, hoy);
     }
 
     /** Una conversación en curso y avisos iniciales, para que la demo no empiece con la campana vacía. */

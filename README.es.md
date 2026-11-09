@@ -5,7 +5,7 @@
 [English](README.md) · **Español** · [Manual (PDF)](docs/manual/orbita-explicada.es.pdf) · [Presentación (PDF)](docs/presentation/orbita-presentacion.es.pdf) · [Preguntas frecuentes](docs/faq.es.md) · [Historial de versiones](CHANGELOG.es.md) · [Contacto](#contacto-y-servicios)
 
 **ÓRBITA** es una suite de intranet para **HCL DX Compose** (CF239), de **EUROPESIP**. Su interfaz React se publica
-como siete **Script Applications**; la lógica y los datos están en una API REST (**`orbita-api`**, Open Liberty) con
+como diez **Script Applications**; la lógica y los datos están en una API REST (**`orbita-api`**, Open Liberty) con
 PostgreSQL, que incluye también un **servidor MCP** para que **HCL DX IQ** responda y actúe en nombre del usuario. Todo
 se instala con **un chart de Helm**, `hcl-dx-orbita`. Qué hace cada aplicación:
 [docs/ESPECIFICACION.md](docs/ESPECIFICACION.md).
@@ -24,6 +24,9 @@ se instala con **un chart de Helm**, `hcl-dx-orbita`. Qué hace cada aplicación
 | Gastos y viajes | .../wps/myportal/Home/gastos |
 | Aprobaciones | .../wps/myportal/Home/aprobaciones |
 | Comunicación con RRHH | .../wps/myportal/Home/comunicacion |
+| Encuestas | .../wps/myportal/Home/encuestas |
+| Personas | .../wps/myportal/Home/personas |
+| Mis documentos | .../wps/myportal/Home/documentos |
 | Quiosco de fichaje | .../wps/myportal/Home/quiosco |
 
 ## Contenido
@@ -67,8 +70,26 @@ Cada persona ve su PIN y su tarjeta QR en *Fichaje › Mi tarjeta de quiosco*. P
   **aprobaciones** con conversación, **avisos** (campana) y **quiosco de fichaje** (PIN o tarjeta QR).
 - **Comunicación con RRHH**: comunicados de RRHH a toda la plantilla, a un departamento o a un rol (con control de
   lectura y de confirmación), **consultas privadas a RRHH** que solo ven el empleado y RRHH (con respuestas sugeridas
-  mientras se escribe), **encuestas de pulso anónimas** (resultados solo a partir de un mínimo de respuestas) y las
-  **preguntas frecuentes**.
+  mientras se escribe) y las **preguntas frecuentes**.
+- **Encuestas**: encuestas de clima **anónimas** con **plantillas** (pulso mensual, clima anual, bienestar,
+  teletrabajo, incorporación), **ocho tipos de pregunta** (escala de acuerdo, escala, eNPS, sí o no, opción única y
+  múltiple, matriz y texto), **dimensiones** y secciones, borrador, **vista previa** y **apertura programada**. La
+  plantilla responde paso a paso, con barra de progreso y borrador en el navegador. El **informe** muestra la
+  participación, el **índice de favorabilidad**, cada dimensión con su **tendencia** frente a la encuesta anterior, un
+  **mapa de calor** por departamento, el eNPS y los comentarios (con sus temas y un resumen opcional por IA), y se exporta
+  a CSV o PDF. Los resultados solo se ven a partir de un mínimo de respuestas. El **plan de acción** cuenta a la
+  plantilla qué se hace con ellos.
+- **Personas**: el **directorio** de la plantilla con buscador (nombre, puesto, habilidad, idioma o sede) y la
+  **disponibilidad de hoy** de cada persona (en la oficina, teletrabajando, en pausa, fuera y cuándo vuelve, sin decir
+  nunca el motivo), su **ficha** (contacto, línea de responsables, equipo, perfil que edita cada persona), el
+  **organigrama**, las **celebraciones** (cumpleaños visibles, aniversarios e incorporaciones) y los **reconocimientos**
+  públicos entre compañeros. RRHH da de alta las fichas nuevas y cambia los datos de organización.
+- **Mis documentos**: la documentación de cada persona. **Nóminas** con sus importes (la última, comparada con la
+  anterior, y el año en un gráfico con el bruto, el IRPF, la Seguridad Social y el neto), **informes de cotización**,
+  **certificados de retenciones**, **contratos** y **certificados**, con un visor de PDF y el **recibí** cuando se pide.
+  RRHH y Administración publican de uno en uno o **en lote** (cada fichero se asigna por su nombre y los importes llegan
+  en un CSV). Cada persona **envía a RRHH** sus justificantes, titulaciones o datos bancarios, y RRHH los revisa o los
+  devuelve con un motivo. **Su responsable no ve nada de esto.**
 
 <p align="center"><img src="docs/images/time-off.es.jpg" alt="Vacaciones y ausencias: saldo, solicitudes y calendario del año" width="760"></p>
 
@@ -92,10 +113,10 @@ Cada persona ve su PIN y su tarjeta QR en *Fichaje › Mi tarjeta de quiosco*. P
 ## Qué preguntarle a la IA sobre ÓRBITA
 
 El botón «✨ Pregúntale a ÓRBITA» de cada aplicación abre el **asistente propio de ÓRBITA**, que responde y actúa
-**como el usuario que pregunta**, con **33 herramientas** ([eliges cuáles](#elegir-qué-herramientas-mcp-se-publican)): su día, el fichaje (también
+**como el usuario que pregunta**, con **43 herramientas** ([eliges cuáles](#elegir-qué-herramientas-mcp-se-publican)): su día, el fichaje (también
 fichar), las vacaciones (saldo, solicitudes, calendario del equipo), los gastos y viajes (notas, añadir gastos,
-enviarlas), las aprobaciones (aprobar, rechazar, comentar), la comunicación con RRHH (comunicados, consultas, pulso)
-y los avisos. Algunos ejemplos:
+enviarlas), las aprobaciones (aprobar, rechazar, comentar), la comunicación con RRHH (comunicados, consultas), las encuestas (pendientes, informes, plan de acción),
+el directorio de personas (buscar, organigrama, reconocimientos), sus documentos y nóminas y los avisos. Algunos ejemplos:
 
 <p align="center"><img src="docs/images/assistant.es.jpg" alt="El asistente de ÓRBITA abierto junto a la página de Fichaje, con preguntas sugeridas" width="760"></p>
 
@@ -107,6 +128,9 @@ y los avisos. Algunos ejemplos:
 | Gastos | «¿Cuánto me deben?» · «Crea una nota "Visita a Sevilla" y añade una comida de ayer de 42,80 €» · «Envíasela a mi responsable» |
 | Aprobaciones | «¿Qué tengo que aprobar?» · «Aprueba las vacaciones de macarena» · «Rechaza el viaje a Barcelona: presupuesto más ajustado» |
 | Comunicación con RRHH | «¿Tengo algo pendiente de RRHH?» · «¿Cómo cambio la cuenta bancaria de la nómina?» · «Pide a RRHH un certificado de empresa para el banco» · RRHH: «Resúmeme los comentarios del pulso de octubre» |
+| Encuestas | «¿Tengo alguna encuesta pendiente?» · *RRHH:* «¿Qué dimensiones han empeorado en el clima de este año?» · «¿Qué se está haciendo con la encuesta de clima?» |
+| Personas | «¿Quién sabe de Kubernetes?» · «¿Cuál es la extensión de Marta?» · «¿Quién de Ventas está hoy en la oficina?» · «¿Quién cumple años esta semana?» · «Dale las gracias a Javier por cubrirme la visita» |
+| Mis documentos | «¿Cuánto cobré en octubre?» · «¿Cuánto IRPF llevo este año?» · «¿Tengo algún documento por firmar?» · «¿Ha revisado RRHH mi justificante?» |
 
 **Pregunta en español o en inglés**: el asistente responde en el idioma de la pregunta. **Más de 60 preguntas de
 ejemplo, por áreas: [docs/preguntas-ia.md](docs/preguntas-ia.md)** (en inglés: [docs/ai-questions.md](docs/ai-questions.md)). Lo que cambia datos
@@ -229,7 +253,7 @@ Qué ocurre, por orden:
    chart y se conserva entre actualizaciones (Secret `orbita-db`).
 2. Arranca **`orbita-api`**: Flyway crea las tablas y se cargan los datos de la demo. Además, el Service, el Ingress en
    `/orbita-api` del host de DX y la NetworkPolicy del MCP.
-3. El **Job de scriptapps** sube las siete Script Applications a WCM con HCL DXClient y crea las siete páginas bajo
+3. El **Job de scriptapps** sube las diez Script Applications a WCM con HCL DXClient y crea las diez páginas bajo
    *Home* con XMLAccess.
 
 **4. Comprobar**: `kubectl -n $NS_ORBITA logs job/orbita-scriptapps-push -c dxclient | tail -3`, y
@@ -260,10 +284,10 @@ docker run --rm -p 8080:8080 ghcr.io/europesip/hcl-dx-compose-installer:2.0.0   
 ### Opciones: páginas y qué muestran las aplicaciones
 
 **Páginas (opcional).** Por defecto el chart crea una página de DX por aplicación bajo *Home* (`pages.create: true`).
-Para colocar tú las siete Script Applications (en tus propias páginas, con tu propio diseño), instala con
+Para colocar tú las diez Script Applications (en tus propias páginas, con tu propio diseño), instala con
 `pages.create: false`: las apps se suben igualmente a WCM (*Script Application Library › Script Applications*, títulos
 «ÓRBITA · …») y añades cada una a la página que quieras. Después ajusta `pages.base` (y mantén los nombres amigables
-`mi-intranet`, `fichaje`, `vacaciones`, `gastos`, `aprobaciones`, `comunicacion`, `quiosco`) para que las apps se enlacen bien entre sí.
+`mi-intranet`, `fichaje`, `vacaciones`, `gastos`, `aprobaciones`, `comunicacion`, `encuestas`, `personas`, `documentos`, `quiosco`) para que las apps se enlacen bien entre sí.
 
 **Idioma.** Cada usuario ve ÓRBITA en el idioma de su perfil de DX (`preferredLanguage`). Si no lo tiene, ÓRBITA usa el
 idioma con el que DX pinta la página y, después, el del navegador. Para cualquier idioma que no sea español ni inglés,
@@ -291,7 +315,7 @@ theme:
   enabled: true          # false: las páginas mantienen el theme que tengan
   hclLogo: true          # «Powered by HCL Software»
   assistantButton: true  # botón del asistente en la cabecera (solo en páginas con una aplicación de ÓRBITA)
-  headerBackground: "linear-gradient(90deg, #15123B 0%, #2A1B6B 55%, #0B2A6F 100%)"
+  headerBackground: "#002c56"
 ```
 
 **Cabecera y pie.** Las aplicaciones van dentro de páginas de DX, así que tu tema puede mostrar ya parte de su
@@ -329,7 +353,7 @@ kubectl -n dx-demo patch configmap dx-iq-integrator --type merge \
 kubectl -n dx-demo rollout restart deployment/dx-iq-integrator
 # Comprobar: tienen que aparecer las herramientas de ÓRBITA
 kubectl -n dx-demo logs deploy/dx-iq-integrator | grep Fetched
-#  Fetched 33 tools from http://orbita-api.dx-shared.svc.cluster.local:9081
+#  Fetched 43 tools from http://orbita-api.dx-shared.svc.cluster.local:9081
 ```
 
 En los labs, `scripts/registrar-mcp-en-iq.sh` hace exactamente esto (y no duplica la entrada).
@@ -343,7 +367,7 @@ En los labs, `scripts/registrar-mcp-en-iq.sh` hace exactamente esto (y no duplic
 ### Elegir qué herramientas MCP se publican
 
 Cada definición de herramienta que recibe el Integrator va en el prompt de **cada** llamada al modelo, así que cada
-herramienta cuesta tokens (y dinero) aunque no se use. Las 33 de ÓRBITA son unos **5.800 tokens** (las de HCL, unos
+herramienta cuesta tokens (y dinero) aunque no se use. Las 43 de ÓRBITA son unos **7.800 tokens** (las de HCL, unos
 30.000). Por defecto se publican todas; para publicar menos, usa `mcp.tools` en tus valores:
 
 ```yaml
@@ -351,7 +375,7 @@ mcp:
   tools:
     enabled: [vacaciones, fichaje]   # solo estas áreas o herramientas (vacío: todas)
     disabled: [fichar]               # menos estas
-    readOnly: false                  # true: solo las 20 de consulta
+    readOnly: false                  # true: solo las 29 de consulta
 ```
 
 | Área | Herramientas | ≈ tokens |
@@ -361,8 +385,11 @@ mcp:
 | `vacaciones` | vacaciones_saldo, vacaciones_solicitudes, ausencias_equipo, vacaciones_solicitar, vacaciones_cancelar | 910 |
 | `gastos` | gastos_resumen, nota_gasto, nota_gasto_crear, gasto_anadir, nota_gasto_enviar, viaje_solicitar, viaje_cancelar, pagos_pendientes | 1.550 |
 | `aprobaciones` | aprobaciones_pendientes, solicitud_resolver, solicitud_comentarios, solicitud_comentar | 780 |
-| `comunicacion` | comunicados_pendientes, comunicado_leer, rrhh_buscar_respuesta, consultas_mias, consulta_crear, pulso_pendientes, pulso_resultados | 1.140 |
-| `readOnly: true` | las 20 de consulta de todas las áreas | 2.750 |
+| `comunicacion` | comunicados_pendientes, comunicado_leer, rrhh_buscar_respuesta, consultas_mias, consulta_crear | 840 |
+| `encuestas` | pulso_pendientes, pulso_resultados, encuestas_plan_accion | 580 |
+| `personas` | persona_buscar, persona_ficha, organigrama, celebraciones, reconocimientos, reconocimiento_enviar | 1.120 |
+| `documentos` | mis_documentos, mis_nominas, documentos_por_revisar | 610 |
+| `readOnly: true` | las 29 de consulta de todas las áreas | 4.500 |
 
 Después de un `helm upgrade` que cambie las herramientas, reinicia el Integrator (`kubectl -n dx-demo rollout restart
 deployment/dx-iq-integrator`) para que lea la lista nueva; el log de `orbita-api` dice qué herramientas están activas.
@@ -399,7 +426,7 @@ docs/                   manual ilustrado (PDF, ES/EN), preguntas a la IA, especi
 - **Back end**: `mvn -f api/pom.xml package` (Java 21). **Interfaz**: `cd web && npm ci && npm run build:scriptapps`.
 - **Imágenes**: CI construye y prueba las dos imágenes; un push a `main` publica `:main`, un tag `v3.1.1` publica
   `:3.1.1` y el chart.
-- **Una operación nueva**: método en `Api.java` (o `Gastos.java`, `Comunicacion.java`), su ruta en `api/rutas.json`, y la interfaz la llama
+- **Una operación nueva**: método en `Api.java` (o `Gastos.java`, `Comunicacion.java`, `Directorio.java`, `Documentos.java`, `Encuestas.java`), su ruta en `api/rutas.json`, y la interfaz la llama
   con `api('op', {...})`. **Un cambio de esquema**: un fichero nuevo `V<n>__descripcion.sql` en `db/migration` (nunca
   se edita uno publicado).
 - La API responde 401 sin sesión de DX, 422 con `{"error", "aviso": true}` para los errores de negocio y 500 si algo

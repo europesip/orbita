@@ -2,23 +2,23 @@
   <title>ÓRBITA</title>
   <defs>
     <linearGradient id="f" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#4f46e5"/>
-      <stop offset=".55" stop-color="#6d28d9"/>
-      <stop offset="1" stop-color="#7c3aed"/>
+      <stop offset="0" stop-color="#0b5fff"/>
+      <stop offset=".55" stop-color="#004ad7"/>
+      <stop offset="1" stop-color="#004ad7"/>
     </linearGradient>
     <radialGradient id="p" cx=".38" cy=".32" r=".75">
       <stop offset="0" stop-color="#ffffff"/>
-      <stop offset=".6" stop-color="#e0e7ff"/>
-      <stop offset="1" stop-color="#a5b4fc"/>
+      <stop offset=".6" stop-color="#dce8ff"/>
+      <stop offset="1" stop-color="#80acff"/>
     </radialGradient>
     <radialGradient id="s" cx=".5" cy=".5" r=".5">
-      <stop offset="0" stop-color="#a5f3fc"/>
-      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+      <stop offset="0" stop-color="#b3cdff"/>
+      <stop offset="1" stop-color="#4b9bff" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="t" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#4f46e5"/>
-      <stop offset=".6" stop-color="#7c3aed"/>
-      <stop offset="1" stop-color="#0891b2"/>
+      <stop offset="0" stop-color="#0b5fff"/>
+      <stop offset=".6" stop-color="#004ad7"/>
+      <stop offset="1" stop-color="#13838f"/>
     </linearGradient>
   </defs>
   <g transform="translate(8 8)">
@@ -31,11 +31,11 @@
       <circle cx="32" cy="32" r="11.5" fill="url(#p)"/>
       <path d="M8 32 A24 9 0 0 0 56 32" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
       <circle cx="51.7" cy="37.2" r="6.5" fill="url(#s)"/>
-      <circle cx="51.7" cy="37.2" r="3.4" fill="#22d3ee" stroke="#fff" stroke-width="1.2"/>
+      <circle cx="51.7" cy="37.2" r="3.4" fill="#4b9bff" stroke="#fff" stroke-width="1.2"/>
     </g>
   </g>
   <text x="88" y="50" font-family="Inter, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="30" font-weight="800"
         letter-spacing="7" fill="url(#t)">ÓRBITA</text>
   <text x="89" y="66" font-family="Inter, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="500"
-        letter-spacing="1.6" fill="#6b7280">PARA HCL DX COMPOSE · EUROPESIP</text>
+        letter-spacing="1.6" fill="#6b6c7e">PARA HCL DX COMPOSE · EUROPESIP</text>
 </svg>

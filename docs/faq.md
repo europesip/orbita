@@ -18,7 +18,7 @@
 
 **What is ÓRBITA?**
 An employee self-service intranet for **HCL DX Compose**: time tracking (also from a kiosk with a PIN or QR card), time
-off, expenses and travel, approvals, communication with HR, a home page with each person's day, and an AI assistant that answers and acts for
+off, expenses and travel, approvals, communication with HR, a people directory with an org chart, each person's payslips and documents, a home page with each person's day, and an AI assistant that answers and acts for
 every employee. It is made by **EUROPESIP**.
 
 **Who is it for?**
@@ -34,12 +34,40 @@ the DAM, WebDAV themes and, optionally, HCL DX IQ. Why DX Compose and not the tr
 No. ÓRBITA covers the day-to-day employee processes inside the portal. It can exchange data with your HR, payroll or
 ERP systems (CSV exports are included; direct integrations are a [service](#services-from-europesip)).
 
-**Can HR talk to the staff with ÓRBITA? Are the pulse surveys really anonymous?**
+**Can HR talk to the staff with ÓRBITA? Are the surveys really anonymous?**
 Yes. The **HR communication** app has notices (to everybody, a department or a role, with read and acknowledgement
-tracking), private questions to HR (only the employee and HR see them, not their manager), anonymous pulse surveys and
-the FAQ. The pulse is **anonymous by design**: answers are stored without the user or the time, results are shown only
+tracking), private questions to HR (only the employee and HR see them, not their manager) and the FAQ. Engagement
+surveys have their own app, **Surveys**, and are **anonymous by design**: answers are stored without the user or the time, results are shown only
 when a minimum number of people have answered (5 by default, never fewer than 3), a department is hidden if it could be
 worked out by subtraction, and the AI cannot answer surveys.
+
+**Does the People directory show who is on sick leave or what time everyone clocked in?**
+No. The directory says whether each person is in the office, working remotely, on a break, not available or out (and
+when they are back), but **never the reason**: sick leave, a permitted absence and a holiday all look the same, «out»,
+and a break does not say whether it is for lunch or a doctor's appointment. It does not show clocking times, the PIN or
+the card either, nor absences not yet approved. A birthday only appears if the person makes it visible. The details
+stay where they were: in Time tracking and Time off, for the person, their manager and HR.
+
+**What kind of surveys can be run? What does HR see in the report?**
+In **Surveys**, HR starts from a template (monthly pulse, annual engagement, wellbeing, remote work, onboarding) or
+from scratch, with eight question types (agreement scale, 1 to 5 scale, eNPS, yes/no, single and multiple choice,
+statement matrix and free text) grouped into sections and dimensions (leadership, workload, wellbeing...). It can save
+it as a draft, preview it as staff will see it and open it now or schedule the opening. The report gives participation,
+the **favourability index** (answers 4 and 5), each dimension with its trend against the previous survey of the same
+series, a heat map by department, eNPS, the results of each question and the comments, and can be exported to CSV or
+PDF. With the results, HR and managers publish an **action plan** that all staff can see.
+
+**Who can see my payslips?**
+You, HR and Accounting (who publish them). **Not your manager**: neither your payslips nor any other document of
+yours. What you send to HR (a doctor's note, your bank details...) is seen only by HR. The AI assistant can only read
+your own payslips, because it acts with your session. Payslips can carry their amounts (gross, income tax, social
+security, net): with them you see your year at a glance and can ask «how much was I paid in October?».
+
+**How are the payslips of all the staff published at once?**
+In My documents › Publish › **Publish in a batch**: choose the month and the PDFs (one per person) and ÓRBITA assigns
+each one by the file name, which must contain the DX user or the full name («nomina-2026-10-lucia.martin.pdf»). The
+amounts come in a CSV with `usuario;bruto;irpf;ss;otras`, which any payroll program exports. Before publishing you
+check who each file is for; each person is notified.
 
 **Can I try it with sample data?**
 Yes. By default the chart loads demo data (people, clockings, holidays, expense reports) mapped to your DX users
@@ -186,14 +214,14 @@ of that application on that page. The settings are kept on upgrades.
 
 **What can the assistant do?**
 Answer and act for the employee asking: their day, clocking in and out, holiday balance and requests, expense reports
-(create, add expenses, send), approvals for managers, HR notices, questions to HR and pulse surveys, notifications.
-33 tools in total; you choose which ones are
+(create, add expenses, send), approvals for managers, HR notices, questions to HR, surveys (pending, reports and action plan), the people directory (finding colleagues, org chart, celebrations,
+recognition), their payslips and documents, notifications. 43 tools in total; you choose which ones are
 published (`mcp.tools`). More than 60 example questions: [ai-questions.md](ai-questions.md).
 
 **What is an MCP server?**
 MCP (Model Context Protocol) is the open standard that lets an AI assistant use the tools of an application: read its
-data and act on it, on behalf of the user. ÓRBITA includes its own **MCP server with more than 30 tools** (33) to work
-with ÓRBITA: time tracking, time off, expenses, approvals, HR communication and notifications. Its own assistant uses them, and so can
+data and act on it, on behalf of the user. ÓRBITA includes its own **MCP server with more than 30 tools** (43) to work
+with ÓRBITA: time tracking, time off, expenses, approvals, HR communication, surveys, people, documents and notifications. Its own assistant uses them, and so can
 HCL DX IQ or any other MCP client.
 
 **Can we extend the AI beyond the ÓRBITA tools?**
@@ -226,7 +254,7 @@ The user's question, the conversation of that session, a short description of th
 tools the model calls for that user. Nothing else from the database, and nothing from other users.
 
 **How much does each question cost?**
-The prompt is small (only the ÓRBITA tools, about 5,800 tokens with all 33), much less than a general-purpose chat.
+The prompt is small (only the ÓRBITA tools, about 7,800 tokens with all 43), much less than a general-purpose chat.
 Publishing fewer tools (`mcp.tools.enabled`, `mcp.tools.readOnly`) reduces it further. With your own model there is
 no per-token cost.
 

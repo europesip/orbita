@@ -220,4 +220,127 @@ public final class Mensajes {
         patron("Recordatorio enviado a (\\d+) personas\\.", "Reminder sent to $1 people.");
         patron("Encuesta abierta para (\\d+) personas\\.", "Survey opened for $1 people.");
     }
+
+    // Personas (Directorio)
+    static {
+        en("Esa persona no está en el directorio.", "That person is not in the directory.");
+        en("El teléfono solo puede llevar números, espacios, +, guiones y paréntesis.", "The phone number can only contain digits, spaces, +, hyphens and brackets.");
+        en("La extensión son de 1 a 8 cifras.", "The extension has 1 to 8 digits.");
+        en("Indica el cumpleaños como mes y día (MM-DD).", "Enter the birthday as month and day (MM-DD).");
+        en("No hay nada que cambiar.", "There is nothing to change.");
+        en("Perfil actualizado.", "Profile updated.");
+        en("Cada habilidad puede tener como mucho 40 caracteres.", "Each skill can have 40 characters at most.");
+        en("Solo RRHH puede dar de alta a una persona.", "Only HR can add a person.");
+        en("Indica el usuario de DX de la persona (letras, números, punto, guion o @).", "Enter the person's DX user (letters, digits, dot, hyphen or @).");
+        en("Ese usuario ya tiene ficha en ÓRBITA.", "That user already has a record in ÓRBITA.");
+        en("Escribe el nombre y los apellidos.", "Write the full name.");
+        en("Indica el departamento.", "Enter the department.");
+        en("Rol no válido.", "Invalid role.");
+        en("El responsable no está en el directorio.", "The manager is not in the directory.");
+        en("Solo RRHH puede cambiar los datos de organización.", "Only HR can change the organisation details.");
+        en("No puedes cambiar tu propio rol: pídeselo a otra persona de RRHH.", "You cannot change your own role: ask someone else in HR.");
+        en("Una persona no puede ser su propio responsable.", "A person cannot be their own manager.");
+        en("El correo electrónico no es válido.", "The email address is not valid.");
+        en("Los días tienen que estar entre 0 y 60.", "The days must be between 0 and 60.");
+        en("Los días tienen que ser un número.", "The days must be a number.");
+        en("El reconocimiento ya no existe.", "The recognition no longer exists.");
+        en("Solo quien lo envió o RRHH pueden quitar un reconocimiento.", "Only the sender or HR can remove a recognition.");
+        en("Reconocimiento eliminado.", "Recognition removed.");
+        en("Elige a la persona a la que quieres reconocer.", "Choose the person you want to recognise.");
+        en("Los reconocimientos son para los compañeros, no para uno mismo.", "Recognitions are for colleagues, not for yourself.");
+        en("Elige el motivo del reconocimiento.", "Choose the reason for the recognition.");
+        en("Cuenta en una frase por qué le das las gracias.", "Say in one sentence why you are thanking them.");
+        patron("Como mucho (\\d+) habilidades: elige las más importantes\\.", "$1 skills at most: choose the most important ones.");
+        patron("Ficha creada: (.+) ya puede usar ÓRBITA con su usuario de DX\\.", "Record created: $1 can now use ÓRBITA with their DX user.");
+        patron("Datos de (.+) guardados\\.", "$1's details saved.");
+        patron("Reconocimiento enviado a (.+)\\.", "Recognition sent to $1.");
+        patron("Ese cambio crearía un círculo en el organigrama: (.+) depende de (.+)\\.", "That change would create a loop in the org chart: $1 reports to $2.");
+    }
+
+    // Mis documentos (Documentos)
+    static {
+        en("Solo puedes ver tus propios documentos.", "You can only see your own documents.");
+        en("Año no válido.", "Invalid year.");
+        en("El documento ya no existe.", "The document no longer exists.");
+        en("No tienes permiso para ver ese documento.", "You are not allowed to see that document.");
+        en("Solo la persona a la que va dirigido puede firmar el recibí.", "Only the person it is addressed to can sign the receipt.");
+        en("Este documento no necesita recibí.", "This document does not need a receipt.");
+        en("Ya habías firmado el recibí.", "You had already signed the receipt.");
+        en("Recibí firmado.", "Receipt signed.");
+        en("Solo RRHH y Administración pueden publicar documentos.", "Only HR and Accounting can publish documents.");
+        en("Elige a la persona a la que va el documento.", "Choose the person the document is for.");
+        en("Elige el tipo de documento.", "Choose the type of document.");
+        en("Indica el mes del documento.", "Enter the month of the document.");
+        en("Indica el año del certificado.", "Enter the year of the certificate.");
+        en("Indica el mes como AAAA-MM.", "Enter the month as YYYY-MM.");
+        en("Indica el periodo como AAAA o AAAA-MM.", "Enter the period as YYYY or YYYY-MM.");
+        en("El bruto tiene que ser mayor que cero.", "The gross amount must be greater than zero.");
+        en("Las deducciones superan el bruto.", "The deductions exceed the gross amount.");
+        en("Lista de ficheros no válida.", "Invalid list of files.");
+        en("Elige los ficheros que quieres publicar.", "Choose the files you want to publish.");
+        en("Como mucho 500 ficheros en cada lote.", "500 files at most in each batch.");
+        en("Solo RRHH y Administración pueden retirar un documento de la empresa.", "Only HR and Accounting can withdraw a company document.");
+        en("Ese documento ya tiene el recibí firmado: no se puede retirar.", "That document already has a signed receipt: it cannot be withdrawn.");
+        en("Solo quien lo envió puede retirarlo.", "Only the sender can withdraw it.");
+        en("RRHH ya lo ha revisado: no se puede retirar.", "HR has already reviewed it: it cannot be withdrawn.");
+        en("Documento retirado.", "Document withdrawn.");
+        en("Elige qué tipo de documento envías.", "Choose the type of document you are sending.");
+        en("Pon un título al documento (por ejemplo, «Justificante médico del 3 de noviembre»).", "Give the document a title (for example, \"Doctor's note of 3 November\").");
+        en("Documento enviado a RRHH.", "Document sent to HR.");
+        en("Solo RRHH revisa los documentos que envía la plantilla.", "Only HR reviews the documents sent by the staff.");
+        en("Explica por qué lo devuelves, para que la persona pueda corregirlo.", "Explain why you are returning it, so that the person can fix it.");
+        en("Ese documento ya está revisado.", "That document is already reviewed.");
+        en("Documento revisado.", "Document reviewed.");
+        en("Documento devuelto a la persona.", "Document returned to the person.");
+        en("Adjunta el fichero (PDF, JPG o PNG).", "Attach the file (PDF, JPG or PNG).");
+        en("El fichero no ha llegado bien. Vuelve a adjuntarlo.", "The file did not arrive correctly. Attach it again.");
+        en("El fichero ocupa demasiado (máximo 6 MB).", "The file is too large (6 MB maximum).");
+        en("Solo se admiten ficheros PDF, JPG o PNG.", "Only PDF, JPG or PNG files are accepted.");
+        patron("Documento publicado para (.+)\\.", "Document published for $1.");
+        patron("Falta el importe: (.+)\\.", "Amount missing: $1.");
+        patron("Ya hay una nómina de (.+) para (.+): bórrala antes de publicar otra\\.", "There is already a payslip of $1 for $2: delete it before publishing another one.");
+        patron("El neto no cuadra: bruto menos IRPF, Seguridad Social y otras deducciones da (.+)\\.", "The net amount does not add up: gross minus income tax, social security and other deductions is $1.");
+        patron("Línea (\\d+) del CSV: (.+)", "Line $1 of the CSV: $2");
+    }
+
+    // Encuestas
+    static {
+        en("Solo RRHH puede preparar encuestas.", "Only HR can prepare surveys.");
+        en("Solo RRHH puede publicar encuestas.", "Only HR can publish surveys.");
+        en("Solo RRHH puede borrar encuestas.", "Only HR can delete surveys.");
+        en("Solo RRHH puede enviar recordatorios.", "Only HR can send reminders.");
+        en("Solo RRHH puede resumir los comentarios.", "Only HR can summarise the comments.");
+        en("Responde a todas las preguntas obligatorias.", "Answer every required question.");
+        en("Una encuesta abierta o cerrada ya no se puede cambiar.", "An open or closed survey can no longer be changed.");
+        en("Borrador guardado.", "Draft saved.");
+        en("Esa encuesta ya está publicada.", "That survey is already published.");
+        en("Indica la apertura como fecha y hora.", "Enter the opening as a date and time.");
+        en("La fecha de cierre es anterior a la apertura.", "The closing date is before the opening.");
+        en("Copia creada como borrador.", "Copy created as a draft.");
+        en("Solo se borran borradores y encuestas programadas: una publicada se cierra.", "Only drafts and scheduled surveys can be deleted: a published one is closed.");
+        en("Encuesta borrada.", "Survey deleted.");
+        en("La encuesta no está abierta.", "The survey is not open.");
+        en("Ya se envió un recordatorio en las últimas 24 horas.", "A reminder was already sent in the last 24 hours.");
+        en("Ya han respondido todos los destinatarios.", "All recipients have already answered.");
+        en("Solo RRHH y los responsables ven los resultados de las encuestas.", "Only HR and managers see the survey results.");
+        en("Aún no hay suficientes respuestas para mostrar resultados.", "There are not enough answers yet to show results.");
+        en("Hacen falta al menos 3 comentarios para resumirlos.", "At least 3 comments are needed to summarise them.");
+        en("Solo RRHH y los responsables preparan el plan de acción.", "Only HR and managers prepare the action plan.");
+        en("La acción ya no existe.", "The action no longer exists.");
+        en("Solo quien la creó, quien la lleva o RRHH pueden cambiarla.", "Only its creator, its owner or HR can change it.");
+        en("Escribe qué se va a hacer.", "Write what is going to be done.");
+        en("Dimensión no válida.", "Invalid dimension.");
+        en("La persona responsable no está en el directorio.", "The owner is not in the directory.");
+        en("Acción actualizada.", "Action updated.");
+        en("Acción añadida al plan.", "Action added to the plan.");
+        en("Solo quien la creó o RRHH pueden quitarla.", "Only its creator or HR can remove it.");
+        en("Acción quitada del plan.", "Action removed from the plan.");
+        patron("Como mucho (\\d+) preguntas: una encuesta larga se abandona\\.", "$1 questions at most: people give up on long surveys.");
+        patron("La pregunta (\\d+) no tiene texto\\.", "Question $1 has no text.");
+        patron("La pregunta (\\d+) necesita al menos 2 (opciones|afirmaciones)\\.", "Question $1 needs at least 2 options.");
+        patron("La pregunta (\\d+) tiene más de (\\d+) (opciones|afirmaciones)\\.", "Question $1 has more than $2 options.");
+        patron("Encuesta programada para (.+) a las (.+)\\.", "Survey scheduled for $1 at $2.");
+        patron("Encuesta abierta para (\\d+) personas\\.", "Survey opened for $1 people.");
+        patron("Recordatorio enviado a (\\d+) personas\\.", "Reminder sent to $1 people.");
+    }
 }

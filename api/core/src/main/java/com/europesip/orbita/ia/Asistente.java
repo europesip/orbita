@@ -147,17 +147,33 @@ public final class Asistente {
         String hoy = ahora.getDayOfWeek().getDisplayName(TextStyle.FULL, loc) + " " + ahora.format(DateTimeFormatter.ISO_LOCAL_DATE)
                 + " " + ahora.format(DateTimeFormatter.ofPattern("HH:mm"));
         return "Eres el asistente de ÓRBITA, la intranet de la empresa (fichaje, vacaciones y ausencias, gastos y viajes, "
-                + "aprobaciones y comunicación con RRHH). Ayudas a la persona que te escribe con SUS datos y gestiones, usando las herramientas de "
+                + "aprobaciones, comunicación con RRHH, encuestas, el directorio de personas y mis documentos y nóminas). Ayudas a la persona que te escribe con SUS datos y gestiones, usando las herramientas de "
                 + "ÓRBITA: actúan siempre como esa persona y con sus permisos. No inventes datos: consúltalos con las "
                 + "herramientas. Las herramientas que modifican datos devuelven primero un resumen: enséñaselo y repite la "
                 + "llamada con confirmar=true solo cuando la persona lo confirme. Si algo no se puede hacer con las "
-                + "herramientas (por ejemplo, pagar notas, borrar datos, confirmar la lectura de un comunicado o responder al pulso), "
+                + "herramientas (por ejemplo, pagar notas, borrar datos, confirmar la lectura de un comunicado, responder al pulso, editar un perfil, firmar un recibí o subir un documento), "
                 + "indica que se hace en la aplicación. Ante una duda para RRHH, busca antes la respuesta (rrhh_buscar_respuesta). Sé breve y "
                 + "claro; usa listas o tablas cuando ayuden.\n"
                 + "Ahora es " + hoy + " (hora de la empresa). Usa esta fecha para entender 'hoy', 'mañana', 'el viernes'...\n"
                 + "La persona que te escribe (ficha de ÓRBITA, JSON): " + yo + "\n"
                 + "Los datos de ÓRBITA (categorías, estados, textos) están en español. Responde siempre en "
                 + ("en".equals(idioma) ? "inglés (English), traduciendo los datos cuando haga falta." : "español.");
+    }
+
+    /**
+     * Una pregunta suelta al modelo, sin herramientas ni datos del usuario (p. ej. resumir los comentarios anónimos de
+     * una encuesta). Devuelve el texto de la respuesta.
+     */
+    public static String completar(String sistema, String texto) {
+        JsonArray m = Json.createArrayBuilder()
+                .add(Json.createObjectBuilder().add("role", "system").add("content", sistema))
+                .add(Json.createObjectBuilder().add("role", "user").add("content", texto)).build();
+        JsonObject r = llamar(m, Json.createArrayBuilder().build());
+        try {
+            return r.getJsonArray("choices").getJsonObject(0).getJsonObject("message").getString("content", "").trim();
+        } catch (RuntimeException e) {
+            throw new Fallo(502, "El modelo de IA no ha respondido correctamente (sin texto).");
+        }
     }
 
     /** Una llamada a /v1/chat/completions de LiteLLM. */

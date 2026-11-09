@@ -65,5 +65,5 @@ helm upgrade --install "$RELEASE" "$CHART" "${VER[@]}" -n "$SHARED_NS" --timeout
 kubectl -n "$SHARED_NS" rollout status deploy/"$RELEASE"-api --timeout=10m
 kubectl -n "$SHARED_NS" logs job/"$RELEASE"-scriptapps-push -c dxclient | tail -3
 echo
-echo "Páginas: https://$DX_HOST/wps/myportal/Home/{mi-intranet,fichaje,vacaciones,gastos,aprobaciones,comunicacion,quiosco}"
+echo "Páginas: https://$DX_HOST/wps/myportal/Home/{mi-intranet,fichaje,vacaciones,gastos,aprobaciones,comunicacion,encuestas,personas,documentos,quiosco}"
 echo "Asistente de IA (opcional): scripts/registrar-mcp-en-iq.sh   ·   Comprobar: scripts/verificar.sh"

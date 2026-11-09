@@ -19,8 +19,7 @@ import java.util.UUID;
  *    ventas-2 la ha leído pero no la ha confirmado. Tecnología tiene una formación obligatoria por confirmar.
  *  - ventas-2 tiene una consulta sobre su nómina en curso con RRHH; tecnologia-1 acaba de preguntar por su cuenta
  *    bancaria (sin atender) y ventas-1 tiene una resuelta y valorada.
- *  - El pulso de octubre está cerrado con resultados (Tecnología llega al mínimo; el resto de departamentos no) y el de
- *    noviembre está abierto: ventas-1 aún no ha respondido.
+ *  (Las encuestas de clima están en DemoEncuestas.)
  */
 final class DemoComunicacion {
 
@@ -121,30 +120,6 @@ final class DemoComunicacion {
             ps.executeBatch();
         }
 
-        // ------------------------------------------------------------------------------------------- Pulso
-        String[][] preguntas = {
-            {"ESCALA", "¿Cómo de equilibrada está tu carga de trabajo?"},
-            {"ESCALA", "¿Sientes que tu responsable te escucha?"},
-            {"ESCALA", "¿Tienes lo que necesitas para hacer bien tu trabajo?"},
-            {"ENPS", "Del 0 al 10, ¿recomendarías la empresa a un amigo para trabajar?"},
-            {"TEXTO", "¿Algo que quieras contarnos? (opcional)"},
-        };
-        int octubre = encuesta(c, "Pulso de octubre", "CERRADA", hoy.minusDays(35).atTime(9, 0), hoy.minusDays(21), preguntas);
-        int noviembre = encuesta(c, "Pulso de noviembre", "ABIERTA", hoy.minusDays(2).atTime(9, 0), hoy.plusDays(12), preguntas);
-        Random r = new Random(23);
-        String[] comentarios = {"Demasiadas reuniones los lunes por la mañana.", "Muy buen ambiente en el equipo.",
-            "Me gustaría saber mejor cuáles son los objetivos del trimestre.", "La nueva política de teletrabajo es un acierto."};
-        int k = 0;
-        for (String p : todos) {
-            // En Tecnología la carga es más alta; las respuestas varían un poco por persona
-            boolean tec = p.startsWith("tecnologia");
-            responder(c, octubre, p, new int[] {tec ? 2 + r.nextInt(2) : 3 + r.nextInt(2), 3 + r.nextInt(3), 3 + r.nextInt(3), tec ? 5 + r.nextInt(5) : 8 + r.nextInt(3)},
-                    k < comentarios.length && r.nextBoolean() ? comentarios[k++] : null);
-        }
-        for (String p : new String[] {"rrhh", "ventas-responsable", "tecnologia-responsable", "tecnologia-1", "administracion"}) {
-            responder(c, noviembre, p, new int[] {3 + r.nextInt(2), 3 + r.nextInt(3), 4 + r.nextInt(2), 7 + r.nextInt(4)}, null);
-        }
-
         // ------------------------------------------------------------------------------------------- Avisos
         try (PreparedStatement ps = c.prepareStatement("INSERT INTO AVISO (USUARIO, APP, CLASE, OBJETO, TEXTO, LEIDO, CREADO) VALUES (?,?,?,?,?,?,?)")) {
             String lim = Api.corta(hoy.plusDays(10));
@@ -153,7 +128,6 @@ final class DemoComunicacion {
                         "ventas-2".equals(p) ? 1 : 0, hoy.minusDays(3).atTime(9, 30));
             }
             aviso(ps, u("ventas-1"), "COMUNICADO", cena, "Nuevo comunicado de RRHH: «Cena de empresa de fin de año».", 0, ahora.minusHours(20));
-            aviso(ps, u("ventas-1"), "ENCUESTA", noviembre, "Nueva encuesta anónima de RRHH: «Pulso de noviembre». Es un minuto.", 0, hoy.minusDays(2).atTime(9, 0));
             aviso(ps, u("ventas-2"), "CONSULTA", irpf, "RRHH ha respondido a tu consulta: «Hola " + pila("ventas-2") + ": en octubre se regularizó el IRPF…»",
                     1, t1.plusHours(2).plusMinutes(20));
             aviso(ps, u("rrhh"), "CONSULTA", irpf, Personas.de("ventas-2").nombre() + " ha comentado su consulta: «Gracias, ¿me lo puedes enviar antes del viernes?»",
@@ -224,64 +198,6 @@ final class DemoComunicacion {
         ps.setString(4, texto);
         ps.setTimestamp(5, Timestamp.valueOf(cuando));
         ps.addBatch();
-    }
-
-    private static int encuesta(Connection c, String titulo, String estado, LocalDateTime abierta, LocalDate cierre, String[][] preguntas) throws SQLException {
-        int id;
-        try (PreparedStatement ps = c.prepareStatement("INSERT INTO ENCUESTA (TITULO, DESCRIPCION, AMBITO, MINIMO, ESTADO, AUTOR, ABIERTA, CIERRE)"
-                + " VALUES (?,?,'TODOS',4,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, titulo);
-            ps.setString(2, "Cinco preguntas, un minuto. Es anónima: nadie, tampoco RRHH, ve qué ha respondido cada persona.");
-            ps.setString(3, estado);
-            ps.setString(4, u("rrhh"));
-            ps.setTimestamp(5, Timestamp.valueOf(abierta));
-            ps.setDate(6, Date.valueOf(cierre));
-            ps.executeUpdate();
-            id = clave(ps);
-        }
-        try (PreparedStatement ps = c.prepareStatement("INSERT INTO ENCUESTA_PREGUNTA (ENCUESTA, ORDEN, TIPO, TEXTO) VALUES (?,?,?,?)")) {
-            for (int i = 0; i < preguntas.length; i++) {
-                ps.setInt(1, id);
-                ps.setInt(2, i + 1);
-                ps.setString(3, preguntas[i][0]);
-                ps.setString(4, preguntas[i][1]);
-                ps.addBatch();
-            }
-            ps.executeBatch();
-        }
-        return id;
-    }
-
-    /** Responde como lo haría la aplicación: participación por un lado y respuestas sin usuario por otro. */
-    private static void responder(Connection c, int encuesta, String papel, int[] valores, String comentario) throws SQLException {
-        try (PreparedStatement ps = c.prepareStatement("INSERT INTO ENCUESTA_PARTICIPACION (ENCUESTA, USUARIO) VALUES (?,?)")) {
-            ps.setInt(1, encuesta);
-            ps.setString(2, u(papel));
-            ps.executeUpdate();
-        }
-        List<Integer> ids = new java.util.ArrayList<>();
-        try (PreparedStatement ps = c.prepareStatement("SELECT ID FROM ENCUESTA_PREGUNTA WHERE ENCUESTA = ? ORDER BY ORDEN")) {
-            ps.setInt(1, encuesta);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) ids.add(rs.getInt(1));
-            }
-        }
-        String envio = UUID.randomUUID().toString();
-        try (PreparedStatement ps = c.prepareStatement("INSERT INTO ENCUESTA_RESPUESTA (ENVIO, ENCUESTA, PREGUNTA, DEPARTAMENTO, VALOR, TEXTO)"
-                + " VALUES (?,?,?,?,?,?)")) {
-            for (int i = 0; i < ids.size(); i++) {
-                boolean texto = i >= valores.length;
-                if (texto && comentario == null) continue;
-                ps.setString(1, envio);
-                ps.setInt(2, encuesta);
-                ps.setInt(3, ids.get(i));
-                ps.setString(4, Personas.de(papel).departamento());
-                if (texto) ps.setNull(5, java.sql.Types.SMALLINT); else ps.setInt(5, valores[i]);
-                ps.setString(6, texto ? comentario : null);
-                ps.addBatch();
-            }
-            ps.executeBatch();
-        }
     }
 
     private static void aviso(PreparedStatement ps, String u, String clase, int objeto, String texto, int leido, LocalDateTime cuando) throws SQLException {
