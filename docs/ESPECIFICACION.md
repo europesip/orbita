@@ -26,7 +26,7 @@ El responsable de cada persona y su rol se guardan en la ficha de empleado de la
 Cumple el registro diario de jornada (Real Decreto-ley 8/2019): hora de inicio y fin de cada día, conservado y
 disponible para la persona, sus representantes y la Inspección de Trabajo.
 
-**Fichar** (concepto inspirado en las aplicaciones de control horario tipo Kairos, con diseño propio)
+**Fichar** (siguiendo el patrón habitual de las aplicaciones de control horario, con diseño propio)
 - Un único botón redondo que cambia según el estado: *Entrar* (fuera) · *Salir* (trabajando) · *Volver* (en pausa), con
   un anillo que muestra la parte de la jornada ya cumplida.
 - **Pausas con motivo (incidencias)**: desayuno, comida, gestión personal y otro motivo no cuentan como trabajo; médico
