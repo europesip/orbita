@@ -1,0 +1,78 @@
+name: "🚀 Enhancement (spec)"
+description: A new capability, option or use case. Written as a short spec, so that it can be built and tested from the issue alone.
+title: "[Enhancement] "
+projects: ["europesip/2"]
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue is the **spec** of the change: what and why, not how. Keep it short and testable.
+        The maintainers add the priority (`P1`-`P3`), the area, the **Effort** and the **Release** when it is triaged.
+        See [docs/workflow.md](https://github.com/europesip/orbita/blob/main/docs/workflow.md). **Never paste credentials, keys or licence data.**
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: One paragraph. What should change, and for whom?
+    validations: {required: true}
+  - type: textarea
+    id: current
+    attributes:
+      label: Current behaviour (checked in the code)
+      description: How it works today, with the files involved.
+    validations: {required: true}
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: "The expected behaviour, from the user's point of view. Split it in parts if it is big."
+    validations: {required: true}
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: "Checkable statements. Prefer \"Given ... when ... then ...\". The change is done when every box is ticked."
+      value: |
+        - [ ] Given ..., when ..., then ...
+        - [ ] Installs with its Helm chart on the lab cluster and the demo users can use it
+    validations: {required: true}
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: What this change deliberately does not do.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - "Web (Script Applications, theme, i18n)"
+        - "API (REST, business rules, database)"
+        - "AI assistant and MCP server"
+        - "Packaging (Helm chart, images, CI)"
+        - "Demo data, users and pages"
+        - "Documentation"
+    validations: {required: true}
+  - type: textarea
+    id: tests
+    attributes:
+      label: Test plan
+      description: "How it will be proven: `mvn test` (api/) and `npm test` (web/), and an installation on the lab cluster with the demo users."
+    validations: {required: true}
+  - type: checkboxes
+    id: impact
+    attributes:
+      label: Release impact
+      options:
+        - label: "CHANGELOG in English and Spanish"
+        - label: "Documentation and manuals in English and Spanish"
+        - label: "Helm chart values or version"
+        - label: "Database migrations or demo data"
+        - label: "MCP tools (IQ questions)"
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: HCL documentation, related issues, discussions.

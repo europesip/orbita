@@ -1,0 +1,64 @@
+name: "🐞 Bug"
+description: Something does not behave as it should.
+title: "[Bug] "
+projects: ["europesip/2"]
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting it. **Never paste credentials, keys, tokens or licence data**: replace them with `***`.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "The chart version (helm list -n dx-shared), for example 3.1.2."
+    validations: {required: true}
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where does it fail?
+      options:
+        - "An intranet page (My intranet, time tracking, time off, expenses, approvals...)"
+        - "The assistant (Ask ÓRBITA)"
+        - "The REST API"
+        - "The MCP server in HCL DX IQ"
+        - "Installing or upgrading the Helm chart"
+    validations: {required: true}
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1.
+        2.
+        3.
+    validations: {required: true}
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations: {required: true}
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+    validations: {required: true}
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: "The browser console, `kubectl -n dx-shared logs deploy/orbita-api`, or the Helm output, without secrets."
+      render: shell
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: "DX Compose CF239, chart 3.1.2, Keycloak OIDC on/off"
+  - type: textarea
+    id: done
+    attributes:
+      label: How do we know it is fixed?
+      description: The check that must pass after the fix (it becomes the acceptance criterion).
+      value: |
+        - [ ]
