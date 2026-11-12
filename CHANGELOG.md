@@ -2,7 +2,7 @@
 
 **English** · [Español](CHANGELOG.es.md)
 
-## Unreleased (#8) · The PostgreSQL of DX
+## 3.2.0 · 2026-11-12 · The PostgreSQL of DX (#8)
 
 - New chart value **`database.type`**: `external` (default, as before) or **`dxPersistence`**, the PostgreSQL that
   HCL DX installs for DAM (`persistence-node`), like the `configuration.database` block of the HCL DX IQ chart. With
