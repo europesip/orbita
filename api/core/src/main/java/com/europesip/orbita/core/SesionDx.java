@@ -35,7 +35,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * Quién es el usuario: lo dice HCL DX. ÓRBITA no guarda claves LTPA ni consulta el LDAP; reenvía la cookie de sesión
- * del usuario (LtpaToken2, o WAS_n... si DX usa OpenID Connect) a la API de perfil de DX y DX contesta con el perfil de ese usuario, o no contesta si la
+ * del usuario (LtpaToken2, o WAS_<letra><hash> si DX usa OpenID Connect) a la API de perfil de DX y DX contesta con el perfil de ese usuario, o no contesta si la
  * sesión no es válida. Sirve igual para las Script Applications (el navegador envía la cookie, mismo host que DX) y
  * para el MCP (el Integrator de DX IQ reenvía las cookies del usuario en cada tools/call).
  *
@@ -83,8 +83,8 @@ public final class SesionDx {
 
     /**
      * La cookie de sesión de DX en la cabecera Cookie: {nombre, valor}, o null. Los nombres admitidos van separados
-     * por comas y pueden acabar en * (prefijo). Por defecto "LtpaToken2,WAS_n*": con OpenID Connect (Keycloak, Entra
-     * ID...) Liberty da a la cookie de SSO un nombre generado (WAS_n...) en lugar de LtpaToken2.
+     * por comas y pueden acabar en * (prefijo). Por defecto "LtpaToken2,WAS_*": con OpenID Connect (Keycloak, Entra
+     * ID...) Liberty da a la cookie de SSO un nombre generado (WAS_n..., WAS_p...) en lugar de LtpaToken2.
      */
     static String[] cookieSesion(String cabecera, String nombres) {
         if (cabecera == null || nombres == null) return null;

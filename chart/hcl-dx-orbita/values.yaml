@@ -6,7 +6,7 @@
 #   Script Applications                    pushed to WCM by the subchart "scriptapps" (hcl-dx-scriptapp), which
 #                                          then creates the pages with XMLAccess
 #
-# Who the user is: ÓRBITA forwards the user's DX session cookie (LtpaToken2, or WAS_n... when DX signs in through
+# Who the user is: ÓRBITA forwards the user's DX session cookie (LtpaToken2, or WAS_<letter><hash> when DX signs in through
 # OpenID Connect) to DX's profile API and DX answers.
 # No LTPA keys, LDAP settings or DX admin credentials are needed by the API.
 # Install it in the namespace of your third-party tools (the labs use dx-shared), next to PostgreSQL.
@@ -21,11 +21,11 @@ dx:
   caSecret: ""
   # Lab only: do not verify the DX certificate. Prefer caSecret.
   insecureSkipTLSVerify: false
-  # DX with OpenID Connect (Keycloak, Entra ID...), since 3.1.2: Liberty names the DX session cookie WAS_n... instead of
+  # DX with OpenID Connect (Keycloak, Entra ID...), since 3.1.2: Liberty names the DX session cookie WAS_n..., WAS_p... instead of
   # LtpaToken2 and the DX REST login answers without a cookie. true: the API accepts both cookie names and the theme step
   # signs in with the portal login form when needed. false: the behaviour of 3.1.1 (LtpaToken2 and the REST login only).
   oidcSupport: true
-  # Names of the DX session cookie, comma separated, "*" = prefix. Empty: from oidcSupport ("LtpaToken2,WAS_n*" or
+  # Names of the DX session cookie, comma separated, "*" = prefix. Empty: from oidcSupport ("LtpaToken2,WAS_*" or
   # "LtpaToken2"). Set it only for a custom ssoCookieName in your DX.
   sessionCookie: ""
 
@@ -38,7 +38,12 @@ imagePullSecrets: []         # the images are public; set it for a private mirro
 
 # --- PostgreSQL ---------------------------------------------------------------------------------------------------
 database:
-  host: ""                   # REQUIRED, e.g. dx-pg-rw.dx-shared.svc.cluster.local
+  # Where ÓRBITA keeps its data (like the configuration.database block of hcl-dx-iq):
+  #   external       your PostgreSQL: host, port and sslMode below (the labs: CloudNativePG dx-pg in dx-shared)
+  #   dxPersistence  the PostgreSQL that HCL DX installs for DAM (persistence-node): nothing else to install, but
+  #                  PostgreSQL 16, no TLS, managed by DX (its version changes with DX) and one replica (see the README)
+  type: external
+  host: ""                   # REQUIRED with type external, e.g. dx-pg-rw.dx-shared.svc.cluster.local
   port: 5432
   name: orbita
   user: orbita
@@ -49,8 +54,17 @@ database:
   # Create the user and the database (a Job before install and upgrade; idempotent). Needs a PostgreSQL superuser.
   create:
     enabled: true
-    superuserSecret: ""      # REQUIRED if enabled: Secret with "username" and "password" (labs: dx-pg-superuser)
+    superuserSecret: ""      # REQUIRED if enabled (type external): Secret with "username" and "password" (labs: dx-pg-superuser)
     image: postgres:18.1-alpine
+  # type dxPersistence: host <release>-persistence-headless-svc (straight to the database node: the DX connection pool
+  # only accepts the DX users), port 5432 and sslMode disable; host, port and sslMode above are ignored.
+  dxPersistence:
+    release: dx-deployment   # release name of hcl-dx-deployment
+    namespace: ""            # namespace of hcl-dx-deployment. Empty: the ÓRBITA namespace (recommended: install ÓRBITA there)
+    # Superuser for the database Job. Empty: <release>-persistence-user, the Secret of DX (username/password), which only
+    # exists in the DX namespace. ÓRBITA in another namespace: copy that Secret there and give its name here (copy it
+    # again if DX changes that password: the copy is not updated).
+    superuserSecret: ""
 
 # --- API ----------------------------------------------------------------------------------------------------------
 api:

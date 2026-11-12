@@ -2,8 +2,9 @@
 
   API:          https://{{ .Values.dx.host }}{{ .Values.api.path }}/v1/salud
   Pod log:      kubectl -n {{ .Release.Namespace }} logs deploy/{{ include "orbita.fullname" . }}-api
+  Database:     {{ include "orbita.dbHost" . }}:{{ include "orbita.dbPort" . }}/{{ .Values.database.name }}{{ if eq (include "orbita.dbType" .) "dxPersistence" }} (persistence of HCL DX, PostgreSQL 16){{ end }}
 {{- if .Values.database.create.enabled }}
-  Database:     kubectl -n {{ .Release.Namespace }} logs job/{{ include "orbita.fullname" . }}-db
+  Database job: kubectl -n {{ .Release.Namespace }} logs job/{{ include "orbita.fullname" . }}-db
 {{- end }}
 {{- if .Values.scriptapps.enabled }}
   Apps + pages: kubectl -n {{ .Release.Namespace }} logs job/{{ .Release.Name }}-scriptapps-push

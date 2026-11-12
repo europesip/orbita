@@ -2,6 +2,19 @@
 
 [English](CHANGELOG.md) · **Español**
 
+## Sin publicar (#8) · El PostgreSQL de DX
+
+- Nuevo valor del chart **`database.type`**: `external` (por defecto, como antes) o **`dxPersistence`**, el PostgreSQL
+  que HCL DX instala para el DAM (`persistence-node`), como el bloque `configuration.database` del chart de HCL DX IQ.
+  Con `dxPersistence` el chart toma de DX el host (`<release>-persistence-headless-svc`), el puerto, el TLS (ninguno) y
+  el superusuario (`<release>-persistence-user`): `database.dxPersistence.release`, `.namespace` y `.superuserSecret`.
+  Límites: PostgreSQL 16, sin TLS, gestionado por DX, una réplica; en otro namespace, una copia del Secret del superusuario.
+- La cookie de sesión de DX con OpenID Connect puede ser `WAS_n...` o `WAS_p...` (la letra depende del DX): la API y el
+  paso del tema aceptan ahora `WAS_*` (`dx.sessionCookie` por defecto: `LtpaToken2,WAS_*`). Antes, el paso del tema
+  fallaba con "DX did not open a session" en un DX cuya cookie era `WAS_p...`.
+- Probado con DX Compose CF239 (namespace `digital-experience`, persistencia PostgreSQL 16.15, Keycloak 26.3) y ÓRBITA en
+  su propio namespace: Job de la base de datos, Flyway, tema, páginas y un usuario que entra por Keycloak.
+
 ## 3.1.2 · 2026-11-08 · DX con OpenID Connect
 
 - ÓRBITA funciona cuando los usuarios de DX entran por **OpenID Connect** (Keycloak, Entra ID...): con el cliente OIDC

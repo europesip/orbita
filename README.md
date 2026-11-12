@@ -144,6 +144,7 @@ needs your confirmation first; paying, restoring the demo, deleting and exportin
 |---|---|
 | **HCL DX Compose** | CF239 on Kubernetes, with an Ingress (ingress-nginx) for its host name. A DX **administrator** user for DXClient (it pushes the Script Applications and creates the pages with XMLAccess) |
 | **PostgreSQL** | **Required in version 2.x** (tested with PostgreSQL 18 / CloudNativePG), reachable from the cluster, and a **superuser** Secret (keys `username` and `password`) so that the chart creates its database and user. If you do not have one, the labs install it in about 3 minutes: [External dependencies](https://github.com/europesip/hcl-dx-compose-labs/blob/main/external-deps/GUIDE.md) (`external-deps/02-postgres.sh`). **Other databases will be supported in later releases** |
+| **…or the PostgreSQL of HCL DX** | Instead of your own PostgreSQL, ÓRBITA can use the one HCL DX installs for DAM (its *persistence*, `persistence-node`): see [Database: your PostgreSQL or the persistence of DX](#database-your-postgresql-or-the-persistence-of-dx) |
 | **Users** | The DX users of `demo.people` (in the labs, the OpenLDAP of Lab 2A) |
 | **HCL DX IQ** (optional) | For the assistant: IQ installed (Lab 3 of the labs) |
 | **Images and chart** | Public, on `ghcr.io/europesip`: no registry login needed |
@@ -231,6 +232,37 @@ What happens, in order:
 DXCLIENT_ACCEPT_LICENSE=yes scripts/instalar-en-labs.sh
 scripts/verificar.sh
 ```
+
+### Database: your PostgreSQL or the persistence of DX
+
+`database.type` chooses where ÓRBITA keeps its data, like the `configuration.database` block of the HCL DX IQ chart:
+
+| `database.type` | PostgreSQL | What the chart uses |
+|---|---|---|
+| `external` (default) | yours (the labs: CloudNativePG `dx-pg`, PostgreSQL 18, TLS) | `database.host`, `port`, `sslMode`, `create.superuserSecret` |
+| `dxPersistence` | the one HCL DX installs for DAM (`persistence-node`) | host `<release>-persistence-headless-svc`, port 5432, no TLS, superuser `<release>-persistence-user` |
+
+```yaml
+database:
+  type: dxPersistence
+  dxPersistence:
+    release: dx-deployment          # release of hcl-dx-deployment
+    namespace: dx-demo              # its namespace (empty: the ÓRBITA namespace)
+    superuserSecret: dx-persistence-superuser   # only when ÓRBITA is in another namespace (see below)
+```
+
+- **Nothing else to install**, and it comes with DX. But: **PostgreSQL 16**, **no TLS**, managed by DX (its version
+  and image change with each DX update), and meant for **one replica** of `persistence-node`.
+- ÓRBITA connects **straight to the database node** (headless service): the DX connection pool (pgpool) only accepts
+  the DX users.
+- The superuser Secret of DX is only in the DX namespace. **Recommended: install ÓRBITA in the DX namespace** (nothing
+  to copy). With ÓRBITA in another namespace, copy the Secret, and copy it again if DX changes that password:
+
+  ```bash
+  kubectl -n $NS_DX get secret dx-deployment-persistence-user -o json | python3 -c 'import json,sys
+  s=json.load(sys.stdin); print(json.dumps({"apiVersion":"v1","kind":"Secret","metadata":{"name":"dx-persistence-superuser"},"data":s["data"]}))' \
+    | kubectl -n $NS_ORBITA apply -f -
+  ```
 
 ### Sandbox · Set up my own DX Compose
 

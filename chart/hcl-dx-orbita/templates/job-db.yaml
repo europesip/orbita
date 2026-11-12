@@ -1,6 +1,6 @@
 {{- if .Values.database.create.enabled }}
-{{- $su := required "database.create.superuserSecret is required (Secret with a PostgreSQL superuser), or set database.create.enabled=false" .Values.database.create.superuserSecret }}
-{{- $host := required "database.host is required" .Values.database.host }}
+{{- $su := include "orbita.dbSuperuserSecret" . }}
+{{- $host := include "orbita.dbHost" . }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -32,9 +32,9 @@ spec:
             capabilities: { drop: [ALL] }
           env:
             - { name: PGHOST, value: {{ $host | quote }} }
-            - { name: PGPORT, value: {{ .Values.database.port | quote }} }
+            - { name: PGPORT, value: {{ include "orbita.dbPort" . | quote }} }
             - { name: PGDATABASE, value: postgres }
-            - { name: PGSSLMODE, value: {{ .Values.database.sslMode | quote }} }
+            - { name: PGSSLMODE, value: {{ include "orbita.dbSslMode" . | quote }} }
             - name: PGUSER
               valueFrom: { secretKeyRef: { name: {{ $su }}, key: username } }
             - name: PGPASSWORD

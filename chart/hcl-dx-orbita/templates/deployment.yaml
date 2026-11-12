@@ -1,4 +1,4 @@
-{{- $dbHost := required "database.host is required (PostgreSQL host)" .Values.database.host }}
+{{- $dbHost := include "orbita.dbHost" . }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -52,16 +52,16 @@ spec:
             - { name: TZ, value: {{ .Values.api.timezone | quote }} }
             # Database (server.xml)
             - { name: ORBITA_DB_HOST, value: {{ $dbHost | quote }} }
-            - { name: ORBITA_DB_PORT, value: {{ .Values.database.port | quote }} }
+            - { name: ORBITA_DB_PORT, value: {{ include "orbita.dbPort" . | quote }} }
             - { name: ORBITA_DB_NAME, value: {{ .Values.database.name | quote }} }
-            - { name: ORBITA_DB_SSLMODE, value: {{ .Values.database.sslMode | quote }} }
+            - { name: ORBITA_DB_SSLMODE, value: {{ include "orbita.dbSslMode" . | quote }} }
             - name: ORBITA_DB_USER
               valueFrom: { secretKeyRef: { name: {{ include "orbita.dbSecret" . }}, key: username } }
             - name: ORBITA_DB_PASSWORD
               valueFrom: { secretKeyRef: { name: {{ include "orbita.dbSecret" . }}, key: password } }
             # Who the user is: DX answers, with the user's own session cookie
             - { name: ORBITA_DX_URL, value: {{ include "orbita.dxUrl" . | quote }} }
-            - { name: ORBITA_SESSION_COOKIE, value: {{ .Values.dx.sessionCookie | default (ternary "LtpaToken2" "LtpaToken2,WAS_n*" (eq (toString .Values.dx.oidcSupport) "false")) | quote }} }
+            - { name: ORBITA_SESSION_COOKIE, value: {{ .Values.dx.sessionCookie | default (ternary "LtpaToken2" "LtpaToken2,WAS_*" (eq (toString .Values.dx.oidcSupport) "false")) | quote }} }
             {{- if .Values.dx.caSecret }}
             - { name: ORBITA_DX_CA, value: /dx-ca/ca.crt }
             {{- end }}
