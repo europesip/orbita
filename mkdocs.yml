@@ -1,0 +1,35 @@
+# TechDocs of ÓRBITA: the docs/ folder, shown in the EUROPESIP Internal Developer Portal (Backstage) through the
+# annotation backstage.io/techdocs-ref of the component "orbita". Build locally (same as Backstage):
+#   pip install mkdocs-techdocs-core==1.7.1 && mkdocs serve
+site_name: ÓRBITA · Time tracking, Time off, Expenses and Approvals for HCL DX
+site_description: Intranet suite for HCL DX Compose by EUROPESIP (Script Applications + REST API + MCP server)
+repo_url: https://github.com/europesip/orbita
+edit_uri: edit/main/docs/
+docs_dir: docs
+
+plugins:
+  - techdocs-core
+
+# one spec per issue, and test files of the API and the MCP server: kept in the repository, left out of the site
+exclude_docs: |
+  specs/
+  *.http
+  *.json
+
+nav:
+  - Overview: index.md
+  - FAQ: faq.md
+  - What to ask the AI: ai-questions.md
+  - How we work: workflow.md
+  - Español:
+      - Introducción: index.es.md
+      - Preguntas frecuentes: faq.es.md
+      - Qué preguntarle a la IA: preguntas-ia.md
+      - Servidor MCP: mcp.md
+      - Especificación funcional: ESPECIFICACION.md
+      - Cómo trabajamos: workflow.es.md
+
+# Heading anchors as GitHub makes them (accents kept: #instalación), so the same links work on GitHub and here
+markdown_extensions:
+  - toc:
+      slugify: !!python/object/apply:pymdownx.slugs.slugify {kwds: {case: lower}}
