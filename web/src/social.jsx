@@ -139,7 +139,7 @@ export function Conversacion({clase, objeto, onCuenta, compacta}) {
           {!lista.length && <p className="si-tenue si-sin-mensajes">{t('Aún no hay comentarios. Pregunta o aclara lo que necesites sin rechazar la solicitud.')}</p>}
           {lista.map((m) => (
             <div key={m.id} className={`si-mensaje${m.yo ? ' mio' : ''}`}>
-              {!m.yo && <Avatar nombre={m.nombre} tam={26} />}
+              {!m.yo && <Avatar nombre={m.nombre} usuario={m.usuario} tam={26} />}
               <div className="si-burbuja">
                 {!m.yo && <strong>{m.nombre}</strong>}
                 <p>{m.texto}</p>

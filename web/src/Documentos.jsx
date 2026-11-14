@@ -419,7 +419,7 @@ function Gestion({onCambio}) {
               <tbody>
                 {filtradas.map((p) => (
                   <tr key={p.usuario}>
-                    <td><span className="si-fila"><Avatar nombre={p.nombre} tam={28} /><span><strong>{p.nombre}</strong><br /><small>{p.departamento}</small></span></span></td>
+                    <td><span className="si-fila"><Avatar nombre={p.nombre} usuario={p.usuario} tam={28} /><span><strong>{p.nombre}</strong><br /><small>{p.departamento}</small></span></span></td>
                     <td>{p.ultimaNomina ? textoPeriodo(p.ultimaNomina) : <span className="si-tenue">—</span>}
                       {p.ultimaNomina && p.ultimaNomina < d.mesAnterior && <> <Insignia tono="ambar">{t('Atrasada')}</Insignia></>}</td>
                     <td>{p.sinLeer || ''}</td>

@@ -78,7 +78,7 @@ relative to the day they are loaded.
   above a minimum number of answers. The **action plan** tells staff what is being done with them.
 - **People**: the staff **directory** with search (name, job title, skill, language or office) and everyone's
   **availability today** (in the office, working remotely, on a break, out and when they are back, never the reason),
-  their **profile** (contact, reporting line, team, a profile each person edits), the **org chart**, **celebrations**
+  their **profile** (contact, reporting line, team, a profile each person edits, an optional **photo**), the **org chart**, **celebrations**
   (visible birthdays, work anniversaries and new joiners) and public **recognition** between colleagues. HR adds new
   records and changes the organisation details.
 - **My documents**: each person's documentation. **Payslips** with their amounts (the latest one compared with the
@@ -298,7 +298,8 @@ intranet that runs on HCL DX:
 
 - A copy of the HCL DX **Portal 8.5** theme, made at install time from **your own DX** (WebDAV only, no EAR: HCL's
   theme files are not part of ÓRBITA), with an ÓRBITA header: the **company logo**, **"Powered by HCL Software"** and a
-  **button that opens the ÓRBITA assistant**. Everything else (toolbar, menus, edit mode) is the Portal 8.5 theme.
+  **button that opens the ÓRBITA assistant**, and the **photo of the signed-in user** (from People, or their initials),
+  linked to their profile. Everything else (toolbar, menus, edit mode) is the Portal 8.5 theme.
 - The images are in a **DAM collection** (`ÓRBITA`): to put your company logo, upload a new version of
   `company-logo.png` there; the theme always shows its latest version. Or give it at install time with
   `--set theme.logoBase64=$(base64 -w0 logo.png)`.
@@ -309,6 +310,7 @@ theme:
   enabled: true          # false: the pages keep the theme they have
   hclLogo: true          # "Powered by HCL Software"
   assistantButton: true  # assistant button in the header (only on pages with an ÓRBITA app)
+  userPhoto: true        # photo of the signed-in user in the header, linked to their profile in People
   headerBackground: "#002c56"
 ```
 

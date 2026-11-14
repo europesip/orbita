@@ -993,7 +993,7 @@ function FilaAccion({a, onEditar}) {
       <div className="si-en-acc-lado">
         <Insignia tono={ESTADOS_ACCION[a.estado].tono}>{t(ESTADOS_ACCION[a.estado].nombre)}</Insignia>
         {a.limite && <small className={vencida ? 'si-negativo' : 'si-tenue'}>{vencida ? t('vencida el {fecha}', {fecha: dia(a.limite)}) : t('antes del {fecha}', {fecha: dia(a.limite)})}</small>}
-        {a.responsable && <span className="si-fila"><Avatar nombre={a.responsable.nombre} tam={22} /><small>{a.responsable.nombre}</small></span>}
+        {a.responsable && <span className="si-fila"><Avatar nombre={a.responsable.nombre} usuario={a.responsable.usuario} tam={22} /><small>{a.responsable.nombre}</small></span>}
         {a.editar && onEditar && <button type="button" className="si-enlace" onClick={() => onEditar(a)}><Icono n="lapiz" /> {t('Editar')}</button>}
       </div>
     </li>

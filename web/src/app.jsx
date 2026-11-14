@@ -164,7 +164,7 @@ function Contenido({app}) {
               {c.asistente && <Asistente app={app} yo={yo} />}
               {c.avisos && <Campana inicial={yo.avisos} app={app} />}
               {c.usuario && <div><strong>{yo.nombre}</strong><span>{yo.puesto} · {ROLES[yo.rol] ? t(ROLES[yo.rol]) : yo.rol}</span></div>}
-              {c.usuario && <Avatar nombre={yo.nombre} tam={38} />}
+              {c.usuario && <Avatar nombre={yo.nombre} usuario={yo.usuario} tam={38} />}
             </div>
           )}
         </header>

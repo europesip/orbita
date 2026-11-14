@@ -2,6 +2,24 @@
 
 **English** · [Español](CHANGELOG.es.md)
 
+## Unreleased · Photos in People
+
+- **Photo of each person** in **People**: each person adds, changes or removes their own from their profile (the camera
+  button on the photo), and HR can do it for anyone. It is optional: without a photo the initials are shown, as before.
+- The browser crops the picture to a square before sending it, and the server checks it (JPG or PNG by its content, 6
+  MB and 6,000 px per side at most) and draws it again at 256 px in JPEG: about 20 KB, and nothing of the original file
+  is kept (no camera or location data, no hidden content).
+- The photo appears wherever ÓRBITA knows who the person is: People (directory, profile, org chart, celebrations,
+  recognition), the header of the apps, My intranet, Approvals, Time off, Time tracking, HR communication, My documents
+  and Surveys.
+- **Integration with DX**: the example theme shows the **photo of the signed-in user** in the portal header, linked to
+  their profile in People (`theme.userPhoto`, on by default). Each image is served by the new
+  `GET /orbita-api/v1/fotos/{usuario}` (with a DX session; `yo` = the signed-in user), versioned so the browser keeps it
+  in its cache until it changes.
+- Flyway migration **`V7__fotos.sql`** (table `EMPLEADO_FOTO`, apart from `EMPLEADO`) and illustrated demo photos
+  (drawn silhouettes, not real people) for seven of the nine demo people. Tested on PostgreSQL 17 with 33 automatic
+  checks.
+
 ## Unreleased · Surveys
 
 - The pulse of HR communication becomes its own, more professional app, **Surveys** (page `encuestas`). Existing

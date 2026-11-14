@@ -165,10 +165,60 @@ export function laborables(desde, hasta, festivos) {
 // ---------- Componentes ----------
 // Colores de avatar: tonos oscuros de la paleta de DX, legibles con texto blanco
 const COLORES = ['#0b5fff', '#13838f', '#287d3c', '#9f4500', '#a3266a', '#5a49c4', '#002c56', '#2e5aac'];
-export function Avatar({nombre, tam = 36}) {
+
+// Fotos de Personas: el mapa usuario → versión (GET /fotos) se pide una sola vez por página y lo comparten todas las
+// apps montadas en ella. La imagen la sirve GET /fotos/{usuario}?v=versión, que el navegador guarda en caché.
+const fotos = {mapa: null, pidiendo: false, oyentes: new Set()};
+const avisarFotos = () => fotos.oyentes.forEach((o) => o());
+
+/** Mapa usuario → versión de su foto (null mientras llega). */
+export function useFotos(activo = true) {
+  const s = useSuite();
+  const api = s && s.api;
+  const [, refrescar] = useState(0);
+  useEffect(() => {
+    if (!activo) return undefined;
+    const oyente = () => refrescar((n) => n + 1);
+    fotos.oyentes.add(oyente);
+    if (!fotos.mapa && !fotos.pidiendo && api) {
+      fotos.pidiendo = true;
+      api('fotos.lista').then((r) => { fotos.mapa = r.fotos || {}; }).catch(() => { fotos.mapa = {}; })
+        .finally(() => { fotos.pidiendo = false; avisarFotos(); });
+    }
+    return () => { fotos.oyentes.delete(oyente); };
+  }, [api, activo]);
+  return fotos.mapa;
+}
+
+/** Tras subir o quitar una foto: todos los avatares de esa persona se actualizan (version null = sin foto). */
+export function fijarFoto(usuario, version) {
+  const m = {...(fotos.mapa || {})};
+  if (version == null) delete m[usuario];
+  else m[usuario] = version;
+  fotos.mapa = m;
+  avisarFotos();
+  // La cabecera del tema de ejemplo (fuera de React) también la cambia al momento
+  window.dispatchEvent(new CustomEvent('orbita:foto', {detail: {usuario, version: version == null ? null : version}}));
+}
+
+/** URL de la foto de una persona, o null si no tiene. */
+export function urlFoto(base, usuario, version) {
+  return version == null ? null : `${base.replace(/\/+$/, '')}/fotos/${encodeURIComponent(usuario)}?v=${version}`;
+}
+
+/** Avatar: la foto de la persona si se sabe quién es (usuario) y tiene una; si no, sus iniciales. */
+export function Avatar({nombre, tam = 36, usuario}) {
+  const s = useSuite();
+  const mapa = useFotos(Boolean(usuario));
+  const [rota, setRota] = useState(null);
   const ini = nombre.split(' ').map((p) => p[0]).slice(0, 2).join('');
   let h = 0;
   for (const ch of nombre) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  const src = usuario && mapa && s && s.base ? urlFoto(s.base, usuario, mapa[usuario]) : null;
+  if (src && rota !== src) {
+    return <img className="si-avatar si-avatar-foto" src={src} alt="" width={tam} height={tam} style={{width: tam, height: tam}}
+      onError={() => setRota(src)} />;
+  }
   return <span className="si-avatar" style={{width: tam, height: tam, fontSize: tam * 0.38, background: COLORES[h % COLORES.length], color: '#fff'}}>{ini}</span>;
 }
 

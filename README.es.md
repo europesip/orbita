@@ -81,7 +81,8 @@ Cada persona ve su PIN y su tarjeta QR en *Fichaje › Mi tarjeta de quiosco*. P
   plantilla qué se hace con ellos.
 - **Personas**: el **directorio** de la plantilla con buscador (nombre, puesto, habilidad, idioma o sede) y la
   **disponibilidad de hoy** de cada persona (en la oficina, teletrabajando, en pausa, fuera y cuándo vuelve, sin decir
-  nunca el motivo), su **ficha** (contacto, línea de responsables, equipo, perfil que edita cada persona), el
+  nunca el motivo), su **ficha** (contacto, línea de responsables, equipo, perfil que edita cada persona, **foto**
+  opcional), el
   **organigrama**, las **celebraciones** (cumpleaños visibles, aniversarios e incorporaciones) y los **reconocimientos**
   públicos entre compañeros. RRHH da de alta las fichas nuevas y cambia los datos de organización.
 - **Mis documentos**: la documentación de cada persona. **Nóminas** con sus importes (la última, comparada con la
@@ -303,8 +304,9 @@ como una intranet terminada que funciona sobre HCL DX:
 
 - Una copia del theme **Portal 8.5** de HCL DX, hecha al instalar desde **tu propio DX** (solo WebDAV, sin EAR: los
   ficheros del theme de HCL no forman parte de ÓRBITA), con una cabecera de ÓRBITA: el **logo de la empresa**,
-  **«Powered by HCL Software»** y un **botón que abre el asistente de ÓRBITA**. Todo lo demás (barra de herramientas,
-  menús, modo edición) es el theme Portal 8.5.
+  **«Powered by HCL Software»**, un **botón que abre el asistente de ÓRBITA** y la **foto del usuario conectado** (de
+  Personas, o sus iniciales), enlazada con su ficha. Todo lo demás (barra de herramientas, menús, modo edición) es el
+  theme Portal 8.5.
 - Las imágenes están en una **colección del DAM** (`ÓRBITA`): para poner el logo de tu empresa, sube allí una nueva
   versión de `company-logo.png`; el theme muestra siempre su última versión. O dalo al instalar con
   `--set theme.logoBase64=$(base64 -w0 logo.png)`.
@@ -315,6 +317,7 @@ theme:
   enabled: true          # false: las páginas mantienen el theme que tengan
   hclLogo: true          # «Powered by HCL Software»
   assistantButton: true  # botón del asistente en la cabecera (solo en páginas con una aplicación de ÓRBITA)
+  userPhoto: true        # foto del usuario conectado en la cabecera, enlazada con su ficha en Personas
   headerBackground: "#002c56"
 ```
 

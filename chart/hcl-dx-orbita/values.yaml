@@ -196,6 +196,7 @@ theme:
   logoAlt: ÓRBITA
   hclLogo: true                     # "Powered by HCL Software" in the header
   assistantButton: true             # button that opens the ÓRBITA assistant (only on pages with an ÓRBITA app)
+  userPhoto: true                   # photo (or initials) of the signed-in user, linked to their profile in People
   headerBackground: "#002c56"
 
 # --- Script Applications (subchart hcl-dx-scriptapp 0.2.0) -------------------------------------------------------

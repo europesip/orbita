@@ -135,7 +135,8 @@ final class Api {
                     return new Comunicacion(this, c).ejecutar(op, p);
                 }
                 if (op.startsWith("personas.") || op.startsWith("reconocimientos.")) return new Directorio(this, c).ejecutar(op, p);
-                if (op.startsWith("docs.")) return new Documentos(this, c).ejecutar(op, p);
+                if (op.startsWith("fotos.")) return new Fotos(this, c).ejecutar(op, p);
+                if (op.startsWith("docs."))return new Documentos(this, c).ejecutar(op, p);
                 throw new Aviso("Operación desconocida: " + op);
         }
     }

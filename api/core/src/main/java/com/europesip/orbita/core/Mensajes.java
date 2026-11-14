@@ -296,6 +296,18 @@ public final class Mensajes {
         en("El fichero no ha llegado bien. Vuelve a adjuntarlo.", "The file did not arrive correctly. Attach it again.");
         en("El fichero ocupa demasiado (máximo 6 MB).", "The file is too large (6 MB maximum).");
         en("Solo se admiten ficheros PDF, JPG o PNG.", "Only PDF, JPG or PNG files are accepted.");
+        en("Indica de quién es la foto.", "Say whose photo it is.");
+        en("Esa persona no tiene ficha en ÓRBITA.", "That person has no record in ÓRBITA.");
+        en("Solo puedes cambiar tu propia foto (RRHH puede cambiar la de cualquiera).", "You can only change your own photo (HR can change anyone's).");
+        en("Elige una foto (JPG o PNG).", "Choose a photo (JPG or PNG).");
+        en("La foto no ha llegado bien. Vuelve a elegirla.", "The photo did not arrive correctly. Choose it again.");
+        en("La foto ocupa demasiado (máximo 6 MB).", "The photo is too large (6 MB maximum).");
+        en("La foto tiene que ser JPG o PNG.", "The photo must be a JPG or PNG.");
+        en("La foto es demasiado grande (como mucho 6.000 píxeles de lado).", "The photo is too big (6,000 pixels per side at most).");
+        en("No se puede leer la foto: prueba con otro fichero JPG o PNG.", "The photo cannot be read: try another JPG or PNG file.");
+        en("La foto es demasiado pequeña (al menos 32 píxeles de lado).", "The photo is too small (at least 32 pixels per side).");
+        en("Foto guardada.", "Photo saved.");
+        en("Foto quitada: se verán las iniciales.", "Photo removed: the initials will be shown.");
         patron("Documento publicado para (.+)\\.", "Document published for $1.");
         patron("Falta el importe: (.+)\\.", "Amount missing: $1.");
         patron("Ya hay una nómina de (.+) para (.+): bórrala antes de publicar otra\\.", "There is already a payslip of $1 for $2: delete it before publishing another one.");
