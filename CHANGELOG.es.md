@@ -2,6 +2,12 @@
 
 [English](CHANGELOG.md) · **Español**
 
+## Sin publicar
+
+- **TechDocs para Backstage** (#10): `mkdocs.yml` y una portada de la documentación (`docs/index.md`,
+  `docs/index.es.md`), así el portal interno del desarrollador de EUROPESIP muestra la documentación de ÓRBITA. Los
+  enlaces a ficheros fuera de `docs/` son enlaces absolutos a GitHub. No cambian el chart, la API ni las aplicaciones.
+
 ## 3.2.0 · 2026-11-12 · El PostgreSQL de DX (#8)
 
 - Nuevo valor del chart **`database.type`**: `external` (por defecto, como antes) o **`dxPersistence`**, el PostgreSQL

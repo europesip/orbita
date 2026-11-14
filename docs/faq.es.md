@@ -1,6 +1,6 @@
 # ÓRBITA · Preguntas frecuentes
 
-[English](faq.md) · **Español** · [README](../README.es.md)
+[English](faq.md) · **Español** · [README](https://github.com/europesip/orbita/blob/main/README.es.md)
 
 - [El producto](#el-producto)
 - [HCL DX tradicional y DX Compose](#hcl-dx-tradicional-y-dx-compose)
@@ -108,7 +108,7 @@ PostgreSQL y, si usas el asistente de IA, el modelo (propio, o los tokens de un 
 [servicios opcionales](#servicios-de-europesip) que pidas.
 
 **¿Tiene garantía o soporte oficial?**
-El software se entrega tal cual (ver [LICENSE](../LICENSE)). El soporte profesional, el mantenimiento y las
+El software se entrega tal cual (ver [LICENSE](https://github.com/europesip/orbita/blob/main/LICENSE)). El soporte profesional, el mantenimiento y las
 actualizaciones están disponibles como servicio de EUROPESIP. ÓRBITA no es un producto de HCL ni tiene soporte de HCL.
 
 ## Instalación
