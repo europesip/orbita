@@ -28,3 +28,4 @@ server.env
 *.iml
 .DS_Store
 Thumbs.db
+.flattened-pom.xml

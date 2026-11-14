@@ -31,12 +31,36 @@ spec:
       securityContext:
         runAsNonRoot: true
         seccompProfile: { type: RuntimeDefault }
-      {{- if .Values.dx.caSecret }}
+      {{- if or .Values.dx.caSecret .Values.extensions }}
       volumes:
+        {{- if .Values.dx.caSecret }}
         - name: dx-ca
           secret:
             secretName: {{ .Values.dx.caSecret }}
             items: [{ key: ca.crt, path: ca.crt }]
+        {{- end }}
+        {{- if .Values.extensions }}
+        - name: extensions
+          emptyDir: {}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.extensions }}
+      # Extensions: each image only carries JARs; they are copied to the shared folder that the API loads
+      initContainers:
+        {{- range . }}
+        - name: ext-{{ .name }}
+          image: {{ .image | quote }}
+          imagePullPolicy: {{ .pullPolicy | default "IfNotPresent" }}
+          command: ["sh", "-c", "cp {{ .path | default "/extensions" }}/*.jar /config/extensions/"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: [ALL] }
+          volumeMounts:
+            - { name: extensions, mountPath: /config/extensions }
+          resources:
+            requests: { cpu: 10m, memory: 16Mi }
+            limits: { memory: 64Mi }
+        {{- end }}
       {{- end }}
       containers:
         - name: liberty
@@ -116,9 +140,23 @@ spec:
             - name: ORBITA_MCP_TOKEN
               valueFrom: { secretKeyRef: { name: {{ .Values.mcp.tokenSecret }}, key: token } }
             {{- end }}
-          {{- if .Values.dx.caSecret }}
+            {{- if .Values.extensions }}
+            - { name: ORBITA_EXTENSIONS_DIR, value: /config/extensions }
+            {{- end }}
+            {{- with .Values.api.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.api.extraEnvFrom }}
+          envFrom: {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if or .Values.dx.caSecret .Values.extensions }}
           volumeMounts:
+            {{- if .Values.dx.caSecret }}
             - { name: dx-ca, mountPath: /dx-ca, readOnly: true }
+            {{- end }}
+            {{- if .Values.extensions }}
+            - { name: extensions, mountPath: /config/extensions, readOnly: true }
+            {{- end }}
           {{- end }}
           startupProbe:          # first start: Liberty, then Flyway and the demo data
             httpGet: { path: /orbita-api/v1/salud, port: http }

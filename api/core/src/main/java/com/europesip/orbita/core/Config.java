@@ -85,4 +85,6 @@ public final class Config {
     public static boolean mcpSoloLectura() { return si("ORBITA_MCP_READ_ONLY", false); }
     /** Solo desarrollo: usuario con el que actúa el MCP cuando la llamada no trae sesión de DX. */
     public static String usuarioMcpDesarrollo() { return env("ORBITA_MCP_DEV_USER", null); }
+    /** Carpeta de las extensiones (JAR con proveedores de identidad del MCP, ver core.extension). */
+    public static String carpetaExtensiones() { return env("ORBITA_EXTENSIONS_DIR", "/config/extensions"); }
 }

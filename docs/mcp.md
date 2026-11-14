@@ -165,7 +165,38 @@ Además:
 4. **Permisos de la lógica**: cada operación comprueba lo que esa persona puede ver y hacer (un empleado solo lo suyo,
    un responsable solo su equipo).
 5. **Auditoría**: cada `tools/call` deja en el log
-   `ORBITA MCP auditoria herramienta=… usuario=… resultado=ok|error|confirmacion origen=<ip>`.
+   `ORBITA MCP auditoria herramienta=… usuario=… identidad=dx|<proveedor>|desarrollo resultado=ok|error|confirmacion origen=<ip>`.
+
+### Extensiones de identidad (asistentes fuera de DX)
+
+Un asistente que no está dentro de HCL DX (por ejemplo un bot de Microsoft Teams) no tiene la sesión de DX del usuario.
+Para esos casos, el MCP admite **proveedores de identidad** como extensiones: JAR aparte (no forman parte de ÓRBITA,
+pueden ser gratuitos o comerciales) que dicen en nombre de qué usuario actúa una llamada.
+
+- **Interfaz** (en `orbita-core`, MIT): `com.europesip.orbita.core.extension.ProveedorIdentidadMcp`, con `nombre()` y
+  `usuario(cabecera, origen)`. Devuelve el uid de DX, `null` si la llamada no trae su credencial, o lanza
+  `SecurityException` si la trae pero no es válida (la llamada se rechaza y queda en la auditoría).
+- **Registro**: `META-INF/services/com.europesip.orbita.core.extension.ProveedorIdentidadMcp` dentro del JAR.
+- **Carga**: el MCP lee los JAR de `ORBITA_EXTENSIONS_DIR` (por defecto `/config/extensions`) una vez, al primer uso.
+- **Orden**: 1) la sesión de DX; 2) los proveedores, en el orden de los ficheros; 3) el usuario de desarrollo.
+- **Chart**: `extensions` (imágenes que solo llevan los JAR; un init container los copia a la carpeta),
+  `api.extraEnv` / `api.extraEnvFrom` (configuración de la extensión) y `mcp.networkPolicy.extraFrom` (dejar entrar
+  al asistente en el 9081).
+
+```yaml
+extensions:
+  - name: mi-extension
+    image: registry.example.com/mi-extension:1.0.0     # los JAR en /extensions de la imagen
+api:
+  extraEnvFrom: [{ secretRef: { name: mi-extension-config } }]
+mcp:
+  networkPolicy:
+    extraFrom:
+      - namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: mi-asistente } }
+```
+
+La responsabilidad de que la identidad sea fiable es del proveedor (firma de la credencial, caducidad, origen). El
+modelo de IA sigue sin poder elegir el usuario: lo dice la credencial que valida el proveedor, no un parámetro.
 
 **Solo para desarrollo**: con la variable `ORBITA_MCP_DEV_USER=<uid>` el MCP actúa como ese usuario cuando la
 llamada no trae sesión (para probar con Claude Code o REST Client). El chart no la pone nunca.

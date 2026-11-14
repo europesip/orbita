@@ -4,6 +4,13 @@
 
 ## Sin publicar
 
+- **Punto de extensión de identidad del MCP** (#12): además de la sesión de DX del usuario, proveedores de identidad
+  empaquetados en JAR aparte (`ProveedorIdentidadMcp`, cargados de `ORBITA_EXTENSIONS_DIR`) pueden decir en nombre de
+  quién actúa una llamada al MCP, para que un asistente fuera de HCL DX (un bot de Microsoft Teams...) use ÓRBITA como
+  cada usuario. La línea de auditoría indica de dónde sale la identidad. Chart: `extensions` (imágenes con los JAR, que
+  copia un init container), `api.extraEnv` / `api.extraEnvFrom`, `mcp.networkPolicy.extraFrom`. Sin extensiones no
+  cambia nada. Primeros tests unitarios (JUnit). El pom instalado de `orbita-core` lleva la versión real
+  (flatten-maven-plugin), así las extensiones pueden depender de él como de cualquier otra librería.
 - **TechDocs para Backstage** (#10): `mkdocs.yml` y una portada de la documentación (`docs/index.md`,
   `docs/index.es.md`), así el portal interno del desarrollador de EUROPESIP muestra la documentación de ÓRBITA. Los
   enlaces a ficheros fuera de `docs/` son enlaces absolutos a GitHub. No cambian el chart, la API ni las aplicaciones.
