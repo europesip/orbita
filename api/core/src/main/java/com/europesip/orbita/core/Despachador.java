@@ -1,6 +1,8 @@
 package com.europesip.orbita.core;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Map;
 
 /**
@@ -41,6 +43,34 @@ public final class Despachador {
         } catch (Exception e) {
             if (log != null) log.error("ORBITA: error en " + op, e);
             return new Respuesta(500, Json.of(Json.obj("error", "Error interno del servidor.")));
+        }
+    }
+
+    /** Una foto de Personas para servirla tal cual (no va en JSON): tipo, bytes y versión para la caché. */
+    public record Foto(String tipo, byte[] datos, long version) {}
+
+    /** Quien pide una foto no puede verla (no tiene ficha en ÓRBITA): el mensaje es para el usuario. */
+    public static final class SinPermiso extends RuntimeException {
+        SinPermiso(String mensaje) { super(mensaje); }
+    }
+
+    /**
+     * La foto de una persona (GET /v1/fotos/{usuario} de orbita-rest), o null si no tiene. La ve quien tiene ficha en
+     * ÓRBITA, igual que el directorio. "yo" es la foto de quien la pide (la usa la cabecera del tema).
+     *
+     * @throws SinPermiso si quien la pide no tiene ficha de empleado
+     */
+    public static Foto foto(String solicitante, String usuario) throws Exception {
+        if (solicitante == null || solicitante.isEmpty()) throw new SinPermiso("Inicia sesión en DX para usar la aplicación.");
+        try (Connection c = Db.conexion()) {
+            try (PreparedStatement ps = c.prepareStatement("SELECT 1 FROM EMPLEADO WHERE USUARIO = ?")) {
+                ps.setString(1, solicitante);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (!rs.next()) throw new SinPermiso("Tu usuario de DX (" + solicitante + ") no tiene ficha de empleado en ÓRBITA.");
+                }
+            }
+            Fotos.Imagen i = Fotos.imagen(c, "yo".equals(usuario) ? solicitante : usuario);
+            return i == null ? null : new Foto(i.tipo(), i.datos(), i.version());
         }
     }
 }

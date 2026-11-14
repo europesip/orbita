@@ -36,9 +36,11 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 /**
- * Todas las rutas de rutas.json, más dos propias:
- *   GET /v1/salud    sin sesión: 200 si la base de datos está lista (sonda de Kubernetes)
- *   GET /v1/config   con sesión: lo que la interfaz necesita saber de esta instalación
+ * Todas las rutas de rutas.json, más estas propias:
+ *   GET /v1/salud              sin sesión: 200 si la base de datos está lista (sonda de Kubernetes)
+ *   GET /v1/config             con sesión: lo que la interfaz necesita saber de esta instalación
+ *   POST /v1/asistente         con sesión: el asistente de IA de ÓRBITA
+ *   GET /v1/fotos/{usuario}    con sesión: la foto de una persona como imagen (no JSON); "yo" = la de la sesión
  *
  * Quién es el usuario lo dice DX (SesionDx) con la cookie de sesión que envía el navegador. Sin sesión válida: 401.
  * Las operaciones del quiosco son públicas y se protegen con la clave del dispositivo.
@@ -121,6 +123,38 @@ public class Recursos {
             return json(200, Json.createObjectBuilder().add("respuesta", a.texto()).add("herramientas", h).build().toString());
         } catch (Asistente.Fallo f) {
             return error(f.estado, f.getMessage());
+        }
+    }
+
+    /**
+     * La foto de una persona de Personas, como imagen (para un &lt;img src&gt;), o 404 si no tiene. "yo" es la de quien la
+     * pide: la usa la cabecera del tema de ejemplo. Con ?v=versión (la de GET /v1/fotos) el navegador la guarda en caché
+     * sin volver a preguntar; al cambiar la foto cambia la versión y, con ella, la URL.
+     */
+    @GET
+    @Path("fotos/{usuario}")
+    public Response foto(@PathParam("usuario") String usuario) {
+        String yo = usuario();
+        if (yo == null) return sinSesion();
+        if (!Arranque.listo()) return error(503, "ÓRBITA se está iniciando: inténtalo en unos segundos.");
+        try {
+            Despachador.Foto f = Despachador.foto(yo, usuario);
+            if (f == null) {
+                return Response.status(404).type(MediaType.TEXT_PLAIN).header("Cache-Control", "private, no-cache").entity("sin foto").build();
+            }
+            String etiqueta = "\"" + f.version() + "\"";
+            boolean versionada = String.valueOf(f.version()).equals(uri.getQueryParameters().getFirst("v"));
+            String cache = versionada ? "private, max-age=31536000, immutable" : "private, no-cache";
+            if (etiqueta.equals(cabeceras.getHeaderString(HttpHeaders.IF_NONE_MATCH))) {
+                return Response.notModified().header("ETag", etiqueta).header("Cache-Control", cache).build();
+            }
+            return Response.ok(f.datos(), f.tipo()).header("ETag", etiqueta).header("Cache-Control", cache)
+                    .header("X-Content-Type-Options", "nosniff").build();
+        } catch (Despachador.SinPermiso a) {
+            return error(403, a.getMessage());
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "ORBITA: error al leer la foto de " + usuario, e);
+            return error(500, "Error interno del servidor.");
         }
     }
 

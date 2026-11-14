@@ -2,6 +2,26 @@
 
 [English](CHANGELOG.md) · **Español**
 
+## Sin publicar · Fotos en Personas
+
+- **Foto de cada persona** en **Personas**: cada persona pone, cambia o quita la suya desde su ficha (el botón de la
+  cámara sobre la foto) y RRHH puede hacerlo con la de cualquiera. Es opcional: sin foto se ven las iniciales, como
+  hasta ahora.
+- El navegador recorta la imagen en cuadrado antes de enviarla, y el servidor la comprueba (JPG o PNG por su contenido,
+  como mucho 6 MB y 6.000 px de lado) y la vuelve a dibujar a 256 px en JPEG: unos 20 KB y nada del fichero original
+  (ni datos de la cámara ni la ubicación, ni contenido oculto).
+- La foto sale donde ÓRBITA sabe quién es la persona: Personas (directorio, ficha, organigrama, celebraciones,
+  reconocimientos), la cabecera de las apps, Mi intranet, Aprobaciones, Vacaciones, Fichaje, Comunicación con RRHH, Mis
+  documentos y Encuestas.
+- **Integración con DX**: el tema de ejemplo muestra la **foto del usuario conectado** en la cabecera del portal,
+  enlazada con su ficha en Personas, y la pone en el menú de perfil de la barra de herramientas de DX en lugar de su
+  icono genérico (`theme.userPhoto`, activado por defecto; solo en las páginas de ÓRBITA). Cada imagen la sirve el nuevo
+  `GET /orbita-api/v1/fotos/{usuario}` (con sesión de DX; `yo` = el usuario conectado), con versión para que el
+  navegador la guarde en caché hasta que cambie.
+- Migración Flyway **`V7__fotos.sql`** (tabla `EMPLEADO_FOTO`, aparte de `EMPLEADO`) y fotos ilustradas de demostración
+  (siluetas dibujadas, no personas reales) para siete de las nueve personas de la demo. Probado en PostgreSQL 17 con 35
+  comprobaciones automáticas.
+
 ## Sin publicar · Encuestas
 
 - El pulso de Comunicación con RRHH pasa a ser una aplicación propia, **Encuestas** (página `encuestas`), más

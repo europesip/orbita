@@ -3,7 +3,7 @@
 // compañeros. Cada persona edita su perfil; RRHH da de alta fichas nuevas y cambia los datos de organización.
 // Diseño propio con los colores y la tipografía de HCL DX: el anillo del avatar dice la disponibilidad de un vistazo.
 import React, {useEffect, useMemo, useState} from 'react';
-import {Avatar, Boton, Campo, Cargando, Fallo, Modal, Pestanas, Tarjeta, Vacio, fecha, plural, useDatos, useSuite} from './ui.jsx';
+import {Avatar, Boton, Campo, Cargando, Fallo, Modal, Pestanas, Tarjeta, Vacio, fecha, fijarFoto, plural, urlFoto, useDatos, useFotos, useSuite} from './ui.jsx';
 import {VALORES_RECONOCIMIENTO, haceCuanto} from './social.jsx';
 import {Icono} from './iconos.jsx';
 import {t} from './i18n.js';
@@ -49,7 +49,7 @@ function Foto({persona, tam = 44}) {
   const def = p ? PRESENCIA[p.estado] || PRESENCIA.FUERA : null;
   return (
     <span className="si-pe-foto" style={{'--anillo': def ? def.color : 'transparent'}} title={p ? textoPresencia(p) : undefined}>
-      <Avatar nombre={persona.nombre} tam={tam} />
+      <Avatar nombre={persona.nombre} usuario={persona.usuario} tam={tam} />
       {def && <i className="si-pe-punto" style={{background: def.color}} />}
     </span>
   );
@@ -262,7 +262,12 @@ function Ficha({usuario, yo, onAbrir, onCerrar, onReconocer, onCambio, onOrganig
       {error ? <Fallo>{error}</Fallo> : !d ? <Cargando /> : (
         <div className="si-pe-ficha">
           <header className="si-pe-portada">
-            <Foto persona={d} tam={84} />
+            {d.editarPerfil || d.editarRrhh ? (
+              <button type="button" className="si-pe-cambiar-foto" onClick={() => setEditar('foto')}
+                title={d.yo ? t('Cambiar mi foto') : t('Cambiar la foto')} aria-label={d.yo ? t('Cambiar mi foto') : t('Cambiar la foto')}>
+                <Foto persona={d} tam={84} /><span className="si-pe-camara"><Icono n="camara" /></span>
+              </button>
+            ) : <Foto persona={d} tam={84} />}
             <div className="si-crece">
               <h2>{d.nombre}</h2>
               <p>{d.puesto}</p>
@@ -352,6 +357,7 @@ function Ficha({usuario, yo, onAbrir, onCerrar, onReconocer, onCambio, onOrganig
           </div>
         </div>
       )}
+      {editar === 'foto' && d && <CambiarFoto persona={d} onCerrar={() => setEditar(null)} />}
       {editar === 'perfil' && d && <EditarPerfil d={d} onCerrar={() => setEditar(null)} onGuardado={(n) => { fijar(n); setEditar(null); onCambio(); }} />}
       {editar === 'rrhh' && d && <ConDirectorio><DatosRrhh persona={d} onCerrar={() => setEditar(null)}
         onGuardado={() => { setEditar(null); recargar(); onCambio(); }} /></ConDirectorio>}
@@ -374,6 +380,79 @@ function MiniPersona({p, onAbrir}) {
 
 const rangoCorto = (r) => (r.desde === r.hasta ? fecha(r.desde) : `${fecha(r.desde)} – ${fecha(r.hasta)}`);
 const fechaCumple = (mmdd) => fecha(`2000-${mmdd}`, {day: 'numeric', month: 'long'});
+
+// =========================================================================================== Foto
+
+/** Lee una imagen elegida por la persona y la deja en un cuadrado de 512 px (JPEG) antes de enviarla: así una foto del
+ *  móvil de 10 MB sube en un momento. El servidor la vuelve a recortar, reducir y limpiar de metadatos. */
+function prepararFoto(fichero) {
+  return new Promise((resolver, rechazar) => {
+    if (!/^image\/(jpeg|png)$/.test(fichero.type)) { rechazar(new Error(t('La foto tiene que ser JPG o PNG.'))); return; }
+    const url = URL.createObjectURL(fichero);
+    const img = new Image();
+    img.onload = () => {
+      const lado = Math.min(img.naturalWidth, img.naturalHeight);
+      if (lado < 32) { URL.revokeObjectURL(url); rechazar(new Error(t('La foto es demasiado pequeña (al menos 32 píxeles de lado).'))); return; }
+      const destino = Math.min(512, lado);
+      const lienzo = document.createElement('canvas');
+      lienzo.width = destino;
+      lienzo.height = destino;
+      const g = lienzo.getContext('2d');
+      g.fillStyle = '#fff';
+      g.fillRect(0, 0, destino, destino);
+      g.drawImage(img, (img.naturalWidth - lado) / 2, (img.naturalHeight - lado) / 2, lado, lado, 0, 0, destino, destino);
+      URL.revokeObjectURL(url);
+      resolver(lienzo.toDataURL('image/jpeg', 0.9));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rechazar(new Error(t('No se puede leer la foto: prueba con otro fichero JPG o PNG.'))); };
+    img.src = url;
+  });
+}
+
+function CambiarFoto({persona, onCerrar}) {
+  const {api, avisar, base} = useSuite();
+  const mapa = useFotos();
+  const actual = mapa ? urlFoto(base, persona.usuario, mapa[persona.usuario]) : null;
+  const [nueva, setNueva] = useState(null);
+  const [ocupado, setOcupado] = useState(false);
+  const elegir = async (e) => {
+    const f = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!f) return;
+    try { setNueva(await prepararFoto(f)); } catch (x) { avisar(x.message, 'rojo'); }
+  };
+  const enviar = async (borrar) => {
+    setOcupado(true);
+    try {
+      const r = borrar ? await api('fotos.borrar', {usuario: persona.usuario}) : await api('fotos.subir', {usuario: persona.usuario, datos: nueva});
+      fijarFoto(persona.usuario, r.foto);
+      avisar(r.mensaje);
+      onCerrar();
+    } catch (x) { avisar(x.message, 'rojo'); setOcupado(false); }
+  };
+  const vista = nueva || actual;
+  return (
+    <Modal titulo={persona.yo ? t('Mi foto') : t('Foto de {nombre}', {nombre: persona.nombre})} onCerrar={onCerrar}
+      pie={<>
+        {actual && !nueva && <Boton icono="papelera" disabled={ocupado} onClick={() => enviar(true)}>{t('Quitar la foto')}</Boton>}
+        <span className="si-crece" />
+        <Boton onClick={onCerrar}>{t('Cancelar')}</Boton>
+        <Boton tipo="primario" disabled={!nueva || ocupado} onClick={() => enviar(false)}>{t('Guardar')}</Boton>
+      </>}>
+      <div className="si-pe-foto-editor">
+        {vista ? <img src={vista} alt="" className="si-pe-foto-vista" /> : <Avatar nombre={persona.nombre} tam={160} />}
+        <div>
+          <p>{t('La ve toda la empresa: en el directorio, en las apps de ÓRBITA y en la cabecera del portal.')}</p>
+          <p className="si-tenue">{t('JPG o PNG. Se recorta en cuadrado por el centro y se guarda sin los datos de la cámara ni la ubicación. Es opcional: sin foto se ven las iniciales.')}</p>
+          <label className="si-boton si-boton-secundario si-pe-elegir">
+            <span className="si-icono"><Icono n="subir" /></span>{vista ? t('Elegir otra foto') : t('Elegir una foto')}
+            <input type="file" accept="image/jpeg,image/png" onChange={elegir} />
+          </label>
+        </div>
+      </div>
+    </Modal>
+  );
+}
 
 // =========================================================================================== Editar mi perfil
 
@@ -633,7 +712,7 @@ function Reconocimientos({onAbrir, onReconocer, version}) {
                 <small>{haceCuanto(r.creado)}</small>
               </header>
               <button type="button" className="si-pe-mini" onClick={() => onAbrir(r.para.usuario)}>
-                <Avatar nombre={r.para.nombre} tam={40} /><span><strong>{r.para.nombre}</strong><small>{r.para.puesto}</small></span>
+                <Avatar nombre={r.para.nombre} usuario={r.para.usuario} tam={40} /><span><strong>{r.para.nombre}</strong><small>{r.para.puesto}</small></span>
               </button>
               <q>{r.texto}</q>
               <footer>

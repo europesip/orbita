@@ -77,6 +77,7 @@
 
 /* Básicos */
 .si-app .si-avatar { display: inline-grid; place-items: center; border-radius: 50%; color: #fff; font-weight: 600; flex: none; }
+.si-app .si-avatar-foto { display: block; object-fit: cover; background: #e8e8e8; }
 /* Tarjeta como las de DX («My Sites», «Recently Modified Pages»): borde gris, sin sombra, título con una línea debajo */
 .si-app .si-tarjeta { background: var(--si-tarjeta); border: 1px solid var(--si-borde); border-radius: 4px; padding: 16px; }
 .si-app .si-tarjeta-cab { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: -16px -16px 14px; padding: 12px 16px; border-bottom: 1px solid var(--si-borde); flex-wrap: wrap; min-height: 48px; }
@@ -1286,6 +1287,18 @@
 .si-app .si-pe-portada { display: flex; gap: 18px; align-items: center; padding: 18px; margin: -4px 0 0; background: var(--si-acento-suave); border-radius: 4px; }
 .si-app .si-pe-portada h2 { font-size: 24px; font-weight: 400; }
 .si-app .si-pe-portada p { margin: 0; }
+.si-app .si-pe-cambiar-foto { position: relative; padding: 0; border: 0; background: none; cursor: pointer; border-radius: 50%; flex: none; }
+.si-app .si-pe-cambiar-foto:focus-visible { outline: 2px solid var(--si-acento); outline-offset: 4px; }
+.si-app .si-pe-camara { position: absolute; right: 2px; bottom: 2px; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
+  background: var(--si-acento); color: #fff; box-shadow: 0 0 0 2px #fff; }
+.si-app .si-pe-camara svg { width: 16px; height: 16px; fill: currentColor; }
+.si-app .si-pe-cambiar-foto:hover .si-pe-camara { filter: brightness(1.15); }
+.si-app .si-pe-foto-editor { display: flex; gap: 20px; align-items: center; }
+.si-app .si-pe-foto-editor p { margin: 0 0 10px; }
+.si-app .si-pe-foto-vista { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; flex: none; box-shadow: 0 0 0 1px rgba(0,0,0,.1); }
+.si-app .si-pe-elegir { position: relative; overflow: hidden; }
+.si-app .si-pe-elegir input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+@media (max-width: 560px) { .si-app .si-pe-foto-editor { flex-direction: column; text-align: center; } }
 .si-app .si-pe-portada .si-fila { margin-top: 6px; }
 .si-app .si-pe-acciones { display: flex; flex-wrap: wrap; gap: 8px; }
 .si-app .si-pe-acciones a.si-boton { text-decoration: none; }

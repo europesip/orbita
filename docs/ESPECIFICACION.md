@@ -213,6 +213,17 @@ su equipo, sus compañeros (mismo responsable), sobre mí, habilidades, idiomas 
   dependa de una persona de su propio equipo) y RRHH no puede cambiar su propio rol. Cuando cambia el responsable,
   avisan a la persona y a su nuevo responsable; sus solicitudes pendientes pasan a la bandeja del nuevo.
 
+**Foto**: opcional; sin foto se ven las iniciales.
+- La pone, cambia o quita la propia persona desde su ficha (botón de la cámara sobre la foto); **RRHH**, la de
+  cualquiera. Ni el responsable ni el resto pueden cambiarla.
+- JPG o PNG (comprobado por su contenido), como mucho 6 MB y 6.000 px de lado y al menos 32 px. El navegador la recorta
+  en cuadrado antes de enviarla y el servidor la vuelve a dibujar: cuadrado central de **256 px en JPEG**, sin nada del
+  fichero original (ni datos de la cámara ni ubicación). Se guarda en `EMPLEADO_FOTO`, aparte de la ficha.
+- La ve quien tiene ficha en ÓRBITA, igual que el directorio. Sale en Personas, en la cabecera de las apps y en el
+  resto de apps donde aparece la persona, y en la **cabecera del portal** con el tema de ejemplo (la del usuario
+  conectado, enlazada con su ficha, y en el menú de perfil de la barra de herramientas de DX en lugar de su icono). `GET /orbita-api/v1/fotos/{usuario}` sirve la imagen (`yo` = la del usuario
+  conectado) con su versión, para que el navegador la guarde en caché hasta que cambie.
+
 **Organigrama**: el árbol de responsables, plegable y con buscador; se abre por la rama de quien mira y cada persona
 muestra cuántas tiene por debajo.
 
@@ -277,7 +288,8 @@ después») y una encuesta de bienestar programada para dentro de una semana.
 Personas: cada persona tiene contacto, sede (Madrid o Valencia), habilidades, idiomas y unas líneas sobre sí. Javier
 cumple años hoy y Elena dentro de 3 días (los dos lo muestran; Lucía no); Carlos cumple 5 años en la empresa dentro de
 6 días y Rosa 10 dentro de 19; Pablo se incorporó hace 18 días. Hay 7 reconocimientos: el último de Lucía se lo hizo
-Carlos hace 2 días («Pasión por el cliente») y lo tiene sin leer en la campana.
+Carlos hace 2 días («Pasión por el cliente») y lo tiene sin leer en la campana. Todos tienen foto (ilustraciones de
+siluetas, no personas reales) menos Lucía y Elena, que se ven con sus iniciales.
 
 Mis documentos: toda la plantilla tiene sus nóminas de los últimos 10 meses (con la paga extra de junio o diciembre),
 los informes de cotización de los tres últimos meses y el certificado de retenciones del año pasado; la nómina del

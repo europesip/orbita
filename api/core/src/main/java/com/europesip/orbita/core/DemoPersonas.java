@@ -119,6 +119,49 @@ final class DemoPersonas {
         Personas.Persona carlos = Personas.de("ventas-responsable");
         Social.avisar(c, u("ventas-1"), "personas", "RECONOCER", null, "reconocimiento.recibido", obj("quien", carlos.nombre(), "valor", "CLIENTE"),
                 carlos.nombre() + " te ha hecho un reconocimiento: «Pasión por el cliente».");
+
+        // Fotos: ilustraciones generadas (siluetas, no fotos de personas reales). ventas-1 y tecnologia-2 no tienen,
+        // para que se vean también las iniciales
+        String[] conFoto = {"rrhh", "ventas-responsable", "ventas-2", "tecnologia-responsable", "tecnologia-1", "tecnologia-3", "administracion"};
+        for (int i = 0; i < conFoto.length; i++) {
+            Fotos.guardar(c, u(conFoto[i]), Fotos.jpeg(ilustracion(i)), ahora.minusDays(30 + i * 7L), u("rrhh"));
+        }
+    }
+
+    /** Colores (fondo claro, fondo oscuro, ropa) de las ilustraciones de demostración. */
+    private static final int[][] TONOS = {
+        {0x8FB8FF, 0x0F62FE, 0x002C56}, {0xA7F0BA, 0x24A148, 0x0E6027}, {0xFFD6E8, 0xD02670, 0x740937},
+        {0xD4BBFF, 0x8A3FFC, 0x31135E}, {0xFFE2A3, 0xF1C21B, 0x684E00}, {0x9EF0F0, 0x009D9A, 0x004144}, {0xFFB784, 0xFF832B, 0x8A3800}};
+    private static final int[] PIEL = {0xF2D3B8, 0xE0AC85, 0xC68863, 0x8D5A3C, 0xF5DCC8, 0xB07A55, 0xD9A27E};
+    private static final int[] PELO = {0x3B2A20, 0x1F1A17, 0x7A4B2A, 0xA0A0A0, 0x4E342E, 0xC69C6D, 0x2B2B2B};
+
+    /** Ilustración de un busto (fondo degradado, cabeza, pelo y hombros), distinta para cada n. */
+    static java.awt.image.BufferedImage ilustracion(int n) {
+        int t = Fotos.LADO;
+        java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(t, t, java.awt.image.BufferedImage.TYPE_INT_RGB);
+        java.awt.Graphics2D g = img.createGraphics();
+        try {
+            g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+            int[] tono = TONOS[n % TONOS.length];
+            g.setPaint(new java.awt.GradientPaint(0, 0, new java.awt.Color(tono[0]), t, t, new java.awt.Color(tono[1])));
+            g.fillRect(0, 0, t, t);
+            java.awt.Color pelo = new java.awt.Color(PELO[n % PELO.length]), piel = new java.awt.Color(PIEL[n % PIEL.length]);
+            boolean largo = n % 3 == 1;
+            g.setColor(pelo);                                                 // pelo por detrás de la cara
+            if (largo) g.fillRoundRect(t / 2 - 60, 50, 120, 150, 60, 60);
+            else g.fillOval(t / 2 - 55, 49, 110, 96);
+            g.setColor(new java.awt.Color(tono[2]));
+            g.fillOval(t / 2 - 92, 178, 184, 160);                            // hombros
+            g.setColor(piel);
+            g.fillRoundRect(t / 2 - 18, 146, 36, 40, 14, 14);                 // cuello
+            g.fillOval(t / 2 - 48, 62, 96, 108);                              // cara
+            g.setColor(pelo);                                                 // flequillo
+            if (n % 3 == 2) g.fillArc(t / 2 - 49, 58, 98, 44, 0, 180);
+            else g.fillArc(t / 2 - 50, 56, 100, 64, n % 2 == 0 ? 20 : 0, 160);
+        } finally {
+            g.dispose();
+        }
+        return img;
     }
 
     private static void reconocimiento(PreparedStatement ps, String de, String para, String valor, String texto, LocalDateTime cuando) throws SQLException {

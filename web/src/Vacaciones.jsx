@@ -357,7 +357,7 @@ function Rejilla({cal, hoy}) {
         <tbody>
           {cal.personas.map((p) => (
             <tr key={p.usuario} className={p.yo ? 'si-yo' : ''}>
-              <th className="si-cal-persona"><div className="si-cal-quien"><Avatar nombre={p.nombre} tam={28} />
+              <th className="si-cal-persona"><div className="si-cal-quien"><Avatar nombre={p.nombre} usuario={p.usuario} tam={28} />
                 <div><strong>{p.yo ? t('Yo') : p.nombre}</strong><small>{p.puesto}</small></div></div></th>
               {dias.map((d) => {
                 const w = new Date(d + 'T00:00:00').getDay();

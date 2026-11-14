@@ -323,7 +323,7 @@ function Lecturas({id, onCerrar, onHecho}) {
               <tbody>
                 {d.personas.map((p) => (
                   <tr key={p.persona.usuario}>
-                    <td><span className="si-fila"><Avatar nombre={p.persona.nombre} tam={24} />{p.persona.nombre}</span></td>
+                    <td><span className="si-fila"><Avatar nombre={p.persona.nombre} usuario={p.persona.usuario} tam={24} />{p.persona.nombre}</span></td>
                     <td>{p.persona.departamento}</td>
                     <td>{p.leido ? haceCuanto(p.leido) : <span className="si-tenue">—</span>}</td>
                     {d.confirmar && <td>{p.confirmado ? <Insignia tono="verde"><Icono n="check" />{haceCuanto(p.confirmado)}</Insignia> : <Insignia tono="ambar">{t('Pendiente')}</Insignia>}</td>}
@@ -512,7 +512,7 @@ function FilaConsulta({c, rrhh, bandeja, onHecho}) {
   return (
     <>
       <tr className={`si-caso si-consulta-${c.estado.toLowerCase()}${abierta ? ' abierta' : ''}`} onClick={alternar}>
-        {bandeja && <td><span className="si-fila si-nowrap"><Avatar nombre={c.persona.nombre} tam={26} />{c.persona.nombre}</span></td>}
+        {bandeja && <td><span className="si-fila si-nowrap"><Avatar nombre={c.persona.nombre} usuario={c.persona.usuario} tam={26} />{c.persona.nombre}</span></td>}
         <td className="si-caso-asunto">
           <button type="button" className="si-consulta-cab" aria-expanded={abierta} onClick={(e) => { e.stopPropagation(); alternar(); }}>
             <Icono n={abierta ? 'abajo' : 'derecha'} className="si-chevron" />{c.asunto}

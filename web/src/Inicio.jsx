@@ -145,7 +145,7 @@ export function Inicio() {
               <ul className="si-lista si-mini-lista">
                 {d.pendientes.map((p) => (
                   <li key={p.clase + p.id}>
-                    <Avatar nombre={p.persona.nombre} tam={30} />
+                    <Avatar nombre={p.persona.nombre} usuario={p.persona.usuario} tam={30} />
                     <span><strong>{p.persona.nombre}</strong><small>{resumenPendiente(p)}</small></span>
                     {p.comentarios > 0 && <span className="si-tenue si-comentarios"><Icono n="chat" /> {p.comentarios}</span>}
                   </li>

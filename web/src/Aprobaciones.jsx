@@ -45,7 +45,7 @@ export function Aprobaciones({yo}) {
           <ul className="si-lista si-historial">
             {datos.historial.map((h) => (
               <li key={h.clase + h.id}>
-                <Avatar nombre={h.persona.nombre} tam={28} />
+                <Avatar nombre={h.persona.nombre} usuario={h.persona.usuario} tam={28} />
                 <span className="si-hist-texto"><strong>{h.persona.nombre}</strong> · {resumenHistorial(h)}</span>
                 <Insignia tono={ESTADOS[h.estado].tono}>{ESTADOS[h.estado].nombre}</Insignia>
                 <small className="si-tenue">{h.resuelto && fecha(h.resuelto)}</small>
@@ -78,7 +78,7 @@ function Solicitud({it, politica, onHecho}) {
   return (
     <article className={`si-peticion${it.clase === 'NOTA' ? ' si-peticion-nota' : ''}`} style={{'--c': ta ? ta.color : COLOR[it.clase]}}>
       <header>
-        <Avatar nombre={it.persona.nombre} />
+        <Avatar nombre={it.persona.nombre} usuario={it.persona.usuario} />
         <div><strong>{it.persona.nombre}</strong><span>{it.persona.puesto}</span></div>
         <small className="si-tenue">{t(it.clase === 'NOTA' ? 'Enviada el {fecha}' : 'Pedida el {fecha}', {fecha: fecha(it.creado)})}</small>
       </header>

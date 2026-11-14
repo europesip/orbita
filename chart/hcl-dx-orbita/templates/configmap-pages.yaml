@@ -22,6 +22,8 @@ data:
           "assistantButton" .Values.theme.assistantButton "logoAlt" .Values.theme.logoAlt
           "headerBackground" .Values.theme.headerBackground
           "homeUrl" (printf "%s%s" .Values.pages.base "mi-intranet")
+          "userPhoto" .Values.theme.userPhoto "personasUrl" (printf "%s%s" .Values.pages.base "personas")
+          "apiUrl" (printf "%s/v1" .Values.api.path)
           "formLogin" (ne (toString .Values.dx.oidcSupport) "false")) | nindent 4 }}
 binaryData:
   # Default images of the example theme, uploaded once to the DAM collection theme.damCollection

@@ -135,7 +135,8 @@ final class Api {
                     return new Comunicacion(this, c).ejecutar(op, p);
                 }
                 if (op.startsWith("personas.") || op.startsWith("reconocimientos.")) return new Directorio(this, c).ejecutar(op, p);
-                if (op.startsWith("docs.")) return new Documentos(this, c).ejecutar(op, p);
+                if (op.startsWith("fotos.")) return new Fotos(this, c).ejecutar(op, p);
+                if (op.startsWith("docs."))return new Documentos(this, c).ejecutar(op, p);
                 throw new Aviso("Operación desconocida: " + op);
         }
     }
@@ -162,6 +163,8 @@ final class Api {
         j.put("pin", yo.pin);
         j.put("tarjeta", yo.tarjeta);
         j.put("avisos", Social.avisos(c, yo.usuario).get("noLeidos"));
+        Fotos.Imagen foto = Fotos.imagen(c, yo.usuario);
+        j.put("foto", foto == null ? null : foto.version());   // versión de su foto (la cabecera del tema la usa)
         return j;
     }
 

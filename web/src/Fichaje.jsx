@@ -445,7 +445,7 @@ function Equipo() {
           const pct = p.objetivoSemana ? Math.min(100, Math.round((p.minutosSemana / p.objetivoSemana) * 100)) : 0;
           return (
             <div key={p.usuario} className={`si-persona si-estado-${p.estado.toLowerCase()}`}>
-              <Avatar nombre={p.nombre} />
+              <Avatar nombre={p.nombre} usuario={p.usuario} />
               <div className="si-persona-datos">
                 <strong>{p.nombre}</strong><span>{p.puesto}</span>
                 <em>{{
@@ -510,7 +510,7 @@ function MiTarjeta({yo}) {
         <div className="si-carnet">
           <div className="si-carnet-cab"><OrbitaLogo tam={22} claro /></div>
           <div className="si-carnet-cuerpo">
-            <Avatar nombre={yo.nombre} tam={54} />
+            <Avatar nombre={yo.nombre} usuario={yo.usuario} tam={54} />
             <div><strong>{yo.nombre}</strong><span>{yo.puesto}</span><span>{yo.departamento}</span></div>
           </div>
           {qr && <img src={qr} alt={t('Código de fichaje de {nombre}', {nombre: yo.nombre})} />}
