@@ -1,6 +1,6 @@
 # ÓRBITA · Frequently asked questions
 
-**English** · [Español](faq.es.md) · [README](../README.md)
+**English** · [Español](faq.es.md) · [README](https://github.com/europesip/orbita#readme)
 
 - [The product](#the-product)
 - [HCL DX traditional and DX Compose](#hcl-dx-traditional-and-dx-compose)
@@ -102,7 +102,7 @@ AI assistant, the AI model (your own, or the tokens of a provider). EUROPESIP on
 [optional services](#services-from-europesip) you ask for.
 
 **Is there a warranty or official support?**
-The software is provided as is (see [LICENSE](../LICENSE)). Professional support, maintenance and upgrades are
+The software is provided as is (see [LICENSE](https://github.com/europesip/orbita/blob/main/LICENSE)). Professional support, maintenance and upgrades are
 available from EUROPESIP as a service. ÓRBITA is not an HCL product and is not supported by HCL.
 
 ## Installation
