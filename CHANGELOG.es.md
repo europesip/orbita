@@ -14,11 +14,12 @@
   reconocimientos), la cabecera de las apps, Mi intranet, Aprobaciones, Vacaciones, Fichaje, Comunicación con RRHH, Mis
   documentos y Encuestas.
 - **Integración con DX**: el tema de ejemplo muestra la **foto del usuario conectado** en la cabecera del portal,
-  enlazada con su ficha en Personas (`theme.userPhoto`, activado por defecto). Cada imagen la sirve el nuevo
+  enlazada con su ficha en Personas, y la pone en el menú de perfil de la barra de herramientas de DX en lugar de su
+  icono genérico (`theme.userPhoto`, activado por defecto; solo en las páginas de ÓRBITA). Cada imagen la sirve el nuevo
   `GET /orbita-api/v1/fotos/{usuario}` (con sesión de DX; `yo` = el usuario conectado), con versión para que el
   navegador la guarde en caché hasta que cambie.
 - Migración Flyway **`V7__fotos.sql`** (tabla `EMPLEADO_FOTO`, aparte de `EMPLEADO`) y fotos ilustradas de demostración
-  (siluetas dibujadas, no personas reales) para siete de las nueve personas de la demo. Probado en PostgreSQL 17 con 33
+  (siluetas dibujadas, no personas reales) para siete de las nueve personas de la demo. Probado en PostgreSQL 17 con 35
   comprobaciones automáticas.
 
 ## Sin publicar · Encuestas

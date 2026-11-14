@@ -305,7 +305,8 @@ como una intranet terminada que funciona sobre HCL DX:
 - Una copia del theme **Portal 8.5** de HCL DX, hecha al instalar desde **tu propio DX** (solo WebDAV, sin EAR: los
   ficheros del theme de HCL no forman parte de ÓRBITA), con una cabecera de ÓRBITA: el **logo de la empresa**,
   **«Powered by HCL Software»**, un **botón que abre el asistente de ÓRBITA** y la **foto del usuario conectado** (de
-  Personas, o sus iniciales), enlazada con su ficha. Todo lo demás (barra de herramientas, menús, modo edición) es el
+  Personas, o sus iniciales), enlazada con su ficha; si tiene foto, también sustituye el icono genérico del menú de
+  perfil de la barra de herramientas de DX. Todo lo demás (barra de herramientas, menús, modo edición) es el
   theme Portal 8.5.
 - Las imágenes están en una **colección del DAM** (`ÓRBITA`): para poner el logo de tu empresa, sube allí una nueva
   versión de `company-logo.png`; el theme muestra siempre su última versión. O dalo al instalar con

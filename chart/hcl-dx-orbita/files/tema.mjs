@@ -149,6 +149,8 @@ html.orbita-asistente .orbitaThemeYo{margin-left:0}
 .orbitaThemeYo img,.orbitaThemeYo i{width:36px;height:36px;border-radius:50%;display:block;object-fit:cover;box-shadow:0 0 0 2px rgba(255,255,255,.85)}
 .orbitaThemeYo i{display:grid;place-items:center;background:#0b5fff;font:600 14px/1 Arial,sans-serif;font-style:normal}
 @media (max-width:640px){.orbitaThemeYo span{display:none}}
+#wpToolbarProfileMenu.orbitaConFoto .wpToolbarProfileSVG{display:none}
+#wpToolbarProfileMenu .orbitaFotoBarra{width:26px;height:26px;border-radius:50%;object-fit:cover;display:block;box-shadow:0 0 0 1px rgba(255,255,255,.6)}
 </style>`;
   const titulo = es ? 'Pregúntale a ÓRBITA' : 'Ask ÓRBITA';
   const marca = `<div class="wpthemeLogo wpthemeLeft orbitaThemeMarca">
@@ -158,18 +160,23 @@ html.orbita-asistente .orbitaThemeYo{margin-left:0}
   const boton = cfg.assistantButton ? `
 					<button type="button" class="orbitaThemeChat" title="${titulo}" aria-label="${titulo}" onclick="window.dispatchEvent(new CustomEvent('orbita:asistente'))"><img src="${esc(url.icono)}" alt=""><span>${titulo}</span></button>` : '';
   // Foto del usuario conectado (Personas): pregunta a la API quién es (GET /yo) y pinta su foto, o sus iniciales si no
-  // tiene; enlaza con su ficha. Sin ficha en ÓRBITA (o sin sesión) no se muestra nada.
+  // tiene; enlaza con su ficha. Sin ficha en ÓRBITA (o sin sesión) no se muestra nada. Si tiene foto, también sustituye
+  // el icono genérico del menú de perfil de la barra de herramientas de DX (#wpToolbarProfileMenu); sin foto, ese icono
+  // se queda como está. Al cambiar la foto en Personas (evento orbita:foto) se actualiza todo sin recargar.
   const yo = cfg.userPhoto ? `
 					<a class="orbitaThemeYo" href="${esc(cfg.personasUrl)}" title="${es ? 'Mi ficha en Personas' : 'My profile in People'}"><span></span></a>
 					<script>(function(){var a=document.currentScript&&document.currentScript.previousElementSibling,api=${JSON.stringify(cfg.apiUrl)};
 if(!a||!window.fetch)return;fetch(api+'/yo',{credentials:'same-origin',headers:{Accept:'application/json'}}).then(function(r){return r.ok?r.json():null}).then(function(y){
 if(!y||!y.usuario)return;var n=String(y.nombre||y.usuario),ini=n.split(' ').map(function(p){return p.charAt(0)}).slice(0,2).join('');
 a.href=a.getAttribute('href')+'#persona='+encodeURIComponent(y.usuario);a.firstChild.textContent=n.split(' ')[0];a.setAttribute('aria-label',n);
+function barra(src){var m=document.getElementById('wpToolbarProfileMenu'),b=m&&m.querySelector('a'),f=m&&m.querySelector('.orbitaFotoBarra');
+if(!b)return;if(!src){if(f)f.parentNode.removeChild(f);m.classList.remove('orbitaConFoto');return}
+if(!f){f=document.createElement('img');f.className='orbitaFotoBarra';f.alt='';b.insertBefore(f,b.firstChild)}f.src=src;m.classList.add('orbitaConFoto')}
 function pintar(v){while(a.childNodes.length>1)a.removeChild(a.lastChild);var img=new Image();img.alt='';
-img.onload=function(){a.appendChild(img);a.classList.add('orbitaThemeListo')};
-img.onerror=function(){var i=document.createElement('i');i.textContent=ini;a.appendChild(i);a.classList.add('orbitaThemeListo')};
+img.onload=function(){a.appendChild(img);a.classList.add('orbitaThemeListo');barra(img.src)};
+img.onerror=function(){var i=document.createElement('i');i.textContent=ini;a.appendChild(i);a.classList.add('orbitaThemeListo');barra(null)};
 if(v===null)img.onerror();else img.src=api+'/fotos/yo'+(v?'?v='+v:'');}
-pintar();window.addEventListener('orbita:foto',function(e){if(e.detail&&e.detail.usuario===y.usuario)pintar(e.detail.version)});}).catch(function(){});})();</script>` : '';
+pintar(y.foto===undefined?'':y.foto);window.addEventListener('orbita:foto',function(e){if(e.detail&&e.detail.usuario===y.usuario)pintar(e.detail.version)});}).catch(function(){});})();</script>` : '';
   let h = html;
   if (!h.includes('id="orbita-theme"')) h = h.replace('</head>', `${estilo}\n</head>`);
   h = h.replace(/<div class="wpthemeLogo wpthemeLeft[^"]*">[\s\S]*?<\/div>/, marca);

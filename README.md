@@ -299,7 +299,7 @@ intranet that runs on HCL DX:
 - A copy of the HCL DX **Portal 8.5** theme, made at install time from **your own DX** (WebDAV only, no EAR: HCL's
   theme files are not part of ÓRBITA), with an ÓRBITA header: the **company logo**, **"Powered by HCL Software"** and a
   **button that opens the ÓRBITA assistant**, and the **photo of the signed-in user** (from People, or their initials),
-  linked to their profile. Everything else (toolbar, menus, edit mode) is the Portal 8.5 theme.
+  linked to their profile; with a photo, it also replaces the generic icon of the profile menu in the DX toolbar. Everything else (toolbar, menus, edit mode) is the Portal 8.5 theme.
 - The images are in a **DAM collection** (`ÓRBITA`): to put your company logo, upload a new version of
   `company-logo.png` there; the theme always shows its latest version. Or give it at install time with
   `--set theme.logoBase64=$(base64 -w0 logo.png)`.

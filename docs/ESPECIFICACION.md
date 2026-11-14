@@ -221,7 +221,7 @@ su equipo, sus compañeros (mismo responsable), sobre mí, habilidades, idiomas 
   fichero original (ni datos de la cámara ni ubicación). Se guarda en `EMPLEADO_FOTO`, aparte de la ficha.
 - La ve quien tiene ficha en ÓRBITA, igual que el directorio. Sale en Personas, en la cabecera de las apps y en el
   resto de apps donde aparece la persona, y en la **cabecera del portal** con el tema de ejemplo (la del usuario
-  conectado, enlazada con su ficha). `GET /orbita-api/v1/fotos/{usuario}` sirve la imagen (`yo` = la del usuario
+  conectado, enlazada con su ficha, y en el menú de perfil de la barra de herramientas de DX en lugar de su icono). `GET /orbita-api/v1/fotos/{usuario}` sirve la imagen (`yo` = la del usuario
   conectado) con su versión, para que el navegador la guarde en caché hasta que cambie.
 
 **Organigrama**: el árbol de responsables, plegable y con buscador; se abre por la rama de quien mira y cada persona

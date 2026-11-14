@@ -13,11 +13,12 @@
   recognition), the header of the apps, My intranet, Approvals, Time off, Time tracking, HR communication, My documents
   and Surveys.
 - **Integration with DX**: the example theme shows the **photo of the signed-in user** in the portal header, linked to
-  their profile in People (`theme.userPhoto`, on by default). Each image is served by the new
+  their profile in People, and puts it in the profile menu of the DX toolbar instead of its generic icon
+  (`theme.userPhoto`, on by default; only on the ÓRBITA pages). Each image is served by the new
   `GET /orbita-api/v1/fotos/{usuario}` (with a DX session; `yo` = the signed-in user), versioned so the browser keeps it
   in its cache until it changes.
 - Flyway migration **`V7__fotos.sql`** (table `EMPLEADO_FOTO`, apart from `EMPLEADO`) and illustrated demo photos
-  (drawn silhouettes, not real people) for seven of the nine demo people. Tested on PostgreSQL 17 with 33 automatic
+  (drawn silhouettes, not real people) for seven of the nine demo people. Tested on PostgreSQL 17 with 35 automatic
   checks.
 
 ## Unreleased · Surveys

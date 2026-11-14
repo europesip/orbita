@@ -163,6 +163,8 @@ final class Api {
         j.put("pin", yo.pin);
         j.put("tarjeta", yo.tarjeta);
         j.put("avisos", Social.avisos(c, yo.usuario).get("noLeidos"));
+        Fotos.Imagen foto = Fotos.imagen(c, yo.usuario);
+        j.put("foto", foto == null ? null : foto.version());   // versión de su foto (la cabecera del tema la usa)
         return j;
     }
 
