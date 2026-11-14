@@ -77,6 +77,9 @@ api:
   podAnnotations: {}
   nodeSelector: {}
   tolerations: []
+  # Extra environment of the API container, e.g. the configuration of the extensions (see extensions below)
+  extraEnv: []               # e.g. [{ name: MY_EXTENSION_SETTING, value: "x" }]
+  extraEnvFrom: []           # e.g. [{ secretRef: { name: my-extension-config } }]
 
 ingress:
   enabled: true
@@ -143,6 +146,20 @@ mcp:
     enabled: true
     integratorNamespace: dx-demo
     integratorPodLabels: { app: dx-iq-integrator }
+    # Other MCP clients allowed on port 9081 (NetworkPolicy peers), e.g. an assistant that uses an identity extension:
+    #   - namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: orbita-connect } }
+    #     podSelector: { matchLabels: { app.kubernetes.io/name: orbita-connect } }
+    extraFrom: []
+
+# --- Extensions ---------------------------------------------------------------------------------------------------
+# JARs that extend ÓRBITA, packaged as images (free or commercial, not part of ÓRBITA): for example identity providers
+# of the MCP server, so that an assistant outside HCL DX (a Microsoft Teams bot...) acts as each user. An init container
+# copies <path>/*.jar of each image to /config/extensions, where the API loads them. See docs/mcp.md.
+extensions: []
+#  - name: my-extension
+#    image: registry.example.com/my-extension:1.0.0
+#    path: /extensions        # folder with the JARs inside the image (default /extensions)
+#    pullPolicy: IfNotPresent
 
 # --- Demo ---------------------------------------------------------------------------------------------------------
 demo:

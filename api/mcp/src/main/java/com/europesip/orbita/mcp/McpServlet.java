@@ -18,6 +18,7 @@ import com.europesip.orbita.core.Config;
 import com.europesip.orbita.ia.Herramienta;
 import com.europesip.orbita.ia.Herramientas;
 import com.europesip.orbita.core.SesionDx;
+import com.europesip.orbita.core.extension.IdentidadMcp;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -32,8 +33,9 @@ import jakarta.servlet.http.HttpServletResponse;
  * servidor). GET y DELETE /mcp devuelven 405, como el MCP de HCL DX IQ.
  *
  * Quién pregunta: el Integrator de DX IQ reenvía en cada tools/call las cookies de sesión de DX del usuario del chat, y
- * DX dice quién es (SesionDx). Las herramientas actúan siempre como ese usuario, con sus permisos; sin sesión no hacen
- * nada. Además (docs/mcp.md): el puerto del MCP no se publica en el Ingress, una NetworkPolicy solo deja entrar al
+ * DX dice quién es (SesionDx). Sin sesión de DX, los proveedores de identidad de las extensiones (core.extension,
+ * asistentes fuera de DX) pueden decirlo. Las herramientas actúan siempre como ese usuario, con sus permisos; sin
+ * identidad no hacen nada. Además (docs/mcp.md): el puerto del MCP no se publica en el Ingress, una NetworkPolicy solo deja entrar al
  * Integrator y, si ORBITA_MCP_TOKEN tiene valor, se exige "Authorization: Bearer <token>".
  * Cada tools/call queda en el registro del servidor (auditoría: herramienta, usuario y resultado).
  */
@@ -120,6 +122,20 @@ public class McpServlet extends HttpServlet {
                 .build();
     }
 
+    private volatile IdentidadMcp identidad;
+
+    /** Los proveedores de identidad de las extensiones, cargados una vez (ORBITA_EXTENSIONS_DIR). */
+    private IdentidadMcp identidad() {
+        IdentidadMcp i = identidad;
+        if (i == null) {
+            synchronized (this) {
+                if (identidad == null) identidad = IdentidadMcp.cargar(Config.carpetaExtensiones(), McpServlet.class.getClassLoader());
+                i = identidad;
+            }
+        }
+        return i;
+    }
+
     private JsonObject toolsList() {
         JsonArrayBuilder lista = Json.createArrayBuilder();
         for (Herramienta h : Herramientas.activas()) lista.add(h.definicion());
@@ -133,9 +149,14 @@ public class McpServlet extends HttpServlet {
         JsonObject args = params.containsKey("arguments") && params.get("arguments").getValueType() == JsonValue.ValueType.OBJECT
                 ? params.getJsonObject("arguments") : JsonValue.EMPTY_JSON_OBJECT;
         Herramienta.Resultado r;
-        String usuario = SesionDx.usuario(req.getHeader("Cookie"));
-        if (usuario == null && Config.usuarioMcpDesarrollo() != null) usuario = Config.usuarioMcpDesarrollo();   // solo desarrollo
-        if (usuario == null) {
+        // Quién pregunta: su sesión de DX, o un proveedor de identidad de las extensiones, o (solo desarrollo) un usuario fijo
+        IdentidadMcp.Identidad quien = identidad().resolver(SesionDx.usuario(req.getHeader("Cookie")), req::getHeader,
+                req.getRemoteAddr(), Config.usuarioMcpDesarrollo());
+        String usuario = quien.usuario();
+        if (quien.rechazo() != null) {
+            r = Herramienta.Resultado.error("La identidad de esta llamada no es válida (" + quien.rechazo() + "): ÓRBITA "
+                    + "solo actúa como el usuario que pregunta.");
+        } else if (usuario == null) {
             r = Herramienta.Resultado.error("No hay sesión de DX del usuario en esta llamada: ÓRBITA solo actúa como el "
                     + "usuario que pregunta. Pide que vuelva a iniciar sesión en el portal.");
         } else {
@@ -147,8 +168,8 @@ public class McpServlet extends HttpServlet {
             }
         }
         // Auditoría: quién (origen), en nombre de quién, qué y con qué resultado
-        log(String.format("ORBITA MCP auditoria herramienta=%s usuario=%s resultado=%s origen=%s",
-                nombre, usuario, r.estado(), req.getRemoteAddr()));
+        log(String.format("ORBITA MCP auditoria herramienta=%s usuario=%s identidad=%s resultado=%s origen=%s",
+                nombre, usuario, quien.fuente() == null ? "-" : quien.fuente(), r.estado(), req.getRemoteAddr()));
         return resultado(id, r.json());
     }
 

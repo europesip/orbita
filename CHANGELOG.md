@@ -2,6 +2,14 @@
 
 **English** · [Español](CHANGELOG.es.md)
 
+## Unreleased
+
+- **MCP identity extension point** (#12): besides the user's DX session, identity providers packaged as separate
+  JARs (`ProveedorIdentidadMcp`, loaded from `ORBITA_EXTENSIONS_DIR`) can say on whose behalf an MCP call acts, so an
+  assistant outside HCL DX (a Microsoft Teams bot...) uses ÓRBITA as each user. The audit line records the identity
+  source. Chart: `extensions` (images with the JARs, copied by an init container), `api.extraEnv` /
+  `api.extraEnvFrom`, `mcp.networkPolicy.extraFrom`. Without extensions nothing changes. First unit tests (JUnit).
+
 ## 3.2.0 · 2026-11-12 · The PostgreSQL of DX (#8)
 
 - New chart value **`database.type`**: `external` (default, as before) or **`dxPersistence`**, the PostgreSQL that

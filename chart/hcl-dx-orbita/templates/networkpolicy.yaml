@@ -1,6 +1,6 @@
 {{- if and .Values.mcp.enabled .Values.mcp.networkPolicy.enabled }}
 # Who reaches the ÓRBITA pods: the API port from anywhere (the Ingress controller), the MCP port only from the
-# HCL DX IQ Integrator. (kubectl port-forward goes through the kubelet and is not affected.)
+# HCL DX IQ Integrator (and mcp.networkPolicy.extraFrom). (kubectl port-forward goes through the kubelet and is not affected.)
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -18,6 +18,9 @@ spec:
             matchLabels: { kubernetes.io/metadata.name: {{ .Values.mcp.networkPolicy.integratorNamespace }} }
           podSelector:
             matchLabels: {{- toYaml .Values.mcp.networkPolicy.integratorPodLabels | nindent 14 }}
+        {{- with .Values.mcp.networkPolicy.extraFrom }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       ports:
         - { port: 9081, protocol: TCP }
 {{- end }}
