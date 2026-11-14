@@ -8,7 +8,8 @@
   JARs (`ProveedorIdentidadMcp`, loaded from `ORBITA_EXTENSIONS_DIR`) can say on whose behalf an MCP call acts, so an
   assistant outside HCL DX (a Microsoft Teams bot...) uses ÓRBITA as each user. The audit line records the identity
   source. Chart: `extensions` (images with the JARs, copied by an init container), `api.extraEnv` /
-  `api.extraEnvFrom`, `mcp.networkPolicy.extraFrom`. Without extensions nothing changes. First unit tests (JUnit).
+  `api.extraEnvFrom`, `mcp.networkPolicy.extraFrom`. Without extensions nothing changes. First unit tests (JUnit). The installed `orbita-core` pom has the real version
+  (flatten-maven-plugin), so extensions can depend on it like on any other library.
 
 ## 3.2.0 · 2026-11-12 · The PostgreSQL of DX (#8)
 

@@ -9,7 +9,8 @@
   quién actúa una llamada al MCP, para que un asistente fuera de HCL DX (un bot de Microsoft Teams...) use ÓRBITA como
   cada usuario. La línea de auditoría indica de dónde sale la identidad. Chart: `extensions` (imágenes con los JAR, que
   copia un init container), `api.extraEnv` / `api.extraEnvFrom`, `mcp.networkPolicy.extraFrom`. Sin extensiones no
-  cambia nada. Primeros tests unitarios (JUnit).
+  cambia nada. Primeros tests unitarios (JUnit). El pom instalado de `orbita-core` lleva la versión real
+  (flatten-maven-plugin), así las extensiones pueden depender de él como de cualquier otra librería.
 
 ## 3.2.0 · 2026-11-12 · El PostgreSQL de DX (#8)
 

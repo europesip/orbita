@@ -106,5 +106,22 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <!-- Installed/deployed poms with the real version instead of ${revision}: extensions (ProveedorIdentidadMcp) can
+           depend on orbita-core like on any other library -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>1.7.0</version>
+        <configuration>
+          <updatePomFile>true</updatePomFile>
+          <flattenMode>resolveCiFriendliesOnly</flattenMode>
+        </configuration>
+        <executions>
+          <execution><id>flatten</id><phase>process-resources</phase><goals><goal>flatten</goal></goals></execution>
+          <execution><id>flatten-clean</id><phase>clean</phase><goals><goal>clean</goal></goals></execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>
