@@ -1636,3 +1636,102 @@
   .si-app .si-en-informe .si-tarjeta { break-inside: avoid; }
   .si-app .si-en-apilada i, .si-app .si-en-dim-barra i, .si-app .si-en-calor td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* ============================================================================================ Portada (si-po-*) */
+.si-app .si-po-rejilla { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
+.si-app .si-po-accesos { grid-column: 1 / -1; }
+.si-app .si-po-principal, .si-app .si-po-lado { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.si-app .si-po-cabeza { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.si-app .si-po-cabeza h2 { font-size: 24px; font-weight: 400; margin: 0 0 8px; }
+.si-app .si-po-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.si-app .si-po-chips button { border: 1px solid var(--si-borde-2); background: var(--si-tarjeta); border-radius: 16px; padding: 4px 12px; font: inherit; font-size: 13px; cursor: pointer; color: var(--si-texto-2); }
+.si-app .si-po-chips button.activa { background: var(--si-acento); border-color: var(--si-acento); color: #fff; }
+.si-app .si-po-destacada { padding: 0; overflow: hidden; }
+.si-app .si-po-lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.si-app .si-po-lista > .si-tarjeta { padding: 0; overflow: hidden; display: flex; }
+.si-app .si-po-noticia { display: flex; flex-direction: column; width: 100%; text-align: left; border: 0; background: none; padding: 0; cursor: pointer; font: inherit; color: inherit; }
+.si-app .si-po-noticia:hover strong, .si-app .si-po-noticia:focus-visible strong { color: var(--si-acento); text-decoration: underline; }
+.si-app .si-po-noticia:focus-visible { outline: 2px solid var(--si-acento); outline-offset: -2px; }
+.si-app .si-po-imagen { display: block; aspect-ratio: 2 / 1; overflow: hidden; background: var(--si-fondo); }
+.si-app .si-po-imagen img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; }
+.si-app .si-po-noticia:hover .si-po-imagen img { transform: scale(1.03); }
+.si-app .si-po-texto { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px 16px; }
+.si-app .si-po-texto strong { font-size: 17px; font-weight: 600; line-height: 1.3; }
+.si-app .si-po-entradilla { color: var(--si-texto-2); line-height: 1.45; }
+.si-app .si-po-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 12.5px; color: var(--si-tenue); margin: 0; }
+.si-app .si-po-meta svg { width: 14px; height: 14px; vertical-align: -2px; fill: currentColor; }
+.si-app .si-po-seccion { text-transform: uppercase; letter-spacing: .06em; font-weight: 600; color: var(--si-acento); }
+.si-app .si-po-sin-imagen .si-po-texto { border-left: 4px solid var(--si-acento); }
+.si-app .si-po-grande { display: grid; grid-template-columns: 1.25fr 1fr; }
+.si-app .si-po-grande .si-po-imagen { aspect-ratio: auto; min-height: 260px; }
+.si-app .si-po-grande .si-po-texto { justify-content: center; padding: 24px 28px; gap: 10px; }
+.si-app .si-po-grande .si-po-texto strong { font-size: 26px; font-weight: 400; }
+.si-app .si-po-grande .si-po-entradilla { font-size: 16px; }
+.si-app .si-po-grande.si-po-sin-imagen { display: flex; }
+.si-app .si-po-cc { font-size: 13px; margin: 0; }
+.si-app .si-po-hueco { margin: 4px 0; }
+.si-app .si-po-aviso { display: flex; gap: 12px; align-items: center; padding: 14px 16px; border-radius: 4px; background: var(--si-acento-suave); color: inherit; text-decoration: none; border: 1px solid #c5d6f7; }
+.si-app .si-po-aviso span { display: flex; flex-direction: column; }
+.si-app .si-po-aviso small { color: var(--si-texto-2); }
+.si-app .si-po-comunicados, .si-app .si-po-agenda, .si-app .si-po-gracias, .si-app .si-po-propuestas { list-style: none; margin: 0; padding: 0; }
+.si-app .si-po-comunicados li + li, .si-app .si-po-agenda li + li, .si-app .si-po-gracias li + li { border-top: 1px solid var(--si-borde); }
+.si-app .si-po-comunicados a { display: flex; gap: 10px; align-items: center; justify-content: space-between; padding: 9px 0; color: inherit; text-decoration: none; }
+.si-app .si-po-comunicados a:hover strong { color: var(--si-acento); }
+.si-app .si-po-comunicados a > span, .si-app .si-po-agenda button > span:last-child, .si-app .si-po-fila > span:last-child, .si-app .si-po-gracias li > span { display: flex; flex-direction: column; min-width: 0; }
+.si-app .si-po-comunicados small, .si-app .si-po-agenda small, .si-app .si-po-gracias small { color: var(--si-tenue); font-size: 12.5px; }
+.si-app .si-po-agenda button, .si-app .si-po-fila { display: flex; gap: 12px; align-items: center; width: 100%; padding: 8px 0; border: 0; background: none; text-align: left; font: inherit; color: inherit; cursor: pointer; }
+.si-app .si-po-fila { cursor: default; }
+.si-app .si-po-agenda button:hover strong { color: var(--si-acento); }
+.si-app .si-po-dia { display: grid; place-items: center; flex: none; width: 46px; height: 50px; border-radius: 4px; background: var(--si-acento); color: #fff; line-height: 1; }
+.si-app .si-po-dia small { color: rgba(255, 255, 255, .85) !important; text-transform: uppercase; font-size: 11px !important; }
+.si-app .si-po-dia strong { font-size: 20px; }
+.si-app .si-po-dia-festivo { background: var(--si-verde-suave); color: var(--si-verde); border: 1px solid #a5d6a7; }
+.si-app .si-po-dia-festivo small { color: var(--si-verde) !important; }
+.si-app .si-po-cel { margin: 0 0 8px; }
+.si-app .si-po-gracias li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; }
+.si-app .si-po-articulo h1 { font-size: 30px; font-weight: 400; line-height: 1.2; margin: 10px 0 8px; }
+.si-app .si-po-articulo .si-po-entradilla { font-size: 18px; margin: 0 0 12px; }
+.si-app .si-po-portadilla { width: 100%; max-height: 360px; object-fit: cover; border-radius: 4px; margin-bottom: 12px; }
+.si-app .si-po-datos { display: flex; gap: 18px; flex-wrap: wrap; color: var(--si-acento); font-weight: 600; margin: 0 0 14px; }
+.si-app .si-po-datos svg { width: 16px; height: 16px; fill: currentColor; vertical-align: -3px; }
+.si-app .si-po-cuerpo { font-size: 16px; line-height: 1.65; }
+.si-app .si-po-cuerpo blockquote { border-left: 4px solid var(--si-acento); margin: 12px 0; padding: 4px 16px; color: var(--si-texto-2); font-style: italic; }
+.si-app .si-po-vista { border: 1px solid var(--si-borde); border-radius: 4px; padding: 18px 20px; margin-bottom: 14px; max-height: 52vh; overflow: auto; }
+.si-app .si-po-propuesta { display: flex; gap: 12px; align-items: center; padding: 10px 0; flex-wrap: wrap; }
+.si-app .si-po-propuesta + .si-po-propuesta { border-top: 1px solid var(--si-borde); }
+.si-app .si-po-propuesta img, .si-app .si-po-sin { width: 76px; height: 46px; border-radius: 3px; object-fit: cover; flex: none; }
+.si-app .si-po-sin { display: grid; place-items: center; background: var(--si-acento-suave); color: var(--si-acento); }
+.si-app .si-po-sin svg { width: 20px; height: 20px; fill: currentColor; }
+.si-app .si-po-propuesta > .si-crece { display: flex; flex-direction: column; min-width: 180px; }
+.si-app .si-po-propuesta small { color: var(--si-tenue); }
+.si-app .si-po-comentario { color: var(--si-ambar) !important; }
+.si-app .si-po-comentario svg { width: 13px; height: 13px; fill: currentColor; vertical-align: -2px; }
+.si-app .si-po-plantillas { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; margin-top: 10px; }
+.si-app .si-po-plantilla { display: flex; flex-direction: column; gap: 6px; text-align: left; border: 1px solid var(--si-borde-2); border-radius: 4px; background: var(--si-tarjeta); padding: 16px; cursor: pointer; font: inherit; color: inherit; }
+.si-app .si-po-plantilla:hover, .si-app .si-po-plantilla:focus-visible { border-color: var(--si-acento); box-shadow: 0 0 0 1px var(--si-acento); }
+.si-app .si-po-plantilla small { color: var(--si-tenue); }
+.si-app .si-po-plantilla-icono { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 8px; background: var(--si-acento-suave); color: var(--si-acento); }
+.si-app .si-po-plantilla-icono svg { width: 22px; height: 22px; fill: currentColor; }
+.si-app .si-po-titular { font-size: 18px; }
+.si-app .si-po-devuelta { display: flex; gap: 10px; background: var(--si-ambar-suave); border: 1px solid #ed9c41; border-radius: 4px; padding: 10px 12px; margin: 0 0 12px; }
+.si-app .si-po-devuelta span { display: flex; flex-direction: column; }
+.si-app .si-po-devuelta svg { width: 18px; height: 18px; fill: var(--si-ambar); flex: none; margin-top: 2px; }
+.si-app .si-po-rico { border: 1px solid var(--si-borde-2); border-radius: 4px; background: #fff; }
+.si-app .si-po-rico:focus-within { border-color: var(--si-acento); box-shadow: 0 0 0 1px var(--si-acento); }
+.si-app .si-po-barra { display: flex; gap: 2px; padding: 4px; border-bottom: 1px solid var(--si-borde); background: var(--si-fondo); }
+.si-app .si-po-barra button { min-width: 32px; height: 30px; border: 0; background: none; border-radius: 3px; cursor: pointer; font: inherit; font-weight: 600; color: var(--si-texto-2); }
+.si-app .si-po-barra button:hover { background: rgba(0, 0, 0, .07); }
+.si-app .si-po-barra .si-po-i { font-style: italic; font-family: Georgia, serif; }
+.si-app .si-po-barra svg { width: 16px; height: 16px; fill: currentColor; vertical-align: -3px; }
+.si-app .si-po-editable { min-height: 180px; max-height: 40vh; overflow: auto; padding: 10px 12px; line-height: 1.55; outline: none; }
+.si-app .si-po-editable blockquote { border-left: 3px solid var(--si-acento); margin: 8px 0; padding-left: 12px; color: var(--si-texto-2); }
+.si-app .si-po-subir { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.si-app .si-po-subir img, .si-app .si-po-sin-img { width: 180px; height: 90px; object-fit: cover; border-radius: 4px; border: 1px solid var(--si-borde); }
+.si-app .si-po-sin-img { display: grid; place-items: center; background: var(--si-fondo); color: var(--si-tenue); }
+.si-app .si-po-sin-img svg { width: 26px; height: 26px; fill: currentColor; }
+@media (max-width: 980px) {
+  .si-app .si-po-rejilla { grid-template-columns: 1fr; }
+  .si-app .si-po-grande { grid-template-columns: 1fr; }
+  .si-app .si-po-grande .si-po-imagen { min-height: 0; aspect-ratio: 2 / 1; }
+  .si-app .si-po-grande .si-po-texto strong { font-size: 21px; }
+}

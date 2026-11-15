@@ -10,6 +10,7 @@ import {Inicio} from './Inicio.jsx';
 import {Kiosco} from './Kiosco.jsx';
 import {Comunicacion} from './Comunicacion.jsx';
 import {Personas} from './Personas.jsx';
+import {Portada} from './Portada.jsx';
 import {Documentos} from './Documentos.jsx';
 import {Encuestas} from './Encuestas.jsx';
 import {IconoApp, PRODUCTO} from './marca.jsx';
@@ -19,6 +20,7 @@ import {fijarIdioma, t} from './i18n.js';
 import {ayudante, enEdicion, guardarAjustes, idiomasDx, leerAjustes, vigilarEdicion} from './preferencias.js';
 
 const APPS = {
+  portada: {titulo: 'Portada', subtitulo: 'Noticias y novedades de la empresa', icono: 'megafono', Vista: Portada},
   inicio: {titulo: 'Mi intranet', subtitulo: 'Tu día de un vistazo', icono: 'inicio', Vista: Inicio},
   fichaje: {titulo: 'Fichaje', subtitulo: 'Registro de jornada', icono: 'reloj', Vista: Fichaje},
   vacaciones: {titulo: 'Vacaciones y ausencias', subtitulo: 'Saldo, solicitudes y calendario del equipo', icono: 'sol', Vista: Vacaciones},

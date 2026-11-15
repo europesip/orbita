@@ -7,14 +7,14 @@ import {IconoApp} from './marca.jsx';
 
 /** Páginas de ÓRBITA en DX (nombres amigables). */
 export const PAGINAS = {
-  inicio: 'mi-intranet', fichaje: 'fichaje', vacaciones: 'vacaciones', gastos: 'gastos', aprobaciones: 'aprobaciones', kiosco: 'quiosco',
+  portada: 'portada', inicio: 'mi-intranet', fichaje: 'fichaje', vacaciones: 'vacaciones', gastos: 'gastos', aprobaciones: 'aprobaciones', kiosco: 'quiosco',
   comunicacion: 'comunicacion', encuestas: 'encuestas', personas: 'personas', documentos: 'documentos',
 };
 /** Dónde están las páginas en DX: lo dice la API (GET /config, valores pages.* del chart). */
 export const RUTAS = {paginas: '/wps/myportal/Home/', quiosco: '/wps/myportal/Home/quiosco', sufijo: ''};
 export const urlApp = (app) => (app === 'kiosco' ? RUTAS.quiosco : `${RUTAS.paginas}${PAGINAS[app] || app}${RUTAS.sufijo}`);
 const ICONO_APP = {fichaje: 'reloj', vacaciones: 'sol', gastos: 'recibo', aprobaciones: 'aprobar', inicio: 'inicio', comunicacion: 'megafono',
-  personas: 'personas', documentos: 'documento', encuestas: 'grafico'};
+  personas: 'personas', documentos: 'documento', encuestas: 'grafico', portada: 'megafono'};
 /** Pestaña a la que lleva un aviso, por su aplicación y su clase (Comunicación y Personas tienen pestañas con enlace). */
 const PESTANA_AVISO = {
   comunicacion: {COMUNICADO: 'comunicados', CONSULTA: 'consultas', ENCUESTA: 'pulso'},
@@ -23,7 +23,8 @@ const PESTANA_AVISO = {
 };
 /** En Mis documentos la pestaña depende del aviso: la bandeja de RRHH, lo enviado a RRHH, lo publicado o los míos. */
 const PESTANA_DOCUMENTO = {'documento.enviado': 'bandeja', 'documento.revisado': 'enviar', 'documento.rechazado': 'enviar', 'documento.recibi': 'gestion'};
-const pestanaAviso = (a) => (a.app === 'documentos' ? PESTANA_DOCUMENTO[a.clave] || 'mios' : (PESTANA_AVISO[a.app] || {})[a.clase]);
+const pestanaAviso = (a) => (a.app === 'documentos' ? PESTANA_DOCUMENTO[a.clave] || 'mios'
+  : a.app === 'portada' ? (a.clave === 'noticia.propuesta' ? 'revision' : 'propuestas') : (PESTANA_AVISO[a.app] || {})[a.clase]);
 /** Enlace de un aviso: la aplicación y, si tiene, su pestaña. */
 export const urlAviso = (a) => `${urlApp(a.app)}${pestanaAviso(a) ? `#${pestanaAviso(a)}` : ''}`;
 /** Motivos de un reconocimiento entre compañeros (Personas). */
@@ -84,7 +85,7 @@ export function Campana({inicial, app}) {
   const abrir = async (a) => {
     try { const d = await api('avisos.leer', {id: a.id}); setDatos(d); setN(d.noLeidos); } catch (e) { /* sin conexión */ }
     if (a.app !== app) window.location.href = urlAviso(a);
-    else { if (PESTANA_AVISO[a.app] || a.app === 'documentos') window.location.hash = pestanaAviso(a) || ''; setAbierta(false); }
+    else { if (PESTANA_AVISO[a.app] || a.app === 'documentos' || a.app === 'portada') window.location.hash = pestanaAviso(a) || ''; setAbierta(false); }
   };
   const leerTodo = async () => { try { const d = await api('avisos.leer'); setDatos(d); setN(d.noLeidos); } catch (e) { /* */ } };
   return (

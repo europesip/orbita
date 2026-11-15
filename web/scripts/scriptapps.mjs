@@ -13,6 +13,7 @@ const BUNDLE = 'build/bundle';
 const DESTINO = 'build/scriptapps';
 // carpeta (= nombre amigable de la página en DX) → aplicación (data-app)
 const APPS = [
+  ['portada', 'portada'],
   ['mi-intranet', 'inicio'],
   ['fichaje', 'fichaje'],
   ['vacaciones', 'vacaciones'],
