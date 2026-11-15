@@ -52,6 +52,7 @@ export function tipoDe(nombre, tipoWcm) {
   if (/^imagen/i.test(nombre)) return 'imagen';
   if (/^fecha/i.test(nombre)) return 'fecha';
   if (/^enlace/i.test(nombre)) return 'enlace';
+  if (/^diseno/i.test(nombre)) return 'diseno';
   return 'texto';
 }
 

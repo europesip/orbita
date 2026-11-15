@@ -10,6 +10,9 @@
 - **WCM set up by the chart** (`news.*`, idempotent): library `orbita-noticias` (everybody reads; `news.editors` get
   Editor), four sections, five authoring templates with presentation templates (news item, short news item, event,
   welcome, team achievement) and six demo news with images in the DAM.
+- **Five designs** for any news item, chosen in the form with visual thumbnails: classic, full-page image, two
+  columns, poster and highlight (the standfirst as a quote). Stored in the WCM element `Diseno` (added to existing
+  templates on upgrade); each template suggests one (an event, the poster).
 - **Propose a news item**: anybody chooses a WCM template and fills a form generated from it (headline, section,
   standfirst, image, dates, place, link and a rich-text body with a simple editor), previews it and sends it for review.
 - **Review (HR)**: publish (the browser creates the WCM content with the reviewer's WCM rights), return with a comment
@@ -19,7 +22,7 @@
   (users with the Reviewer role get 403).
 - API: `portada.resumen` and `noticias.*`; images of the news redrawn as JPEG (up to 1600 px, no metadata) and served
   by `GET /orbita-api/v1/noticias/imagenes/{id}`; the rich text is cleaned with an allowlist on the server and in the
-  browser. Flyway migration **`V8__noticias.sql`**. Tested on PostgreSQL 17 with 56 automatic checks and end to end on
+  browser. Flyway migration **`V8__noticias.sql`**. Tested on PostgreSQL 17 with 57 automatic checks and end to end on
   the lab cluster (propose, review, publish).
 
 ## Unreleased · Photos in People

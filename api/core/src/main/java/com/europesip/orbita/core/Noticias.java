@@ -46,12 +46,15 @@ import jakarta.json.JsonValue;
  *
  * Campos de una propuesta (JSON): {nombre del elemento de la plantilla: {"tipo": ..., "valor": ...}} con tipo
  * texto (texto plano, como mucho 1000), largo (texto plano, como mucho 4000), rico (HTML limpio con Html), imagen
- * (dirección de una imagen de noticias), fecha (aaaa-mm-ddThh:mm) o enlace (http, https o ruta del portal).
+ * (dirección de una imagen de noticias), fecha (aaaa-mm-ddThh:mm), enlace (http, https o ruta del portal) o diseno
+ * (clasico, portada, columnas, cartel o cita; otro valor se guarda como clasico).
  */
 final class Noticias {
 
     static final String IMAGENES = "/orbita-api/v1/noticias/imagenes/";
     private static final Set<String> ESTADOS = Set.of("BORRADOR", "REVISION", "DEVUELTA", "PUBLICADA", "RECHAZADA");
+    /** Diseños de una noticia (cómo la muestra la portada). */
+    static final Set<String> DISENOS = Set.of("clasico", "portada", "columnas", "cartel", "cita");
     private static final Pattern NOMBRE = Pattern.compile("[A-Za-z][A-Za-z0-9_-]{0,79}");
     private static final Pattern UUID = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
     private static final int MAX_IMAGEN = 10 * 1024 * 1024, ANCHO = 1600;
@@ -330,6 +333,8 @@ final class Noticias {
                 } catch (DateTimeParseException e) {
                     throw new Api.Aviso("La fecha no es válida.");
                 }
+            case "diseno":
+                return DISENOS.contains(v) ? v : "clasico";
             case "enlace":
                 if (v.isEmpty()) return "";
                 String l = v.toLowerCase(Locale.ROOT);

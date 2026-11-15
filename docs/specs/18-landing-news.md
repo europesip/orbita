@@ -24,7 +24,14 @@ communication (#3). The chart already talks to DX at install time (DXClient Job:
   (readable by all authenticated users).
 
 **Element naming** (how ÓRBITA's form shows a template element): rich text → editor; text → long text; short text whose
-name starts with `Imagen` → image upload, `Fecha` → date and time, `Enlace` → link; other short text → short text.
+name starts with `Imagen` → image upload, `Fecha` → date and time, `Enlace` → link, `Diseno` → design picker; other
+short text → short text.
+
+**Designs**: every template has a `Diseno` element (added to existing templates on upgrade; nothing is removed). Values:
+`clasico`, `portada` (full-page image with the headline on top), `columnas`, `cartel` (colour block with the headline
+and the key details) and `cita` (the standfirst as a quote); anything else is shown as `clasico`. Chosen with visual
+thumbnails in the form; applied to the landing card, the reader and the preview. Defaults per template: evento and
+breve `cartel`, bienvenida `cita`, logro `columnas`, noticia `clasico`.
 Other element types are not filled from ÓRBITA.
 
 **Landing page** (`portada` Script Application, first page; the theme logo links to it):
@@ -73,7 +80,7 @@ Events sign-up (#19) and the visual template designer (#20). Editing or withdraw
 Content Composer).
 
 ## Test plan
-- Embedded PostgreSQL 17, Flyway V1-V8: 56 automatic checks (HTML allowlist and XSS cases, images, field validation,
+- Embedded PostgreSQL 17, Flyway V1-V8: 57 automatic checks (HTML allowlist and XSS cases, images, field validation,
   permissions, states, notifications, landing summary, demo restore).
 - Lab cluster: `noticias.mjs` run twice (idempotent) and from the Job; reading as an employee; publishing as an editor
   and refused as an employee; browser walkthrough: landing page (desktop and mobile), reader, propose with image and

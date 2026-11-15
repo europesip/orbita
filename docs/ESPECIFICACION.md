@@ -202,6 +202,13 @@ noticia breve (entradilla, enlace), evento (entradilla, imagen, empieza, termina
 genera a partir de los elementos de la plantilla: texto enriquecido → editor de texto; texto → texto largo; texto corto
 que empieza por Imagen → subida de imagen, por Fecha → fecha y hora, por Enlace → enlace; el resto, texto corto.
 
+**Diseños**: cada noticia, de cualquier plantilla, elige cómo se ve: **clásico** (imagen arriba), **imagen a toda
+página** (el titular sobre la imagen), **dos columnas** (imagen a un lado), **cartel** (bloque de color con el titular
+grande y los datos) o **destacado** (la entradilla grande, como una cita). Se elige en el formulario con miniaturas y
+se ve en la vista previa, en la tarjeta de la portada y al abrir la noticia. Cada plantilla propone uno: evento y
+noticia breve, cartel; bienvenida, destacado; logro, dos columnas; noticia, clásico. Se guarda en el elemento `Diseno`
+de la plantilla de WCM (un valor desconocido se trata como clásico).
+
 **Proponer una noticia** (cualquiera): elegir plantilla, titular y sección, rellenar los campos, vista previa, guardar
 borrador y enviar a revisión. Estados: borrador → en revisión → publicada, o devuelta (con el comentario de RRHH, vuelve
 a la autora para cambiarla) o no se publica. Solo la autora ve sus borradores; RRHH ve las enviadas.

@@ -20,6 +20,16 @@ const pestanaDelEnlace = () => {
 /** Sección por defecto de cada plantilla (las de una plantilla nueva: la primera). */
 const SECCION_DE = {noticia: 'empresa', breve: 'empresa', evento: 'eventos', bienvenida: 'personas', logro: 'equipos'};
 const ICONO_PLANTILLA = {noticia: 'documento', breve: 'megafono', evento: 'evento', bienvenida: 'entrar', logro: 'trofeo'};
+/** Diseños de una noticia: cómo se ve en la portada y al abrirla (elemento Diseno de la plantilla de WCM). */
+const DISENOS = [
+  {id: 'clasico', nombre: 'Clásico', descripcion: 'Imagen arriba, titular y texto.'},
+  {id: 'portada', nombre: 'Imagen a toda página', descripcion: 'La imagen ocupa todo y el titular va encima.'},
+  {id: 'columnas', nombre: 'Dos columnas', descripcion: 'Imagen a un lado y texto al otro.'},
+  {id: 'cartel', nombre: 'Cartel', descripcion: 'Bloque de color con el titular grande y los datos destacados.'},
+  {id: 'cita', nombre: 'Destacado', descripcion: 'La entradilla grande, como una cita.'},
+];
+const DISENO_DE = {noticia: 'clasico', breve: 'cartel', evento: 'cartel', bienvenida: 'cita', logro: 'columnas'};
+const disenoDe = (campos) => { const d = valorDe(campos.Diseno); return DISENOS.some((x) => x.id === d) ? d : 'clasico'; };
 const ESTADO = {
   BORRADOR: {tono: 'gris', nombre: 'Borrador'}, REVISION: {tono: 'azul', nombre: 'En revisión'}, DEVUELTA: {tono: 'ambar', nombre: 'Devuelta'},
   PUBLICADA: {tono: 'verde', nombre: 'Publicada'}, RECHAZADA: {tono: 'rojo', nombre: 'No se publica'},
@@ -197,9 +207,9 @@ const nombreSeccion = (w, n) => { const s = w.estado === 'ok' && w.secciones.fin
 
 function TarjetaNoticia({n, w, grande, onLeer}) {
   const img = valorDe(n.campos.Imagen), entradilla = valorDe(n.campos.Entradilla);
-  const evento = valorDe(n.campos.Fecha);
+  const evento = valorDe(n.campos.Fecha), d = disenoDe(n.campos);
   return (
-    <button type="button" className={`si-po-noticia${grande ? ' si-po-grande' : ''}${img ? '' : ' si-po-sin-imagen'}`} onClick={() => onLeer(n)}>
+    <button type="button" className={`si-po-noticia si-po-t-${d}${grande ? ' si-po-grande' : ''}${img ? '' : ' si-po-sin-imagen'}`} onClick={() => onLeer(n)}>
       {img && <span className="si-po-imagen"><img src={img} alt="" loading="lazy" /></span>}
       <span className="si-po-texto">
         <span className="si-po-meta">{nombreSeccion(w, n.seccion) && <span className="si-po-seccion">{nombreSeccion(w, n.seccion)}</span>}
@@ -220,18 +230,50 @@ function Articulo({titulo, seccion, fecha: cuando, campos, w}) {
     v('Fecha') && [`${fechaHora(v('Fecha'))}${v('FechaFin') ? ` – ${fechaHora(v('FechaFin'))}` : ''}`, 'evento'],
     v('Lugar') && [v('Lugar'), 'ubicacion'], v('Equipo') && [v('Equipo'), 'personas'], v('Puesto') && [v('Puesto'), 'persona'],
   ].filter(Boolean);
-  return (
-    <article className="si-po-articulo">
-      {v('Imagen') && <img className="si-po-portadilla" src={v('Imagen')} alt="" />}
-      <p className="si-po-meta">{seccion && nombreSeccion(w, seccion) && <span className="si-po-seccion">{nombreSeccion(w, seccion)}</span>}
-        {cuando && <span>{fecha(cuando.slice(0, 10), {day: 'numeric', month: 'long', year: 'numeric'})}</span>}</p>
-      <h1>{titulo}</h1>
-      {v('Entradilla') && <p className="si-po-entradilla">{v('Entradilla')}</p>}
-      {datos.length > 0 && <p className="si-po-datos">{datos.map(([txt, i]) => <span key={i}><Icono n={i} /> {txt}</span>)}</p>}
-      {cuerpo && <div className="si-po-cuerpo" dangerouslySetInnerHTML={{__html: cuerpo}} />}
-      {enlace && wcm.enlaceSeguro(enlace) && <p><a className="si-boton si-boton-secundario" href={enlace} target="_blank" rel="noopener noreferrer"><span className="si-icono"><Icono n="externo" /></span>{t('Abrir el enlace')}</a></p>}
-    </article>
+  const d = disenoDe(campos), img = v('Imagen');
+  const meta = (
+    <p className="si-po-meta">{seccion && nombreSeccion(w, seccion) && <span className="si-po-seccion">{nombreSeccion(w, seccion)}</span>}
+      {cuando && <span>{fecha(cuando.slice(0, 10), {day: 'numeric', month: 'long', year: 'numeric'})}</span>}</p>
   );
+  const cabeza = <>{meta}<h1>{titulo}</h1></>;
+  const entradilla = v('Entradilla') && <p className="si-po-entradilla">{v('Entradilla')}</p>;
+  const lista = datos.length > 0 && <p className="si-po-datos">{datos.map(([txt, i]) => <span key={i}><Icono n={i} /> {txt}</span>)}</p>;
+  const resto = <>
+    {cuerpo && <div className="si-po-cuerpo" dangerouslySetInnerHTML={{__html: cuerpo}} />}
+    {enlace && wcm.enlaceSeguro(enlace) && <p><a className="si-boton si-boton-secundario" href={enlace} target="_blank" rel="noopener noreferrer"><span className="si-icono"><Icono n="externo" /></span>{t('Abrir el enlace')}</a></p>}
+  </>;
+  const foto = img && <img className="si-po-portadilla" src={img} alt="" />;
+  let dentro;
+  switch (d) {
+    case 'portada':
+      dentro = <>
+        <div className={`si-po-hero${img ? '' : ' si-po-hero-sin'}`} style={img ? {backgroundImage: `url("${img.replace(/"/g, '%22')}")`} : undefined}>
+          <div>{cabeza}{entradilla}</div>
+        </div>
+        {lista}{resto}
+      </>;
+      break;
+    case 'columnas':
+      dentro = <div className="si-po-cols">{img ? <div className="si-po-cols-img">{foto}</div> : null}<div>{cabeza}{entradilla}{lista}{resto}</div></div>;
+      break;
+    case 'cartel':
+      dentro = <>
+        <div className="si-po-cartel">{cabeza}{lista}{entradilla}</div>
+        {foto}{resto}
+      </>;
+      break;
+    case 'cita':
+      dentro = <>
+        {cabeza}
+        {v('Entradilla') && <blockquote className="si-po-cita">{v('Entradilla')}</blockquote>}
+        {(img || datos.length > 0) && <div className="si-po-cita-pie">{img && <img src={img} alt="" />}{lista}</div>}
+        {resto}
+      </>;
+      break;
+    default:
+      dentro = <>{foto}{cabeza}{entradilla}{lista}{resto}</>;
+  }
+  return <article className={`si-po-articulo si-po-d-${d}`}>{dentro}</article>;
 }
 
 function Lector({n, w, onCerrar}) {
@@ -400,7 +442,7 @@ function Formulario({w, plantilla, inicial, onCerrar, onGuardado, api, avisar, o
   const [seccion, setSeccion] = useState(inicial.seccion || (w.secciones.some((s) => s.nombre === defecto) ? defecto : (w.secciones[0] || {}).nombre));
   const [campos, setCampos] = useState(() => {
     const c = {};
-    for (const e of plantilla.elementos) if (e.tipo) c[e.nombre] = {tipo: e.tipo, valor: valorDe((inicial.campos || {})[e.nombre])};
+    for (const e of plantilla.elementos) if (e.tipo) c[e.nombre] = {tipo: e.tipo, valor: valorDe((inicial.campos || {})[e.nombre]) || (e.tipo === 'diseno' ? DISENO_DE[plantilla.nombre] || 'clasico' : '')};
     return c;
   });
   const [id, setId] = useState(inicial.id || null);
@@ -438,7 +480,7 @@ function Formulario({w, plantilla, inicial, onCerrar, onGuardado, api, avisar, o
               </select>
             </Campo>
           )}
-          {plantilla.elementos.filter((e) => e.tipo).map((e) => (
+          {plantilla.elementos.filter((e) => e.tipo).sort((a, b) => (b.tipo === 'diseno') - (a.tipo === 'diseno')).map((e) => (
             <CampoPlantilla key={e.nombre} e={e} valor={campos[e.nombre].valor} onCambio={(v) => fijar(e.nombre, v)} api={api} avisar={avisar} />
           ))}
         </div>
@@ -448,11 +490,22 @@ function Formulario({w, plantilla, inicial, onCerrar, onGuardado, api, avisar, o
 }
 
 const ETIQUETAS = {Entradilla: 'Entradilla', Imagen: 'Imagen', Cuerpo: 'Texto', Enlace: 'Enlace', Fecha: 'Empieza', FechaFin: 'Termina', Lugar: 'Lugar',
-  Equipo: 'Equipo', Puesto: 'Puesto y equipo'};
+  Equipo: 'Equipo', Puesto: 'Puesto y equipo', Diseno: 'Diseño'};
 
 function CampoPlantilla({e, valor, onCambio, api, avisar}) {
   const etiqueta = t(ETIQUETAS[e.nombre] || e.titulo);
   switch (e.tipo) {
+    case 'diseno': return (
+      <div className="si-campo"><span>{etiqueta}</span>
+        <div className="si-po-disenos" role="radiogroup" aria-label={etiqueta}>
+          {DISENOS.map((x) => (
+            <button key={x.id} type="button" role="radio" aria-checked={(valor || 'clasico') === x.id} className={`si-po-diseno${(valor || 'clasico') === x.id ? ' activo' : ''}`} onClick={() => onCambio(x.id)}>
+              <MiniDiseno id={x.id} /><strong>{t(x.nombre)}</strong><small>{t(x.descripcion)}</small>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
     case 'rico': return <Campo etiqueta={etiqueta}><EditorRico valor={valor} onCambio={onCambio} /></Campo>;
     case 'largo': return <Campo etiqueta={etiqueta}><textarea className="si-input" rows={4} maxLength={4000} value={valor} onChange={(x) => onCambio(x.target.value)} /></Campo>;
     case 'imagen': return <Campo etiqueta={etiqueta} ayuda={t('JPG o PNG, horizontal. Se guarda sin los datos de la cámara ni la ubicación.')}><SubirImagen valor={valor} onCambio={onCambio} api={api} avisar={avisar} /></Campo>;
@@ -465,6 +518,20 @@ function CampoPlantilla({e, valor, onCambio, api, avisar}) {
       </Campo>
     );
   }
+}
+
+/** Miniatura de un diseño (bloques: imagen, titular, texto). */
+function MiniDiseno({id}) {
+  const I = <i className="si-po-m-img" />, T = <i className="si-po-m-tit" />, X = <><i className="si-po-m-lin" /><i className="si-po-m-lin si-po-m-corta" /></>;
+  return (
+    <span className={`si-po-mini si-po-mini-${id}`} aria-hidden="true">
+      {id === 'clasico' && <>{I}{T}{X}</>}
+      {id === 'portada' && <span className="si-po-m-hero">{T}<i className="si-po-m-lin si-po-m-clara" /></span>}
+      {id === 'columnas' && <span className="si-po-m-cols">{I}<span>{T}{X}</span></span>}
+      {id === 'cartel' && <><span className="si-po-m-cartel">{T}<i className="si-po-m-lin si-po-m-clara" /></span>{X}</>}
+      {id === 'cita' && <>{T}<i className="si-po-m-quote">“</i>{X}</>}
+    </span>
+  );
 }
 
 /** Editor de texto enriquecido sencillo: negrita, cursiva, títulos, listas, cita y enlaces (se limpia al guardar). */

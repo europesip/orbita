@@ -10,6 +10,9 @@
 - **WCM preparado por el chart** (`news.*`, idempotente): biblioteca `orbita-noticias` (la lee todo el mundo;
   `news.editors` reciben Editor), cuatro secciones, cinco plantillas de autor con su plantilla de presentación (noticia,
   noticia breve, evento, bienvenida, logro de equipo) y seis noticias de demostración con imágenes en el DAM.
+- **Cinco diseños** para cualquier noticia, que se eligen en el formulario con miniaturas: clásico, imagen a toda
+  página, dos columnas, cartel y destacado (la entradilla como una cita). Se guardan en el elemento `Diseno` de WCM (se
+  añade a las plantillas que ya existen al actualizar); cada plantilla propone uno (un evento, el cartel).
 - **Proponer una noticia**: cualquiera elige una plantilla de WCM y rellena un formulario generado a partir de ella
   (titular, sección, entradilla, imagen, fechas, lugar, enlace y un cuerpo con un editor de texto sencillo), la ve en
   vista previa y la envía a revisión.
@@ -20,7 +23,7 @@
   los administradores (los usuarios con el rol Reviewer reciben 403).
 - API: `portada.resumen` y `noticias.*`; imágenes de las noticias redibujadas en JPEG (hasta 1600 px, sin metadatos) y
   servidas por `GET /orbita-api/v1/noticias/imagenes/{id}`; el texto enriquecido se limpia con una lista blanca en el
-  servidor y en el navegador. Migración Flyway **`V8__noticias.sql`**. Probado en PostgreSQL 17 con 56 comprobaciones
+  servidor y en el navegador. Migración Flyway **`V8__noticias.sql`**. Probado en PostgreSQL 17 con 57 comprobaciones
   automáticas y de principio a fin en el clúster del laboratorio (proponer, revisar, publicar).
 
 ## Sin publicar · Fotos en Personas
