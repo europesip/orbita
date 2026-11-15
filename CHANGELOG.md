@@ -15,11 +15,13 @@
   cinema (black, vignette, huge gradient headline), giant headline, diagonal (cut image and a tilted colour band), countdown
   (days, hours and minutes to an event, live) and celebration (confetti, centred, round image). Stored in the WCM element `Diseno` (added to existing
   templates on upgrade); each template suggests one (an event, the countdown; a welcome or an achievement, the celebration).
-- **Thirteen landing page designs**: classic, magazine, mosaic, carousel, timeline, headlines (with a breaking-news
+- **Sixteen landing page designs**: classic, magazine, mosaic, carousel, timeline, headlines (with a breaking-news
   ticker), dashboard, wall, night, focus, and three showpieces: **orbit** (the featured story as a glowing planet, the
   others as satellites on two rotating orbits that stop on hover), **neon** (glowing grid, flickering neon headlines,
   glass cards and a rotating gradient border) and **stories** (each story full screen with a fixed background, appearing
-  as you scroll, with a dot index and a reading progress bar). Animations honour *reduce motion*. HR chooses the company design; each person can choose another one for themselves
+  as you scroll, with a dot index and a reading progress bar), **constellation** (stories as twinkling stars joined by
+  lines that light up on hover), **3D carousel** (cards on a ring spinning in perspective, with a floor reflection) and
+  **bubbles** (stories floating as bubbles of different sizes that grow on hover). Animations honour *reduce motion*. HR chooses the company design; each person can choose another one for themselves
   and go back to the company one. Previewed live behind the chooser. Stored in the new table `AJUSTE` (`V9__ajustes.sql`).
 - **Propose a news item**: anybody chooses a WCM template and fills a form generated from it (headline, section,
   standfirst, image, dates, place, link and a rich-text body with a simple editor), previews it and sends it for review.

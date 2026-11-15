@@ -2222,3 +2222,80 @@
   .si-app .si-po-historia-txt { opacity: 1; transform: none; transition: none; }
   .si-app .si-po-historia { background-attachment: scroll; }
 }
+
+/* ============================================================================ Portada · Constelación, Carrusel 3D, Burbujas */
+.si-app .si-po-constel { position: relative; display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 24px; align-items: center; padding: 26px; border-radius: 10px; overflow: hidden;
+  background: radial-gradient(ellipse at 40% 40%, #12224f 0%, #070b20 55%, #02030a 100%); color: #e6e6f0; }
+.si-app .si-po-cielo { position: relative; aspect-ratio: 4 / 3; width: 100%; }
+.si-app .si-po-lineas { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.si-app .si-po-lineas line { stroke: rgba(166, 200, 255, .3); stroke-width: .25; vector-effect: non-scaling-stroke; stroke-width: 1.2px; transition: stroke .3s; }
+.si-app .si-po-lineas line.si-po-luz { stroke: #f1c21b; stroke-width: 2px; filter: drop-shadow(0 0 4px #f1c21b); }
+.si-app .si-po-estrella { position: absolute; width: 62px; height: 62px; margin: -31px 0 0 -31px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .85); padding: 0; cursor: pointer;
+  background: #1b2a5a center / cover no-repeat; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 20px;
+  box-shadow: 0 0 14px rgba(166, 200, 255, .7), 0 0 34px rgba(111, 140, 255, .35); animation: si-po-brillo 4s ease-in-out infinite; transition: transform .3s, box-shadow .3s, border-color .3s; }
+.si-app .si-po-estrella-mayor { width: 112px; height: 112px; margin: -56px 0 0 -56px; box-shadow: 0 0 22px rgba(166, 200, 255, .9), 0 0 60px rgba(111, 140, 255, .55); }
+.si-app .si-po-estrella.activa, .si-app .si-po-estrella:hover, .si-app .si-po-estrella:focus-visible { transform: scale(1.15); border-color: #f1c21b; box-shadow: 0 0 22px rgba(241, 194, 27, .9), 0 0 60px rgba(241, 194, 27, .45); outline: none; z-index: 2; }
+@keyframes si-po-brillo { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.25); } }
+.si-app .si-po-constel .si-po-meta, .si-app .si-po-constel .si-po-seccion { color: #a6c8ff; }
+/* Carrusel 3D */
+.si-app .si-po-escena { position: relative; padding: 40px 20px 26px; border-radius: 10px; overflow: hidden; perspective: 1400px; perspective-origin: 50% 30%;
+  background: radial-gradient(ellipse at 50% 20%, #2a3a7a, #0b1230 55%, #04060f); color: #e6e6f0; display: flex; flex-direction: column; align-items: center; }
+.si-app .si-po-anillo3d { position: relative; width: 240px; height: 320px; transform-style: preserve-3d; animation: si-po-anillo 40s linear infinite; margin-bottom: 30px; }
+.si-app .si-po-anillo3d.si-po-quieto { animation-play-state: paused; }
+@keyframes si-po-anillo { from { transform: translateZ(calc(var(--radio) * -1)) rotateY(0deg); } to { transform: translateZ(calc(var(--radio) * -1)) rotateY(-360deg); } }
+.si-app .si-po-cara { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 6px; text-align: left; padding: 0 0 14px; border-radius: 12px; overflow: hidden; cursor: pointer; font: inherit;
+  color: #fff; background: #141b3d; border: 1px solid rgba(166, 200, 255, .35); backface-visibility: hidden; box-shadow: 0 18px 40px rgba(0, 0, 0, .45); transition: box-shadow .3s, border-color .3s; }
+.si-app .si-po-cara:hover, .si-app .si-po-cara:focus-visible { border-color: #f1c21b; box-shadow: 0 0 34px rgba(241, 194, 27, .6); outline: none; }
+.si-app .si-po-cara-img { display: block; height: 62%; background: linear-gradient(135deg, #0550dc, #6f5bd6) center / cover no-repeat; }
+.si-app .si-po-cara > :not(.si-po-cara-img) { padding: 0 14px; }
+.si-app .si-po-cara strong { font-size: 17px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.si-app .si-po-escena .si-po-meta, .si-app .si-po-escena .si-po-seccion { color: #a6c8ff; }
+.si-app .si-po-suelo { width: 80%; height: 40px; margin-top: -30px; border-radius: 50%; background: radial-gradient(ellipse at center, rgba(166, 200, 255, .35), transparent 70%); filter: blur(6px); }
+.si-app .si-po-info-anillo { align-items: center; text-align: center; max-width: 720px; margin-top: 8px; }
+/* Burbujas */
+.si-app .si-po-pecera { position: relative; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, .35), transparent 30%), radial-gradient(circle at 80% 70%, rgba(166, 200, 255, .35), transparent 35%), linear-gradient(160deg, #a6c8ff, #6f5bd6 55%, #2a1b6b); }
+.si-app .si-po-burbuja { position: absolute; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; border: 0; padding: 0; cursor: pointer; overflow: hidden; font: inherit; color: #fff;
+  box-shadow: inset -10px -14px 30px rgba(0, 0, 0, .25), inset 10px 12px 26px rgba(255, 255, 255, .45), 0 14px 30px rgba(42, 27, 107, .35);
+  animation: si-po-flotar ease-in-out infinite alternate; transition: width .35s, box-shadow .35s; z-index: 1; }
+@keyframes si-po-flotar { from { translate: 0 -10px; } to { translate: 0 12px; } }
+.si-app .si-po-burbuja-img { position: absolute; inset: 0; background: linear-gradient(135deg, #0550dc, #8a3ffc) center / cover no-repeat; transition: transform .4s; }
+.si-app .si-po-burbuja::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, .55), transparent 28%), linear-gradient(180deg, transparent 45%, rgba(0, 0, 0, .65)); }
+.si-app .si-po-burbuja-txt { position: absolute; left: 12%; right: 12%; bottom: 14%; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; opacity: 0; transition: opacity .3s; }
+.si-app .si-po-burbuja-txt small { text-transform: uppercase; letter-spacing: .08em; font-size: 10px; font-weight: 700; color: #ffe08a; }
+.si-app .si-po-burbuja-txt strong { font-size: 13px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-shadow: 0 1px 4px rgba(0, 0, 0, .6); }
+.si-app .si-po-burbuja-mayor .si-po-burbuja-txt { opacity: 1; }
+.si-app .si-po-burbuja-mayor .si-po-burbuja-txt strong { font-size: 20px; }
+.si-app .si-po-burbuja:hover, .si-app .si-po-burbuja:focus-visible { z-index: 3; outline: none; box-shadow: 0 0 0 4px rgba(255, 255, 255, .8), 0 0 40px rgba(255, 255, 255, .6), 0 18px 40px rgba(42, 27, 107, .45); }
+.si-app .si-po-burbuja:hover .si-po-burbuja-img { transform: scale(1.08); }
+.si-app .si-po-burbuja:hover .si-po-burbuja-txt, .si-app .si-po-burbuja:focus-visible .si-po-burbuja-txt { opacity: 1; }
+.si-app .si-po-burbuja:hover { scale: 1.12; }
+/* Miniaturas */
+.si-app .si-po-mp-constelacion, .si-app .si-po-mp-anillo, .si-app .si-po-mp-burbujas { display: block; position: relative; }
+.si-app .si-po-mp-constelacion { background: radial-gradient(ellipse at 40% 40%, #12224f, #02030a); }
+.si-app .si-po-mp-constelacion i, .si-app .si-po-mp-anillo i, .si-app .si-po-mp-burbujas i { position: absolute; }
+.si-app .mp-cons-l { inset: 0; background: linear-gradient(32deg, transparent 49%, rgba(166, 200, 255, .5) 50%, transparent 51%), linear-gradient(-28deg, transparent 49%, rgba(166, 200, 255, .5) 50%, transparent 51%) !important; }
+.si-app .mp-cons-e { width: 10px; height: 10px; border-radius: 50% !important; background: #a6c8ff !important; box-shadow: 0 0 6px #a6c8ff; }
+.si-app .mp-e0 { left: 44%; top: 40%; width: 18px; height: 18px; background: #f1c21b !important; box-shadow: 0 0 8px #f1c21b; } .si-app .mp-e1 { left: 12%; top: 14%; } .si-app .mp-e2 { left: 80%; top: 12%; } .si-app .mp-e3 { left: 82%; top: 72%; } .si-app .mp-e4 { left: 16%; top: 74%; }
+.si-app .si-po-mp-anillo { background: radial-gradient(ellipse at 50% 20%, #2a3a7a, #04060f); perspective: 120px; }
+.si-app .mp-an { width: 18px; height: 26px; top: 26%; border-radius: 3px !important; background: #a6c8ff !important; border: 1px solid #fff; }
+.si-app .mp-a0 { left: 42%; width: 22px; height: 32px; top: 22%; background: #f1c21b !important; } .si-app .mp-a1 { left: 22%; transform: rotateY(40deg); opacity: .8; } .si-app .mp-a2 { left: 64%; transform: rotateY(-40deg); opacity: .8; }
+.si-app .mp-a3 { left: 6%; transform: rotateY(65deg); opacity: .5; } .si-app .mp-a4 { left: 82%; transform: rotateY(-65deg); opacity: .5; }
+.si-app .mp-an-suelo { left: 15%; right: 15%; bottom: 10px; height: 8px; border-radius: 50% !important; background: radial-gradient(ellipse, rgba(166, 200, 255, .5), transparent 70%) !important; }
+.si-app .si-po-mp-burbujas { background: linear-gradient(160deg, #a6c8ff, #6f5bd6 55%, #2a1b6b); }
+.si-app .mp-bu { border-radius: 50% !important; background: radial-gradient(circle at 30% 25%, #fff, #8a3ffc 45%, #2a1b6b) !important; box-shadow: inset -2px -3px 5px rgba(0, 0, 0, .3); }
+.si-app .mp-b0 { left: 36%; top: 22%; width: 34px; height: 34px; } .si-app .mp-b1 { left: 10%; top: 14%; width: 20px; height: 20px; } .si-app .mp-b2 { left: 74%; top: 10%; width: 22px; height: 22px; }
+.si-app .mp-b3 { left: 16%; top: 58%; width: 16px; height: 16px; } .si-app .mp-b4 { left: 72%; top: 56%; width: 18px; height: 18px; }
+@media (max-width: 980px) {
+  .si-app .si-po-constel { grid-template-columns: 1fr; }
+  .si-app .si-po-estrella { width: 44px; height: 44px; margin: -22px 0 0 -22px; }
+  .si-app .si-po-estrella-mayor { width: 76px; height: 76px; margin: -38px 0 0 -38px; }
+  .si-app .si-po-escena { perspective: 900px; }
+  .si-app .si-po-anillo3d { width: 170px; height: 240px; }
+  .si-app .si-po-pecera { aspect-ratio: 3 / 4; }
+  .si-app .si-po-burbuja-txt strong { font-size: 11px; }
+  .si-app .si-po-burbuja-mayor .si-po-burbuja-txt strong { font-size: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .si-app .si-po-estrella, .si-app .si-po-anillo3d, .si-app .si-po-burbuja { animation: none !important; }
+}

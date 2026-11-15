@@ -16,12 +16,14 @@
   cortada y banda de color inclinada), cuenta atrás (días, horas y minutos que faltan para un evento, en directo) y
   celebración (confeti, centrado e imagen redonda). Se guardan en el elemento `Diseno` de WCM (se
   añade a las plantillas que ya existen al actualizar); cada plantilla propone uno (un evento, la cuenta atrás; una bienvenida o un logro, la celebración).
-- **Trece diseños de portada**: clásica, revista, mosaico, carrusel, cronología, titulares (con cinta de última hora),
+- **Dieciséis diseños de portada**: clásica, revista, mosaico, carrusel, cronología, titulares (con cinta de última hora),
   tablero, muro, nocturna, enfoque y tres de escaparate: **órbita** (la destacada como un planeta brillante y las demás
   como satélites en dos órbitas que giran y se paran al pasar el ratón), **neón** (cuadrícula luminosa, titulares de neón
   que parpadean, tarjetas de cristal y un borde de colores que gira) e **historias** (cada noticia a pantalla completa con
-  la imagen fija, que aparece al llegar, con índice de puntos y barra de progreso). Las animaciones respetan la opción del
-  sistema de reducir el movimiento. RRHH elige el de la empresa; cada persona puede elegir otro para sí y volver al de la
+  la imagen fija, que aparece al llegar, con índice de puntos y barra de progreso), **constelación** (las noticias como
+  estrellas que titilan unidas por líneas que se iluminan al pasar el ratón), **carrusel 3D** (tarjetas en un anillo que
+  gira en perspectiva, con reflejo en el suelo) y **burbujas** (las noticias flotan como burbujas de distintos tamaños
+  que crecen al pasar el ratón). Las animaciones respetan la opción del sistema de reducir el movimiento. RRHH elige el de la empresa; cada persona puede elegir otro para sí y volver al de la
   empresa. Se ven al momento detrás del selector. Se guardan en la nueva tabla `AJUSTE` (`V9__ajustes.sql`).
 - **Proponer una noticia**: cualquiera elige una plantilla de WCM y rellena un formulario generado a partir de ella
   (titular, sección, entradilla, imagen, fechas, lugar, enlace y un cuerpo con un editor de texto sencillo), la ve en

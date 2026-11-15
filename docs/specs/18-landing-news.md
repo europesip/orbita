@@ -46,7 +46,7 @@ Other element types are not filled from ÓRBITA.
 
 **Landing page designs** (table `AJUSTE`, migration V9: `USUARIO` = `*` for the company): `clasica` (default),
 `revista`, `mosaico`, `carrusel`, `cronologia`, `titulares`, `tablero`, `muro`, `nocturna`, `foco`, `orbita`, `neon`,
-`historias`. Animations are disabled with `prefers-reduced-motion`. `portada.resumen`
+`historias`, `constelacion`, `anillo`, `burbujas`. Animations are disabled with `prefers-reduced-motion`. `portada.resumen`
 returns `diseno: {empresa, mio}`; `PUT portada/diseno` (`portada.diseno`) with `ambito` `mio` (empty value = back to the
 company one) or `empresa` (RRHH only). The chooser previews each design live behind it.
 

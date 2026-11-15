@@ -124,6 +124,9 @@ export const PORTADAS = [
   {id: 'orbita', nombre: 'Órbita', descripcion: 'La destacada es un planeta y las demás noticias giran a su alrededor.'},
   {id: 'neon', nombre: 'Neón', descripcion: 'Fondo oscuro con cuadrícula luminosa, titulares de neón y tarjetas de cristal.'},
   {id: 'historias', nombre: 'Historias', descripcion: 'Cada noticia a pantalla completa, como un reportaje que se recorre.'},
+  {id: 'constelacion', nombre: 'Constelación', descripcion: 'Cada noticia es una estrella unida a las demás, sobre un cielo nocturno.'},
+  {id: 'anillo', nombre: 'Carrusel 3D', descripcion: 'Las noticias en un anillo que gira en tres dimensiones.'},
+  {id: 'burbujas', nombre: 'Burbujas', descripcion: 'Las noticias flotan como burbujas de distintos tamaños.'},
 ];
 
 function Inicio({w, r, errorR, onLeer, onProponer, config, rrhh, diseno, onDisenar}) {
@@ -660,7 +663,119 @@ function Historias({w, r, errorR, onLeer, filtradas, eventos, cabeza, estado, pi
   );
 }
 
-const DISENOS_PORTADA = {orbita: Orbita, neon: Neon, historias: Historias, clasica: Clasica, revista: Revista, mosaico: Mosaico, carrusel: Carrusel, cronologia: Cronologia, titulares: Titulares,
+/** Panel con la noticia señalada (constelación, anillo, burbujas). */
+function InfoNoticia({n, w, onLeer, clase = ''}) {
+  if (!n) return null;
+  return (
+    <div className={`si-po-cosmos-info ${clase}`} aria-live="polite">
+      <span className="si-po-meta"><span className="si-po-seccion">{nombreSeccion(w, n.seccion)}</span><span>{cuando(n)}</span></span>
+      <strong>{n.titulo}</strong>
+      {valorDe(n.campos.Entradilla) && <span className="si-po-entradilla">{valorDe(n.campos.Entradilla)}</span>}
+      <Boton tipo="primario" onClick={() => onLeer(n)}>{t('Leer la noticia')}</Boton>
+    </div>
+  );
+}
+
+// Posiciones (en % del cielo) de las estrellas y las líneas que las unen
+const ESTRELLAS = [[50, 48], [18, 24], [80, 20], [88, 62], [64, 84], [30, 80], [9, 52], [40, 14], [70, 42], [33, 46]];
+const LINEAS = [[0, 9], [0, 8], [0, 4], [9, 6], [9, 1], [1, 7], [7, 2], [2, 8], [8, 3], [3, 4], [4, 5], [5, 6]];
+
+function Constelacion({w, r, errorR, onLeer, filtradas, eventos, cabeza, estado, pie}) {
+  const lista = filtradas.slice(0, ESTRELLAS.length);
+  const [sobre, setSobre] = useState(null);
+  const info = sobre != null ? lista[sobre] : lista[0];
+  const activa = sobre != null ? sobre : 0;
+  return (
+    <>
+      {cabeza}{estado}
+      {lista.length > 0 && (
+        <div className="si-po-constel">
+          <div className="si-po-estrellas" />
+          <div className="si-po-cielo">
+            <svg className="si-po-lineas" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              {LINEAS.filter(([a, b]) => a < lista.length && b < lista.length).map(([a, b]) => (
+                <line key={`${a}-${b}`} x1={ESTRELLAS[a][0]} y1={ESTRELLAS[a][1]} x2={ESTRELLAS[b][0]} y2={ESTRELLAS[b][1]} className={a === activa || b === activa ? 'si-po-luz' : ''} />
+              ))}
+            </svg>
+            {lista.map((n, k) => (
+              <button key={n.id} type="button" className={`si-po-estrella${k === 0 ? ' si-po-estrella-mayor' : ''}${k === activa ? ' activa' : ''}`}
+                style={{left: `${ESTRELLAS[k][0]}%`, top: `${ESTRELLAS[k][1]}%`, animationDelay: `${(k * 0.7) % 4}s`, ...fondo(imagenDe(n))}}
+                onClick={() => onLeer(n)} onMouseEnter={() => setSobre(k)} onMouseLeave={() => setSobre(null)} onFocus={() => setSobre(k)} onBlur={() => setSobre(null)} aria-label={n.titulo}>
+                {!imagenDe(n) && <span>{n.titulo.slice(0, 1)}</span>}
+              </button>
+            ))}
+          </div>
+          <InfoNoticia n={info} w={w} onLeer={onLeer} />
+        </div>
+      )}
+      <Lado r={r} errorR={errorR} eventos={eventos} onLeer={onLeer} clase="si-po-fila-lado" />
+      {pie}
+      <Accesos />
+    </>
+  );
+}
+
+function Anillo({w, r, errorR, onLeer, filtradas, eventos, cabeza, estado, pie}) {
+  const lista = filtradas.slice(0, 10);
+  const [sobre, setSobre] = useState(null);
+  const n = Math.max(lista.length, 3);
+  const radio = Math.round(120 / Math.tan(Math.PI / n)) + 40;
+  return (
+    <>
+      {cabeza}{estado}
+      {lista.length > 0 && (
+        <div className="si-po-escena">
+          <div className={`si-po-anillo3d${sobre != null ? ' si-po-quieto' : ''}`} style={{'--radio': `${radio}px`}}>
+            {lista.map((x, k) => (
+              <button key={x.id} type="button" className="si-po-cara" style={{transform: `rotateY(${(360 / n) * k}deg) translateZ(${radio}px)`}}
+                onClick={() => onLeer(x)} onMouseEnter={() => setSobre(k)} onMouseLeave={() => setSobre(null)} onFocus={() => setSobre(k)} onBlur={() => setSobre(null)}>
+                <span className="si-po-cara-img" style={fondo(imagenDe(x))} />
+                <span className="si-po-meta"><span className="si-po-seccion">{nombreSeccion(w, x.seccion)}</span></span>
+                <strong>{x.titulo}</strong>
+              </button>
+            ))}
+          </div>
+          <div className="si-po-suelo" />
+          <InfoNoticia n={sobre != null ? lista[sobre] : lista[0]} w={w} onLeer={onLeer} clase="si-po-info-anillo" />
+        </div>
+      )}
+      <Lado r={r} errorR={errorR} eventos={eventos} onLeer={onLeer} clase="si-po-fila-lado" />
+      {pie}
+      <Accesos />
+    </>
+  );
+}
+
+// Burbujas: posición (%), diámetro (% del ancho) y ritmo de flotación
+const BURBUJAS = [[50, 46, 30, 7], [17, 28, 19, 9], [82, 26, 18, 8], [26, 74, 16, 10], [74, 74, 17, 8.5], [8, 62, 11, 11], [92, 58, 11, 9.5], [38, 18, 10, 12], [62, 16, 11, 10.5], [50, 88, 10, 9]];
+
+function Burbujas({w, r, errorR, onLeer, filtradas, eventos, cabeza, estado, pie}) {
+  const lista = filtradas.slice(0, BURBUJAS.length);
+  return (
+    <>
+      {cabeza}{estado}
+      {lista.length > 0 && (
+        <div className="si-po-pecera">
+          {lista.map((n, k) => {
+            const [x, y, d, s] = BURBUJAS[k];
+            return (
+              <button key={n.id} type="button" className={`si-po-burbuja${k === 0 ? ' si-po-burbuja-mayor' : ''}`} onClick={() => onLeer(n)} aria-label={n.titulo}
+                style={{left: `${x}%`, top: `${y}%`, width: `${d}%`, animationDuration: `${s}s`, animationDelay: `${-k * 1.3}s`}}>
+                <span className="si-po-burbuja-img" style={fondo(imagenDe(n))} />
+                <span className="si-po-burbuja-txt"><small>{nombreSeccion(w, n.seccion)}</small><strong>{n.titulo}</strong></span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+      <Lado r={r} errorR={errorR} eventos={eventos} onLeer={onLeer} clase="si-po-fila-lado" />
+      {pie}
+      <Accesos />
+    </>
+  );
+}
+
+const DISENOS_PORTADA = {constelacion: Constelacion, anillo: Anillo, burbujas: Burbujas, orbita: Orbita, neon: Neon, historias: Historias, clasica: Clasica, revista: Revista, mosaico: Mosaico, carrusel: Carrusel, cronologia: Cronologia, titulares: Titulares,
   tablero: Tablero, muro: Muro, nocturna: Nocturna, foco: Foco};
 
 /** Miniatura de un diseño de portada. */
@@ -680,6 +795,9 @@ function MiniPortada({id}) {
     orbita: [b('mp-orb-a2'), b('mp-orb-a1'), b('mp-orb-pl'), b('mp-orb-s mp-s1'), b('mp-orb-s mp-s2'), b('mp-orb-s mp-s3'), b('mp-orb-s mp-s4')],
     neon: [b('mp-neon-t'), b('mp-neon-h'), b('mp-neon-c'), b('mp-neon-c mp-n2'), b('mp-neon-c mp-n3')],
     historias: [b('mp-hist mp-h1'), b('mp-hist mp-h2'), b('mp-hist-t'), b('mp-hist-p')],
+    constelacion: [b('mp-cons-l'), b('mp-cons-e mp-e0'), b('mp-cons-e mp-e1'), b('mp-cons-e mp-e2'), b('mp-cons-e mp-e3'), b('mp-cons-e mp-e4')],
+    anillo: [b('mp-an mp-a0'), b('mp-an mp-a1'), b('mp-an mp-a2'), b('mp-an mp-a3'), b('mp-an mp-a4'), b('mp-an-suelo')],
+    burbujas: [b('mp-bu mp-b0'), b('mp-bu mp-b1'), b('mp-bu mp-b2'), b('mp-bu mp-b3'), b('mp-bu mp-b4')],
   };
   return <span className={`si-po-mp si-po-mp-${id}`} aria-hidden="true">{bloques[id]}</span>;
 }
