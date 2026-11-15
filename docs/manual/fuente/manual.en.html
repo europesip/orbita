@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The ÓRBITA apps, explained simply</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+<!-- ============================================================ Cover -->
+<section class="cubierta">
+  <div class="ante">ÓRBITA 3.2 · intranet suite for HCL DX Compose CF238/CF239 · EUROPESIP</div>
+  <h1>The ÓRBITA<br>apps,<br><span>explained simply</span></h1>
+  <p class="lead">What the eleven apps are, how they are built inside, how they evolved from WebSphere Portal 8.5 to
+    version 3.2, and how to install them with Helm, step by step.</p>
+  <div class="caja"><b>Repository</b>
+    <code>https://github.com/europesip/orbita</code> · chart <code>oci://ghcr.io/europesip/charts/hcl-dx-orbita</code> ·
+    images in <code>ghcr.io/europesip/orbita</code> (public)</div>
+
+  <div class="orbita-portada" id="orbita">
+    <svg class="anillo" viewBox="0 0 500 255" preserveAspectRatio="none"><ellipse cx="250" cy="127" rx="215" ry="100" fill="none" stroke="#9dbcff" stroke-width="1.4" stroke-dasharray="5 5"/></svg>
+    <div class="centro">ÓRBITA<small>version 3.2</small></div>
+  </div>
+
+  <h2>Contents</h2>
+  <div class="indice">
+    <div>1 · What ÓRBITA is</div><div>2 · A look at the apps</div><div>3 · The home page and the WCM news</div>
+    <div>4 · Demo users and rules</div><div>5 · How it was made: four stages</div><div>6 · The map: where each piece lives</div>
+    <div>7 · Inside: the code</div><div>8 · Who the user is: DX says so</div><div>9 · AI: assistant and MCP server</div>
+    <div>10 · How it is built and published</div><div>11 · Tutorial · install with Helm</div><div>12 · Check, IQ and walkthrough</div>
+    <div>13 · Upgrade, uninstall, change</div><div>14 · Version history</div><div>15 · Pitfalls and cheat sheet</div>
+  </div>
+  <p class="pie-cubierta">ÓRBITA installs on an HCL DX Compose with PostgreSQL. In the labs environment
+    (<code>github.com/europesip/hcl-dx-compose-labs</code>) it is Lab 5. PolyForm Noncommercial 1.0.0 licence.
+    Copyright © 2026 EUROPESIP. This edition describes version 3.2 (in review: the published chart is still 3.1.2).</p>
+</section>
+
+<!-- ============================================================ 1 -->
+<section>
+  <h1>1 · What ÓRBITA is</h1>
+  <p class="lead">ÓRBITA is an <b>employee intranet</b> for HCL DX Compose: a home page with company news, time tracking,
+    holidays, expenses, HR communication, the people directory, documents and surveys. Managers approve from an inbox, and
+    an <b>AI assistant</b> can do almost all of it in plain language.</p>
+  <div class="caja analogia"><b>Analogy</b>If DX Compose is the company building, ÓRBITA is everything on the HR floor: the
+    notice board at the entrance (the home page), the service desks (the pages), the back office where the paperwork is done
+    (the API) and the filing cabinet (PostgreSQL). The notices on the board are not kept by ÓRBITA: they are WCM content,
+    DX's own content manager.</div>
+
+  <h2>The eleven apps</h2>
+  <div class="apps">
+    <div class="app-t nueva"><img src="img/app-portada.svg"><div><b>Home</b><span>The first page: WCM news in eleven designs,
+      HR notices to acknowledge, upcoming events and holidays, celebrations, the open survey and quick links. Sixteen home
+      page designs.</span></div></div>
+    <div class="app-t"><img src="img/app-inicio.svg"><div><b>My intranet</b><span>The personal dashboard: quick clock-in, hours
+      of the last weeks, holidays, expenses, what you have to approve, who is out, new payslips and notifications.</span></div></div>
+    <div class="app-t"><img src="img/app-fichaje.svg"><div><b>Time tracking</b><span>Clock in · Clock out · Back; breaks with a
+      reason, office or remote, the day's timeline, monthly record and corrections (Spanish working-time record, RDL 8/2019).</span></div></div>
+    <div class="app-t"><img src="img/app-vacaciones.svg"><div><b>Holidays</b><span>The year's balance, the whole year in a
+      calendar where days are requested by dragging, and the team schedule.</span></div></div>
+    <div class="app-t"><img src="img/app-gastos.svg"><div><b>Expenses and travel</b><span>Expense reports with receipts (photo or
+      PDF, read with OCR in the browser), policy per category, trips and payment by Finance.</span></div></div>
+    <div class="app-t"><img src="img/app-aprobaciones.svg"><div><b>Approvals</b><span>The manager's inbox: absences, corrections,
+      expense reports and trips, with how many people are out on those days.</span></div></div>
+    <div class="app-t nueva"><img src="img/app-comunicacion.svg"><div><b>HR communication</b><span>Notices with read receipts,
+      private questions to HR with suggested answers, and an FAQ.</span></div></div>
+    <div class="app-t nueva"><img src="img/app-personas.svg"><div><b>People</b><span>Directory with today's availability, profiles
+      with <b>photos</b>, org chart, celebrations and peer recognition.</span></div></div>
+    <div class="app-t nueva"><img src="img/app-documentos.svg"><div><b>My documents</b><span>Payslips with their amounts,
+      certificates, contracts with acknowledgement of receipt, and uploads to HR. Managers see nothing of their team.</span></div></div>
+    <div class="app-t nueva"><img src="img/app-encuestas.svg"><div><b>Surveys</b><span>Engagement and pulse surveys, anonymous by
+      design: templates, eight question types, report with favourability, eNPS, heat map and action plan.</span></div></div>
+    <div class="app-t"><img src="img/app-kiosco.svg"><div><b>Time clock kiosk</b><span>A tablet at the entrance: everyone clocks
+      in with their PIN or by showing their badge's QR code to the camera.</span></div></div>
+    <div class="app-t" style="border-style:dashed"><div><b>The ones in blue</b><span>arrived after 2.x. Version 2.2.1 (the one in
+      the previous manual) had six apps; now there are eleven.</span></div></div>
+  </div>
+</section>
+
+<!-- ============================================================ 2 -->
+<section>
+  <h1>2 · A look at the apps</h1>
+  <p class="lead">This is how they look in DX Compose, with DX's own style: Inter typeface, DX blue, thin borders and IBM
+    Carbon icons. Screenshots from the lab with the demo users.</p>
+  <div class="capturas">
+    <figure><img src="img/mi-intranet.en.jpg"><figcaption>My intranet: everyone's dashboard.</figcaption></figure>
+    <figure><img src="img/fichaje.en.jpg"><figcaption>Time tracking: the big button and the day's timeline.</figcaption></figure>
+    <figure><img src="img/vacaciones.en.jpg"><figcaption>Holidays: balance and the year's calendar.</figcaption></figure>
+    <figure><img src="img/gastos.en.jpg"><figcaption>Expenses and travel: reports, receipts and policy.</figcaption></figure>
+    <figure><img src="img/aprobaciones.en.jpg"><figcaption>Approvals: the manager's inbox.</figcaption></figure>
+    <figure><img src="img/comunicacion.en.jpg"><figcaption>HR communication: notices as news.</figcaption></figure>
+    <figure><img src="img/personas.en.jpg"><figcaption>People: directory with photos and availability.</figcaption></figure>
+    <figure><img src="img/documentos.en.jpg"><figcaption>My documents: the latest payslip and the year.</figcaption></figure>
+    <figure><img src="img/encuestas.en.jpg"><figcaption>Surveys: answer and report.</figcaption></figure>
+  </div>
+  <h2>And what they all share</h2>
+  <table>
+    <tr><th style="width:28%">Feature</th><th>What it does</th></tr>
+    <tr><td>“Ask ÓRBITA” assistant</td><td>A chat in a side panel that acts <b>as the user who asks</b>, with 43 tools: “how many
+      holiday days do I have left?”, “clock me in, working remotely”, “who is Jordi's manager?”. By default it uses the model
+      through LiteLLM; it can also be the HCL DX IQ chat (section 9).</td></tr>
+    <tr><td>Photos</td><td>Everyone sets their own in People (or HR does it for them). It shows in every app, in the portal
+      header and in the DX toolbar. Without a photo, the initials.</td></tr>
+    <tr><td>Spanish and English</td><td>Interface, dates, amounts and notifications in the language of each user's DX profile.
+      The demo data is in Spanish.</td></tr>
+    <tr><td>Privacy</td><td>Managers do not see questions to HR; surveys store answers without user or time; the directory never
+      shows the reason for an absence; payslips are seen only by their owner, HR and Finance.</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ 3 -->
+<section>
+  <h1>3 · The home page and the WCM news</h1>
+  <p class="lead">Home is ÓRBITA's first page. Its news items are <b>HCL DX WCM content</b>: the chart prepares the library and
+    the templates, anybody proposes a news item from ÓRBITA, and HR reviews it and publishes it in WCM.</p>
+  <div class="dos">
+    <figure class="grande"><img src="img/portada.en.jpg"><figcaption>Home (classic design): news on the left; HR notices,
+      survey and upcoming events on the right.</figcaption></figure>
+    <div>
+      <div class="caja analogia" style="margin-top:0"><b>Analogy: the company newspaper</b>WCM is the printing press and the
+        archive: it keeps every story with its template. ÓRBITA is the newsroom: anybody can bring an article, the editor
+        (HR) corrects it and sends it to print. Home is the newsstand where it is read.</div>
+      <h2>What the chart prepares in WCM</h2>
+      <table class="ligera">
+        <tr><td><b>Library</b></td><td><code>orbita-noticias</code>: readable by every authenticated user; Editor for
+          <code>news.editors</code>.</td></tr>
+        <tr><td><b>Sections</b></td><td>empresa · personas · eventos · equipos (company, people, events, teams)</td></tr>
+        <tr><td><b>Templates</b></td><td>news · brief · event · welcome · achievement, each with its presentation template</td></tr>
+        <tr><td><b>Demo</b></td><td>six news items, with their images in the DAM collection “ÓRBITA Noticias”</td></tr>
+      </table>
+      <p class="peq">Done by <code>files/noticias.mjs</code> in the install Job, after the theme. It is idempotent: what already
+        exists is kept.</p>
+    </div>
+  </div>
+
+  <h2>From proposal to home page</h2>
+  <div class="flujo">
+    <div class="paso"><b>1 · Propose</b>macarena picks a template and fills in the form ÓRBITA builds from it</div>
+    <div class="fl">→</div>
+    <div class="paso"><b>2 · Send</b>a preview, then off to review (state REVISION); HR is notified</div>
+    <div class="fl">→</div>
+    <div class="paso osc"><b>3 · Review (HR)</b>correct, return with a comment, reject or publish</div>
+    <div class="fl">→</div>
+    <div class="paso verde"><b>4 · Publish in WCM</b>patricia's browser creates the content with Editor rights</div>
+    <div class="fl">→</div>
+    <div class="paso"><b>5 · Home</b>everybody reads it; the author is notified</div>
+  </div>
+  <table>
+    <tr><th style="width:24%">Template element</th><th>How ÓRBITA's form fills it in</th></tr>
+    <tr><td>Rich text</td><td>A simple editor (bold, lists, headings, links). Cleaned with an allowlist on the server and in the browser.</td></tr>
+    <tr><td>Short text whose name starts with…</td><td><code>Imagen</code> → image upload (redrawn as JPEG, up to 1600 px, no metadata) ·
+      <code>Fecha</code> → date and time · <code>Enlace</code> → link · <code>Diseno</code> → design picker · other → text</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2 style="margin-top:0">Eleven designs for each news item</h2>
+  <p>Chosen with thumbnails in the form and stored in the WCM element <code>Diseno</code>. Applied to the home page card, the
+    reader and the preview. Each template suggests one.</p>
+  <div class="disenos">
+    <div class="diseno"><div class="mini"><i style="left:8%;top:18%;width:38%;height:64%;background:#9fb6dd"></i><i style="left:52%;top:25%;width:40%;height:9%;background:#0f2a4f"></i><i style="left:52%;top:45%;width:36%;height:6%;background:#b9c2d0"></i></div><b>Classic</b>image and text (news)</div>
+    <div class="diseno"><div class="mini" style="background:#5d7fb8"><i style="left:8%;bottom:14%;width:70%;height:14%;background:#fff"></i></div><b>Cover</b>full-page image with the headline on top</div>
+    <div class="diseno"><div class="mini"><i style="left:6%;top:15%;width:42%;height:70%;background:#c9d4e6"></i><i style="left:52%;top:15%;width:42%;height:70%;background:#c9d4e6"></i></div><b>Two columns</b>text in two columns</div>
+    <div class="diseno"><div class="mini" style="background:#0b5fff"><i style="left:8%;top:25%;width:60%;height:16%;background:#fff"></i><i style="left:8%;top:55%;width:40%;height:8%;background:#cfe0ff"></i></div><b>Poster</b>colour block with headline and key details (brief)</div>
+    <div class="diseno"><div class="mini"><i style="left:8%;top:20%;width:3%;height:60%;background:#0b5fff"></i><i style="left:16%;top:30%;width:70%;height:10%;background:#5b6474"></i><i style="left:16%;top:50%;width:55%;height:10%;background:#5b6474"></i></div><b>Quote</b>the standfirst as a quote</div>
+    <div class="diseno"><div class="mini" style="background:#fbf8f1"><i style="left:8%;top:12%;width:84%;height:14%;background:#222"></i><i style="left:8%;top:38%;width:40%;height:50%;background:#d8d2c4"></i><i style="left:52%;top:38%;width:40%;height:50%;background:#d8d2c4"></i></div><b>Magazine</b>newspaper headline, drop cap</div>
+    <div class="diseno"><div class="mini" style="background:#05070d"><i style="left:10%;top:38%;width:80%;height:22%;background:linear-gradient(90deg,#ff4d8d,#ffb347)"></i></div><b>Cinema</b>black, vignette, huge gradient headline</div>
+    <div class="diseno"><div class="mini"><i style="left:6%;top:14%;width:88%;height:30%;background:#0f2a4f"></i><i style="left:40%;top:52%;width:50%;height:40%;background:#9fb6dd"></i></div><b>Headline</b>giant capitals and an offset image</div>
+    <div class="diseno"><div class="mini" style="background:#9fb6dd"><i style="left:-10%;top:50%;width:120%;height:28%;background:#0b5fff;transform:rotate(-8deg)"></i></div><b>Diagonal</b>cut image and a tilted band</div>
+    <div class="diseno"><div class="mini" style="background:#0f2a4f"><i style="left:10%;top:28%;width:16%;height:44%;background:#fff"></i><i style="left:31%;top:28%;width:16%;height:44%;background:#fff"></i><i style="left:52%;top:28%;width:16%;height:44%;background:#fff"></i><i style="left:73%;top:28%;width:16%;height:44%;background:#fff"></i></div><b>Countdown</b>live days, hours and minutes (event)</div>
+    <div class="diseno"><div class="mini" style="background:#fff7e6"><i style="left:40%;top:14%;width:20%;height:56%;border-radius:50%;background:#f0b44c"></i><i style="left:12%;top:20%;width:4%;height:10%;background:#e4506f"></i><i style="left:80%;top:30%;width:4%;height:10%;background:#3fb27f"></i><i style="left:22%;top:70%;width:4%;height:10%;background:#0b5fff"></i></div><b>Celebration</b>confetti and a round image (welcome, achievement)</div>
+    <div class="diseno" style="border-style:dashed"><b>Any other value?</b>Anything unknown is shown as classic.</div>
+  </div>
+
+  <h2>Sixteen home page designs</h2>
+  <p>HR chooses the company's; each person can choose another one for themselves and go back to the company's at any time.
+    They are previewed live behind the chooser, stored in the table <code>AJUSTE</code> (migration V9), and the animations
+    respect the system's reduce-motion setting.</p>
+  <table>
+    <tr><th style="width:20%">Family</th><th>Designs</th></tr>
+    <tr><td>Sober</td><td><b>classic</b> (default) · <b>magazine</b> · <b>mosaic</b> · <b>headlines</b> (with a breaking-news
+      ticker) · <b>board</b> · <b>wall</b> · <b>timeline</b> · <b>focus</b></td></tr>
+    <tr><td>With motion</td><td><b>carousel</b> · <b>night</b> (dark background) · <b>stories</b> (each item full screen with a
+      dot index and a progress bar)</td></tr>
+    <tr><td>Showcase</td><td><b>orbit</b> (the featured item as a planet, the rest as satellites on two rotating orbits) ·
+      <b>neon</b> (glowing grid and glass cards) · <b>constellation</b> (stars joined by lines) · <b>3D carousel</b> (ring in
+      perspective with a reflection) · <b>bubbles</b> (news float and grow on hover)</td></tr>
+  </table>
+  <div class="dos">
+    <figure><img src="img/proponer-plantillas.en.jpg" style="height:115pt;object-fit:cover;object-position:top"><figcaption>Propose: pick the WCM template.</figcaption></figure>
+    <figure><img src="img/proponer-formulario.en.jpg" style="height:115pt;object-fit:cover;object-position:top"><figcaption>The form built from the template.</figcaption></figure>
+  </div>
+  <div class="caja ojo"><b>Why is the review in ÓRBITA and not in a WCM workflow?</b>Tested on CF238: with a WCM workflow,
+    <code>POST /wcmrest-v2/item/{id}/approve</code> works for the DX administrator but answers 403 to users with the Reviewer
+    role (even Manager). Reviewing in ÓRBITA, employees only need read access in WCM, and editors publish. They can still use
+    Content Composer. Who publishes: the users in <code>news.editors</code> (in the labs, the group <code>cn=dxmarketing</code>,
+    where patricia is).</div>
+</section>
+
+<!-- ============================================================ 4 -->
+<section>
+  <h1>4 · Demo users and rules</h1>
+  <p class="lead">Nobody is created: the demo story is written as roles, and each role is played by a DX user who already
+    exists.</p>
+  <div class="caja analogia"><b>Analogy: a play</b>The script (the demo data) has characters: the HR person, the sales
+    manager, a sales rep… The chart only needs to know which actor (which DX user) plays each role. That is the value
+    <code>demo.people</code>. By default, the actors are the users of the labs' OpenLDAP.</div>
+  <div class="flujo">
+    <div class="paso"><b>Employee</b>clocks in, requests, sees their own data, proposes news</div><div class="fl">⊂</div>
+    <div class="paso"><b>Manager</b>+ sees their team and approves its requests</div><div class="fl">⊂</div>
+    <div class="paso osc"><b>HR</b>+ the whole staff, notices, surveys, documents, reviews news, restores the demo</div><div class="fl">·</div>
+    <div class="paso verde"><b>Finance</b>+ pays approved reports and publishes payslips</div>
+  </div>
+  <table>
+    <tr><th style="width:22%">Role</th><th style="width:15%">User (labs)</th><th>Role in ÓRBITA</th><th class="n" style="width:14%">Kiosk PIN</th></tr>
+    <tr><td>rrhh</td><td>patricia</td><td>HR: the whole staff; reviews and publishes news (Editor in WCM)</td><td class="n">1000</td></tr>
+    <tr><td>ventas-responsable</td><td>andres</td><td>Sales manager: approves the team</td><td class="n">2001</td></tr>
+    <tr><td>ventas-1</td><td>macarena</td><td>Sales rep</td><td class="n">1111</td></tr>
+    <tr><td>ventas-2</td><td>eduardo</td><td>Sales rep</td><td class="n">2222</td></tr>
+    <tr><td>tecnologia-responsable</td><td>enrique</td><td>Technology manager</td><td class="n">3001</td></tr>
+    <tr><td>tecnologia-1</td><td>jordi</td><td>Developer</td><td class="n">3333</td></tr>
+    <tr><td>administracion</td><td>german</td><td>Finance: pays expense reports, publishes payslips</td><td class="n">6001</td></tr>
+    <tr><td>tecnologia-2, -3</td><td>(fictitious)</td><td>Appear in the data; nobody signs in with them</td><td class="n">4444, 5555</td></tr>
+  </table>
+  <div class="dos">
+    <div class="caja"><b>Passwords</b>Those of these users in your directory (in the labs, the Lab 2A OpenLDAP). ÓRBITA stores
+      no passwords.</div>
+    <div class="caja ok"><b>Start the demo again</b>HR › Time tracking › Reports › Restore demo data. The data is relative to the
+      day it is loaded. WCM news are not touched.</div>
+  </div>
+  <h2>Business rules worth knowing</h2>
+  <table>
+    <tr><th style="width:24%">Topic</th><th>Rule</th></tr>
+    <tr><td>Working hours</td><td>Monday to Thursday 8 h, Friday 7 h (39 h a week). National holidays loaded; HR adds local ones.</td></tr>
+    <tr><td>Clock entries</td><td>Never edited or deleted: a mistake is fixed with a correction the manager approves.</td></tr>
+    <tr><td>Breaks</td><td>Breakfast, lunch, personal errands: not working time. Doctor and customer visit: working time.</td></tr>
+    <tr><td>Expense policy</td><td>Meals up to €30, lodging €120/night, mileage €0.26/km, other €50. Above that, a justification is required.</td></tr>
+    <tr><td>Surveys</td><td>Results only from a minimum number of answers (5 by default, never below 3); a department is hidden if it could be inferred by subtraction.</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ 5 -->
+<section>
+  <h1>5 · How it was made: four stages</h1>
+  <p class="lead">ÓRBITA was born as WebSphere Portal 8.5 portlets. 1.0 brought it to DX Compose with scripts; 2.0 turned it
+    into a product with a single Helm chart; 3.x made it a complete intranet, integrated with DX.</p>
+  <div class="etapas">
+    <div class="etapa"><h3>Portal 8.5</h3><b>A portlet WAR</b><ul><li>React inside each JSR 286 portlet</li>
+      <li>Logic in serveResource()</li><li>Portal users</li><li>Derby database</li><li>Installed with a script</li></ul></div>
+    <div class="etapa"><h3>1.0.0</h3><b>Migration to DX Compose</b><ul><li>6 Script Applications</li><li>suite-api (Java 8)</li>
+      <li>Employees created in LDAP</li><li>SSO by copying LTPA keys</li><li>Scripts k8s/01…06</li><li>MCP with 2 tools</li></ul></div>
+    <div class="etapa"><h3>2.0 → 2.3</h3><b>A product with a chart</b><ul><li>helm install hcl-dx-orbita</li><li>Public images</li>
+      <li>DX says who the user is</li><li>REST API /orbita-api/v1</li><li>Java 21, Flyway, PostgreSQL</li><li>MCP with 26 tools</li></ul></div>
+    <div class="etapa"><h3>3.0 → 3.2</h3><b>Intranet integrated with DX</b><ul><li>Own assistant (LiteLLM)</li><li>Spanish and English</li>
+      <li>Sample theme with the DAM</li><li>OpenID Connect</li><li>11 apps, photos</li><li>Home with WCM news</li><li>43 AI tools</li></ul></div>
+  </div>
+  <div class="caja analogia"><b>Analogy</b>In Portal 8.5 each app was all-in-one: shop window, office and archive in the same
+    box. In 1.0 they were split into pieces, but the assembly was hand-made. In 2.0 it became flat-pack furniture:
+    mass-produced parts (images) and a single assembly manual (the chart). In 3.x the furniture matches the rest of the house:
+    it uses DX's theme, DAM, WCM and toolbar.</div>
+  <h2>What changed at each step</h2>
+  <table>
+    <tr><th style="width:16%">Topic</th><th>1.0</th><th>2.x</th><th>3.x</th></tr>
+    <tr><td>Installation</td><td>Scripts k8s/01…06, kubectl cp</td><td>One chart: <code>helm upgrade --install</code></td><td>The same chart, which also prepares theme, DAM and WCM</td></tr>
+    <tr><td>Identity</td><td>Copied LTPA keys</td><td>DX says who it is (LtpaToken2 cookie)</td><td>Also with OpenID Connect (<code>WAS_n*</code> cookies)</td></tr>
+    <tr><td>Apps</td><td>6</td><td>6</td><td>11: + Home, HR communication, People, Documents, Surveys</td></tr>
+    <tr><td>Data</td><td>A change wiped everything</td><td>Flyway V1, V2</td><td>Flyway V1 … V9; nothing is deleted on upgrade</td></tr>
+    <tr><td>AI</td><td>2 tools, user as a parameter</td><td>26 tools in IQ, as the session user</td><td>43 tools; own assistant by default, or IQ</td></tr>
+    <tr><td>Content</td><td>—</td><td>—</td><td>News in WCM, images and logos in the DAM</td></tr>
+    <tr><td>Language</td><td>Spanish</td><td>Spanish (AI in ES/EN)</td><td>Spanish and English throughout</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ 6 -->
+<section>
+  <h1>6 · The map: where each piece lives</h1>
+  <p class="lead">ÓRBITA is not from HCL, so it is installed in the namespace for third-party tools (<code>dx-shared</code> in
+    the labs), next to PostgreSQL and LiteLLM. In DX it leaves its pages, its Script Applications, its theme, its DAM images
+    and the news library.</p>
+  <div class="mapa">
+    <div class="navegador"><b>Employee</b><br>browser<br><br><span class="peq">a single host:<br>/wps · /dx · /orbita-api</span></div>
+    <div class="ns"><b>dx-demo · HCL DX Compose</b>
+      <div class="pieza dx"><b>Web Engine</b> · pages <code>/wps/myportal/Home/portada</code>, fichaje…</div>
+      <div class="pieza dx"><b>WCM</b> · 11 Script Applications (React) and the <code>orbita-noticias</code> library</div>
+      <div class="pieza dx"><b>OrbitaTheme</b> · header, logo, user photo, assistant button</div>
+      <div class="pieza dx"><b>DAM</b> · collections “ÓRBITA” (logos) and “ÓRBITA Noticias”</div>
+      <div class="pieza dx"><b>DX profile API</b> · answers “this cookie belongs to macarena”</div>
+      <div class="pieza dx"><b>DX IQ Integrator</b> (optional) · HCL's AI chat</div>
+    </div>
+    <div class="ns shared"><b>dx-shared · release “orbita”</b>
+      <div class="pieza or"><b>orbita-api</b> (Open Liberty, Java 21)<br>:9080 <code>/orbita-api/v1</code> REST API and assistant<br>:9081 <code>/mcp</code> tools for IQ (NetworkPolicy)</div>
+      <div class="pieza or"><b>PostgreSQL</b> (required) · database and user <code>orbita</code>, tables by Flyway</div>
+      <div class="pieza or"><b>LiteLLM</b> · the AI model of the own assistant</div>
+      <div class="pieza or"><b>Install Jobs</b><br><code>orbita-db</code>: creates database and user<br><code>orbita-scriptapps-push</code>: DXClient uploads the apps, creates the pages, the theme and WCM</div>
+    </div>
+  </div>
+  <div class="caja"><b>The “same domain” trick</b>Everything hangs off <code>https://&lt;DX host&gt;</code>: the portal at
+    <code>/wps</code>, WCM at <code>/wps/mycontenthandler</code>, the API at <code>/orbita-api</code>. So the browser sends the
+    same session cookie to all of them, with no CORS and no double login. That is why Home can read WCM with the viewer's session.</div>
+  <h2>What each one stores</h2>
+  <table>
+    <tr><th style="width:22%">Where</th><th>What</th></tr>
+    <tr><td>PostgreSQL</td><td>Clock entries, holidays, expenses, notices, questions, surveys, people profiles, photos, documents
+      and payslips, news proposals and their images, settings (home page design).</td></tr>
+    <tr><td>WCM</td><td>The published news, their templates and sections; also the code of the 11 Script Applications.</td></tr>
+    <tr><td>DAM</td><td>Theme logos and the images of the demo news.</td></tr>
+    <tr><td>DX directory</td><td>The users and their passwords (in the labs, OpenLDAP). ÓRBITA only stores the user name.</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ 7 -->
+<section>
+  <h1>7 · Inside: the code</h1>
+  <p class="lead">Three layers, like a restaurant: the dining room (what you see), the kitchen (where things are done) and the
+    pantry (where everything is kept). And a menu shared by dining room and kitchen: <code>api/rutas.json</code>.</p>
+  <div class="flujo">
+    <div class="paso"><b>Dining room · web/</b>React 18 + Vite<br>Portada.jsx, Inicio.jsx, Fichaje.jsx, Vacaciones.jsx, Gastos.jsx,
+      Aprobaciones.jsx, Comunicacion, Personas, Documentos, Encuestas, Kiosco<br>shared: ui.jsx, wcm.js, asistente.jsx, ocr.js<br>→ 11 Script Applications</div>
+    <div class="fl">⇄</div>
+    <div class="paso osc"><b>Kitchen · api/ (Java 21)</b>core: Despachador, Api, Gastos, Social, Personas, Documentos,
+      Encuestas, Noticias, Fotos, Html, SesionDx, Db (Flyway)<br>ia: Herramientas, Asistente<br>rest: orbita-api.war (JAX-RS)<br>mcp: orbita-mcp.war</div>
+    <div class="fl">⇄</div>
+    <div class="paso verde"><b>Pantry</b>PostgreSQL, database “orbita”<br>V1__esquema.sql … V9__ajustes.sql</div>
+  </div>
+  <h2>A real REST API</h2>
+  <p><code>api/rutas.json</code> gives, for each logic operation, its HTTP method and its route. Both the server and the
+    interface read it, so they never get out of sync:</p>
+  <pre>GET    /orbita-api/v1/vacaciones/resumen          → the year's balance
+POST   /orbita-api/v1/noticias/propuestas/7/enviar → to review (HR is notified)
+PUT    /orbita-api/v1/portada/diseno              {"ambito":"mio","valor":"orbita"}
+PUT    /orbita-api/v1/personas/macarena/foto     → new photo (redrawn at 256 px)
+<span class="c"># 401 no DX session · 403 not allowed · 422 {"error":"No days left","aviso":true} · 404 · 405</span></pre>
+  <table>
+    <tr><th style="width:22%">Family</th><th>Routes (under <code>/orbita-api/v1/</code>)</th></tr>
+    <tr><td>General</td><td>yo, inicio, config, salud, avisos, fotos, personas/{usuario}/foto</td></tr>
+    <tr><td>Home and news</td><td>portada, portada/diseno, noticias/propuestas/{id}/enviar|devolver|rechazar|publicada, noticias/imagenes</td></tr>
+    <tr><td>Time · Holidays</td><td>fichaje/hoy, fichaje/marcas, fichaje/correcciones… · vacaciones/resumen, vacaciones/solicitudes…</td></tr>
+    <tr><td>Expenses · Approvals</td><td>gastos, gastos/notas/{id}, viajes… · aprobaciones, comentarios/{clase}/{objeto}</td></tr>
+    <tr><td>HR comms · Surveys</td><td>comunicados, consultas, preguntas-frecuentes · encuestas, encuestas/{id}/informe, encuestas/acciones</td></tr>
+    <tr><td>People · Documents</td><td>personas, organigrama, celebraciones, reconocimientos · documentos, documentos/nominas, documentos/{id}/recibi</td></tr>
+  </table>
+  <div class="dos">
+    <div class="caja"><b>A single brain</b>The REST API, the assistant and the MCP server call the same function,
+      <code>Despachador.ejecutar(op, parameters, user)</code>. That is why the AI has exactly the same permissions as the user on
+      screen.</div>
+    <div class="caja ok"><b>The schema evolves without losing data</b>Flyway migrations create and update the tables when
+      <code>orbita-api</code> starts: V1 schema · V2 notifications · V3 HR comms · V4 people · V5 documents · V6 surveys ·
+      V7 photos · V8 news · V9 settings. A published migration is never edited: a new one is added.</div>
+  </div>
+  <div class="caja ojo"><b>What comes from outside is cleaned</b>The rich text of news goes through a tag allowlist
+    (<code>Html.java</code> on the server and <code>limpiarHtml</code> in the browser, also for what is written in Content
+    Composer). Photos and images are checked by their content and redrawn: nothing of the original file survives.</div>
+</section>
+
+<!-- ============================================================ 8 -->
+<section>
+  <h1>8 · Who the user is: DX says so</h1>
+  <p class="lead">The employee signs in to the portal once and ÓRBITA already knows who they are. It does not find out on its
+    own: it asks DX.</p>
+  <div class="caja analogia"><b>Analogy: the festival wristband</b>When you enter the portal you get a wristband (the session
+    cookie). In 1.0, ÓRBITA had a copy of the secret stamp to check wristbands itself (copied LTPA keys). Since 2.0, when you
+    arrive with your wristband, ÓRBITA calls the box office (the DX profile API) and asks “whose wristband is this?”. It keeps
+    no stamps, no guest lists and nobody's keys.</div>
+  <div class="flujo">
+    <div class="paso"><b>1 · Sign in to DX</b>with user and password (LDAP) or through OpenID Connect (Keycloak, Entra ID…)</div><div class="fl">→</div>
+    <div class="paso"><b>2 · The app calls</b><code>/orbita-api/v1/…</code> with the same cookie</div><div class="fl">→</div>
+    <div class="paso osc"><b>3 · orbita-api</b>(SesionDx.java) asks DX</div><div class="fl">→</div>
+    <div class="paso verde"><b>4 · The profile API</b>answers “it's macarena” and the preferred language</div>
+  </div>
+  <table>
+    <tr><th style="width:28%">Advantage</th><th>Why it matters</th></tr>
+    <tr><td>No copied LTPA keys</td><td>1.0 copied the Web Engine's (the same in every CF238 installation). No longer needed.</td></tr>
+    <tr><td>No LDAP configuration</td><td>ÓRBITA does not know the directory: anything DX uses will do (LDAP, Active Directory, OIDC…).</td></tr>
+    <tr><td>No stored credentials</td><td>The API stores no DX administrator or LDAP bind passwords.</td></tr>
+    <tr><td>The AI cannot impersonate</td><td>The assistant and the MCP use the user's own session: the model does not choose on whose behalf it acts.</td></tr>
+  </table>
+  <div class="dos">
+    <div class="caja"><b>OpenID Connect (3.1.2)</b>With Liberty's OIDC client, the DX session cookie is not called
+      <code>LtpaToken2</code> but <code>WAS_n&lt;hash&gt;</code>, and that cannot be changed. That is why
+      <code>dx.sessionCookie</code> accepts <code>*</code> prefixes; with <code>dx.oidcSupport: true</code> (default) it is
+      <code>LtpaToken2,WAS_n*</code>.</div>
+    <div class="caja"><b>DX's certificate</b>To ask over HTTPS, the API must trust DX's certificate. If it is self-signed or from
+      a private CA (as in the labs), give it the CA in a Secret (<code>dx.caSecret</code>).
+      <code>dx.insecureSkipTLSVerify</code> exists for labs only.</div>
+  </div>
+  <div class="caja ok"><b>The browser does the same with WCM</b>Home reads the news from <code>/wps/mycontenthandler/wcmrest-v2</code>
+    with the viewer's session: everybody sees what WCM lets them see, and only an Editor can publish. ÓRBITA needs no technical
+    WCM account.</div>
+  <div class="caja"><b>And the kiosk?</b>Its page requires a session (the tablet signs in with a user), but its part of the API
+    (<code>/v1/quiosco/…</code>) is public: it identifies each person by PIN or QR, and the device by a key the chart generates
+    (Secret <code>orbita-kiosk</code>).</div>
+</section>
+
+<!-- ============================================================ 9 -->
+<section>
+  <h1>9 · AI: assistant and MCP server</h1>
+  <p class="lead">The “✨ Ask ÓRBITA” button opens a chat. To talk about holidays, expenses or people, ÓRBITA lends it a toolbox
+    with <b>43 tools</b>. There are two ways to connect it:</p>
+  <div class="dos">
+    <div class="caja ok"><b>1 · Own assistant (default, <code>assistant.backend: orbita</code>)</b>orbita-api calls the model
+      through <b>LiteLLM</b> with ÓRBITA's tools only. A small prompt: each question costs far fewer tokens than the IQ chat.
+      Model: <code>assistant.model</code> (default: IQ's alias, <code>iq-general-purpose</code>).</div>
+    <div class="caja"><b>2 · HCL DX IQ (<code>assistant.backend: iq</code>)</b>The IQ chat with ÓRBITA's MCP server registered
+      in the Integrator: the model sees DX's tools (WCM, DAM, pages) and ÓRBITA's at the same time. Meant for DX practitioners.</div>
+  </div>
+  <h2>The 43 tools, by area</h2>
+  <table>
+    <tr><th style="width:15%">Area</th><th>Tools</th><th class="n" style="width:6%">#</th></tr>
+    <tr><td><code>general</code></td><td>quien_soy, resumen_dia, avisos, avisos_marcar_leidos</td><td class="n">4</td></tr>
+    <tr><td><code>fichaje</code></td><td>fichaje_hoy, fichaje_mes, equipo_ahora, <b>fichar</b>, fichaje_corregir</td><td class="n">5</td></tr>
+    <tr><td><code>vacaciones</code></td><td>vacaciones_saldo, vacaciones_solicitudes, ausencias_equipo, vacaciones_solicitar, vacaciones_cancelar</td><td class="n">5</td></tr>
+    <tr><td><code>gastos</code></td><td>gastos_resumen, nota_gasto, nota_gasto_crear, gasto_anadir, nota_gasto_enviar, viaje_solicitar, viaje_cancelar, pagos_pendientes</td><td class="n">8</td></tr>
+    <tr><td><code>aprobaciones</code></td><td>aprobaciones_pendientes, <b>solicitud_resolver</b>, solicitud_comentarios, solicitud_comentar</td><td class="n">4</td></tr>
+    <tr><td><code>comunicacion</code></td><td>comunicados_pendientes, comunicado_leer, rrhh_buscar_respuesta, consultas_mias, consulta_crear</td><td class="n">5</td></tr>
+    <tr><td><code>encuestas</code></td><td>pulso_pendientes, pulso_resultados, encuestas_plan_accion</td><td class="n">3</td></tr>
+    <tr><td><code>personas</code></td><td>persona_buscar, persona_ficha, organigrama, celebraciones, reconocimientos, reconocimiento_enviar</td><td class="n">6</td></tr>
+    <tr><td><code>documentos</code></td><td>mis_documentos, mis_nominas, documentos_por_revisar</td><td class="n">3</td></tr>
+  </table>
+  <div class="dos">
+    <div class="caja analogia"><b>Every tool costs tokens</b>Its description travels with every call to the model, used or not.
+      The 43 are about 7,800 tokens. With <code>mcp.tools</code> you publish only some areas (<code>enabled</code>), remove
+      others (<code>disabled</code>) or only the 29 read-only ones (<code>readOnly: true</code>).</div>
+    <div class="caja ojo"><b>Left out on purpose</b>Paying, restoring the demo, deleting, exporting, publishing notices or news,
+      signing documents or answering surveys are not AI tools: they are bulk, irreversible, or should be done in person.</div>
+  </div>
+  <h2>Security</h2>
+  <table>
+    <tr><th style="width:20%">Layer</th><th>How</th></tr>
+    <tr><td>Identity</td><td>The chat user's DX session is used and ÓRBITA asks DX who it is. There is no “user” parameter. The MCP port 9081 is not exposed through the Ingress (NetworkPolicy).</td></tr>
+    <tr><td>Confirmation</td><td>Anything that changes data first returns a summary and only acts with <code>confirmar: true</code>.</td></tr>
+    <tr><td>Permissions and audit</td><td>Every operation checks what that person may do and logs <code>ORBITA MCP auditoria herramienta=… usuario=…</code>. Optional Bearer token (<code>mcp.tokenSecret</code>).</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ 10 -->
+<section>
+  <h1>10 · How it is built and published</h1>
+  <p class="lead">GitHub Actions builds, tests and publishes two images and the chart, all public. A <code>v*</code> tag makes a
+    release.</p>
+  <div class="flujo">
+    <div class="paso gris"><b>web/</b>React + Vite</div><div class="fl">→</div>
+    <div class="paso osc"><b>GitHub Actions</b>.github/workflows/build.yml<br>push to main → :main<br>tag v3.2.0 → :3.2.0</div><div class="fl">→</div>
+    <div class="paso verde"><b>orbita-scriptapps</b>the 11 built apps + noticias.mjs, tema.mjs</div>
+  </div>
+  <div class="flujo">
+    <div class="paso gris"><b>api/</b>Maven, Java 21</div><div class="fl">→</div>
+    <div class="paso osc"><b>build and test</b></div><div class="fl">→</div>
+    <div class="paso verde"><b>orbita-api</b>Open Liberty + orbita-api.war + orbita-mcp.war</div>
+    <div class="fl">·</div>
+    <div class="paso gris"><b>chart/hcl-dx-orbita</b>→ <code>oci://ghcr.io/europesip/charts/hcl-dx-orbita</code></div>
+  </div>
+  <h2>The repository</h2>
+  <pre>api/                  back end (Maven, Java 21, Jakarta EE 10)
+  rutas.json          REST API contract: method + route → operation
+  core/               logic (com.europesip.orbita): operations, permissions, Flyway, demo, AI, DX session
+  rest/               orbita-api.war: REST API (/orbita-api/v1) and assistant
+  mcp/                orbita-mcp.war: MCP server
+web/                  React interface (Vite); scripts/scriptapps.mjs builds the 11 Script Applications
+images/               Dockerfiles: orbita-api (Open Liberty) and orbita-scriptapps
+chart/hcl-dx-orbita/  Helm chart; files/: after-push.sh, tema.mjs, noticias.mjs, news/*.jpg
+scripts/              lab helpers: install, verify, register the MCP in IQ
+docs/                 specification, specs/ per issue, MCP, AI questions, FAQ, manual, presentation</pre>
+  <table>
+    <tr><th style="width:26%">To build locally</th><th>Command</th></tr>
+    <tr><td>Back end</td><td><code>mvn -f api/pom.xml package</code> (Java 21)</td></tr>
+    <tr><td>Interface</td><td><code>cd web &amp;&amp; npm ci &amp;&amp; npm run build:scriptapps</code></td></tr>
+    <tr><td>This manual</td><td><code>node docs/manual/fuente/generar.mjs</code> (headless Chrome)</td></tr>
+  </table>
+  <h2>How we work</h2>
+  <div class="flujo">
+    <div class="paso"><b>Issue</b>what and why</div><div class="fl">→</div>
+    <div class="paso"><b>Branch</b><code>&lt;n&gt;-short</code></div><div class="fl">→</div>
+    <div class="paso"><b>Spec</b><code>docs/specs/&lt;n&gt;-….md</code> with acceptance criteria</div><div class="fl">→</div>
+    <div class="paso"><b>PR</b><code>Closes #n</code>, CHANGELOG in EN and ES</div><div class="fl">→</div>
+    <div class="paso verde"><b>Review and merge</b></div>
+  </div>
+  <div class="dos">
+    <div class="caja ojo"><b>WCM's “[$” trap</b>WCM mistakes <code>[$…]</code> for one of its tags and removes it when serving the
+      JavaScript, which breaks the code. <code>web/scripts/scriptapps.mjs</code> writes it with equivalent escapes.</div>
+    <div class="caja ojo"><b>Flyway on Open Liberty</b>Flyway only finds the migrations if their folder has a
+      <code>flyway.location</code> file. That is why it exists in <code>db/migration</code>.</div>
+  </div>
+</section>
+
+<!-- ============================================================ 11 -->
+<section>
+  <h1>11 · Tutorial · install with Helm</h1>
+  <div class="banda"><b>▶ Two secrets, one values file and one command</b></div>
+  <h2>Before you start</h2>
+  <table>
+    <tr><th style="width:24%">You need</th><th>Details</th></tr>
+    <tr><td>HCL DX Compose</td><td>CF238 or CF239 on Kubernetes with an Ingress for its host, and a DX administrator for DXClient.</td></tr>
+    <tr><td>PostgreSQL</td><td>PostgreSQL 18 (CloudNativePG), and a Secret with a superuser (<code>username</code>, <code>password</code>). In the labs: Lab 2B.</td></tr>
+    <tr><td>Users</td><td>Those in <code>demo.people</code> (in the labs, the Lab 2A OpenLDAP users). <code>kubectl</code> and Helm 3.8+.</td></tr>
+  </table>
+  <div class="num"><span>1</span><div><b>Secrets</b> (once): the DX administrator for DXClient and the CA of DX's certificate.
+<pre>NS=dx-shared
+kubectl -n $NS create secret generic orbita-dx --from-literal=username=wpsadmin --from-literal=password='&lt;password&gt;'
+kubectl -n dx-demo get secret dx-tls-cert -o jsonpath='{.data.tls\.crt}' | base64 -d &gt; dx-ca.crt
+kubectl -n $NS create secret generic orbita-dx-ca --from-file=ca.crt=dx-ca.crt</pre></div></div>
+  <div class="num"><span>2</span><div><b>Values</b> (<code>orbita-values.yaml</code>):
+<pre>dx:         { host: dx.example.com, caSecret: orbita-dx-ca }
+database:   { host: dx-pg-rw.dx-shared.svc.cluster.local, create: { superuserSecret: dx-pg-superuser } }
+assistant:  { backend: orbita }                 <span class="c"># or iq, or none</span>
+news:       { editors: ["cn=dxmarketing,ou=groups,dc=dxdemo,dc=com"] }   <span class="c"># who publishes news</span>
+mcp:        { networkPolicy: { integratorNamespace: dx-demo } }
+scriptapps:                                     <span class="c"># the subchart does not see the above: repeat it</span>
+  dx:       { host: dx.example.com, credentialsSecret: orbita-dx, caSecret: orbita-dx-ca }
+  dxclient: { acceptLicense: true }             <span class="c"># you accept the HCL DXClient licence</span></pre></div></div>
+  <div class="num"><span>3</span><div><b>Install</b> (Job <code>orbita-db</code> → <code>orbita-api</code> with Flyway → Job <code>orbita-scriptapps-push</code>: apps, pages, theme, DAM and WCM):
+<pre>helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version &lt;version&gt; \
+  -n dx-shared -f orbita-values.yaml --timeout 15m</pre></div></div>
+  <h2>The values most often changed</h2>
+  <table>
+    <tr><th style="width:30%">Value</th><th>What for</th></tr>
+    <tr><td><code>theme.enabled</code>, <code>theme.logoBase64</code></td><td>Use the sample theme and give it the company logo (or change it later in the DAM).</td></tr>
+    <tr><td><code>theme.userPhoto</code></td><td>User photo in the header and in the DX toolbar (on by default).</td></tr>
+    <tr><td><code>news.enabled</code>, <code>news.editors</code>, <code>news.demo</code></td><td>Prepare WCM, who publishes, and whether the six demo news are loaded.</td></tr>
+    <tr><td><code>ui.header.*</code>, <code>ui.footer</code></td><td>What the apps show in their header and footer (<code>auto</code>: nothing the theme already shows is repeated).</td></tr>
+  </table>
+  <p class="peq"><b>In the labs</b>, a script reads <code>env.sh</code>, creates the secrets and sets <code>news.editors</code>: <code>DXCLIENT_ACCEPT_LICENSE=yes scripts/instalar-en-labs.sh</code>. Optional AI: a LiteLLM (Lab 3) or HCL DX IQ.</p>
+</section>
+
+<!-- ============================================================ 12 -->
+<section>
+  <h1>12 · Check, IQ and walkthrough</h1>
+  <h2>Check</h2>
+  <table>
+    <tr><th style="width:40%">Check (<code>scripts/verificar.sh</code>)</th><th>What a failure means</th></tr>
+    <tr><td>Release orbita deployed</td><td>The helm install did not finish.</td></tr>
+    <tr><td>Job orbita-db completed</td><td>Check the PostgreSQL host and the superuser Secret.</td></tr>
+    <tr><td>orbita-api ready and Flyway up to date (V9)</td><td>See <code>kubectl -n dx-shared logs deploy/orbita-api</code>.</td></tr>
+    <tr><td>Job orbita-scriptapps-push: 11 apps in WCM</td><td>DX credentials, CA or DXClient licence.</td></tr>
+    <tr><td>News library and templates</td><td>See the Job's container: <code>noticias.mjs</code> says what it created or what failed.</td></tr>
+    <tr><td><code>/orbita-api/v1/salud</code> → 200; <code>/v1/yo</code> without session → 401</td><td>Ingress or certificate.</td></tr>
+  </table>
+  <h2>Only with HCL DX IQ: register the MCP</h2>
+  <p>The IQ Integrator must know <code>http://orbita-api.dx-shared.svc.cluster.local:9081</code>. HCL documents
+    <code>MCP_SERVER_LIST</code>, but it has no effect (case CS1479102): the Integrator reads the list in the ConfigMap
+    <code>dx-iq-integrator</code>. Until HCL fixes it, that list is patched:</p>
+  <pre>scripts/registrar-mcp-en-iq.sh     <span class="c"># adds ÓRBITA, restarts and shows: Fetched 43 tools from http://orbita-api…:9081</span></pre>
+  <div class="caja ojo"><b>After every IQ helm upgrade, again</b>The IQ chart regenerates the list and ÓRBITA disappears. With
+    Helm 4 that upgrade also needs <code>--force-conflicts</code>. The own assistant needs none of this.</div>
+  <h2>Demo walkthrough</h2>
+  <div class="flujo">
+    <div class="paso"><b>macarena</b>clocks in, requests holidays, sends the expense report and proposes a news item</div><div class="fl">→</div>
+    <div class="paso"><b>andres</b>sees it in Approvals (warning: eduardo asks for the same days) and approves</div><div class="fl">→</div>
+    <div class="paso osc"><b>patricia (HR)</b>publishes the news in WCM, a notice and a survey, reviews documents</div><div class="fl">→</div>
+    <div class="paso verde"><b>german</b>pays the approved reports and publishes the payslips</div>
+  </div>
+  <table>
+    <tr><th style="width:18%">Area</th><th>Try in the chat, for example</th></tr>
+    <tr><td>My day</td><td>“What do I have today?” · “Do I have anything to approve?”</td></tr>
+    <tr><td>Time tracking</td><td>“Clock me in, working remotely” · “Which days this month did I not close my time record?”</td></tr>
+    <tr><td>Holidays</td><td>“How many days do I have left?” · “Request holidays from 9 to 11 December”</td></tr>
+    <tr><td>Expenses</td><td>“Create a report ‘Visit to Seville’ and add yesterday's lunch, €42.80” · “Send it to my manager”</td></tr>
+    <tr><td>People</td><td>“Who knows Kubernetes?” · “Thank Jordi for the help with the demo”</td></tr>
+    <tr><td>HR and documents</td><td>“Is there any notice I need to acknowledge?” · “How much was I paid in October?”</td></tr>
+    <tr><td>Approvals</td><td>As andres: “Approve macarena's holidays” · “Reject the trip to Barcelona: tighter budget”</td></tr>
+  </table>
+  <p class="peq">More sample questions in <code>docs/ai-questions.md</code> (in Spanish, <code>docs/preguntas-ia.md</code>).</p>
+</section>
+
+<!-- ============================================================ 13 -->
+<section>
+  <h1>13 · Upgrade, uninstall and change things</h1>
+  <h2>Upgrade</h2>
+  <pre>helm upgrade orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version &lt;new&gt; -n dx-shared -f orbita-values.yaml</pre>
+  <p>New migrations are applied at start-up and the data is kept. The Script Applications are updated on their pages, which
+    keep their layout. In WCM only what is missing is added (for example, the <code>Diseno</code> element in older templates):
+    nothing is deleted.</p>
+  <div class="caja ojo"><b>After changing the theme</b>DX caches the theme templates: to see a new header, restart the Web Engine
+    (or wait for the cache to expire).</div>
+  <h2>Uninstall</h2>
+  <pre>helm -n dx-shared uninstall orbita</pre>
+  <p>Left behind on purpose: the database and its Secret <code>orbita-db</code>, the Script Applications and pages, the theme,
+    the DAM collections and the news library (someone may be using them). Delete them by hand if you no longer need them, and
+    remove ÓRBITA from IQ's MCP list if you registered it.</p>
+  <h2>Changing things (development)</h2>
+  <div class="flujo"><div class="paso gris"><b>New API operation</b></div><div class="fl">→</div>
+    <div class="paso">method in <code>Api.java</code> or its class</div><div class="fl">→</div>
+    <div class="paso">its route in <code>api/rutas.json</code></div><div class="fl">→</div><div class="paso">the interface: <code>api('op', {...})</code></div></div>
+  <div class="flujo"><div class="paso gris"><b>Schema change</b></div><div class="fl">→</div>
+    <div class="paso" style="flex:3">new file <code>db/migration/V10__description.sql</code> (never edit a published one)</div><div class="fl">→</div><div class="paso">applied at start-up</div></div>
+  <div class="flujo"><div class="paso gris"><b>AI tool</b></div><div class="fl">→</div>
+    <div class="paso"><code>Herramientas.TODAS</code></div><div class="fl">→</div><div class="paso">new image + helm upgrade</div><div class="fl">→</div><div class="paso">with IQ: <code>registrar-mcp-en-iq.sh</code></div></div>
+  <div class="flujo"><div class="paso gris"><b>News template</b></div><div class="fl">→</div>
+    <div class="paso" style="flex:3">create it in WCM (or in <code>noticias.mjs</code>); each element's name says how it is filled in</div><div class="fl">→</div><div class="paso">ÓRBITA offers it automatically</div></div>
+  <h2>Example: an AI tool</h2>
+  <pre>new Herramienta("fichaje_hoy", "Fichaje de hoy",
+    "Indica si el usuario ha fichado hoy, desde qué hora y cuánto lleva trabajado. Úsala para '¿he fichado?'.",
+    Esquema.nuevo(), true,                       <span class="c">// true = read-only; no user parameter</span>
+    l -&gt; l.api("fichaje.estado")),</pre>
+  <table>
+    <tr><th style="width:24%">Rule</th><th>Why</th></tr>
+    <tr><td>snake_case name</td><td>IQ only accepts letters, digits, <code>_</code> and <code>-</code>.</td></tr>
+    <tr><td>Good description</td><td>It is all the model reads to decide whether to use it (and it travels with every request).</td></tr>
+    <tr><td>If it changes data</td><td><code>soloLectura = false</code>, <code>.confirmar()</code> and <code>l.pedirConfirmacion("summary")</code> until confirmed.</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ 14 -->
+<section>
+  <h1>14 · Version history</h1>
+  <p class="lead">A summary of the repository's <code>CHANGELOG.md</code>, newest first.</p>
+  <div class="version"><b>3.2</b><div><h3>Unreleased · a complete intranet</h3><ul>
+    <li><b>Home</b> with WCM news: library, sections and five templates prepared by the chart, proposal and review in ÓRBITA, eleven news designs and sixteen home page designs (V8, V9).</li>
+    <li><b>Photos</b> in People and every app; the user's photo in the theme header and the DX toolbar (V7).</li>
+    <li><b>Surveys</b> as an app of its own: templates, eight question types, report, heat map and action plan (V6).</li>
+    <li><b>My documents</b>: payslips with amounts, certificates, acknowledgements and uploads to HR (V5).</li>
+    <li><b>People</b>: directory, org chart, celebrations and recognition; an icon of its own for each app (V4).</li>
+    <li><b>HR communication</b>: notices, questions, FAQ; the DX Compose look in every app (V3).</li>
+    <li>AI: from 26 to 43 tools (HR comms, surveys, people and documents).</li></ul></div></div>
+  <div class="version"><b>3.1.2</b><div><h3>DX with OpenID Connect</h3>Liberty OIDC <code>WAS_n*</code> cookies
+    (<code>dx.oidcSupport</code>, <code>dx.sessionCookie</code> with prefixes). Tested with CF239 and Keycloak 26.8.</div></div>
+  <div class="version"><b>3.1.1</b><div><h3>Nothing repeated with the theme</h3><code>ui.header.*</code> set to <code>auto</code>;
+    FAQ and presentation in EN and ES.</div></div>
+  <div class="version"><b>3.1.0</b><div><h3>Sample theme integrated with the DAM</h3>A copy of the Portal 8.5 theme with the
+    company logo, “Powered by HCL Software” and the assistant button; images in the DAM collection “ÓRBITA”.</div></div>
+  <div class="version"><b>3.0.0</b><div><h3>Own assistant, in Spanish and English</h3>Assistant through LiteLLM (default) or
+    IQ; language from the DX profile; per-app settings on its page.</div></div>
+  <div class="version"><b>2.3.0</b><div><h3>Adapts to your theme</h3><code>ui.header.*</code> and <code>ui.footer</code>;
+    install without pages; first illustrated manual.</div></div>
+  <div class="version"><b>2.2</b><div><h3>Choose tools · ask in English</h3><code>mcp.tools</code> (enabled, disabled,
+    readOnly); the assistant answers in the language of the question.</div></div>
+  <div class="version"><b>2.1.0</b><div><h3>The AI does much more</h3>26 tools (previously 2); anything that changes data asks
+    for confirmation; public repository, images and chart.</div></div>
+  <div class="version"><b>2.0.0</b><div><h3>Helm chart</h3>A chart instead of scripts; DX says who the user is; users by role;
+    Flyway; PostgreSQL only; REST API <code>/orbita-api/v1</code>; PolyForm Noncommercial.</div></div>
+  <div class="version"><b>1.0.0</b><div><h3>First version for DX Compose</h3>Portal 8.5 migrated to CF238 without portlets: six
+    Script Applications and <code>suite-api</code>; scripts <code>k8s/01…06</code>; copied LTPA keys; MCP with 2 tools.</div></div>
+  <div class="caja"><b>Why is 3.2 “unreleased”?</b>Everything in 3.2 is in the repository and tested on the lab cluster, but
+    the published chart still pins the 3.1.2 images. A <code>v3.2.0</code> tag will build the new images.</div>
+</section>
+
+<!-- ============================================================ 15 -->
+<section>
+  <h1>15 · Pitfalls and cheat sheet</h1>
+  <table>
+    <tr><th style="width:28%">Pitfall</th><th>What happens and what to do</th></tr>
+    <tr><td>IQ loses ÓRBITA</td><td>After every IQ helm upgrade: run <code>scripts/registrar-mcp-en-iq.sh</code> again (HCL bug CS1479102).</td></tr>
+    <tr><td>You change <code>mcp.tools</code> and nothing happens</td><td>The Integrator reads the tools at start-up: <code>kubectl -n dx-demo rollout restart deployment/dx-iq-integrator</code>.</td></tr>
+    <tr><td>HR cannot publish a news item</td><td>Not an Editor in the library: add their group to <code>news.editors</code> and reinstall (or grant access in WCM).</td></tr>
+    <tr><td>Approving in a WCM workflow returns 403</td><td>On CF238 the WCM REST API only lets administrators approve: that is why the review is in ÓRBITA.</td></tr>
+    <tr><td>The theme does not change</td><td>Theme template cache: restart the Web Engine.</td></tr>
+    <tr><td>“No DX session” with Keycloak</td><td><code>WAS_n…</code> cookie: keep <code>dx.oidcSupport: true</code> (since 3.1.2).</td></tr>
+    <tr><td>WCM removes <code>[$…]</code></td><td>It would break the JavaScript; <code>scriptapps.mjs</code> escapes it.</td></tr>
+    <tr><td>Self-signed DX certificate</td><td>The API cannot ask who the user is: give it the CA with <code>dx.caSecret</code>.</td></tr>
+    <tr><td><code>/probe/ready</code> returns 503</td><td>Normal until orbita-api finishes the migrations.</td></tr>
+  </table>
+  <h2>Cheat sheet</h2>
+  <pre><span class="c"># ── Install (requirements: DX Compose, PostgreSQL + superuser Secret) ──</span>
+kubectl -n dx-shared create secret generic orbita-dx --from-literal=username=wpsadmin --from-literal=password='…'
+kubectl -n dx-shared create secret generic orbita-dx-ca --from-file=ca.crt=dx-ca.crt
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version &lt;version&gt; \
+  -n dx-shared -f orbita-values.yaml --timeout 15m
+<span class="c"># ── In the labs ──</span>
+DXCLIENT_ACCEPT_LICENSE=yes scripts/instalar-en-labs.sh
+scripts/verificar.sh
+scripts/registrar-mcp-en-iq.sh          <span class="c"># only with assistant.backend: iq</span>
+<span class="c"># ── Look ──</span>
+kubectl -n dx-shared logs job/orbita-scriptapps-push -c dxclient | tail -20   <span class="c"># apps, pages, theme, WCM</span>
+curl -k https://&lt;DX host&gt;/orbita-api/v1/salud                             <span class="c"># → ok</span>
+kubectl -n dx-shared logs deploy/orbita-api | grep "ORBITA MCP"               <span class="c"># tools and audit</span>
+<span class="c"># ── Upgrade / uninstall ──</span>
+helm upgrade orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version &lt;new&gt; -n dx-shared -f orbita-values.yaml
+helm -n dx-shared uninstall orbita</pre>
+  <div class="ideas">
+    <div class="caja ok"><b>5 ideas to remember</b>1. The interface is 11 Script Applications in WCM.<br>
+      2. The logic is orbita-api, installed with a chart.<br>3. DX says who the user is: ÓRBITA keeps no keys.<br>
+      4. News are WCM content; ÓRBITA proposes and reviews them.<br>5. The AI uses the same logic and permissions.</div>
+    <div class="caja"><b>Where to go next</b><code>github.com/europesip/orbita</code><br>README.md · CHANGELOG.md<br>
+      docs/ESPECIFICACION.md · docs/specs/<br>docs/mcp.md · docs/ai-questions.md · docs/faq.md<br>
+      chart/hcl-dx-orbita/values.yaml<br>Services: www.europesip.com<br><span class="peq">PolyForm Noncommercial 1.0.0: commercial use requires an agreement with EUROPESIP.</span></div>
+  </div>
+</section>
+
+<script>
+  // Places the app icons around the cover's orbit.
+  const apps = [['portada', 'Home'], ['inicio', 'My intranet'], ['fichaje', 'Time tracking'], ['vacaciones', 'Holidays'],
+    ['gastos', 'Expenses'], ['aprobaciones', 'Approvals'], ['comunicacion', 'HR comms'], ['personas', 'People'],
+    ['documentos', 'Documents'], ['encuestas', 'Surveys'], ['kiosco', 'Kiosk']];
+  const o = document.getElementById('orbita');
+  apps.forEach(([k, t], i) => {
+    const a = -Math.PI / 2 + (i * 2 * Math.PI) / apps.length;
+    const d = document.createElement('div');
+    d.className = 'app';
+    d.style.left = (50 + 43 * Math.cos(a)) + '%';
+    d.style.top = (50 + 40 * Math.sin(a)) + '%';
+    d.innerHTML = `<img src="img/app-${k}.svg">${t}`;
+    o.appendChild(d);
+  });
+</script>
+</body>
+</html>

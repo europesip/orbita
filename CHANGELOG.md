@@ -34,6 +34,10 @@
   by `GET /orbita-api/v1/noticias/imagenes/{id}`; the rich text is cleaned with an allowlist on the server and in the
   browser. Flyway migrations **`V8__noticias.sql`** and **`V9__ajustes.sql`**. Tested on PostgreSQL 17 with 64 automatic checks and end to end on
   the lab cluster (propose, review, publish).
+- **Illustrated manual updated** to 3.2 (`docs/manual/`, English and Spanish): the eleven apps with screenshots, the
+  landing page and WCM news, the 43 AI tools, OpenID Connect and the 3.x history. Its source is now in the repository
+  (`docs/manual/fuente/`: HTML, CSS and screenshots; `node docs/manual/fuente/generar.mjs` prints both PDFs with
+  headless Chrome, taking the app icons from `web/src/marca.jsx`).
 
 ## Unreleased · Photos in People
 

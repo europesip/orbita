@@ -1,0 +1,135 @@
+/* ÓRBITA · estilo del manual ilustrado (A4, impreso a PDF con Chrome por generar.mjs) */
+@page { size: A4; margin: 14mm 15mm 14mm 15mm; }
+:root {
+  --azul: #0b5fff; --azul-osc: #004ad7; --marino: #0f2a4f; --texto: #1d2433; --gris: #5b6474; --linea: #d9dee8;
+  --fondo-azul: #eaf1ff; --fondo-verde: #e9f7ef; --verde: #1e8e4e; --fondo-amarillo: #fff6dc; --amarillo: #e2a400;
+  --fondo-naranja: #fff0e5; --naranja: #e46c0a; --codigo: #13213a;
+}
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font: 9.2pt/1.42 "Inter", "DejaVu Sans", "Segoe UI", Arial, sans-serif; color: var(--texto); background: #fff; }
+section { break-before: page; }
+section.sigue { break-before: auto; margin-top: 16pt; }
+section.sigue h1 { break-after: avoid; }
+h1 { font-size: 17pt; color: var(--marino); margin: 0 0 6pt; padding-bottom: 4pt; border-bottom: 2.5pt solid var(--azul); }
+h2 { font-size: 11.2pt; color: var(--marino); margin: 10pt 0 4pt; break-after: avoid; }
+p { margin: 0 0 6pt; }
+.lead { font-size: 10.5pt; color: #2b3445; margin-bottom: 9pt; }
+code, .mono { font-family: "DejaVu Sans Mono", Consolas, monospace; font-size: 8.4pt; background: #eef1f6; padding: 0 2.5pt; border-radius: 2pt; }
+pre { font: 7.9pt/1.4 "DejaVu Sans Mono", Consolas, monospace; background: var(--codigo); color: #e3ebff; padding: 7pt 9pt; border-radius: 4pt;
+  white-space: pre-wrap; margin: 4pt 0 8pt; break-inside: avoid; }
+pre .c { color: #8fa3c7; }
+b, strong { font-weight: 700; }
+a { color: var(--azul-osc); text-decoration: none; }
+
+/* Cajas */
+.caja { border-left: 3pt solid var(--azul); background: var(--fondo-azul); padding: 6pt 9pt; border-radius: 3pt; margin: 7pt 0; break-inside: avoid; }
+.caja > b:first-child { display: block; color: var(--marino); margin-bottom: 2pt; }
+.caja.analogia { background: var(--fondo-amarillo); border-color: var(--amarillo); }
+.caja.ok { background: var(--fondo-verde); border-color: var(--verde); }
+.caja.ojo { background: var(--fondo-naranja); border-color: var(--naranja); }
+.dos { display: grid; grid-template-columns: 1fr 1fr; gap: 8pt; }
+.dos > .caja { margin: 4pt 0; }
+.tres { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7pt; }
+
+/* Tablas */
+table { width: 100%; border-collapse: collapse; margin: 4pt 0 8pt; font-size: 8.8pt; break-inside: auto; }
+th { background: var(--marino); color: #fff; text-align: left; padding: 3pt 5pt; font-weight: 700; }
+td { padding: 2.8pt 5pt; border-bottom: .6pt solid var(--linea); vertical-align: top; }
+tr { break-inside: avoid; }
+td:first-child { font-weight: 600; }
+table.ligera td:first-child { font-weight: 400; }
+td.n, th.n { text-align: right; white-space: nowrap; }
+
+/* Portada del manual */
+.cubierta { break-before: auto; }
+.cubierta .ante { font-size: 8pt; color: var(--gris); margin-bottom: 26pt; }
+.cubierta h1 { font-size: 30pt; line-height: 1.08; border: 0; margin: 0 0 8pt; padding: 0; }
+.cubierta h1 span { color: var(--azul); }
+.cubierta .lead { font-size: 12pt; }
+.orbita-portada { position: relative; height: 255pt; margin: 6pt 0 4pt; }
+.orbita-portada svg.anillo { position: absolute; inset: 0; width: 100%; height: 100%; }
+.orbita-portada .centro { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 86pt; height: 86pt; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #4b8dff, var(--azul-osc)); color: #fff; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; font-weight: 800; font-size: 13pt; box-shadow: 0 0 0 7pt rgba(11, 95, 255, .12); }
+.orbita-portada .centro small { font-weight: 400; font-size: 7pt; opacity: .85; }
+.orbita-portada .app { position: absolute; width: 62pt; transform: translate(-50%, -50%); text-align: center; font-size: 7.2pt; font-weight: 600; color: var(--marino); }
+.orbita-portada .app img { width: 30pt; height: 30pt; display: block; margin: 0 auto 2pt; }
+.indice { columns: 2; column-gap: 18pt; font-size: 9pt; margin-top: 2pt; }
+.indice div { border-bottom: .6pt solid var(--linea); padding: 2pt 0; break-inside: avoid; }
+.pie-cubierta { font-size: 7.8pt; color: var(--gris); margin-top: 10pt; }
+
+/* Tarjetas de aplicaciones */
+.apps { display: grid; grid-template-columns: 1fr 1fr; gap: 6pt; margin: 4pt 0 8pt; }
+.app-t { display: flex; gap: 7pt; border: .7pt solid var(--linea); border-radius: 5pt; padding: 6pt 7pt; break-inside: avoid; }
+.app-t img { width: 27pt; height: 27pt; flex: none; }
+.app-t b { display: block; color: var(--marino); font-size: 9.6pt; }
+.app-t span b { display: inline; font-size: inherit; color: inherit; }
+.app-t span { font-size: 8.3pt; color: #3b4456; line-height: 1.38; display: block; }
+.app-t.nueva { border-color: #9dbcff; background: #f6f9ff; }
+.etq { display: inline-block; font-size: 6.6pt; font-weight: 700; color: var(--azul-osc); border: .6pt solid var(--azul); border-radius: 6pt; padding: 0 4pt;
+  margin-left: 3pt; vertical-align: 1pt; }
+
+/* Capturas */
+figure { margin: 4pt 0 8pt; break-inside: avoid; }
+figure img { width: 100%; border: .7pt solid var(--linea); border-radius: 4pt; display: block; }
+figcaption { font-size: 7.8pt; color: var(--gris); margin-top: 2.5pt; }
+.capturas { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8pt 8pt; }
+.capturas figure { margin: 0; }
+.capturas figure img { height: 120pt; object-fit: cover; object-position: top left; }
+figure.grande img { max-height: 330pt; object-fit: cover; object-position: top; }
+
+/* Diagramas de cajas y flechas */
+.flujo { display: flex; align-items: stretch; gap: 0; margin: 7pt 0 9pt; break-inside: avoid; }
+.flujo .paso { flex: 1; border: 1pt solid var(--azul); background: #fff; border-radius: 5pt; padding: 5pt 6pt; font-size: 8.1pt; text-align: center; }
+.flujo .paso b { display: block; color: var(--marino); font-size: 8.6pt; margin-bottom: 1.5pt; }
+.flujo .paso.osc { background: var(--azul-osc); border-color: var(--azul-osc); color: #fff; }
+.flujo .paso.osc b { color: #fff; }
+.flujo .paso.verde { border-color: var(--verde); background: var(--fondo-verde); }
+.flujo .paso.naranja { border-color: var(--naranja); background: var(--fondo-naranja); }
+.flujo .paso.gris { border-color: #9aa3b5; background: #f4f6fa; }
+.flujo .fl { flex: none; width: 16pt; display: flex; align-items: center; justify-content: center; color: var(--azul); font-size: 13pt; font-weight: 700; }
+.flujo.vert { flex-direction: column; }
+
+.mapa { display: grid; grid-template-columns: 70pt 1fr 1fr; gap: 8pt; margin: 6pt 0 9pt; break-inside: avoid; font-size: 8pt; }
+.ns { border: 1.2pt dashed #8aa7e6; border-radius: 6pt; padding: 6pt; }
+.ns > b { display: block; font-size: 8.4pt; color: var(--marino); margin-bottom: 4pt; }
+.ns.shared { border-color: #6cbf8f; }
+.pieza { border: .8pt solid var(--linea); background: #fff; border-radius: 4pt; padding: 4pt 5pt; margin-bottom: 4pt; }
+.pieza b { color: var(--marino); }
+.pieza.dx { background: #f2f6ff; }
+.pieza.or { background: #effaf3; }
+.navegador { border: 1pt solid var(--marino); border-radius: 5pt; padding: 6pt 5pt; text-align: center; align-self: center; }
+
+/* Etapas, historial */
+.etapas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6pt; margin: 6pt 0 8pt; }
+.etapa { border: .8pt solid var(--linea); border-top: 4pt solid var(--azul); border-radius: 4pt; padding: 5pt 6pt; font-size: 7.9pt; break-inside: avoid; }
+.etapa h3 { margin: 0 0 3pt; font-size: 10pt; color: var(--marino); }
+.etapa ul { margin: 0; padding-left: 10pt; }
+.etapa:nth-child(1) { border-top-color: #9aa3b5; }
+.etapa:nth-child(2) { border-top-color: #6c8fd6; }
+.etapa:nth-child(4) { border-top-color: var(--verde); }
+.version { display: grid; grid-template-columns: 52pt 1fr; gap: 0 8pt; margin: 0 0 6pt; break-inside: avoid; }
+.version > b { font-size: 11pt; color: var(--azul-osc); }
+.version h3 { margin: 0 0 1pt; font-size: 9.6pt; color: var(--marino); }
+.version div { font-size: 8.5pt; }
+.version ul { margin: 1pt 0 0; padding-left: 11pt; }
+
+/* Diseños */
+.disenos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5pt; margin: 4pt 0 8pt; }
+.diseno { border: .7pt solid var(--linea); border-radius: 4pt; padding: 4pt 5pt; font-size: 7.8pt; break-inside: avoid; }
+.diseno b { display: block; color: var(--marino); font-size: 8.2pt; }
+.mini { height: 30pt; border-radius: 3pt; margin-bottom: 3pt; position: relative; overflow: hidden; background: #eef2f8; }
+.mini i { position: absolute; display: block; border-radius: 1.5pt; }
+
+/* Pasos del tutorial */
+.num { display: grid; grid-template-columns: 20pt 1fr; gap: 6pt; margin: 6pt 0; break-inside: avoid; }
+.num > span { width: 18pt; height: 18pt; border-radius: 50%; background: var(--azul); color: #fff; font-weight: 700; display: flex; align-items: center;
+  justify-content: center; font-size: 9.5pt; }
+.num pre { margin-top: 3pt; }
+.banda { background: var(--marino); color: #fff; border-radius: 5pt; padding: 8pt 11pt; margin-bottom: 8pt; }
+.banda b { font-size: 15pt; display: block; }
+.ideas { display: grid; grid-template-columns: 1.3fr 1fr; gap: 9pt; }
+.peq { font-size: 7.8pt; color: var(--gris); }
+
+th code { background: transparent; color: #fff; }
