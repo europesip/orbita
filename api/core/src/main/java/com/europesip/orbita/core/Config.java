@@ -63,6 +63,12 @@ public final class Config {
 
     public static boolean pie() { return si("ORBITA_FOOTER", true); }
 
+    // --- Portada y noticias (valores news.* del chart) -------------------------------------------------------------
+    /** Nombre de la biblioteca de WCM con las noticias (la crea el chart). */
+    public static String bibliotecaNoticias() { return env("ORBITA_NEWS_LIBRARY", "orbita-noticias"); }
+    /** Dónde está Content Composer (el editor de contenidos de DX) para quien quiera escribir allí. */
+    public static String contentComposer() { return env("ORBITA_CONTENT_COMPOSER", "/dx/ui/content/"); }
+
     // --- Asistente de IA de ÓRBITA (valores assistant.* del chart) -------------------------------------------------
     /** orbita: chat propio (llama a LiteLLM solo con las herramientas de ÓRBITA) · iq: el chat de HCL DX IQ · none. */
     public static String asistente() { return env("ORBITA_ASSISTANT", "orbita").toLowerCase(Locale.ROOT); }

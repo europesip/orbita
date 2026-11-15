@@ -2,6 +2,42 @@
 
 [English](CHANGELOG.md) · **Español**
 
+## Sin publicar · Portada y noticias
+
+- Nueva aplicación **Portada** (página `portada`, la primera): las **noticias** de la empresa desde **HCL DX WCM**, los
+  comunicados de RRHH por confirmar, los próximos eventos y festivos, celebraciones y reconocimientos, la encuesta
+  abierta y los accesos. El logo del tema de ejemplo lleva ahora a ella.
+- **WCM preparado por el chart** (`news.*`, idempotente): biblioteca `orbita-noticias` (la lee todo el mundo;
+  `news.editors` reciben Editor), cuatro secciones, cinco plantillas de autor con su plantilla de presentación (noticia,
+  noticia breve, evento, bienvenida, logro de equipo) y seis noticias de demostración con imágenes en el DAM.
+- **Once diseños** para cualquier noticia, que se eligen en el formulario con miniaturas: clásico, imagen a toda
+  página, dos columnas, cartel, destacado (la entradilla como una cita), revista (titular de periódico, letra capital,
+  texto a dos columnas), cine (fondo negro, viñeta y titular enorme con degradado), titular gigante, diagonal (imagen
+  cortada y banda de color inclinada), cuenta atrás (días, horas y minutos que faltan para un evento, en directo) y
+  celebración (confeti, centrado e imagen redonda). Se guardan en el elemento `Diseno` de WCM (se
+  añade a las plantillas que ya existen al actualizar); cada plantilla propone uno (un evento, la cuenta atrás; una bienvenida o un logro, la celebración).
+- **Dieciséis diseños de portada**: clásica, revista, mosaico, carrusel, cronología, titulares (con cinta de última hora),
+  tablero, muro, nocturna, enfoque y tres de escaparate: **órbita** (la destacada como un planeta brillante y las demás
+  como satélites en dos órbitas que giran y se paran al pasar el ratón), **neón** (cuadrícula luminosa, titulares de neón
+  que parpadean, tarjetas de cristal y un borde de colores que gira) e **historias** (cada noticia a pantalla completa con
+  la imagen fija, que aparece al llegar, con índice de puntos y barra de progreso), **constelación** (las noticias como
+  estrellas que titilan unidas por líneas que se iluminan al pasar el ratón), **carrusel 3D** (tarjetas en un anillo que
+  gira en perspectiva, con reflejo en el suelo) y **burbujas** (las noticias flotan como burbujas de distintos tamaños
+  que crecen al pasar el ratón). Las animaciones respetan la opción del sistema de reducir el movimiento. RRHH elige el de la empresa; cada persona puede elegir otro para sí y volver al de la
+  empresa. Se ven al momento detrás del selector. Se guardan en la nueva tabla `AJUSTE` (`V9__ajustes.sql`).
+- **Proponer una noticia**: cualquiera elige una plantilla de WCM y rellena un formulario generado a partir de ella
+  (titular, sección, entradilla, imagen, fechas, lugar, enlace y un cuerpo con un editor de texto sencillo), la ve en
+  vista previa y la envía a revisión.
+- **Revisión (RRHH)**: publicar (el navegador crea el contenido en WCM con los permisos de WCM de quien revisa),
+  devolver con un comentario o rechazar; RRHH puede corregir el texto antes. Avisos a RRHH y a la autora. Los editores
+  siguen pudiendo usar Content Composer.
+- Por qué la revisión está en ÓRBITA: en CF238 la API REST de WCM solo deja mover contenido por un flujo de trabajo a
+  los administradores (los usuarios con el rol Reviewer reciben 403).
+- API: `portada.resumen` y `noticias.*`; imágenes de las noticias redibujadas en JPEG (hasta 1600 px, sin metadatos) y
+  servidas por `GET /orbita-api/v1/noticias/imagenes/{id}`; el texto enriquecido se limpia con una lista blanca en el
+  servidor y en el navegador. Migraciones Flyway **`V8__noticias.sql`** y **`V9__ajustes.sql`**. Probado en PostgreSQL 17 con 64 comprobaciones
+  automáticas y de principio a fin en el clúster del laboratorio (proponer, revisar, publicar).
+
 ## Sin publicar · Fotos en Personas
 
 - **Foto de cada persona** en **Personas**: cada persona pone, cambia o quita la suya desde su ficha (el botón de la

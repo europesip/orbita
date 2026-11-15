@@ -190,6 +190,17 @@ final class Comunicacion {
      * Comunicados no archivados: los dirigidos al usuario y, con todos=true (RRHH), también el resto, con el recuento
      * de lecturas y confirmaciones de sus destinatarios.
      */
+    /** Los últimos comunicados para mí (la portada): primero los que tengo por confirmar. */
+    List<Map<String, Object>> ultimos(int n) throws SQLException {
+        List<Map<String, Object>> l = listaComunicados(false);
+        l.sort((x, y) -> Boolean.compare(porConfirmar(y), porConfirmar(x)));
+        return new ArrayList<>(l.subList(0, Math.min(n, l.size())));
+    }
+
+    private static boolean porConfirmar(Map<String, Object> m) {
+        return (Boolean) m.get("confirmar") && !(Boolean) m.get("confirmado");
+    }
+
     private List<Map<String, Object>> listaComunicados(boolean todos) throws SQLException {
         Map<Integer, Map<String, Timestamp[]>> lect = lecturas();
         List<Map<String, Object>> l = new ArrayList<>();

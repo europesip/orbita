@@ -64,6 +64,13 @@ Cada persona ve su PIN y su tarjeta QR en *Fichaje › Mi tarjeta de quiosco*. P
   propio de ÓRBITA en un panel lateral, con la sesión del portal (o el chat de HCL DX IQ, ver
   [Tres formas de poner IA en ÓRBITA](#tres-formas-de-poner-ia-en-órbita)). Responde con las herramientas del MCP de ÓRBITA como el usuario que pregunta
   («¿cuántas vacaciones me quedan?», «pídeme del 9 al 11 de diciembre»…).
+- **Portada**: las **noticias** de la empresa, que son **contenido de HCL DX WCM** (una biblioteca, secciones y cinco
+  plantillas que crea el chart: noticia, noticia breve, evento, bienvenida y logro de equipo), los **comunicados** de
+  RRHH por confirmar, los próximos **eventos y festivos**, las celebraciones y reconocimientos de Personas, la encuesta
+  abierta y los accesos. Cualquiera **propone una noticia** con una plantilla (formulario generado a partir de la
+  plantilla de WCM, subida de imagen y un editor de texto sencillo); **RRHH la revisa** en ÓRBITA (publicar, devolver
+  con un comentario o rechazar) y la publica en WCM desde el navegador, con sus permisos de editor de WCM. Los
+  editores también pueden escribir en Content Composer.
 - **Mi intranet**: saludo con fichaje rápido, horas de las últimas seis semanas, saldo de vacaciones, gastos del año por
   categoría, solicitudes por aprobar, quién falta los próximos 14 días y últimos avisos.
 - **Fichaje**, **vacaciones y ausencias**, **gastos y viajes** (tickets con OCR en el navegador, con Tesseract.js),
@@ -298,6 +305,21 @@ usa inglés. Mensajes, fechas, importes y avisos lo siguen. Los datos de la demo
 superior sobre la aplicación) ve «⚙ Ajustes de esta aplicación». Ahí elige, solo para esa instancia, las partes de la
 cabecera, el pie y el idioma (*Automático*, Español, English). Se guardan como preferencias de la Script Application en
 DX, se mantienen al actualizar el chart, y lo que no se cambie sigue los valores `ui.*` de abajo.
+
+**Noticias de la portada (WCM).** El Job de las Script Applications prepara también las noticias en WCM
+(`news.enabled`, idempotente: lo que ya existe se conserva): la biblioteca `news.library`, que lee todo el mundo; los
+grupos o usuarios de LDAP de `news.editors` reciben Editor y son quienes publican (deberían ser las personas con el
+rol RRHH de ÓRBITA, que revisan las propuestas); cuatro secciones; cinco plantillas de autor con sus plantillas de
+presentación, sin flujo de trabajo de WCM (la revisión se hace en ÓRBITA: la API REST de WCM de CF238 no deja a los
+usuarios mover contenido por un flujo); y seis noticias de demostración con imágenes en una colección del DAM cuando la
+biblioteca está vacía.
+
+```yaml
+news:
+  enabled: true
+  editors: ["cn=comunicacion,ou=groups,dc=example,dc=com"]   # quienes publican (Editor en WCM)
+  demo: true
+```
 
 **Theme de ejemplo.** Por defecto el chart despliega también un theme de ÓRBITA para sus páginas, para que se vean
 como una intranet terminada que funciona sobre HCL DX:

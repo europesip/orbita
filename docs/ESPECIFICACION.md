@@ -187,6 +187,63 @@ si se pudiera deducir restando los demás del total. La IA no puede responder en
 acciones con dimensión, responsable, fecha límite y estado (pendiente, en curso, hecha). Las ve quien recibió la
 encuesta; quien la lleva recibe un aviso. Se ven en un tablero por estado y en el informe de cada encuesta.
 
+## Portada
+
+Página de inicio de la empresa (página `portada`, la primera del menú).
+
+**Noticias**: son contenido de **HCL DX WCM** (biblioteca `news.library`, la crea el chart). La portada las lee con la
+sesión de quien mira, así que cada persona ve lo que WCM le deja ver. La más reciente sale destacada; las demás en
+tarjetas, con filtro por sección (Empresa, Personas, Eventos, Equipos). Al abrir una se ve completa: imagen, sección,
+fecha, entradilla, datos del evento (fecha, lugar), equipo o puesto, texto y enlace.
+
+**Plantillas** (plantillas de autor de WCM, con su plantilla de presentación): noticia (entradilla, imagen, texto),
+noticia breve (entradilla, enlace), evento (entradilla, imagen, empieza, termina, lugar, texto), bienvenida
+(entradilla, imagen, puesto, texto) y logro de equipo (entradilla, imagen, equipo, texto). El formulario de ÓRBITA se
+genera a partir de los elementos de la plantilla: texto enriquecido → editor de texto; texto → texto largo; texto corto
+que empieza por Imagen → subida de imagen, por Fecha → fecha y hora, por Enlace → enlace; el resto, texto corto.
+
+**Diseños**: cada noticia, de cualquier plantilla, elige cómo se ve: **clásico** (imagen arriba), **imagen a toda
+página** (el titular sobre la imagen), **dos columnas** (imagen a un lado), **cartel** (bloque de color con el titular
+grande y los datos), **destacado** (la entradilla grande, como una cita), **revista** (titular de periódico, letra
+capital y texto a dos columnas), **cine** (fondo negro, imagen con viñeta y titular enorme con degradado), **titular
+gigante** (mayúsculas enormes y la imagen desplazada con una sombra de color), **diagonal** (imagen cortada en diagonal y
+una banda de color inclinada con el titular), **cuenta atrás** (los días, horas y minutos que faltan para el evento, que
+se actualizan solos) o **celebración** (confeti, todo centrado y la imagen en un círculo). Se elige en el formulario con
+miniaturas y se ve en la vista previa, en la tarjeta de la portada y al abrir la noticia. Cada plantilla propone uno:
+evento, cuenta atrás; noticia breve, cartel; bienvenida y logro, celebración; noticia, clásico. Se guarda en el elemento `Diseno`
+de la plantilla de WCM (un valor desconocido se trata como clásico).
+
+**Proponer una noticia** (cualquiera): elegir plantilla, titular y sección, rellenar los campos, vista previa, guardar
+borrador y enviar a revisión. Estados: borrador → en revisión → publicada, o devuelta (con el comentario de RRHH, vuelve
+a la autora para cambiarla) o no se publica. Solo la autora ve sus borradores; RRHH ve las enviadas.
+- **Imagen**: JPG o PNG, al menos 200 × 100 px, como mucho 10 MB; se reduce a 1600 px de ancho y se guarda en JPEG sin
+  metadatos.
+- **Texto**: párrafos, negrita, cursiva, títulos, listas, citas y enlaces https; todo lo demás (scripts, estilos,
+  imágenes incrustadas, atributos) se quita al guardar y al mostrar.
+
+**Revisión (RRHH)**: bandeja con las propuestas por revisar y las revisadas en los últimos 60 días. RRHH puede corregir
+la propuesta, publicarla, devolverla o no publicarla (estas dos con un comentario obligatorio). Al publicar, el
+navegador de quien revisa crea el contenido en WCM con sus permisos (tiene que estar en `news.editors`) y la noticia
+aparece en la portada. Avisos: a RRHH cuando llega una propuesta; a la autora cuando se publica, se devuelve o no se
+publica. Las noticias publicadas se gestionan (cambiar, retirar) en WCM, con Content Composer.
+
+**Diseño de la portada**: dieciséis diseños de la página entera: clásica (destacada, rejilla y columna lateral), revista
+(cabecera con la fecha, noticia principal y dos secundarias, titulares de periódico), mosaico (teselas de distintos
+tamaños con la imagen de fondo), carrusel (las últimas noticias en grande, pasando solas cada 6 s), cronología (línea de
+tiempo por meses), titulares (lista numerada y cinta de última hora), tablero (indicadores de comunicados, eventos,
+encuesta y celebraciones antes que las noticias), muro (columnas de tarjetas con los avisos entre ellas), nocturna (modo
+oscuro con la destacada sobre su imagen), enfoque (una sola columna para leer), órbita (la destacada es un planeta y las
+demás noticias, satélites que giran a su alrededor y se paran al pasar el ratón), neón (cuadrícula luminosa, titulares
+de neón y tarjetas de cristal), historias (cada noticia a pantalla completa, con índice y barra de progreso), constelación
+(las noticias como estrellas unidas por líneas), carrusel 3D (un anillo de tarjetas que gira) y burbujas (las noticias
+flotan como burbujas). Las
+animaciones se desactivan si el sistema pide reducir el movimiento. **RRHH** elige el de toda la empresa;
+**cada persona** puede elegir otro para sí y volver al de la empresa. El selector muestra cada uno al momento detrás de
+la ventana antes de guardarlo.
+
+**Junto a las noticias**: comunicados de RRHH (primero los que hay que confirmar), la encuesta pendiente, los próximos
+eventos (noticias con fecha) y festivos, celebraciones y reconocimientos de Personas y los accesos a las aplicaciones.
+
 ## Personas
 
 Directorio de la plantilla, en tres pestañas.

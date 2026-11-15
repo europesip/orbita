@@ -59,6 +59,8 @@ export function OrbitaLogo({tam = 32, claro = false}) {
 // Dibujos propios en una cuadrícula de 64×64 (trazo de 3,4).
 
 const DIBUJO_APP = {
+  // Portada: periódico con titular, foto y columnas
+  portada: <><path d="M18 18h24a2 2 0 0 1 2 2v26a2 2 0 0 1-2 2H20a4 4 0 0 1-4-4V20a2 2 0 0 1 2-2Z" /><path d="M44 26h3a2 2 0 0 1 2 2v16a4 4 0 0 1-4 4" /><path d="M22 25h16" /><rect x="22" y="30" width="8" height="7" rx="1" /><path d="M33 31h5M33 36h5M22 42h16" /></>,
   // Mi intranet: casa
   inicio: <><path d="M18 32 32 20l14 12v13a2 2 0 0 1-2 2H20a2 2 0 0 1-2-2Z" /><path d="M28 47v-9h8v9" /></>,
   // Fichaje: reloj con la aguja marcando

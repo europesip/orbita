@@ -41,6 +41,7 @@ import jakarta.ws.rs.core.UriInfo;
  *   GET /v1/config             con sesión: lo que la interfaz necesita saber de esta instalación
  *   POST /v1/asistente         con sesión: el asistente de IA de ÓRBITA
  *   GET /v1/fotos/{usuario}    con sesión: la foto de una persona como imagen (no JSON); "yo" = la de la sesión
+ *   GET /v1/noticias/imagenes/{id}  con sesión: una imagen de una noticia
  *
  * Quién es el usuario lo dice DX (SesionDx) con la cookie de sesión que envía el navegador. Sin sesión válida: 401.
  * Las operaciones del quiosco son públicas y se protegen con la clave del dispositivo.
@@ -86,6 +87,9 @@ public class Recursos {
                         .add("usuario", Config.cabecera("user")))
                 .add("pie", Config.pie())
                 .add("codigoFuente", Config.codigoFuente())
+                // Noticias de la portada: biblioteca de WCM (por su nombre) y editor de contenidos de DX
+                .add("noticias", Json.createObjectBuilder().add("biblioteca", Config.bibliotecaNoticias())
+                        .add("contentComposer", Config.contentComposer()))
                 // Asistente: orbita (chat propio, POST /v1/asistente), iq (chat de HCL DX IQ) o none
                 .add("asistente", Asistente.configurado() ? "orbita" : "iq".equals(Config.asistente()) ? "iq" : "none")
                 .build();
@@ -154,6 +158,26 @@ public class Recursos {
             return error(403, a.getMessage());
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "ORBITA: error al leer la foto de " + usuario, e);
+            return error(500, "Error interno del servidor.");
+        }
+    }
+
+    /** Una imagen de una noticia (no cambia nunca: su id es su versión), o 404. */
+    @GET
+    @Path("noticias/imagenes/{id: [0-9]+}")
+    public Response imagenNoticia(@PathParam("id") int id) {
+        String yo = usuario();
+        if (yo == null) return sinSesion();
+        if (!Arranque.listo()) return error(503, "ÓRBITA se está iniciando: inténtalo en unos segundos.");
+        try {
+            Despachador.Foto f = Despachador.imagenNoticia(yo, id);
+            if (f == null) return Response.status(404).type(MediaType.TEXT_PLAIN).entity("no existe").build();
+            return Response.ok(f.datos(), f.tipo()).header("Cache-Control", "private, max-age=31536000, immutable")
+                    .header("X-Content-Type-Options", "nosniff").build();
+        } catch (Despachador.SinPermiso a) {
+            return error(403, a.getMessage());
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, "ORBITA: error al leer la imagen de noticia " + id, e);
             return error(500, "Error interno del servidor.");
         }
     }

@@ -62,6 +62,12 @@ relative to the day they are loaded.
 - **Assistant «✨ Ask ÓRBITA»** (header of every app, or of the example theme): ÓRBITA's own assistant in a side
   panel, with the portal session (or the HCL DX IQ chat, see [Three ways to put AI on ÓRBITA](#three-ways-to-put-ai-on-órbita)).
   It answers with the ÓRBITA MCP tools as the user asking («How many days of holiday do I have left?»).
+- **Home** (landing page): company **news**, which are **HCL DX WCM content** (a library, sections and five templates
+  that the chart creates: news item, short news item, event, welcome and team achievement), the HR **notices** to
+  acknowledge, upcoming **events and holidays**, celebrations and recognition from People, the open survey and quick
+  links. Anybody **proposes a news item** from a template (form generated from the WCM template, image upload and a
+  simple rich-text editor); **HR reviews it** in ÓRBITA (publish, return with a comment or reject) and publishes it in
+  WCM from the browser, with their own WCM editor rights. Editors can also write in Content Composer.
 - **My intranet**: quick clock-in, hours of the last six weeks, time-off balance, expenses by category, pending
   approvals, who is away in the next 14 days and the latest notifications.
 - **Time tracking**, **time off**, **expenses and travel** (receipts with in-browser OCR), **approvals** with
@@ -292,6 +298,20 @@ Spanish or English. Messages, dates, amounts and notifications follow it. The de
 higher on the application) sees «⚙ Settings of this application». There they choose, for that instance only, the
 header parts, the footer and the language (*Automatic*, Español, English). They are stored as preferences of the Script
 Application in DX, survive chart upgrades, and anything not changed follows the `ui.*` values below.
+
+**Landing page news (WCM).** The scriptapps Job also prepares the news in WCM (`news.enabled`, idempotent: what
+exists is kept): the library `news.library`, readable by everybody; the LDAP groups or users in `news.editors` get
+Editor and are the ones who publish (they should be the people with the ÓRBITA role RRHH, who review the proposals);
+four sections; five authoring templates with their presentation templates, without a WCM workflow (the review happens
+in ÓRBITA: the WCM REST API of CF238 does not let users move content through a workflow); and six demo news with
+images in a DAM collection when the library is empty.
+
+```yaml
+news:
+  enabled: true
+  editors: ["cn=communication,ou=groups,dc=example,dc=com"]   # who publish (WCM Editor)
+  demo: true
+```
 
 **Example theme.** By default the chart also deploys an ÓRBITA theme for its pages, so that they look like a finished
 intranet that runs on HCL DX:

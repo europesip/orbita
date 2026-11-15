@@ -49,6 +49,24 @@ public final class Despachador {
     /** Una foto de Personas para servirla tal cual (no va en JSON): tipo, bytes y versión para la caché. */
     public record Foto(String tipo, byte[] datos, long version) {}
 
+    /**
+     * Una imagen de una noticia (GET /v1/noticias/imagenes/{id} de orbita-rest), o null si no existe. La ve quien tiene
+     * ficha en ÓRBITA (las noticias se publican para toda la plantilla).
+     */
+    public static Foto imagenNoticia(String solicitante, int id) throws Exception {
+        if (solicitante == null || solicitante.isEmpty()) throw new SinPermiso("Inicia sesión en DX para usar la aplicación.");
+        try (Connection c = Db.conexion()) {
+            try (PreparedStatement ps = c.prepareStatement("SELECT 1 FROM EMPLEADO WHERE USUARIO = ?")) {
+                ps.setString(1, solicitante);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (!rs.next()) throw new SinPermiso("Tu usuario de DX (" + solicitante + ") no tiene ficha de empleado en ÓRBITA.");
+                }
+            }
+            Noticias.Imagen i = Noticias.imagen(c, id);
+            return i == null ? null : new Foto(i.tipo(), i.datos(), id);
+        }
+    }
+
     /** Quien pide una foto no puede verla (no tiene ficha en ÓRBITA): el mensaje es para el usuario. */
     public static final class SinPermiso extends RuntimeException {
         SinPermiso(String mensaje) { super(mensaje); }

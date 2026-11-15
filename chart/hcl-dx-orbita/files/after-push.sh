@@ -6,6 +6,8 @@ set -eu
 D=$(dirname "$0")
 # Example theme (theme.enabled): DAM images, copy of the base theme with the ÓRBITA header, deploy-theme
 node "$D/tema.mjs" "$D/tema.json" "$D"
+# Landing page news (news.enabled): WCM library, access, sections, templates and demo news
+node "$D/noticias.mjs" "$D/noticias.json" "$D"
 # Pages that already exist (XMLAccess export by unique name): they keep their layout and viewer instance, so the
 # settings of each instance (edit mode) are not lost on an upgrade
 : > /tmp/paginas-existentes.txt
