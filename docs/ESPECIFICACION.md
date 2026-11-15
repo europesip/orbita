@@ -187,6 +187,38 @@ si se pudiera deducir restando los demás del total. La IA no puede responder en
 acciones con dimensión, responsable, fecha límite y estado (pendiente, en curso, hecha). Las ve quien recibió la
 encuesta; quien la lleva recibe un aviso. Se ven en un tablero por estado y en el informe de cada encuesta.
 
+## Portada
+
+Página de inicio de la empresa (página `portada`, la primera del menú).
+
+**Noticias**: son contenido de **HCL DX WCM** (biblioteca `news.library`, la crea el chart). La portada las lee con la
+sesión de quien mira, así que cada persona ve lo que WCM le deja ver. La más reciente sale destacada; las demás en
+tarjetas, con filtro por sección (Empresa, Personas, Eventos, Equipos). Al abrir una se ve completa: imagen, sección,
+fecha, entradilla, datos del evento (fecha, lugar), equipo o puesto, texto y enlace.
+
+**Plantillas** (plantillas de autor de WCM, con su plantilla de presentación): noticia (entradilla, imagen, texto),
+noticia breve (entradilla, enlace), evento (entradilla, imagen, empieza, termina, lugar, texto), bienvenida
+(entradilla, imagen, puesto, texto) y logro de equipo (entradilla, imagen, equipo, texto). El formulario de ÓRBITA se
+genera a partir de los elementos de la plantilla: texto enriquecido → editor de texto; texto → texto largo; texto corto
+que empieza por Imagen → subida de imagen, por Fecha → fecha y hora, por Enlace → enlace; el resto, texto corto.
+
+**Proponer una noticia** (cualquiera): elegir plantilla, titular y sección, rellenar los campos, vista previa, guardar
+borrador y enviar a revisión. Estados: borrador → en revisión → publicada, o devuelta (con el comentario de RRHH, vuelve
+a la autora para cambiarla) o no se publica. Solo la autora ve sus borradores; RRHH ve las enviadas.
+- **Imagen**: JPG o PNG, al menos 200 × 100 px, como mucho 10 MB; se reduce a 1600 px de ancho y se guarda en JPEG sin
+  metadatos.
+- **Texto**: párrafos, negrita, cursiva, títulos, listas, citas y enlaces https; todo lo demás (scripts, estilos,
+  imágenes incrustadas, atributos) se quita al guardar y al mostrar.
+
+**Revisión (RRHH)**: bandeja con las propuestas por revisar y las revisadas en los últimos 60 días. RRHH puede corregir
+la propuesta, publicarla, devolverla o no publicarla (estas dos con un comentario obligatorio). Al publicar, el
+navegador de quien revisa crea el contenido en WCM con sus permisos (tiene que estar en `news.editors`) y la noticia
+aparece en la portada. Avisos: a RRHH cuando llega una propuesta; a la autora cuando se publica, se devuelve o no se
+publica. Las noticias publicadas se gestionan (cambiar, retirar) en WCM, con Content Composer.
+
+**Junto a las noticias**: comunicados de RRHH (primero los que hay que confirmar), la encuesta pendiente, los próximos
+eventos (noticias con fecha) y festivos, celebraciones y reconocimientos de Personas y los accesos a las aplicaciones.
+
 ## Personas
 
 Directorio de la plantilla, en tres pestañas.

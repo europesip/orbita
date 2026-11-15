@@ -2,6 +2,27 @@
 
 [English](CHANGELOG.md) · **Español**
 
+## Sin publicar · Portada y noticias
+
+- Nueva aplicación **Portada** (página `portada`, la primera): las **noticias** de la empresa desde **HCL DX WCM**, los
+  comunicados de RRHH por confirmar, los próximos eventos y festivos, celebraciones y reconocimientos, la encuesta
+  abierta y los accesos. El logo del tema de ejemplo lleva ahora a ella.
+- **WCM preparado por el chart** (`news.*`, idempotente): biblioteca `orbita-noticias` (la lee todo el mundo;
+  `news.editors` reciben Editor), cuatro secciones, cinco plantillas de autor con su plantilla de presentación (noticia,
+  noticia breve, evento, bienvenida, logro de equipo) y seis noticias de demostración con imágenes en el DAM.
+- **Proponer una noticia**: cualquiera elige una plantilla de WCM y rellena un formulario generado a partir de ella
+  (titular, sección, entradilla, imagen, fechas, lugar, enlace y un cuerpo con un editor de texto sencillo), la ve en
+  vista previa y la envía a revisión.
+- **Revisión (RRHH)**: publicar (el navegador crea el contenido en WCM con los permisos de WCM de quien revisa),
+  devolver con un comentario o rechazar; RRHH puede corregir el texto antes. Avisos a RRHH y a la autora. Los editores
+  siguen pudiendo usar Content Composer.
+- Por qué la revisión está en ÓRBITA: en CF238 la API REST de WCM solo deja mover contenido por un flujo de trabajo a
+  los administradores (los usuarios con el rol Reviewer reciben 403).
+- API: `portada.resumen` y `noticias.*`; imágenes de las noticias redibujadas en JPEG (hasta 1600 px, sin metadatos) y
+  servidas por `GET /orbita-api/v1/noticias/imagenes/{id}`; el texto enriquecido se limpia con una lista blanca en el
+  servidor y en el navegador. Migración Flyway **`V8__noticias.sql`**. Probado en PostgreSQL 17 con 56 comprobaciones
+  automáticas y de principio a fin en el clúster del laboratorio (proponer, revisar, publicar).
+
 ## Sin publicar · Fotos en Personas
 
 - **Foto de cada persona** en **Personas**: cada persona pone, cambia o quita la suya desde su ficha (el botón de la
