@@ -204,9 +204,13 @@ que empieza por Imagen → subida de imagen, por Fecha → fecha y hora, por Enl
 
 **Diseños**: cada noticia, de cualquier plantilla, elige cómo se ve: **clásico** (imagen arriba), **imagen a toda
 página** (el titular sobre la imagen), **dos columnas** (imagen a un lado), **cartel** (bloque de color con el titular
-grande y los datos) o **destacado** (la entradilla grande, como una cita). Se elige en el formulario con miniaturas y
-se ve en la vista previa, en la tarjeta de la portada y al abrir la noticia. Cada plantilla propone uno: evento y
-noticia breve, cartel; bienvenida, destacado; logro, dos columnas; noticia, clásico. Se guarda en el elemento `Diseno`
+grande y los datos), **destacado** (la entradilla grande, como una cita), **revista** (titular de periódico, letra
+capital y texto a dos columnas), **cine** (fondo negro, imagen con viñeta y titular enorme con degradado), **titular
+gigante** (mayúsculas enormes y la imagen desplazada con una sombra de color), **diagonal** (imagen cortada en diagonal y
+una banda de color inclinada con el titular), **cuenta atrás** (los días, horas y minutos que faltan para el evento, que
+se actualizan solos) o **celebración** (confeti, todo centrado y la imagen en un círculo). Se elige en el formulario con
+miniaturas y se ve en la vista previa, en la tarjeta de la portada y al abrir la noticia. Cada plantilla propone uno:
+evento, cuenta atrás; noticia breve, cartel; bienvenida y logro, celebración; noticia, clásico. Se guarda en el elemento `Diseno`
 de la plantilla de WCM (un valor desconocido se trata como clásico).
 
 **Proponer una noticia** (cualquiera): elegir plantilla, titular y sección, rellenar los campos, vista previa, guardar

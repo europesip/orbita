@@ -54,7 +54,7 @@ final class Noticias {
     static final String IMAGENES = "/orbita-api/v1/noticias/imagenes/";
     private static final Set<String> ESTADOS = Set.of("BORRADOR", "REVISION", "DEVUELTA", "PUBLICADA", "RECHAZADA");
     /** Diseños de una noticia (cómo la muestra la portada). */
-    static final Set<String> DISENOS = Set.of("clasico", "portada", "columnas", "cartel", "cita");
+    static final Set<String> DISENOS = Set.of("clasico", "portada", "columnas", "cartel", "cita", "revista", "cine", "titular", "diagonal", "cuenta", "celebracion");
     private static final Pattern NOMBRE = Pattern.compile("[A-Za-z][A-Za-z0-9_-]{0,79}");
     private static final Pattern UUID = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
     private static final int MAX_IMAGEN = 10 * 1024 * 1024, ANCHO = 1600;

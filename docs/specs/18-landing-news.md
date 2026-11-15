@@ -29,9 +29,12 @@ short text → short text.
 
 **Designs**: every template has a `Diseno` element (added to existing templates on upgrade; nothing is removed). Values:
 `clasico`, `portada` (full-page image with the headline on top), `columnas`, `cartel` (colour block with the headline
-and the key details) and `cita` (the standfirst as a quote); anything else is shown as `clasico`. Chosen with visual
-thumbnails in the form; applied to the landing card, the reader and the preview. Defaults per template: evento and
-breve `cartel`, bienvenida `cita`, logro `columnas`, noticia `clasico`.
+and the key details), `cita` (the standfirst as a quote), `revista` (newspaper headline, drop cap, two-column text),
+`cine` (black, vignette, huge gradient headline), `titular` (giant capitals, offset image), `diagonal` (cut image and a
+tilted colour band), `cuenta` (live countdown to `Fecha`) and `celebracion` (confetti, centred, round image); anything
+else is shown as `clasico`. Chosen with visual
+thumbnails in the form; applied to the landing card, the reader and the preview. Defaults per template: evento `cuenta`,
+breve `cartel`, bienvenida and logro `celebracion`, noticia `clasico`.
 Other element types are not filled from ÓRBITA.
 
 **Landing page** (`portada` Script Application, first page; the theme logo links to it):

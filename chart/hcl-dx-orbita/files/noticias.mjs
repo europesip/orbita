@@ -11,7 +11,8 @@
 //     achievement. Without a WCM workflow: the review happens in ÓRBITA (the WCM REST API does not let users move
 //     content through a workflow in CF238), and the content is created already published.
 //     Element names say how ÓRBITA's form shows them: Imagen* image, Fecha* date and time, Enlace* link, Diseno* the
-//     design of the news item (clasico, portada, columnas, cartel, cita), a rich text element is the body, a text
+//     design of the news item (clasico, portada, columnas, cartel, cita, revista, cine, titular, diagonal, cuenta,
+//     celebracion), a rich text element is the body, a text
 //     element is a long text and any other short text is a short text. Elements added in a new version of ÓRBITA are
 //     added to templates that already exist (nothing is removed).
 //  4. Demo news (news.demo, only when the library has no content): the images go to the DAM collection news.damCollection.
@@ -67,7 +68,7 @@ const SECCIONES = [
 const corta = (name, title, help) => ({name, title, type: 'ShortTextComponent', help});
 const rica = (name, title) => ({name, title, type: 'RichTextComponent'});
 // Design of the news item: ÓRBITA shows it with one of these layouts (empty: clasico)
-const diseno = () => corta('Diseno', 'Diseño (clasico, portada, columnas, cartel o cita)');
+const diseno = () => corta('Diseno', 'Diseño (clasico, portada, columnas, cartel, cita, revista, cine, titular, diagonal, cuenta o celebracion)');
 const PLANTILLAS = [
   {name: 'noticia', title: 'Noticia', description: 'Noticia completa con imagen, entradilla y texto.', seccion: 'empresa',
     elements: [corta('Entradilla', 'Entradilla'), corta('Imagen', 'Imagen (dirección)'), rica('Cuerpo', 'Texto'), diseno()]},
@@ -228,19 +229,19 @@ function demos(img) {
       campos: {Diseno: 'portada', Entradilla: 'Más espacio, café de especialidad y una zona para reuniones informales.', Imagen: img.cafeteria,
         Cuerpo: '<p>Desde el lunes la planta 2 tiene <strong>cafetería nueva</strong>: el doble de mesas, enchufes en todas ellas y una zona tranquila para reuniones rápidas.</p><p>El café de especialidad es gratuito de 8:00 a 10:00. Gracias al equipo de Servicios Generales por el trabajo de estas semanas.</p>'}},
     {plantilla: 'evento', seccion: 'eventos', titulo: 'Comida de Navidad 2026',
-      campos: {Diseno: 'cartel', Entradilla: 'Nos vemos para celebrar el año: comida, música y el sorteo de siempre.', Imagen: img.evento, Fecha: enDias(30, 14), FechaFin: enDias(30, 18),
+      campos: {Diseno: 'cuenta', Entradilla: 'Nos vemos para celebrar el año: comida, música y el sorteo de siempre.', Imagen: img.evento, Fecha: enDias(30, 14), FechaFin: enDias(30, 18),
         Lugar: 'Restaurante La Terraza, Madrid', Cuerpo: '<p>Este año la comida de Navidad es en <strong>La Terraza</strong>. Habrá menú vegetariano y sin gluten.</p><p>Apúntate antes del día 15 para reservar tu plaza.</p>'}},
     {plantilla: 'bienvenida', seccion: 'personas', titulo: 'Damos la bienvenida a Pablo',
-      campos: {Diseno: 'cita', Entradilla: 'Pablo se incorpora al equipo de Soporte en Tecnología.', Imagen: img.bienvenida, Puesto: 'Técnico de soporte · Tecnología',
+      campos: {Diseno: 'celebracion', Entradilla: 'Pablo se incorpora al equipo de Soporte en Tecnología.', Imagen: img.bienvenida, Puesto: 'Técnico de soporte · Tecnología',
         Cuerpo: '<p>Pablo viene de cinco años en soporte de sistemas y le encantan los teclados mecánicos. Si tienes una incidencia, ya sabes a quién saludar.</p>'}},
     {plantilla: 'logro', seccion: 'equipos', titulo: 'Ventas cierra el mejor trimestre de su historia',
-      campos: {Diseno: 'columnas', Entradilla: 'Un 18 % por encima del objetivo y tres clientes nuevos en Valencia.', Imagen: img.logro, Equipo: 'Ventas',
+      campos: {Diseno: 'cine', Entradilla: 'Un 18 % por encima del objetivo y tres clientes nuevos en Valencia.', Imagen: img.logro, Equipo: 'Ventas',
         Cuerpo: '<p>Enhorabuena a todo el equipo de Ventas: el trimestre se cierra un <strong>18 % por encima</strong> del objetivo.</p><ul><li>Tres clientes nuevos en Valencia.</li><li>La renovación del contrato marco con nuestro mayor cliente.</li></ul>'}},
     {plantilla: 'noticia', seccion: 'empresa', titulo: 'ÓRBITA ya tiene portada',
-      campos: {Entradilla: 'Noticias, comunicados, eventos y celebraciones en un solo sitio. Y cualquiera puede proponer una noticia.', Imagen: img.empresa,
+      campos: {Diseno: 'revista', Entradilla: 'Noticias, comunicados, eventos y celebraciones en un solo sitio. Y cualquiera puede proponer una noticia.', Imagen: img.empresa,
         Cuerpo: '<p>Desde hoy la intranet tiene <strong>portada</strong>. Las noticias se publican en HCL DX y se proponen desde ÓRBITA con una plantilla: RRHH las revisa antes de publicarlas.</p>'}},
     {plantilla: 'breve', seccion: 'empresa', titulo: 'El viernes cerramos a las 15:00',
-      campos: {Diseno: 'cartel', Entradilla: 'Por el puente, la oficina cierra el viernes a las 15:00. ¡Buen fin de semana largo!', Enlace: ''}},
+      campos: {Diseno: 'titular', Entradilla: 'Por el puente, la oficina cierra el viernes a las 15:00. ¡Buen fin de semana largo!', Enlace: ''}},
   ];
 }
 

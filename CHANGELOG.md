@@ -10,9 +10,11 @@
 - **WCM set up by the chart** (`news.*`, idempotent): library `orbita-noticias` (everybody reads; `news.editors` get
   Editor), four sections, five authoring templates with presentation templates (news item, short news item, event,
   welcome, team achievement) and six demo news with images in the DAM.
-- **Five designs** for any news item, chosen in the form with visual thumbnails: classic, full-page image, two
-  columns, poster and highlight (the standfirst as a quote). Stored in the WCM element `Diseno` (added to existing
-  templates on upgrade); each template suggests one (an event, the poster).
+- **Eleven designs** for any news item, chosen in the form with visual thumbnails: classic, full-page image, two
+  columns, poster, highlight (the standfirst as a quote), magazine (newspaper headline, drop cap, two-column text),
+  cinema (black, vignette, huge gradient headline), giant headline, diagonal (cut image and a tilted colour band), countdown
+  (days, hours and minutes to an event, live) and celebration (confetti, centred, round image). Stored in the WCM element `Diseno` (added to existing
+  templates on upgrade); each template suggests one (an event, the countdown; a welcome or an achievement, the celebration).
 - **Propose a news item**: anybody chooses a WCM template and fills a form generated from it (headline, section,
   standfirst, image, dates, place, link and a rich-text body with a simple editor), previews it and sends it for review.
 - **Review (HR)**: publish (the browser creates the WCM content with the reviewer's WCM rights), return with a comment

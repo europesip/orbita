@@ -10,9 +10,12 @@
 - **WCM preparado por el chart** (`news.*`, idempotente): biblioteca `orbita-noticias` (la lee todo el mundo;
   `news.editors` reciben Editor), cuatro secciones, cinco plantillas de autor con su plantilla de presentación (noticia,
   noticia breve, evento, bienvenida, logro de equipo) y seis noticias de demostración con imágenes en el DAM.
-- **Cinco diseños** para cualquier noticia, que se eligen en el formulario con miniaturas: clásico, imagen a toda
-  página, dos columnas, cartel y destacado (la entradilla como una cita). Se guardan en el elemento `Diseno` de WCM (se
-  añade a las plantillas que ya existen al actualizar); cada plantilla propone uno (un evento, el cartel).
+- **Once diseños** para cualquier noticia, que se eligen en el formulario con miniaturas: clásico, imagen a toda
+  página, dos columnas, cartel, destacado (la entradilla como una cita), revista (titular de periódico, letra capital,
+  texto a dos columnas), cine (fondo negro, viñeta y titular enorme con degradado), titular gigante, diagonal (imagen
+  cortada y banda de color inclinada), cuenta atrás (días, horas y minutos que faltan para un evento, en directo) y
+  celebración (confeti, centrado e imagen redonda). Se guardan en el elemento `Diseno` de WCM (se
+  añade a las plantillas que ya existen al actualizar); cada plantilla propone uno (un evento, la cuenta atrás; una bienvenida o un logro, la celebración).
 - **Proponer una noticia**: cualquiera elige una plantilla de WCM y rellena un formulario generado a partir de ella
   (titular, sección, entradilla, imagen, fechas, lugar, enlace y un cuerpo con un editor de texto sencillo), la ve en
   vista previa y la envía a revisión.

@@ -27,8 +27,14 @@ const DISENOS = [
   {id: 'columnas', nombre: 'Dos columnas', descripcion: 'Imagen a un lado y texto al otro.'},
   {id: 'cartel', nombre: 'Cartel', descripcion: 'Bloque de color con el titular grande y los datos destacados.'},
   {id: 'cita', nombre: 'Destacado', descripcion: 'La entradilla grande, como una cita.'},
+  {id: 'revista', nombre: 'Revista', descripcion: 'Titular de periódico, letra capital y texto a dos columnas.'},
+  {id: 'cine', nombre: 'Cine', descripcion: 'Fondo negro, imagen con viñeta y titular enorme con degradado.'},
+  {id: 'titular', nombre: 'Titular gigante', descripcion: 'Tipografía enorme en mayúsculas y la imagen desplazada.'},
+  {id: 'diagonal', nombre: 'Diagonal', descripcion: 'Imagen cortada en diagonal y una banda de color con el titular.'},
+  {id: 'cuenta', nombre: 'Cuenta atrás', descripcion: 'Para eventos: los días, horas y minutos que faltan.'},
+  {id: 'celebracion', nombre: 'Celebración', descripcion: 'Confeti, todo centrado y la imagen en un círculo.'},
 ];
-const DISENO_DE = {noticia: 'clasico', breve: 'cartel', evento: 'cartel', bienvenida: 'cita', logro: 'columnas'};
+const DISENO_DE = {noticia: 'clasico', breve: 'cartel', evento: 'cuenta', bienvenida: 'celebracion', logro: 'celebracion'};
 const disenoDe = (campos) => { const d = valorDe(campos.Diseno); return DISENOS.some((x) => x.id === d) ? d : 'clasico'; };
 const ESTADO = {
   BORRADOR: {tono: 'gris', nombre: 'Borrador'}, REVISION: {tono: 'azul', nombre: 'En revisión'}, DEVUELTA: {tono: 'ambar', nombre: 'Devuelta'},
@@ -205,6 +211,11 @@ function Comunicados({r}) {
 
 const nombreSeccion = (w, n) => { const s = w.estado === 'ok' && w.secciones.find((x) => x.nombre === n); return s ? t(s.titulo) : null; };
 
+function FaltaCorto({iso}) {
+  const f = useFalta(iso);
+  return f ? <span className="si-po-falta"><b>{f.dias}</b> {t(f.dias === 1 ? 'día' : 'días')} <b>{f.horas}</b> h <b>{f.minutos}</b> min</span> : null;
+}
+
 function TarjetaNoticia({n, w, grande, onLeer}) {
   const img = valorDe(n.campos.Imagen), entradilla = valorDe(n.campos.Entradilla);
   const evento = valorDe(n.campos.Fecha), d = disenoDe(n.campos);
@@ -215,9 +226,32 @@ function TarjetaNoticia({n, w, grande, onLeer}) {
         <span className="si-po-meta">{nombreSeccion(w, n.seccion) && <span className="si-po-seccion">{nombreSeccion(w, n.seccion)}</span>}
           {evento ? <span><Icono n="evento" /> {fechaHora(evento)}</span> : n.fecha && <span>{haceCuanto(n.fecha)}</span>}</span>
         <strong>{n.titulo}</strong>
+        {d === 'cuenta' && evento && <FaltaCorto iso={evento} />}
         {entradilla && <span className="si-po-entradilla">{entradilla}</span>}
       </span>
     </button>
+  );
+}
+
+/** Lo que falta para una fecha (se actualiza cada 30 s); null si ya ha pasado. */
+function useFalta(iso) {
+  const [ahora, setAhora] = useState(Date.now());
+  useEffect(() => { if (!iso) return undefined; const i = setInterval(() => setAhora(Date.now()), 30000); return () => clearInterval(i); }, [iso]);
+  if (!iso) return null;
+  const ms = new Date(iso).getTime() - ahora;
+  if (!(ms > 0)) return null;
+  return {dias: Math.floor(ms / 864e5), horas: Math.floor(ms / 36e5) % 24, minutos: Math.floor(ms / 6e4) % 60};
+}
+
+function CuentaAtras({iso}) {
+  const f = useFalta(iso);
+  if (!f) return <p className="si-po-cuenta-ya">{iso ? t('¡Ya ha empezado!') : t('Pon la fecha del evento para ver la cuenta atrás.')}</p>;
+  return (
+    <div className="si-po-cuenta" role="timer" aria-label={t('Faltan {d} días, {h} horas y {m} minutos', {d: f.dias, h: f.horas, m: f.minutos})}>
+      {[[f.dias, 'días'], [f.horas, 'horas'], [f.minutos, 'minutos']].map(([n, u]) => (
+        <span key={u}><strong>{String(n).padStart(2, '0')}</strong><small>{t(u)}</small></span>
+      ))}
+    </div>
   );
 }
 
@@ -269,6 +303,51 @@ function Articulo({titulo, seccion, fecha: cuando, campos, w}) {
         {(img || datos.length > 0) && <div className="si-po-cita-pie">{img && <img src={img} alt="" />}{lista}</div>}
         {resto}
       </>;
+      break;
+    case 'revista':
+      dentro = <>
+        <div className="si-po-rev-cab">{meta}<h1>{titulo}</h1>{entradilla}</div>
+        {foto}{lista}
+        {cuerpo && <div className="si-po-cuerpo si-po-rev-cuerpo" dangerouslySetInnerHTML={{__html: cuerpo}} />}
+        {enlace && wcm.enlaceSeguro(enlace) && <p><a className="si-boton si-boton-secundario" href={enlace} target="_blank" rel="noopener noreferrer">{t('Abrir el enlace')}</a></p>}
+      </>;
+      break;
+    case 'cine':
+      dentro = <div className="si-po-cine">
+        {img && <div className="si-po-cine-img" style={{backgroundImage: `url("${img.replace(/"/g, '%22')}")`}} />}
+        <div className="si-po-cine-txt">{cabeza}{entradilla}{lista}{resto}</div>
+      </div>;
+      break;
+    case 'titular':
+      dentro = <>
+        <div className="si-po-gigante">{meta}<h1>{titulo}</h1></div>
+        {entradilla}
+        {img && <div className="si-po-desplazada"><img src={img} alt="" /></div>}
+        {lista}{resto}
+      </>;
+      break;
+    case 'diagonal':
+      dentro = <>
+        <div className="si-po-diag">
+          {img ? <img src={img} alt="" /> : <span className="si-po-diag-sin" />}
+          <div className="si-po-diag-banda"><div>{cabeza}</div></div>
+        </div>
+        {entradilla}{lista}{resto}
+      </>;
+      break;
+    case 'cuenta':
+      dentro = <>
+        <div className="si-po-cuenta-cab">{cabeza}<CuentaAtras iso={v('Fecha')} />{lista}</div>
+        {entradilla}{foto}{resto}
+      </>;
+      break;
+    case 'celebracion':
+      dentro = <div className="si-po-fiesta">
+        <span className="si-po-fiesta-icono"><Icono n={v('Equipo') ? 'trofeo' : v('Puesto') ? 'entrar' : 'estrella'} /></span>
+        {cabeza}{entradilla}
+        {img && <img className="si-po-fiesta-img" src={img} alt="" />}
+        {lista}{resto}
+      </div>;
       break;
     default:
       dentro = <>{foto}{cabeza}{entradilla}{lista}{resto}</>;
@@ -530,6 +609,12 @@ function MiniDiseno({id}) {
       {id === 'columnas' && <span className="si-po-m-cols">{I}<span>{T}{X}</span></span>}
       {id === 'cartel' && <><span className="si-po-m-cartel">{T}<i className="si-po-m-lin si-po-m-clara" /></span>{X}</>}
       {id === 'cita' && <>{T}<i className="si-po-m-quote">“</i>{X}</>}
+      {id === 'revista' && <><i className="si-po-m-serif" /><i className="si-po-m-lin si-po-m-corta" />{I}<span className="si-po-m-2col"><span>{X}</span><span>{X}</span></span></>}
+      {id === 'cine' && <span className="si-po-m-cine"><i className="si-po-m-img" /><i className="si-po-m-grad" /><i className="si-po-m-lin si-po-m-clara" /></span>}
+      {id === 'titular' && <><i className="si-po-m-gig" /><i className="si-po-m-gig si-po-m-corta" /><i className="si-po-m-barra" /><i className="si-po-m-img si-po-m-off" /></>}
+      {id === 'diagonal' && <span className="si-po-m-diag"><i className="si-po-m-img" /><i className="si-po-m-banda" /></span>}
+      {id === 'cuenta' && <span className="si-po-m-cuenta">{T}<span className="si-po-m-nums"><i /><i /><i /></span></span>}
+      {id === 'celebracion' && <span className="si-po-m-fiesta"><i className="si-po-m-circ" />{T}<i className="si-po-m-lin si-po-m-corta" /></span>}
     </span>
   );
 }
