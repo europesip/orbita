@@ -141,7 +141,18 @@ final class Fotos {
      * un JPG o PNG válido, si ocupa demasiado o si es enorme (se mira el tamaño antes de descomprimirla).
      */
     static byte[] normalizar(byte[] d) {
-        if (d.length > MAX_BYTES) throw new Api.Aviso("La foto ocupa demasiado (máximo 6 MB).");
+        BufferedImage img = leer(d, MAX_BYTES, "La foto ocupa demasiado (máximo 6 MB).");
+        int lado = Math.min(img.getWidth(), img.getHeight());
+        if (lado < 32) throw new Api.Aviso("La foto es demasiado pequeña (al menos 32 píxeles de lado).");
+        int x = (img.getWidth() - lado) / 2, y = (img.getHeight() - lado) / 2;
+        BufferedImage cuadrada = new BufferedImage(LADO, LADO, BufferedImage.TYPE_INT_RGB);
+        dibujar(cuadrada, img, 0, 0, LADO, LADO, x, y, x + lado, y + lado);
+        return jpeg(cuadrada);
+    }
+
+    /** Lee un JPG o PNG comprobado (por su contenido, tamaño y dimensiones antes de descomprimirlo). */
+    static BufferedImage leer(byte[] d, int maxBytes, String demasiado) {
+        if (d.length > maxBytes) throw new Api.Aviso(demasiado);
         String tipo = Documentos.tipo(d);
         if (!"image/jpeg".equals(tipo) && !"image/png".equals(tipo)) throw new Api.Aviso("La foto tiene que ser JPG o PNG.");
         BufferedImage img;
@@ -162,21 +173,21 @@ final class Fotos {
             if (ex instanceof Api.Aviso a) throw a;
             throw new Api.Aviso("No se puede leer la foto: prueba con otro fichero JPG o PNG.");
         }
-        int lado = Math.min(img.getWidth(), img.getHeight());
-        if (lado < 32) throw new Api.Aviso("La foto es demasiado pequeña (al menos 32 píxeles de lado).");
-        int x = (img.getWidth() - lado) / 2, y = (img.getHeight() - lado) / 2;
-        BufferedImage cuadrada = new BufferedImage(LADO, LADO, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = cuadrada.createGraphics();
+        return img;
+    }
+
+    /** Dibuja en destino la zona (sx1,sy1)-(sx2,sy2) de img, escalada a (dx,dy,w,h), sobre blanco (PNG transparentes). */
+    static void dibujar(BufferedImage destino, BufferedImage img, int dx, int dy, int w, int h, int sx1, int sy1, int sx2, int sy2) {
+        Graphics2D g = destino.createGraphics();
         try {
-            g.setColor(Color.WHITE);            // fondo para los PNG con transparencia
-            g.fillRect(0, 0, LADO, LADO);
+            g.setColor(Color.WHITE);
+            g.fillRect(0, 0, destino.getWidth(), destino.getHeight());
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
             g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            g.drawImage(img, 0, 0, LADO, LADO, x, y, x + lado, y + lado, null);
+            g.drawImage(img, dx, dy, dx + w, dy + h, sx1, sy1, sx2, sy2, null);
         } finally {
             g.dispose();
         }
-        return jpeg(cuadrada);
     }
 
     static byte[] jpeg(BufferedImage img) {
