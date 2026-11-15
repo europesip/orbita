@@ -121,6 +121,9 @@ export const PORTADAS = [
   {id: 'muro', nombre: 'Muro', descripcion: 'Columnas de tarjetas de distinta altura, con avisos y agenda entre ellas.'},
   {id: 'nocturna', nombre: 'Nocturna', descripcion: 'Modo oscuro inmersivo con la destacada sobre su imagen.'},
   {id: 'foco', nombre: 'Enfoque', descripcion: 'Una sola columna central para leer con calma.'},
+  {id: 'orbita', nombre: 'Órbita', descripcion: 'La destacada es un planeta y las demás noticias giran a su alrededor.'},
+  {id: 'neon', nombre: 'Neón', descripcion: 'Fondo oscuro con cuadrícula luminosa, titulares de neón y tarjetas de cristal.'},
+  {id: 'historias', nombre: 'Historias', descripcion: 'Cada noticia a pantalla completa, como un reportaje que se recorre.'},
 ];
 
 function Inicio({w, r, errorR, onLeer, onProponer, config, rrhh, diseno, onDisenar}) {
@@ -526,7 +529,138 @@ function Foco({w, r, errorR, onLeer, filtradas, eventos, cabeza, estado, pie}) {
   );
 }
 
-const DISENOS_PORTADA = {clasica: Clasica, revista: Revista, mosaico: Mosaico, carrusel: Carrusel, cronologia: Cronologia, titulares: Titulares,
+function Orbita({w, r, errorR, onLeer, filtradas, eventos, cabeza, estado, pie}) {
+  const [centro, ...resto] = filtradas;
+  const [sobre, setSobre] = useState(null);
+  const interior = resto.slice(0, 4), exterior = resto.slice(4, 10);
+  const satelite = (n, k, total, anillo) => {
+    const ang = (360 / total) * k;
+    return (
+      <span key={n.id} className="si-po-sat-brazo" style={{transform: `rotate(${ang}deg)`}}>
+        <button type="button" className={`si-po-sat si-po-sat-${anillo}`} style={{'--giro': `${-ang}deg`}} onClick={() => onLeer(n)}
+          onMouseEnter={() => setSobre(n)} onMouseLeave={() => setSobre(null)} onFocus={() => setSobre(n)} onBlur={() => setSobre(null)} aria-label={n.titulo}>
+          {imagenDe(n) ? <img src={imagenDe(n)} alt="" /> : <span>{n.titulo.slice(0, 1)}</span>}
+        </button>
+      </span>
+    );
+  };
+  const info = sobre || centro;
+  return (
+    <>
+      {cabeza}{estado}
+      {centro && (
+        <div className={`si-po-cosmos${sobre ? ' si-po-quieto' : ''}`}>
+          <div className="si-po-estrellas" />
+          <div className="si-po-sistema">
+            <span className="si-po-anillo si-po-anillo-1" /><span className="si-po-anillo si-po-anillo-2" />
+            <div className="si-po-giro si-po-giro-1">{interior.map((n, k) => satelite(n, k, interior.length, 1))}</div>
+            <div className="si-po-giro si-po-giro-2">{exterior.map((n, k) => satelite(n, k, exterior.length, 2))}</div>
+            <button type="button" className="si-po-planeta" style={fondo(imagenDe(centro))} onClick={() => onLeer(centro)} aria-label={centro.titulo} />
+          </div>
+          <div className="si-po-cosmos-info" aria-live="polite">
+            <span className="si-po-meta"><span className="si-po-seccion">{nombreSeccion(w, info.seccion)}</span><span>{cuando(info)}</span></span>
+            <strong>{info.titulo}</strong>
+            {valorDe(info.campos.Entradilla) && <span className="si-po-entradilla">{valorDe(info.campos.Entradilla)}</span>}
+            <Boton tipo="primario" onClick={() => onLeer(info)}>{t('Leer la noticia')}</Boton>
+          </div>
+        </div>
+      )}
+      <Lado r={r} errorR={errorR} eventos={eventos} onLeer={onLeer} clase="si-po-fila-lado" />
+      {pie}
+      <Accesos />
+    </>
+  );
+}
+
+function Neon({w, r, errorR, onLeer, filtradas, eventos, cabeza, estado, pie}) {
+  const [a, ...resto] = filtradas;
+  return (
+    <div className="si-po-neon">
+      <div className="si-po-neon-rotulo"><span>ÓRBITA</span><b>{t('Noticias')}</b></div>
+      {a && (
+        <button type="button" className="si-po-neon-top" onClick={() => onLeer(a)}>
+          <span className="si-po-neon-marco" />
+          {imagenDe(a) && <span className="si-po-neon-img" style={fondo(imagenDe(a))} />}
+          <span className="si-po-neon-txt">
+            <span className="si-po-meta"><span className="si-po-seccion">{nombreSeccion(w, a.seccion)}</span><span>{cuando(a)}</span></span>
+            <strong>{a.titulo}</strong>
+            {valorDe(a.campos.Entradilla) && <span className="si-po-entradilla">{valorDe(a.campos.Entradilla)}</span>}
+          </span>
+        </button>
+      )}
+      <div className="si-po-rejilla">
+        <div className="si-po-principal">
+          {cabeza}{estado}
+          <div className="si-po-neon-lista">
+            {resto.map((n, k) => (
+              <button key={n.id} type="button" className={`si-po-neon-tarjeta si-po-neon-c${k % 4}`} onClick={() => onLeer(n)}>
+                {imagenDe(n) && <span className="si-po-neon-mini" style={fondo(imagenDe(n))} />}
+                <span className="si-po-meta"><span className="si-po-seccion">{nombreSeccion(w, n.seccion)}</span><span>{cuando(n)}</span></span>
+                <strong>{n.titulo}</strong>
+              </button>
+            ))}
+          </div>
+          {pie}
+        </div>
+        <Lado r={r} errorR={errorR} eventos={eventos} onLeer={onLeer} />
+        <Accesos />
+      </div>
+    </div>
+  );
+}
+
+function Historias({w, r, errorR, onLeer, filtradas, eventos, cabeza, estado, pie}) {
+  const caja = useRef(null);
+  const [vista, setVista] = useState(0);
+  const [progreso, setProgreso] = useState(0);
+  const [dentro, setDentro] = useState(false);
+  useEffect(() => {
+    const el = caja.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return undefined;
+    const secciones = Array.from(el.querySelectorAll('.si-po-historia'));
+    const o = new IntersectionObserver((xs) => xs.forEach((x) => {
+      if (x.isIntersecting) { x.target.classList.add('si-po-vista'); setVista(Number(x.target.dataset.i)); }
+    }), {threshold: 0.45});
+    secciones.forEach((s) => o.observe(s));
+    const alMover = () => {
+      const b = el.getBoundingClientRect();
+      const total = b.height - window.innerHeight;
+      setProgreso(total > 0 ? Math.min(1, Math.max(0, -b.top / total)) : 0);
+      setDentro(b.top < window.innerHeight * 0.5 && b.bottom > window.innerHeight * 0.5);
+    };
+    window.addEventListener('scroll', alMover, {passive: true});
+    alMover();
+    return () => { o.disconnect(); window.removeEventListener('scroll', alMover); };
+  }, [filtradas.length]);
+  const ir = (k) => { const s = caja.current && caja.current.querySelectorAll('.si-po-historia')[k]; if (s) s.scrollIntoView({behavior: 'smooth', block: 'start'}); };
+  return (
+    <>
+      {cabeza}{estado}
+      <div className="si-po-hist" ref={caja}>
+        <div className={`si-po-hist-barra${dentro ? ' si-po-fija' : ''}`}><span style={{width: `${Math.round(progreso * 100)}%`}} /></div>
+        <nav className={`si-po-hist-puntos${dentro ? ' si-po-fija' : ''}`} aria-label={t('Historias')}>
+          {filtradas.map((n, k) => <button key={n.id} type="button" className={k === vista ? 'activo' : ''} aria-label={n.titulo} onClick={() => ir(k)} />)}
+        </nav>
+        {filtradas.map((n, k) => (
+          <section key={n.id} data-i={k} className={`si-po-historia${imagenDe(n) ? '' : ' si-po-historia-sin'}`} style={fondo(imagenDe(n))}>
+            <div className="si-po-historia-txt">
+              <span className="si-po-historia-num">{String(k + 1).padStart(2, '0')} / {String(filtradas.length).padStart(2, '0')}</span>
+              <span className="si-po-meta"><span className="si-po-seccion">{nombreSeccion(w, n.seccion)}</span><span>{cuando(n)}</span></span>
+              <h2>{n.titulo}</h2>
+              {valorDe(n.campos.Entradilla) && <p>{valorDe(n.campos.Entradilla)}</p>}
+              <Boton tipo="primario" onClick={() => onLeer(n)}>{t('Leer la historia completa')}</Boton>
+            </div>
+          </section>
+        ))}
+      </div>
+      <Lado r={r} errorR={errorR} eventos={eventos} onLeer={onLeer} clase="si-po-fila-lado" />
+      {pie}
+      <Accesos />
+    </>
+  );
+}
+
+const DISENOS_PORTADA = {orbita: Orbita, neon: Neon, historias: Historias, clasica: Clasica, revista: Revista, mosaico: Mosaico, carrusel: Carrusel, cronologia: Cronologia, titulares: Titulares,
   tablero: Tablero, muro: Muro, nocturna: Nocturna, foco: Foco};
 
 /** Miniatura de un diseño de portada. */
@@ -543,6 +677,9 @@ function MiniPortada({id}) {
     muro: [b('mp-m1'), b('mp-m2'), b('mp-m3'), b('mp-m2'), b('mp-m1'), b('mp-m3')],
     nocturna: [b('mp-noche'), b('mp-c3 mp-osc'), b('mp-c3 mp-osc'), b('mp-c3 mp-osc')],
     foco: [b('mp-foco'), b('mp-foco-t'), b('mp-foco'), b('mp-foco-t')],
+    orbita: [b('mp-orb-a2'), b('mp-orb-a1'), b('mp-orb-pl'), b('mp-orb-s mp-s1'), b('mp-orb-s mp-s2'), b('mp-orb-s mp-s3'), b('mp-orb-s mp-s4')],
+    neon: [b('mp-neon-t'), b('mp-neon-h'), b('mp-neon-c'), b('mp-neon-c mp-n2'), b('mp-neon-c mp-n3')],
+    historias: [b('mp-hist mp-h1'), b('mp-hist mp-h2'), b('mp-hist-t'), b('mp-hist-p')],
   };
   return <span className={`si-po-mp si-po-mp-${id}`} aria-hidden="true">{bloques[id]}</span>;
 }

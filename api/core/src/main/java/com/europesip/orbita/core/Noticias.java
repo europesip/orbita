@@ -55,7 +55,7 @@ final class Noticias {
     private static final Set<String> ESTADOS = Set.of("BORRADOR", "REVISION", "DEVUELTA", "PUBLICADA", "RECHAZADA");
     /** Diseños de una noticia (cómo la muestra la portada). */
     /** Diseños de la portada entera (los elige RRHH para la empresa y cada persona para sí). */
-    static final Set<String> PORTADAS = Set.of("clasica", "revista", "mosaico", "carrusel", "cronologia", "titulares", "tablero", "muro", "nocturna", "foco");
+    static final Set<String> PORTADAS = Set.of("clasica", "revista", "mosaico", "carrusel", "cronologia", "titulares", "tablero", "muro", "nocturna", "foco", "orbita", "neon", "historias");
     static final Set<String> DISENOS = Set.of("clasico", "portada", "columnas", "cartel", "cita", "revista", "cine", "titular", "diagonal", "cuenta", "celebracion");
     private static final Pattern NOMBRE = Pattern.compile("[A-Za-z][A-Za-z0-9_-]{0,79}");
     private static final Pattern UUID = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");

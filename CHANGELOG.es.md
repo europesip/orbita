@@ -16,8 +16,12 @@
   cortada y banda de color inclinada), cuenta atrás (días, horas y minutos que faltan para un evento, en directo) y
   celebración (confeti, centrado e imagen redonda). Se guardan en el elemento `Diseno` de WCM (se
   añade a las plantillas que ya existen al actualizar); cada plantilla propone uno (un evento, la cuenta atrás; una bienvenida o un logro, la celebración).
-- **Diez diseños de portada**: clásica, revista, mosaico, carrusel, cronología, titulares (con cinta de última hora),
-  tablero, muro, nocturna y enfoque. RRHH elige el de la empresa; cada persona puede elegir otro para sí y volver al de la
+- **Trece diseños de portada**: clásica, revista, mosaico, carrusel, cronología, titulares (con cinta de última hora),
+  tablero, muro, nocturna, enfoque y tres de escaparate: **órbita** (la destacada como un planeta brillante y las demás
+  como satélites en dos órbitas que giran y se paran al pasar el ratón), **neón** (cuadrícula luminosa, titulares de neón
+  que parpadean, tarjetas de cristal y un borde de colores que gira) e **historias** (cada noticia a pantalla completa con
+  la imagen fija, que aparece al llegar, con índice de puntos y barra de progreso). Las animaciones respetan la opción del
+  sistema de reducir el movimiento. RRHH elige el de la empresa; cada persona puede elegir otro para sí y volver al de la
   empresa. Se ven al momento detrás del selector. Se guardan en la nueva tabla `AJUSTE` (`V9__ajustes.sql`).
 - **Proponer una noticia**: cualquiera elige una plantilla de WCM y rellena un formulario generado a partir de ella
   (titular, sección, entradilla, imagen, fechas, lugar, enlace y un cuerpo con un editor de texto sencillo), la ve en
@@ -29,7 +33,7 @@
   los administradores (los usuarios con el rol Reviewer reciben 403).
 - API: `portada.resumen` y `noticias.*`; imágenes de las noticias redibujadas en JPEG (hasta 1600 px, sin metadatos) y
   servidas por `GET /orbita-api/v1/noticias/imagenes/{id}`; el texto enriquecido se limpia con una lista blanca en el
-  servidor y en el navegador. Migraciones Flyway **`V8__noticias.sql`** y **`V9__ajustes.sql`**. Probado en PostgreSQL 17 con 63 comprobaciones
+  servidor y en el navegador. Migraciones Flyway **`V8__noticias.sql`** y **`V9__ajustes.sql`**. Probado en PostgreSQL 17 con 64 comprobaciones
   automáticas y de principio a fin en el clúster del laboratorio (proponer, revisar, publicar).
 
 ## Sin publicar · Fotos en Personas
