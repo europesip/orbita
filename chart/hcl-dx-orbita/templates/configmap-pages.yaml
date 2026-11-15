@@ -15,13 +15,19 @@ data:
           "theme" (ternary .Values.theme.uniqueName "" .Values.theme.enabled)) | nindent 4 }}
   tema.mjs: |
 {{ .Files.Get "files/tema.mjs" | indent 4 }}
+  noticias.mjs: |
+{{ .Files.Get "files/noticias.mjs" | indent 4 }}
+  noticias.json: |
+    {{- toJson (dict "enabled" (and .Values.news.enabled .Values.pages.create) "library" .Values.news.library "title" .Values.news.title
+          "language" .Values.news.language "editors" .Values.news.editors "demo" .Values.news.demo
+          "damCollection" .Values.news.damCollection "formLogin" (ne (toString .Values.dx.oidcSupport) "false")) | nindent 4 }}
   tema.json: |
     {{- toJson (dict "enabled" .Values.theme.enabled "name" .Values.theme.name "uniqueName" .Values.theme.uniqueName
           "title" .Values.theme.title "base" .Values.theme.base.folder "baseUniqueName" .Values.theme.base.uniqueName
           "damCollection" .Values.theme.damCollection "hclLogo" .Values.theme.hclLogo
           "assistantButton" .Values.theme.assistantButton "logoAlt" .Values.theme.logoAlt
           "headerBackground" .Values.theme.headerBackground
-          "homeUrl" (printf "%s%s" .Values.pages.base "mi-intranet")
+          "homeUrl" (printf "%s%s" .Values.pages.base (ternary "portada" "mi-intranet" .Values.news.enabled))
           "userPhoto" .Values.theme.userPhoto "personasUrl" (printf "%s%s" .Values.pages.base "personas")
           "apiUrl" (printf "%s/v1" .Values.api.path)
           "formLogin" (ne (toString .Values.dx.oidcSupport) "false")) | nindent 4 }}
@@ -30,3 +36,8 @@ binaryData:
   company-logo.png: {{ ternary (.Files.Get "files/theme/company-logo.png" | b64enc) .Values.theme.logoBase64 (empty .Values.theme.logoBase64) }}
   hcl-software.png: {{ .Files.Get "files/theme/hcl-software.png" | b64enc }}
   orbita-icon.png: {{ .Files.Get "files/theme/orbita-icon.png" | b64enc }}
+  cafeteria.jpg: {{ .Files.Get "files/news/cafeteria.jpg" | b64enc }}
+  evento.jpg: {{ .Files.Get "files/news/evento.jpg" | b64enc }}
+  bienvenida.jpg: {{ .Files.Get "files/news/bienvenida.jpg" | b64enc }}
+  logro.jpg: {{ .Files.Get "files/news/logro.jpg" | b64enc }}
+  empresa.jpg: {{ .Files.Get "files/news/empresa.jpg" | b64enc }}

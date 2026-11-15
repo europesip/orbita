@@ -165,6 +165,7 @@ pages:
   # The pages, in this order: friendly name and titles (es, en). The Script Application of each page is
   # "orbita-<friendly name>" (scriptapps.apps).
   items:
+    - { friendly: portada,      es: "Portada",            en: "Home" }
     - { friendly: mi-intranet,  es: "Mi intranet",        en: "My intranet" }
     - { friendly: fichaje,      es: "Fichaje",            en: "Time tracking" }
     - { friendly: vacaciones,   es: "Vacaciones",         en: "Time off" }
@@ -199,6 +200,24 @@ theme:
   userPhoto: true                   # photo (or initials) of the signed-in user, linked to their profile in People
   headerBackground: "#002c56"
 
+# --- Landing page and news («Portada») -----------------------------------------------------------------------------
+# The news are HCL DX WCM content. The scriptapps Job creates (idempotent, what exists is kept) a WCM library with
+# four sections and five authoring templates with their presentation templates (news item, short news item, event,
+# welcome, team achievement). Anybody proposes a news item from ÓRBITA with a template; HR reviews it in ÓRBITA and
+# publishes it in WCM from the browser, with their own WCM permissions (news.editors). Editors can also write in
+# Content Composer. Needs pages.create=true (the Job runs with the DX administrator of scriptapps.dx.credentialsSecret).
+news:
+  enabled: true
+  library: orbita-noticias          # WCM library name (the landing page looks for it by this name)
+  title: ÓRBITA Noticias
+  language: es
+  # LDAP groups or users (DNs) that publish news (WCM Editor in the library). They should be the people with the
+  # ÓRBITA role RRHH, who review the proposals. Empty: only DX administrators can publish.
+  editors: []
+  demo: true                        # six demo news when the library is empty (images in the DAM collection below)
+  damCollection: ÓRBITA Noticias
+  contentComposer: /dx/ui/content/  # link «Write in Content Composer» for the editors
+
 # --- Script Applications (subchart hcl-dx-scriptapp 0.2.0) -------------------------------------------------------
 # The subchart does not see the values above: repeat dx.host and the secrets here.
 scriptapps:
@@ -214,6 +233,7 @@ scriptapps:
   job:
     imagePullSecrets: []     # the bundle image is public; set it for a private mirror
   apps:
+    - { name: orbita-portada,      title: "ÓRBITA · Portada",            path: portada }
     - { name: orbita-mi-intranet,  title: "ÓRBITA · Mi intranet",        path: mi-intranet }
     - { name: orbita-fichaje,      title: "ÓRBITA · Fichaje",            path: fichaje }
     - { name: orbita-vacaciones,   title: "ÓRBITA · Vacaciones",         path: vacaciones }

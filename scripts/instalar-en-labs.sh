@@ -60,6 +60,7 @@ helm upgrade --install "$RELEASE" "$CHART" "${VER[@]}" -n "$SHARED_NS" --timeout
   --set mcp.networkPolicy.integratorNamespace="$DX_NS" \
   --set scriptapps.dx.host="$DX_HOST" --set scriptapps.dx.credentialsSecret=orbita-dx --set scriptapps.dx.caSecret=orbita-dx-ca \
   --set scriptapps.dxclient.acceptLicense=true \
+  --set 'news.editors[0]=cn=dxmarketing,ou=groups,dc=dxdemo,dc=com' \
   ${DXCLIENT_IMAGE:+--set scriptapps.dxclient.image="$DXCLIENT_IMAGE"} \
   "${PULL[@]}" "$@"
 kubectl -n "$SHARED_NS" rollout status deploy/"$RELEASE"-api --timeout=10m
