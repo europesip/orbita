@@ -44,6 +44,11 @@ Other element types are not filled from ÓRBITA.
   celebrations and recognition (People).
 - Quick links to the apps.
 
+**Landing page designs** (table `AJUSTE`, migration V9: `USUARIO` = `*` for the company): `clasica` (default),
+`revista`, `mosaico`, `carrusel`, `cronologia`, `titulares`, `tablero`, `muro`, `nocturna`, `foco`. `portada.resumen`
+returns `diseno: {empresa, mio}`; `PUT portada/diseno` (`portada.diseno`) with `ambito` `mio` (empty value = back to the
+company one) or `empresa` (RRHH only). The chooser previews each design live behind it.
+
 **Proposals** (ÓRBITA, table `NOTICIA_PROPUESTA`, migration V8):
 - States: BORRADOR → REVISION → PUBLICADA; REVISION → DEVUELTA (back to the author) or RECHAZADA.
 - The author edits in BORRADOR/DEVUELTA, sends (needs a standfirst or a body), deletes when not in review or published.
@@ -83,7 +88,7 @@ Events sign-up (#19) and the visual template designer (#20). Editing or withdraw
 Content Composer).
 
 ## Test plan
-- Embedded PostgreSQL 17, Flyway V1-V8: 57 automatic checks (HTML allowlist and XSS cases, images, field validation,
+- Embedded PostgreSQL 17, Flyway V1-V9: 63 automatic checks (HTML allowlist and XSS cases, images, field validation,
   permissions, states, notifications, landing summary, demo restore).
 - Lab cluster: `noticias.mjs` run twice (idempotent) and from the Job; reading as an employee; publishing as an editor
   and refused as an employee; browser walkthrough: landing page (desktop and mobile), reader, propose with image and

@@ -227,6 +227,15 @@ navegador de quien revisa crea el contenido en WCM con sus permisos (tiene que e
 aparece en la portada. Avisos: a RRHH cuando llega una propuesta; a la autora cuando se publica, se devuelve o no se
 publica. Las noticias publicadas se gestionan (cambiar, retirar) en WCM, con Content Composer.
 
+**Diseño de la portada**: diez diseños de la página entera: clásica (destacada, rejilla y columna lateral), revista
+(cabecera con la fecha, noticia principal y dos secundarias, titulares de periódico), mosaico (teselas de distintos
+tamaños con la imagen de fondo), carrusel (las últimas noticias en grande, pasando solas cada 6 s), cronología (línea de
+tiempo por meses), titulares (lista numerada y cinta de última hora), tablero (indicadores de comunicados, eventos,
+encuesta y celebraciones antes que las noticias), muro (columnas de tarjetas con los avisos entre ellas), nocturna (modo
+oscuro con la destacada sobre su imagen) y enfoque (una sola columna para leer). **RRHH** elige el de toda la empresa;
+**cada persona** puede elegir otro para sí y volver al de la empresa. El selector muestra cada uno al momento detrás de
+la ventana antes de guardarlo.
+
 **Junto a las noticias**: comunicados de RRHH (primero los que hay que confirmar), la encuesta pendiente, los próximos
 eventos (noticias con fecha) y festivos, celebraciones y reconocimientos de Personas y los accesos a las aplicaciones.
 

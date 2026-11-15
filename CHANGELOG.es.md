@@ -16,6 +16,9 @@
   cortada y banda de color inclinada), cuenta atrás (días, horas y minutos que faltan para un evento, en directo) y
   celebración (confeti, centrado e imagen redonda). Se guardan en el elemento `Diseno` de WCM (se
   añade a las plantillas que ya existen al actualizar); cada plantilla propone uno (un evento, la cuenta atrás; una bienvenida o un logro, la celebración).
+- **Diez diseños de portada**: clásica, revista, mosaico, carrusel, cronología, titulares (con cinta de última hora),
+  tablero, muro, nocturna y enfoque. RRHH elige el de la empresa; cada persona puede elegir otro para sí y volver al de la
+  empresa. Se ven al momento detrás del selector. Se guardan en la nueva tabla `AJUSTE` (`V9__ajustes.sql`).
 - **Proponer una noticia**: cualquiera elige una plantilla de WCM y rellena un formulario generado a partir de ella
   (titular, sección, entradilla, imagen, fechas, lugar, enlace y un cuerpo con un editor de texto sencillo), la ve en
   vista previa y la envía a revisión.
@@ -26,7 +29,7 @@
   los administradores (los usuarios con el rol Reviewer reciben 403).
 - API: `portada.resumen` y `noticias.*`; imágenes de las noticias redibujadas en JPEG (hasta 1600 px, sin metadatos) y
   servidas por `GET /orbita-api/v1/noticias/imagenes/{id}`; el texto enriquecido se limpia con una lista blanca en el
-  servidor y en el navegador. Migración Flyway **`V8__noticias.sql`**. Probado en PostgreSQL 17 con 57 comprobaciones
+  servidor y en el navegador. Migraciones Flyway **`V8__noticias.sql`** y **`V9__ajustes.sql`**. Probado en PostgreSQL 17 con 63 comprobaciones
   automáticas y de principio a fin en el clúster del laboratorio (proponer, revisar, publicar).
 
 ## Sin publicar · Fotos en Personas

@@ -54,6 +54,8 @@ final class Noticias {
     static final String IMAGENES = "/orbita-api/v1/noticias/imagenes/";
     private static final Set<String> ESTADOS = Set.of("BORRADOR", "REVISION", "DEVUELTA", "PUBLICADA", "RECHAZADA");
     /** Diseños de una noticia (cómo la muestra la portada). */
+    /** Diseños de la portada entera (los elige RRHH para la empresa y cada persona para sí). */
+    static final Set<String> PORTADAS = Set.of("clasica", "revista", "mosaico", "carrusel", "cronologia", "titulares", "tablero", "muro", "nocturna", "foco");
     static final Set<String> DISENOS = Set.of("clasico", "portada", "columnas", "cartel", "cita", "revista", "cine", "titular", "diagonal", "cuenta", "celebracion");
     private static final Pattern NOMBRE = Pattern.compile("[A-Za-z][A-Za-z0-9_-]{0,79}");
     private static final Pattern UUID = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
@@ -75,6 +77,7 @@ final class Noticias {
     Object ejecutar(String op, Map<String, String> p) throws SQLException {
         switch (op) {
             case "portada.resumen": return portada();
+            case "portada.diseno": return fijarPortada(p.get("diseno"), p.get("ambito"));
             case "noticias.propuestas": return propuestas(p.get("ambito"));
             case "noticias.propuesta": return obj("propuesta", json(cargar(Api.entero(p, "id")), true));
             case "noticias.guardar": return guardar(p);
@@ -115,7 +118,44 @@ final class Noticias {
         }
         return obj("comunicacion", com.resumen(), "comunicados", com.ultimos(4),
                 "celebraciones", cel.get("celebraciones"), "reconocimientos", recs.subList(0, Math.min(3, recs.size())),
-                "festivos", festivos, "propuestas", mias, "porRevisar", rrhh() ? contar("REVISION") : null, "rrhh", rrhh());
+                "festivos", festivos, "propuestas", mias, "porRevisar", rrhh() ? contar("REVISION") : null, "rrhh", rrhh(),
+                "diseno", obj("empresa", ajuste("*", "portada.diseno"), "mio", ajuste(yo.usuario, "portada.diseno")));
+    }
+
+    private String ajuste(String usuario, String clave) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("SELECT VALOR FROM AJUSTE WHERE USUARIO = ? AND CLAVE = ?")) {
+            ps.setString(1, usuario);
+            ps.setString(2, clave);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getString(1) : null;
+            }
+        }
+    }
+
+    /** Diseño de la portada: ambito mio (por defecto; vacío = volver al de la empresa) o empresa (solo RRHH). */
+    private Map<String, Object> fijarPortada(String diseno, String ambito) throws SQLException {
+        boolean empresa = "empresa".equals(ambito);
+        if (empresa && !rrhh()) throw new Api.Aviso("Solo RRHH elige el diseño de la portada para toda la empresa.");
+        String usuario = empresa ? "*" : yo.usuario;
+        String d = diseno == null ? "" : diseno.trim();
+        if (d.isEmpty()) {
+            try (PreparedStatement ps = c.prepareStatement("DELETE FROM AJUSTE WHERE USUARIO = ? AND CLAVE = 'portada.diseno'")) {
+                ps.setString(1, usuario);
+                ps.executeUpdate();
+            }
+        } else {
+            if (!PORTADAS.contains(d)) throw new Api.Aviso("Ese diseño de portada no existe.");
+            try (PreparedStatement ps = c.prepareStatement("INSERT INTO AJUSTE (USUARIO, CLAVE, VALOR, CAMBIADO, CAMBIADO_POR) VALUES (?, 'portada.diseno', ?, ?, ?)"
+                    + " ON CONFLICT (USUARIO, CLAVE) DO UPDATE SET VALOR = EXCLUDED.VALOR, CAMBIADO = EXCLUDED.CAMBIADO, CAMBIADO_POR = EXCLUDED.CAMBIADO_POR")) {
+                ps.setString(1, usuario);
+                ps.setString(2, d);
+                ps.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+                ps.setString(4, yo.usuario);
+                ps.executeUpdate();
+            }
+        }
+        return obj("diseno", obj("empresa", ajuste("*", "portada.diseno"), "mio", ajuste(yo.usuario, "portada.diseno")),
+                "mensaje", empresa ? "Diseño de la portada guardado para toda la empresa." : d.isEmpty() ? "Vuelves a ver el diseño de la empresa." : "Diseño de la portada guardado para ti.");
     }
 
     private int contar(String estado) throws SQLException {

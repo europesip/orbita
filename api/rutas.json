@@ -89,6 +89,7 @@
     {"op": "fotos.borrar",           "metodo": "DELETE", "ruta": "personas/{usuario}/foto"},
 
     {"op": "portada.resumen",        "metodo": "GET",    "ruta": "portada"},
+    {"op": "portada.diseno",         "metodo": "PUT",    "ruta": "portada/diseno"},
     {"op": "noticias.propuestas",    "metodo": "GET",    "ruta": "noticias/propuestas"},
     {"op": "noticias.guardar",       "metodo": "POST",   "ruta": "noticias/propuestas"},
     {"op": "noticias.propuesta",     "metodo": "GET",    "ruta": "noticias/propuestas/{id}"},

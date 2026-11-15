@@ -307,6 +307,11 @@ public final class Mensajes {
         en("No se puede leer la foto: prueba con otro fichero JPG o PNG.", "The photo cannot be read: try another JPG or PNG file.");
         en("La foto es demasiado pequeña (al menos 32 píxeles de lado).", "The photo is too small (at least 32 pixels per side).");
         en("Foto guardada.", "Photo saved.");
+        en("Solo RRHH elige el diseño de la portada para toda la empresa.", "Only HR chooses the landing page design for the whole company.");
+        en("Ese diseño de portada no existe.", "That landing page design does not exist.");
+        en("Diseño de la portada guardado para toda la empresa.", "Landing page design saved for the whole company.");
+        en("Vuelves a ver el diseño de la empresa.", "You see the company design again.");
+        en("Diseño de la portada guardado para ti.", "Landing page design saved for you.");
         en("Esa propuesta ya no existe.", "That proposal no longer exists.");
         en("Solo RRHH revisa las propuestas de noticias.", "Only HR reviews news proposals.");
         en("Escribe el titular de la noticia.", "Write the headline of the news item.");

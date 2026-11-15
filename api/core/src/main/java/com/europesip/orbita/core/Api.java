@@ -136,7 +136,7 @@ final class Api {
                 }
                 if (op.startsWith("personas.") || op.startsWith("reconocimientos.")) return new Directorio(this, c).ejecutar(op, p);
                 if (op.startsWith("fotos.")) return new Fotos(this, c).ejecutar(op, p);
-                if (op.startsWith("noticias.") || op.equals("portada.resumen")) return new Noticias(this, c).ejecutar(op, p);
+                if (op.startsWith("noticias.") || op.startsWith("portada.")) return new Noticias(this, c).ejecutar(op, p);
                 if (op.startsWith("docs."))return new Documentos(this, c).ejecutar(op, p);
                 throw new Aviso("Operación desconocida: " + op);
         }
