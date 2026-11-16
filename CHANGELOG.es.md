@@ -37,6 +37,10 @@
   servidas por `GET /orbita-api/v1/noticias/imagenes/{id}`; el texto enriquecido se limpia con una lista blanca en el
   servidor y en el navegador. Migraciones Flyway **`V8__noticias.sql`** y **`V9__ajustes.sql`**. Probado en PostgreSQL 17 con 64 comprobaciones
   automáticas y de principio a fin en el clúster del laboratorio (proponer, revisar, publicar).
+- **Manual ilustrado actualizado** a la 3.2 (`docs/manual/`, español e inglés): las once aplicaciones con capturas, la
+  portada y las noticias de WCM, las 43 herramientas de IA, OpenID Connect y el historial de la 3.x. Su fuente está ahora
+  en el repositorio (`docs/manual/fuente/`: HTML, CSS y capturas; `node docs/manual/fuente/generar.mjs` imprime los dos
+  PDF con Chrome sin interfaz y toma los iconos de las aplicaciones de `web/src/marca.jsx`).
 
 ## Sin publicar · Fotos en Personas
 
