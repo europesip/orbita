@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // ÓRBITA: cabecera común y aplicación de cada Script Application (data-app).
 import React, {useEffect, useMemo, useState} from 'react';
 import {Avatar, Boton, Campo, Cargando, Fallo, Modal, Suite, crearApi, leerConfig, useAvisos, useDatos, useSuite} from './ui.jsx';

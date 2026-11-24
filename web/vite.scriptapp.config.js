@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Paquete para las Script Applications de HCL DX: un único orbita.js (sin trozos dinámicos, porque DX guarda cada
 // fichero de la Script Application con su propia URL) y un orbita.css. Lo usa scripts/scriptapps.mjs.
 import {defineConfig} from 'vite';

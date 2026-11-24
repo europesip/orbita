@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Aprobaciones: bandeja del responsable con ausencias, correcciones de fichaje, notas de gasto y viajes de su equipo.
 import React, {useState} from 'react';
 import {

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // ÓRBITA · XMLAccess request with one page per application (see after-push.sh). Prints nothing if pages are disabled.
 //   node paginas.mjs <paginas.json> <APP_IDS_FILE: "name<TAB>content ID" lines> [file with the existing pages]
 // A page that already exists keeps its layout and its Web Content Viewer instance: only its title, parameters and

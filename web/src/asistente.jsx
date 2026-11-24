@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Asistente de ÓRBITA: chat de IA dentro de la aplicación (panel lateral), con dos motores (valor assistant.backend):
 //
 //  orbita (por defecto)  el asistente propio de ÓRBITA: POST /orbita-api/v1/asistente. El servidor habla con LiteLLM

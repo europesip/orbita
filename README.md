@@ -434,6 +434,8 @@ Applications and not Java portlets.
 distribute and sell it, also for commercial purposes and in your own products, keeping the copyright and licence
 notice. Third-party components keep their own licences: see [NOTICE](NOTICE).
 
+**Attribution:** any copy or redistribution of this code, modified or not (also when it is reworked with AI tools), must keep the copyright notice (`Copyright (c) 2026 EUROPESIP`) and the MIT licence text.
+
 ## Contact and services
 
 **Everything you need is here**: the complete source code, the Helm chart and the installation procedures. You can

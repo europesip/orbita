@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Avisos (campana de la cabecera) y conversación en cada solicitud.
 import React, {useEffect, useRef, useState} from 'react';
 import {Avatar, Boton, Cargando, Fallo, MARCAS, TIPOS_AUSENCIA, euros, fecha, rango, useDatos, useSuite} from './ui.jsx';

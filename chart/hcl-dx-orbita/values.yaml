@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 EUROPESIP
 # hcl-dx-orbita: ÓRBITA on HCL DX Compose.
 #
 #   orbita-api (Deployment, Open Liberty)  9080 /orbita-api  REST API of the Script Applications (Ingress, DX host)

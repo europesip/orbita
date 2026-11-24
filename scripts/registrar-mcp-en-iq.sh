@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 EUROPESIP
 # ÓRBITA · registrar el servidor MCP de ÓRBITA en HCL DX IQ (laboratorio).
 #
 # El Integrator de DX IQ lee la lista de servidores MCP (URL base separadas por comas; él añade /mcp y /probe/ready) de

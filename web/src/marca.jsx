@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Marca de ÓRBITA: icono (SVG en línea, sin ficheros aparte que WCM tenga que servir) y logotipo.
 // El mismo dibujo está en marca/orbita.svg para documentación y presentaciones.
 import React, {useId} from 'react';

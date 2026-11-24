@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // ÓRBITA · example theme for the ÓRBITA pages (see after-push.sh). Runs in the DXClient container (/dxclient), after
 // the push, with DXClient already configured. Idempotent.
 //   node tema.mjs <tema.json> <assets dir>

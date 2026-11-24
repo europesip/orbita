@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Quiosco de fichaje: tablet en la entrada; cada persona se identifica con su PIN o su tarjeta (QR) y ficha.
 import React, {useEffect, useRef, useState} from 'react';
 import jsQR from 'jsqr';

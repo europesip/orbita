@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Piezas comunes de ÓRBITA: llamada a la API, formatos (en el idioma de la interfaz) y componentes de interfaz.
 import React, {createContext, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';

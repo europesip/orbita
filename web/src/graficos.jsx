@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Gráficos sencillos en SVG (sin librerías): barras con objetivo y anillo.
 import React from 'react';
 import {t} from './i18n.js';

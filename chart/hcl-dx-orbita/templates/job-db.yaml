@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 EUROPESIP
 {{- if .Values.database.create.enabled }}
 {{- $su := include "orbita.dbSuperuserSecret" . }}
 {{- $host := include "orbita.dbHost" . }}

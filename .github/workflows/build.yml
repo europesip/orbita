@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 EUROPESIP
 # ÓRBITA · construye, prueba y publica en ghcr.io:
 #   - imagen orbita-api         (images/api/Dockerfile: Open Liberty + API REST + MCP)
 #   - imagen orbita-scriptapps  (images/scriptapps/Dockerfile: las seis Script Applications)

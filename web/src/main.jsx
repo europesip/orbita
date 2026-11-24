@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // ÓRBITA: monta la aplicación de cada contenedor .si-app de una Script Application de HCL DX:
 //   data-app  qué aplicación (inicio, fichaje, vacaciones, gastos, aprobaciones, kiosco)
 //   data-api  base de la API REST, en el mismo host que DX (/orbita-api/v1)

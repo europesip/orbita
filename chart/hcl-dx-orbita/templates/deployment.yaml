@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 EUROPESIP
 {{- $dbHost := include "orbita.dbHost" . }}
 apiVersion: apps/v1
 kind: Deployment
