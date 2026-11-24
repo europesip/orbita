@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 EUROPESIP
 {{- if .Values.ingress.enabled }}
 # /orbita-api on the DX host: the Script Applications call it without CORS, and the browser sends the DX session
 # cookie. ingress-nginx merges the rules of every Ingress of a host: this path wins over DX's "/".

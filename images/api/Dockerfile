@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 EUROPESIP
 # ÓRBITA · imagen orbita-api: Open Liberty con la API REST (orbita-api.war), el servidor MCP (orbita-mcp.war) y el
 # controlador JDBC de PostgreSQL. Construir desde la raíz del repositorio:
 #   docker build -f images/api/Dockerfile -t orbita-api .

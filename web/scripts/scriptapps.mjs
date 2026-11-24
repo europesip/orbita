@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Genera una Script Application de HCL DX por aplicación de ÓRBITA en build/scriptapps/<carpeta>/ (index.html +
 // orbita.js + orbita.css), a partir del paquete de Vite (build/bundle). La imagen orbita-scriptapps las lleva en /app y
 // el chart las sube a WCM con DXClient (subchart hcl-dx-scriptapp).

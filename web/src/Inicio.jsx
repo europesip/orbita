@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Mi intranet: página de inicio de la suite con el resumen de todas las aplicaciones.
 import React, {useState} from 'react';
 import {

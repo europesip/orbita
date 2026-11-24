@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 EUROPESIP
 # ÓRBITA · instalar (o actualizar) el chart hcl-dx-orbita en el entorno de los labs de HCL DX Compose.
 #
 # Usa el env.sh de los labs (DX_NS, SHARED_NS, DX_HOST, PG_HOST, WPSADMIN_PASSWORD...): exporta DX_LABS con su carpeta

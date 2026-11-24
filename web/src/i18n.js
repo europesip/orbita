@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Idioma de ÓRBITA (español o inglés), como en Hello DX: primero el idioma del perfil de DX del usuario
 // (preferredLanguage, lo devuelven GET /config y el spHelper de DX), después el idioma con el que DX pinta la página
 // (renderingLocale del spHelper o <html lang>) y después el navegador. Quien edita la página puede fijarlo por

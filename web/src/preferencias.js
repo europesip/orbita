@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Ajustes de cada instancia de una aplicación de ÓRBITA en una página de DX (preferencias de la Script Application).
 //
 // DX crea para cada Script Application de la página un objeto global ns_<instancia>_spHelper (módulo wp_client_ext

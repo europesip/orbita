@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Textos de ÓRBITA en inglés. Clave: el texto en español tal como está en el código (t('...')).
 /* eslint-disable quote-props */
 export default {

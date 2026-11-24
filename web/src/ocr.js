@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Lectura automática de tickets: OCR en el navegador con Tesseract.js (Apache 2.0) e interpretación del texto.
 // La imagen no sale del equipo; Tesseract descarga una vez su motor y el modelo de español desde su CDN.
 

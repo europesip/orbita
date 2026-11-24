@@ -443,6 +443,8 @@ Script Applications y no portlets Java.
 **modificarlo**, distribuirlo y venderlo, también con fines comerciales y en tus propios productos, manteniendo el aviso
 de copyright y de licencia. Los componentes de terceros mantienen sus licencias: ver [NOTICE](NOTICE).
 
+**Atribución:** cualquier copia o redistribución de este código, modificado o no (también si se rehace con herramientas de IA), debe mantener el aviso de copyright (`Copyright (c) 2026 EUROPESIP`) y el texto de la licencia MIT.
+
 ## Contacto y servicios
 
 **Aquí tienes todo lo necesario**: el código fuente completo, el chart de Helm y los procedimientos de instalación.

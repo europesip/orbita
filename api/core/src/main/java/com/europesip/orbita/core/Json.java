@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 package com.europesip.orbita.core;
 
 import java.util.Collection;

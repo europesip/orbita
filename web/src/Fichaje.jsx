@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Fichaje: registro de jornada (fichar, mi registro mensual con correcciones, equipo e informes de RRHH).
 import React, {useEffect, useState} from 'react';
 import QRCode from 'qrcode';

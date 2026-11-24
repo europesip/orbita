@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Vacaciones y ausencias: saldo, solicitudes y calendario del equipo.
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {

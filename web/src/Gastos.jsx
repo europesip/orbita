@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 EUROPESIP
 // Gastos y viajes: notas de gasto con tickets y política, solicitudes de viaje y pagos (Administración).
 import React, {useEffect, useState} from 'react';
 import {

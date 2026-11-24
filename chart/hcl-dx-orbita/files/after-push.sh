@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 EUROPESIP
 # ÓRBITA · after-push script of the scriptapps Job (hcl-dx-scriptapp 0.2.0): one DX page per application, with a Web
 # Content Viewer showing its Script Application, via XMLAccess. Runs in the DXClient container (/dxclient), with
 # DXClient already configured by the push. Idempotent: it creates or updates the same pages (unique names orbita.*).

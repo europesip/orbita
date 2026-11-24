@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 EUROPESIP
 # ÓRBITA · comprobaciones de solo lectura de una instalación (chart hcl-dx-orbita).
 #   NS (por defecto dx-shared), RELEASE (orbita) y DX_HOST (si no, se lee del Ingress).
 set -uo pipefail

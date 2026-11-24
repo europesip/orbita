@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 EUROPESIP
 {{- if and .Values.mcp.enabled .Values.mcp.networkPolicy.enabled }}
 # Who reaches the ÓRBITA pods: the API port from anywhere (the Ingress controller), the MCP port only from the
 # HCL DX IQ Integrator (and mcp.networkPolicy.extraFrom). (kubectl port-forward goes through the kubelet and is not affected.)
