@@ -938,7 +938,7 @@ async function installPages() {
       ${titles(L.title)}
       ${param('com.ibm.portal.friendly.name', L.friendly)}
       <access-control externalized="false" owner="undefined" private="false"><role actionset="User" update="set">
-        ${L.access.map((a) => `<mapping subjectid="${esc(a.subject)}" subjecttype="${a.type}" update="set"/>`).join('\n        ')}
+        ${L.access.map((a) => `<mapping subjectid="${esc(a.subject)}" subjecttype="${a.type}" update="set"/>`).join('\n        ')}${SITE_ANONYMOUS ? '' : `\n        <mapping subjectid="${ANON}" subjecttype="user" update="remove"/>`}
       </role></access-control>
       ${mapping(L.siteArea)}
     </content-node>` : `<content-node action="locate" objectid="parent" uniquename="${esc(values.pages.parent)}"/>`}${pages.join('')}
