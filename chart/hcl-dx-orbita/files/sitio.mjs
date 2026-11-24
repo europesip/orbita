@@ -121,6 +121,7 @@ const unescapeXml = (s) => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace
 const entries = (xml) => [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)].map((m) => m[1]);
 const idOf = (blk) => (blk.match(/<id>wcmrest:([^<]+)<\/id>/) || [])[1];
 const nameOf = (blk) => unescapeXml((blk.match(/<wcm:name>([^<]*)<\/wcm:name>/) || [])[1] || '');
+const sameName = (a, b) => a.toLowerCase() === b.toLowerCase();
 const titleOf = (blk) => unescapeXml((blk.match(/<title[^>]*>([^<]*)<\/title>/) || [])[1] || '');
 
 async function wcm(method, path, body, type = 'application/atom+xml') {
@@ -153,7 +154,7 @@ async function ensureLibrary(name) {
 /** Item of a type by name in a library (query type: ContentTemplate, SiteAreaTemplate, PresentationTemplate...). */
 async function findItem(lib, type, name) {
   if (!lib) return null;
-  const b = entries(await get(`query?type=${type}&libraryid=${lib}&pagesize=500`)).find((e) => nameOf(e) === name);
+  const b = entries(await get(`query?type=${type}&libraryid=${lib}&pagesize=500`)).find((e) => sameName(nameOf(e), name));
   return b ? idOf(b) : null;
 }
 
@@ -643,12 +644,14 @@ async function ensureImageComponent(lib, folder, name, file, where) {
 }
 /** Site area under a library (parent null) or under another site area. Returns its id (null in a dry run if missing). */
 async function ensureSiteArea(lib, parentArea, name, templateId, where) {
-  const all = entries(await get(`query?type=SiteArea&libraryid=${lib}&pagesize=500`)).filter((e) => nameOf(e) === name);
+  // WCM names are case-insensitive (an existing "setting" blocks a new "Setting" with 409): compare ignoring case
+  const all = entries(await get(`query?type=SiteArea&libraryid=${lib}&pagesize=500`)).filter((e) => sameName(nameOf(e), name));
   for (const e of all) {
     const p = parentOf(await get(`SiteArea/${idOf(e)}`));
     if (parentArea ? p === parentArea : !p || p === lib) { log(`  site area ${where}: already there`); return idOf(e); }
   }
   if (DRY || (parentArea === null && !lib) || parentArea === undefined) { log(`  site area ${where}: to create`); return null; }
+  log(`  site area ${where}: creating`);
   const id = idOf(await wcm('POST', 'SiteArea', `<?xml version="1.0"?><entry ${NS}><title xml:lang="en">${esc(name)}</title><wcm:name>${esc(name)}</wcm:name><wcm:type>SiteArea</wcm:type>`
     + `<link rel="parent" href="${REST}/${parentArea ? `SiteArea/${parentArea}` : `Library/${lib}`}"/>`
     + `${templateId ? `<link rel="sitearea-template" href="${REST}/SiteAreaTemplate/${templateId}"/>` : ''}</entry>`));
@@ -791,7 +794,7 @@ async function findArea(lib, path) {
   let parent = null;
   for (const name of path.split('/')) {
     let found = null;
-    for (const e of all.filter((x) => nameOf(x) === name)) {
+    for (const e of all.filter((x) => sameName(nameOf(x), name))) {
       const p = parentOf(await get(`SiteArea/${idOf(e)}`));
       if (parent ? p === parent : !p || p === lib) { found = idOf(e); break; }
     }
