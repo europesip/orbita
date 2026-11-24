@@ -2,6 +2,37 @@
 
 **English** · [Español](CHANGELOG.es.md)
 
+## 4.0.0 · unreleased · One chart: own site, Simple-based theme and WCM settings (#28)
+
+Based on the "ÓRBITA on the Simple theme" work by **Macarena** (EUROPESIP): her installer, WCM content and theme
+design, integrated in the chart so one `helm install` / `helm upgrade` does everything (no second installer).
+See [Site and theme](docs/site.md).
+
+- **New default `pages.mode: site`**: ÓRBITA gets its own site `/wps/myportal/orbita/` (label `orbita-site`) with one
+  page per app and a hidden **Setting** page (administrators only). `pages.mode: home` keeps the layout of 3.x (pages
+  below Home, unique names `orbita.<app>`). The apps link to each other with the right base automatically
+  (`pages.base` empty = derived).
+- **Theme**: a copy of the HCL DX **Simple** theme (was Portal 8.5) whose header, footer and `<head>` come from WCM.
+  Its `theme.html` is **generated at install time** from the Simple `theme.html` of your portal plus ÓRBITA's parts
+  (`files/site/theme/parts/`): no HCL file ships with ÓRBITA. nls files for 32 languages.
+- **WCM**: libraries `ThemeDS` (authoring templates without workflow, theme contents) and `orbita` (Setting site
+  area with logos, colors, footer, copyright and the ÓRBITA header; one site area per page), read access for
+  everybody; images in the DAM collection `orbita` or as WCM image components without DAM. Setting fields are filled
+  only when empty.
+- One step `files/sitio.mjs` replaces `tema.mjs` and `paginas.mjs`; idempotent; `theme.dryRun` only reads.
+
+**Upgrading from 3.x (read before upgrading):**
+- The default changes from pages below Home to the own site. **To keep your pages below Home, set
+  `pages.mode: home`.**
+- The 3.x theme (copy of Portal 8.5) is **migrated** to the Simple-based one (files replaced, old files removed,
+  registration updated; same object ID, so the pages keep it).
+- With `site`, the 3.x pages below Home and the DAM collection `ÓRBITA` stay (nothing is deleted).
+- Removed values: `theme.damCollection`, `theme.logoAlt`, `theme.headerBackground`, `pages.layoutTemplate`. New:
+  `pages.mode`, `pages.site`, `pages.pageTemplate`, `theme.languages`, `theme.libraries`, `theme.access`,
+  `theme.dryRun`.
+- One manual step with DAM (no DX API): tick "Show digital asset resource" in the four image fields of the template
+  *Setting Site Area - ST* (the Job log and NOTES say it).
+
 ## Unreleased
 
 - **MCP identity extension point** (#12): besides the user's DX session, identity providers packaged as separate

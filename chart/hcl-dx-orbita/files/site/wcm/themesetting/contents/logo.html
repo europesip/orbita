@@ -1,0 +1,15 @@
+<a class="oh-logo__link" href="javascript:void(0);" title="Home"
+   onclick="var h=document.getElementById('stHomeLink'); location.href = h ? h.getAttribute('data-href') : '/wps/myportal';">
+  <picture>
+    <source media="(max-width: 767px)" srcset="[Element key="mobileLogo" format="url" type="top" context="portalContext"]">
+    <img class="oh-logo__img" src="[Element key="desktopLogo" format="url" type="top" context="portalContext"]"
+         alt="[Element key="desktopLogo" format="alt" type="top" context="portalContext"]">
+  </picture>
+</a>
+<script>
+  // Sin mobileLogo, el <source> quedaría vacío y el móvil no enseñaría nada: se quita.
+  (function () {
+    var s = document.querySelector(".oh-logo__link source");
+    if (s && !s.getAttribute("srcset")) s.parentNode.removeChild(s);
+  })();
+</script>

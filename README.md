@@ -279,11 +279,13 @@ docker run --rm -p 8080:8080 ghcr.io/europesip/hcl-dx-compose-installer:2.0.0   
 
 ### Options: pages and what the apps show
 
-**Pages (optional).** By default the chart creates one DX page per app under *Home* (`pages.create: true`). To place
-the six Script Applications yourself (in your own pages, with your own layout), install with `pages.create: false`:
-the apps are still pushed to WCM (*Script Application Library › Script Applications*, titles «ÓRBITA · …»), and you
-add each one to the page you want. Then set `pages.base` (and keep the friendly names `mi-intranet`, `fichaje`,
-`vacaciones`, `gastos`, `aprobaciones`, `quiosco`), so that the apps link to each other correctly.
+**Pages (optional).** Since 4.0.0 the chart builds ÓRBITA's **own site** `/wps/myportal/orbita/` by default
+(`pages.mode: site`): one page per app and a hidden **Setting** page (administrators only) where logos, colors and
+footer are changed. `pages.mode: home` keeps the 3.x layout (one page per app under *Home*). **Upgrading from 3.x:
+set `pages.mode: home` to keep your pages under Home.** To place the six Script Applications yourself, install with
+`pages.create: false`: the apps are still pushed to WCM (*Script Application Library › Script Applications*, titles
+«ÓRBITA · …»); then set `pages.base` and keep the friendly names `mi-intranet`, `fichaje`, `vacaciones`, `gastos`,
+`aprobaciones`, `quiosco`, so that the apps link to each other. Details: [Site and theme](docs/site.md).
 
 **Language.** Each user sees ÓRBITA in the language of their DX profile (`preferredLanguage`). Without one, ÓRBITA uses
 the language DX chose for the page, and then the browser language. English is used for any language other than
@@ -294,23 +296,22 @@ higher on the application) sees «⚙ Settings of this application». There they
 header parts, the footer and the language (*Automatic*, Español, English). They are stored as preferences of the Script
 Application in DX, survive chart upgrades, and anything not changed follows the `ui.*` values below.
 
-**Example theme.** By default the chart also deploys an ÓRBITA theme for its pages, so that they look like a finished
-intranet that runs on HCL DX:
+**Theme and WCM settings.** By default the chart also deploys the ÓRBITA theme and its WCM content (based on the work
+of Macarena, EUROPESIP):
 
-- A copy of the HCL DX **Portal 8.5** theme, made at install time from **your own DX** (WebDAV only, no EAR: HCL's
-  theme files are not part of ÓRBITA), with an ÓRBITA header: the **company logo**, **"Powered by HCL Software"** and a
-  **button that opens the ÓRBITA assistant**. Everything else (toolbar, menus, edit mode) is the Portal 8.5 theme.
-- The images are in a **DAM collection** (`ÓRBITA`): to put your company logo, upload a new version of
-  `company-logo.png` there; the theme always shows its latest version. Or give it at install time with
-  `--set theme.logoBase64=$(base64 -w0 logo.png)`.
-- It is assigned **to the ÓRBITA pages only**; the rest of the portal keeps its theme.
+- A copy of the HCL DX **Simple** theme, made at install time from **your own DX** (WebDAV only); its `theme.html` is
+  generated from the Simple `theme.html` of your portal plus ÓRBITA's parts, so **no HCL file is part of ÓRBITA**.
+  Header (with **"Powered by HCL Software"** and the **ÓRBITA assistant button**), logo, menu and footer come from
+  **WCM** (libraries `ThemeDS` and `orbita`).
+- **Setting page**: change logos, colors, footer and copyright in DX; the chart keeps what you change.
+- Images in a **DAM collection** (`orbita`), or WCM image components when DX has no DAM. Assigned to the ÓRBITA pages
+  only. A 3.x theme (copy of Portal 8.5) is migrated on upgrade.
 
 ```yaml
 theme:
-  enabled: true          # false: the pages keep the theme they have
+  enabled: true          # false: no theme and no WCM content
   hclLogo: true          # "Powered by HCL Software"
   assistantButton: true  # assistant button in the header (only on pages with an ÓRBITA app)
-  headerBackground: "linear-gradient(90deg, #15123B 0%, #2A1B6B 55%, #0B2A6F 100%)"
 ```
 
 **Header and footer.** The apps run inside DX pages, so your DX theme may already show some of their header, such as
@@ -395,7 +396,7 @@ deployment/dx-iq-integrator`) so that it reads the new list; the `orbita-api` lo
   `none`. The notifications created from 3.0 are shown in each user's language; the earlier ones stay in Spanish.
 - **Uninstall**: `helm -n dx-shared uninstall orbita`. The database, its Secret `orbita-db`, the Script Applications
   and the pages stay (pages may be in use); remove the pages in DX and the database in PostgreSQL if you no longer need
-  them. Remove ÓRBITA from the IQ list with the same patch, without its URL. The example theme (`orbita.theme`, WebDAV `OrbitaTheme`) and its DAM collection `ÓRBITA` stay too.
+  them. Remove ÓRBITA from the IQ list with the same patch, without its URL. The theme (`orbita.theme`, WebDAV `OrbitaTheme`), the WCM libraries `ThemeDS` and `orbita`, the site `orbita-site` and the DAM collection `orbita` (`ÓRBITA` in 3.x) stay too.
 
 ## Repository
 

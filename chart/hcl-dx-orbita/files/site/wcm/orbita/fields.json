@@ -1,0 +1,117 @@
+[
+  {
+    "name": "desktopLogo",
+    "type": "ImageComponent",
+    "image": "europesip-logo-c.png"
+  },
+  {
+    "name": "mobileLogo",
+    "type": "ImageComponent",
+    "image": "europesip-logo-c.png"
+  },
+  {
+    "name": "footerLogo",
+    "type": "ImageComponent",
+    "image": "Europesip-Logo-b.png"
+  },
+  {
+    "name": "favicon",
+    "type": "ImageComponent",
+    "image": "orbita-icono.png"
+  },
+  {
+    "name": "primary",
+    "type": "ShortTextComponent",
+    "value": "#0040ff"
+  },
+  {
+    "name": "secondary",
+    "type": "ShortTextComponent",
+    "value": "#FF0A6C"
+  },
+  {
+    "name": "corporate-color",
+    "type": "ShortTextComponent",
+    "value": "#0b5fff"
+  },
+  {
+    "name": "header-background",
+    "type": "ShortTextComponent",
+    "value": "#ffffff"
+  },
+  {
+    "name": "header-text",
+    "type": "ShortTextComponent",
+    "value": "#091f5b"
+  },
+  {
+    "name": "header-text-hover",
+    "type": "ShortTextComponent",
+    "value": "#FF0A6C"
+  },
+  {
+    "name": "footer-background",
+    "type": "ShortTextComponent",
+    "value": "#091f5b"
+  },
+  {
+    "name": "footer-text",
+    "type": "ShortTextComponent",
+    "value": "#ffffff"
+  },
+  {
+    "name": "footer-text-hover",
+    "type": "ShortTextComponent",
+    "value": ""
+  },
+  {
+    "name": "copyright-background",
+    "type": "ShortTextComponent",
+    "value": "#0b5fff"
+  },
+  {
+    "name": "copyright-text",
+    "type": "ShortTextComponent",
+    "value": "#ffffff"
+  },
+  {
+    "name": "text-body",
+    "type": "ShortTextComponent",
+    "value": ""
+  },
+  {
+    "name": "link-hover-body",
+    "type": "ShortTextComponent",
+    "value": ""
+  },
+  {
+    "name": "background-body-color",
+    "type": "ShortTextComponent",
+    "value": ""
+  },
+  {
+    "name": "footerContent",
+    "type": "HTMLComponent",
+    "file": "wcm/orbita/field-footerContent.html"
+  },
+  {
+    "name": "copyrightContent",
+    "type": "HTMLComponent",
+    "file": "wcm/orbita/field-copyrightContent.html"
+  },
+  {
+    "name": "HeaderContent",
+    "type": "HTMLComponent",
+    "file": "wcm/orbita/field-HeaderContent.html"
+  },
+  {
+    "name": "siteOverrides",
+    "type": "HTMLComponent",
+    "file": "wcm/orbita/field-siteOverrides.html"
+  },
+  {
+    "name": "JSOverrides",
+    "type": "HTMLComponent",
+    "value": ""
+  }
+]

@@ -1,0 +1,36 @@
+{
+  "_comment": "ÓRBITA library (libraries.content of orbita.config.json), as in the reference ÓRBITA site. The parent site area has the Setting template: its fields (fields.json) are only filled when empty, so the values changed in the portal are kept. Images of the fields: theme/images/<image>.",
+  "contentTemplate": "simpleHTML - CT",
+  "element": "html",
+  "parentArea": {
+    "name": "orbita",
+    "template": "Setting Site Area - ST",
+    "fields": "wcm/orbita/fields.json"
+  },
+  "childAreas": [
+    {"name": "Setting", "contents": [{"name": "Setting", "file": "wcm/orbita/setting.html"}]},
+    {"name": "mi-intranet"},
+    {"name": "fichaje"},
+    {"name": "vacaciones"},
+    {"name": "gastos"},
+    {"name": "aprobaciones"},
+    {"name": "quiosco"}
+  ],
+  "footerBrand": {
+    "_comment": "HTML component <component> at the root of Components, called by the footer content of the theme library (under the company logo): ÓRBITA logo and \"Powered by HCL Software\", with the images of headerTop.",
+    "component": "orbita-footer-brand",
+    "file": "wcm/orbita/orbita-footer-brand.html"
+  },
+  "headerTop": {
+    "_comment": "HTML component <component> at the root of Components (the HeaderContent field calls it). Its {{image:<file>}} marks become the DAM URL of theme/images/<file> in the collection damCollection if the portal has DAM, otherwise the image component <component> of Components/<imageFolder>.",
+    "component": "orbita-header-top",
+    "file": "wcm/orbita/orbita-header-top.html",
+    "damCollection": "orbita",
+    "imageFolder": "img",
+    "images": [
+      {"file": "company-logo.png", "component": "orbita-logo"},
+      {"file": "hcl-software.png", "component": "HCL-logo"},
+      {"file": "orbita-icon.png", "component": "orbita-icon"}
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+<style>
+.of-footer { width: 100%; font-family: var(--bs-body-font-family, Arial, sans-serif); }
+.of-footer *, .of-footer *::before, .of-footer *::after { box-sizing: border-box; }
+
+/* Franja principal: logo + columnas ---------------------------------------------------------------------- */
+.of-main { background: var(--footer-background, #0b1f3a); color: var(--footer-text, #ffffff); }
+.of-main__inner { max-width: 1200px; margin: 0 auto; padding: 4em 2em 3em; display: flex; gap: 40px; align-items: flex-start; }
+.of-brand { flex: 0 0 auto; display: flex; flex-direction: column; gap: 16px; }
+.of-brand__logo { display: block; width: 250px; max-width: 100%; height: auto; }
+
+/* Columnas: lo que se escriba en footerContent. Cada <div class="of-col"> es una columna. */
+.of-cols { flex: 1 1 auto; display: flex; flex-wrap: wrap; justify-content: space-around; gap: 32px 40px; min-width: 0; }
+.of-col { display: flex; flex-direction: column; gap: 16px; min-width: 160px; }
+.of-col__title, .of-cols h2, .of-cols h3, .of-cols h4 { margin: 0; font-size: 18px; font-weight: 400; color: var(--secondary-secondary, #ff0a6c); }
+.of-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.of-cols p { margin: 0; }
+.of-footer a { color: inherit; text-decoration: none; }
+.of-footer a:hover, .of-footer a:focus-visible { color: var(--footer-text-hover, #ff0a6c); text-decoration: underline; }
+.of-footer a:focus-visible { outline: 3px solid var(--color-corporativo, #0040ff); outline-offset: 3px; border-radius: 4px; }
+
+/* Franja del copyright ------------------------------------------------------------------------------------ */
+.of-copy { background: var(--copyright-background, #091f5b); color: var(--copyright-text, #ffffff); font-size: 14px; }
+.of-copy__inner { max-width: 1200px; margin: 0 auto; padding: 1em 2em; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 40px; }
+.of-copy__inner p { margin: 0; }
+
+/* Tablet y móvil ------------------------------------------------------------------------------------------- */
+@media (max-width: 991px) {
+  .of-main__inner { flex-direction: column; align-items: center; padding: 3em 2em; text-align: center; }
+  .of-cols { width: 100%; justify-content: space-between; }
+  .of-col { align-items: center; }
+}
+@media (max-width: 767px) {
+  .of-main__inner { padding: 3em 1.5em; }
+  .of-cols { flex-direction: column; align-items: center; }
+  .of-copy__inner { justify-content: center; text-align: center; padding: 1em 1.5em; }
+}
+</style>

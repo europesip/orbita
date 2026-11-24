@@ -99,7 +99,7 @@ spec:
             - { name: ORBITA_DEMO_PEOPLE, value: {{ toJson .Values.demo.people | quote }} }
             - name: ORBITA_KIOSK_KEY
               valueFrom: { secretKeyRef: { name: {{ include "orbita.fullname" . }}-kiosk, key: key } }
-            - { name: ORBITA_PAGES_BASE, value: {{ .Values.pages.base | quote }} }
+            - { name: ORBITA_PAGES_BASE, value: {{ include "orbita.pagesBase" . | quote }} }
             # What the apps show (ui.*): the API returns it in GET /v1/config
             - { name: ORBITA_HEADER_TITLE, value: {{ .Values.ui.header.title | quote }} }
             - { name: ORBITA_HEADER_HOMELINK, value: {{ ternary (not .Values.theme.enabled) .Values.ui.header.homeLink (eq (toString .Values.ui.header.homeLink) "auto") | toString | quote }} }
@@ -109,7 +109,7 @@ spec:
             - { name: ORBITA_HEADER_USER, value: {{ ternary (not .Values.theme.enabled) .Values.ui.header.user (eq (toString .Values.ui.header.user) "auto") | toString | quote }} }
             - { name: ORBITA_FOOTER, value: {{ .Values.ui.footer | quote }} }
             - { name: ORBITA_SOURCE_URL, value: {{ .Values.ui.sourceUrl | default "https://github.com/europesip/orbita" | quote }} }
-            - { name: ORBITA_KIOSK_PAGE, value: {{ printf "%squiosco" .Values.pages.base | quote }} }
+            - { name: ORBITA_KIOSK_PAGE, value: {{ printf "%squiosco" (include "orbita.pagesBase" .) | quote }} }
             # AI assistant (assistant.*)
             - { name: ORBITA_ASSISTANT, value: {{ .Values.assistant.backend | quote }} }
             {{- if eq .Values.assistant.backend "orbita" }}

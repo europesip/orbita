@@ -1,0 +1,74 @@
+<script>
+(function () {
+  function texto(a) {
+    // El tema mete dentro del enlace «currently selected» (solo para lectores de pantalla) y un <script>: fuera.
+    var c = a.cloneNode(true);
+    Array.prototype.forEach.call(c.querySelectorAll(".stPageSelectedMsg, script"), function (n) { n.parentNode.removeChild(n); });
+    return c.textContent.replace(/\s+/g, " ").trim();
+  }
+  function url(a) {
+    // El tema navega con onclick="stnav.navMenuClick('?uri=nm:oid:Z6_…', …)": de ahí sale la dirección de la página.
+    var m = (a.getAttribute("onclick") || "").match(/navMenuClick\('([^']+)'/);
+    if (m) return m[1];
+    var h = a.getAttribute("href");
+    return h && h.indexOf("javascript:") !== 0 ? h : "#";
+  }
+
+  function montar() {
+    var destino = document.getElementById("dxNavigationHeader");
+    var fuente = document.querySelector("#stNavigation #stNavContent > ul");
+    if (!destino || !fuente) return;
+    var ul = document.createElement("ul");
+    ul.className = "nav-list";
+    Array.prototype.forEach.call(fuente.children, function (li) {
+      var a = li.querySelector("a");
+      if (!a) return;
+      var item = document.createElement("li");
+      var enlace = document.createElement("a");
+      enlace.href = url(a);
+      enlace.textContent = texto(a);
+      if (/\bstNavSelected\b/.test(li.className)) { item.className = "active"; enlace.setAttribute("aria-current", "page"); }
+      item.appendChild(enlace);
+      ul.appendChild(item);
+    });
+    destino.innerHTML = "";
+    destino.appendChild(ul);
+
+    // Hamburguesa
+    var boton = document.getElementById("mobileMenuToggle");
+    if (boton && !boton._oh) {
+      boton._oh = true;
+      boton.addEventListener("click", function () {
+        var abierto = destino.classList.toggle("mobile-open");
+        boton.setAttribute("aria-expanded", abierto ? "true" : "false");
+        boton.setAttribute("aria-label", abierto ? "Close menu" : "Open menu");
+      });
+    }
+  }
+
+  // Nombre del usuario junto a su icono (el tema solo pinta el icono). Se lee del perfil del portal.
+  function nombreUsuario() {
+    var enlace = document.querySelector(".oh-user .stActionMenu");
+    if (!enlace || enlace.querySelector(".oh-user__name") || !window.fetch) return;
+    fetch("/wps/mycontenthandler/um/secure/currentuser/profile?expandRefs=true", { credentials: "same-origin" })
+      .then(function (r) { return r.ok ? r.text() : ""; })
+      .then(function (xml) {
+        var valor = function (n) {
+          var m = xml.match(new RegExp('<(?:\\w+:)?attribute name="' + n + '"[^>]*>\\s*<(?:\\w+:)?attributeValue>([^<]*)'));
+          return m ? m[1].trim() : "";
+        };
+        var nombre = valor("displayName") || [valor("givenName"), valor("sn")].join(" ").trim() || valor("cn") || valor("uid");
+        if (!nombre) return;
+        var span = document.createElement("span");
+        span.className = "oh-user__name";
+        span.textContent = nombre;
+        enlace.appendChild(span);
+      })
+      .catch(function () {});
+  }
+
+  function iniciar() { montar(); nombreUsuario(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", iniciar);
+  else iniciar();
+})();
+</script>

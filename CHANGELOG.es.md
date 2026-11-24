@@ -2,6 +2,37 @@
 
 [English](CHANGELOG.md) · **Español**
 
+## 4.0.0 · sin publicar · Un solo chart: sitio propio, tema basado en Simple y ajustes en WCM (#28)
+
+Parte del trabajo «ÓRBITA sobre el tema Simple» de **Macarena** (EUROPESIP): su instalador, su contenido WCM y el
+diseño del tema, integrados en el chart para que un solo `helm install` / `helm upgrade` lo haga todo (sin un segundo
+instalador). Mira [Sitio y tema](docs/site.es.md).
+
+- **Nuevo valor por defecto `pages.mode: site`**: ÓRBITA tiene su propio sitio `/wps/myportal/orbita/` (etiqueta
+  `orbita-site`) con una página por app y una página **Setting** oculta (solo administradores). `pages.mode: home`
+  mantiene la disposición del 3.x (páginas debajo de Home, nombres únicos `orbita.<app>`). Las apps se enlazan entre sí
+  con la base correcta automáticamente (`pages.base` vacío = derivado).
+- **Tema**: copia del tema **Simple** de HCL DX (antes Portal 8.5) con cabecera, pie y `<head>` desde WCM. Su
+  `theme.html` se **genera al instalar** a partir del `theme.html` de Simple de tu portal más las piezas de ÓRBITA
+  (`files/site/theme/parts/`): ÓRBITA no lleva ningún fichero de HCL. Ficheros nls para 32 idiomas.
+- **WCM**: bibliotecas `ThemeDS` (plantillas sin flujo de trabajo, contenidos del tema) y `orbita` (área Setting con
+  logos, colores, pie, copyright y la cabecera de ÓRBITA; un área por página), con lectura para todos; imágenes en la
+  colección del DAM `orbita` o como componentes de imagen WCM sin DAM. Los campos del Setting solo se rellenan si están
+  vacíos.
+- Un solo paso `files/sitio.mjs` sustituye a `tema.mjs` y `paginas.mjs`; idempotente; `theme.dryRun` solo lee.
+
+**Actualizar desde el 3.x (leer antes de actualizar):**
+- El valor por defecto cambia de páginas debajo de Home al sitio propio. **Para mantener tus páginas debajo de Home,
+  pon `pages.mode: home`.**
+- El tema 3.x (copia de Portal 8.5) se **migra** al basado en Simple (ficheros sustituidos, antiguos quitados, registro
+  actualizado; mismo object ID, así que las páginas lo conservan).
+- Con `site`, las páginas 3.x debajo de Home y la colección del DAM `ÓRBITA` se quedan (no se borra nada).
+- Valores que desaparecen: `theme.damCollection`, `theme.logoAlt`, `theme.headerBackground`, `pages.layoutTemplate`.
+  Nuevos: `pages.mode`, `pages.site`, `pages.pageTemplate`, `theme.languages`, `theme.libraries`, `theme.access`,
+  `theme.dryRun`.
+- Un paso manual con DAM (ninguna API de DX lo permite): marcar «Mostrar recurso de activo digital» en los cuatro
+  campos de imagen de la plantilla *Setting Site Area - ST* (lo dicen el log del Job y las NOTES).
+
 ## Sin publicar
 
 - **Punto de extensión de identidad del MCP** (#12): además de la sesión de DX del usuario, proveedores de identidad

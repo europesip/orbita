@@ -79,3 +79,17 @@ app.kubernetes.io/component: api
 {{- define "orbita.dxUrl" -}}
 {{- .Values.dx.url | default (printf "https://%s" (required "dx.host is required (public host name of DX)" .Values.dx.host)) -}}
 {{- end -}}
+
+{{/*
+URL of the ÓRBITA pages (the apps link to each other with it, issue #28): pages.base, or derived from pages.mode:
+site -> /wps/myportal/<pages.site.friendly>/, home -> /wps/myportal/Home/
+*/}}
+{{- define "orbita.pagesBase" -}}
+{{- if .Values.pages.base -}}
+{{ .Values.pages.base }}
+{{- else if eq (.Values.pages.mode | default "site") "home" -}}
+/wps/myportal/Home/
+{{- else -}}
+{{ printf "/wps/myportal/%s/" .Values.pages.site.friendly }}
+{{- end -}}
+{{- end -}}

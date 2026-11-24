@@ -1,0 +1,70 @@
+<style>
+/* Barra ------------------------------------------------------------------------------------------------- */
+.oh-header { position: relative; z-index: 99; width: 100%; font-family: var(--bs-body-font-family, Arial, sans-serif); }
+.oh-header *, .oh-header *::before, .oh-header *::after { box-sizing: border-box; }
+.oh-bar { background: var(--header-background, #ffffff); color: var(--header-text, #091f5b); box-shadow: 1px 11px 11px -16px rgba(0, 0, 0, .73); position: relative; }
+.oh-bar__inner { max-width: 1300px; margin: 0 auto; padding: 2px 24px; min-height: 2px; display: flex; align-items: center; gap: 16px; }
+
+/* Logo -------------------------------------------------------------------------------------------------- */
+.oh-logo { flex: 0 1 auto; min-width: 0; display: flex; align-items: center; width: 200px; }
+.oh-logo__link { display: inline-flex; line-height: 0; }
+.oh-logo__img { height: auto; width: 100%; max-width: 100%; display: block; }
+
+/* Menú (lo rellena headerNav.js) · subrayado animado como en ÓRBITA -------------------------------------- */
+.oh-nav { flex: 1 1 auto; display: flex; justify-content: center; min-width: 0; }
+.oh-nav .nav-list { display: flex; gap: 10px; list-style: none; margin: 0; padding: 0; }
+.oh-nav .nav-list > li { position: relative; list-style: none; }
+.oh-nav .nav-list > li > a { display: inline-block; position: relative; padding: 12px 14px; font-size: 16px; text-decoration: none; color: var(--header-text, #091f5b); }
+.oh-nav .nav-list > li > a::after { content: ""; position: absolute; left: 0; bottom: 5px; width: 90%; height: 3px;
+  background: var(--header-text-hover, #0040ff); transform: scaleX(0); transition: .25s cubic-bezier(.37, .31, .2, .85); }
+.oh-nav .nav-list > li:hover > a, .oh-nav .nav-list > li > a:focus-visible, .oh-nav .nav-list > li.active > a { color: var(--header-text-hover, #0040ff); }
+.oh-nav .nav-list > li:hover > a::after, .oh-nav .nav-list > li > a:focus-visible::after, .oh-nav .nav-list > li.active > a::after { transform: scaleX(1); }
+.oh-nav a:focus-visible, .oh-toggle:focus-visible { outline: 3px solid var(--color-corporativo, #0040ff); outline-offset: 3px; border-radius: 4px; }
+
+/* Usuario (editar perfil y entrar/salir del tema) ------------------------------------------------------- */
+.oh-user { flex: 0 0 auto; display: flex; align-items: center; gap: 4px; list-style: none; margin: 0; padding: 0; }
+.oh-user > li { list-style: none; float: none; }
+.oh-user a { color: var(--header-text, #091f5b); text-decoration: none; font-size: 14px; }
+.oh-user a:hover, .oh-user a:focus-visible { color: var(--header-text-hover, #0040ff); }
+.oh-user svg { fill: currentColor; }
+/* Icono y nombre del usuario. El dibujo del tema (#stLoggedIn-…) trae fill="#FFFFFF" fijo: blanco sobre la cabecera blanca. */
+.oh-user, .oh-user > li { height: auto; min-height: 0; align-self: center; }
+.oh-user > li:not([style*="none"]) { display: flex; align-items: center; }
+.oh-user .stActionMenu { display: inline-flex; align-items: center; gap: 8px; height: auto; padding: 4px 8px; margin: 0; line-height: normal; }
+.oh-user .stBannerIcon { width: 28px; height: 28px; fill: currentColor; }
+#stLoggedIn-NoImage use, #stLoggedIn-Image use, #stLoggedOut use { fill: currentColor; }
+.oh-user__name { font-size: 14px; white-space: nowrap; }
+/* Popup del usuario pegado al icono: el tema lo pone a 54px (su barra alta) y el hueco hacía que se cerrase al bajar el ratón. */
+.stActionMenu.wpthemeMenuShow .wpthemeMenuRight.stActionMenuFixed > .wpthemeMenuBorder { top: 34px !important; }
+/* La plantilla de submenú (vacía) quedaba encima de «Editar mi perfil» y se comía el clic. */
+.stActionMenuFixed > .wpthemeTemplateSubmenu { display: none !important; }
+
+/* Hamburguesa ------------------------------------------------------------------------------------------- */
+.oh-toggle { display: none; flex: 0 0 auto; margin-left: auto; width: 44px; height: 44px; border: 0; background: none; cursor: pointer; padding: 10px; }
+.oh-toggle span { display: block; height: 2px; margin: 5px 0; background: var(--header-text, #091f5b); transition: transform .2s, opacity .2s; }
+.oh-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.oh-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.oh-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* El menú del tema va oculto: solo es la fuente de datos */
+.oh-fuente, .oh-header #stMobileNavToggle { display: none !important; }
+
+/* Pantallas pequeñas: hamburguesa y menú desplegable bajo la barra (como en ÓRBITA, < 1290 px) ------------- */
+@media (max-width: 1290px) {
+  .oh-toggle { display: block; }
+  .oh-nav { position: absolute; left: 0; right: 0; top: 100%; display: none; background: var(--header-background, #ffffff);
+    box-shadow: 1px 11px 11px -16px rgba(0, 0, 0, .73); justify-content: flex-start; }
+  .oh-nav.mobile-open { display: block; }
+  .oh-nav .nav-list { flex-direction: column; gap: 0; width: 100%; }
+  .oh-nav .nav-list > li { border-bottom: 1px solid rgba(0, 0, 0, .1); }
+  .oh-nav .nav-list > li > a { display: block; padding: 15px 24px; }
+  .oh-nav .nav-list > li > a::after { display: none; }
+  .oh-nav .nav-list > li.active > a { font-weight: 600; }
+}
+@media (max-width: 767px) {
+  .oh-bar__inner { padding: 2px 16px; }
+  .oh-logo { width: 160px; }
+  .oh-user__name { display: none; }
+  .wpthemeFrame { min-width: 0 !important; }
+}
+</style>

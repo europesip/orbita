@@ -134,6 +134,10 @@ jobs:
           helm template t $C $V > /dev/null
           ! helm template t $C 2>/dev/null                          # dx.host, database... are required
           sh -n $C/files/after-push.sh
+          # #28: both page modes render, any other value fails; the site step parses
+          helm template t $C $V --set pages.mode=home > /dev/null
+          ! helm template t $C $V --set pages.mode=other 2>/dev/null
+          node --check $C/files/sitio.mjs
       - name: Publish (tags only, and only a chart version that is not published yet)
         if: startsWith(github.ref, 'refs/tags/v')
         run: |

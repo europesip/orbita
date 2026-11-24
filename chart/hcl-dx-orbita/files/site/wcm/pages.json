@@ -1,0 +1,31 @@
+{
+  "_comment": "Label and pages of ÓRBITA, as in the reference ÓRBITA site. Each one has a default site area (path in the library libraries.content of orbita.config.json). The pages are made like the ones created from the page template pageTemplate of the target portal (its layout and containers are copied). An existing page keeps its layout and portlets: only its titles, parameters, access and site area are updated.",
+  "pageTemplate": "wps.content.template.noTheme",
+  "label": {
+    "uniqueName": "orbita-site",
+    "title": {"en": "Orbita", "es": "Orbita"},
+    "friendly": "orbita",
+    "siteArea": "orbita",
+    "_access": "Principals with the User role on the label (the pages inherit it).",
+    "access": [
+      {"subject": "anonymous portal user", "type": "user"},
+      {"subject": "all authenticated portal users", "type": "user_group"},
+      {"subject": "all portal user groups", "type": "user_group"}
+    ]
+  },
+  "_scriptAppSkin": "Skin of the Script Application viewers (as the ÓRBITA chart).",
+  "scriptAppSkin": "ibm.portal.85NoSkin",
+  "_pages": "In this order. scriptApp: WCM content name of the Script Application the page shows (scriptapps.apps of the ÓRBITA chart). If it is not in the portal yet, the page is created empty; run the pages step again after deploying it.",
+  "pages": [
+    {"uniqueName": "orbita-site.mi-intranet", "title": {"es": "Mi intranet", "en": "My intranet"}, "friendly": "mi-intranet", "siteArea": "orbita/mi-intranet", "scriptApp": "orbita-mi-intranet"},
+    {"uniqueName": "orbita-site.fichaje", "title": {"es": "Fichaje", "en": "Time tracking"}, "friendly": "fichaje", "siteArea": "orbita/fichaje", "scriptApp": "orbita-fichaje"},
+    {"uniqueName": "orbita-site.vacaciones", "title": {"es": "Vacaciones", "en": "Time off"}, "friendly": "vacaciones", "siteArea": "orbita/vacaciones", "scriptApp": "orbita-vacaciones"},
+    {"uniqueName": "orbita-site.gastos", "title": {"es": "Gastos y viajes", "en": "Expenses and travel"}, "friendly": "gastos", "siteArea": "orbita/gastos", "scriptApp": "orbita-gastos"},
+    {"uniqueName": "orbita-site.aprobaciones", "title": {"es": "Aprobaciones", "en": "Approvals"}, "friendly": "aprobaciones", "siteArea": "orbita/aprobaciones", "scriptApp": "orbita-aprobaciones"},
+    {"uniqueName": "orbita-site.quiosco", "title": {"es": "Quiosco de fichaje", "en": "Time clock kiosk"}, "friendly": "quiosco", "siteArea": "orbita/quiosco", "scriptApp": "orbita-quiosco"},
+    {"uniqueName": "orbita-site.setting", "title": {"en": "Setting", "es": "Setting"}, "friendly": "setting", "siteArea": "orbita/Setting",
+     "hidden": true, "_details": "Page parameter com.ibm.portal.Details (true in the reference ÓRBITA site, with Hidden).", "details": true,
+     "_blockInheritance": "Roles not inherited from the label: only the administrators (Administrator role, inherited) see the page.", "blockInheritance": ["User", "Privileged User", "Contributor", "Editor", "Manager"],
+     "_webContentViewer": "One Web Content Viewer without settings: it shows the default content of the page's site area.", "webContentViewer": true}
+  ]
+}

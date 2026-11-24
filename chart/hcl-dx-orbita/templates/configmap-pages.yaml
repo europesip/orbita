@@ -1,6 +1,14 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 EUROPESIP
-{{- /* Always rendered: the scriptapps Job mounts it (with pages.create=false the script does nothing) */}}
+{{- /* Always rendered: the scriptapps Job mounts it in /after-push (after-push.sh runs sitio.mjs, issue #28) */}}
+{{- $mode := .Values.pages.mode | default "site" }}
+{{- if not (has $mode (list "site" "home")) }}{{ fail "pages.mode must be site or home" }}{{ end }}
+{{- $files := dict }}
+{{- range $path, $_ := .Files.Glob "files/site/**" }}
+{{- if not (hasPrefix "files/site/theme/images/" $path) }}
+{{- $_ := set $files (trimPrefix "files/site/" $path) ($.Files.Get $path) }}
+{{- end }}
+{{- end }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,24 +17,24 @@ metadata:
 data:
   after-push.sh: |
 {{ .Files.Get "files/after-push.sh" | indent 4 }}
-  paginas.mjs: |
-{{ .Files.Get "files/paginas.mjs" | indent 4 }}
-  paginas.json: |
-    {{- toJson (dict "create" .Values.pages.create "parent" .Values.pages.parent "base" .Values.pages.base
-          "layoutTemplate" .Values.pages.layoutTemplate "skin" .Values.pages.skin "titles" .Values.pages.items
-          "theme" (ternary .Values.theme.uniqueName "" .Values.theme.enabled)) | nindent 4 }}
-  tema.mjs: |
-{{ .Files.Get "files/tema.mjs" | indent 4 }}
-  tema.json: |
-    {{- toJson (dict "enabled" .Values.theme.enabled "name" .Values.theme.name "uniqueName" .Values.theme.uniqueName
-          "title" .Values.theme.title "base" .Values.theme.base.folder "baseUniqueName" .Values.theme.base.uniqueName
-          "damCollection" .Values.theme.damCollection "hclLogo" .Values.theme.hclLogo
-          "assistantButton" .Values.theme.assistantButton "logoAlt" .Values.theme.logoAlt
-          "headerBackground" .Values.theme.headerBackground
-          "homeUrl" (printf "%s%s" .Values.pages.base "mi-intranet")
-          "formLogin" (ne (toString .Values.dx.oidcSupport) "false")) | nindent 4 }}
+  sitio.mjs: |
+{{ .Files.Get "files/sitio.mjs" | indent 4 }}
+  # Every file of files/site/ (theme.html, nls.json, wcm/...) except the images: path -> text
+  site-files.json: {{ toJson $files | quote }}
+  # The chart values the site step needs
+  sitio.json: {{ toJson (dict
+      "theme" (dict "enabled" .Values.theme.enabled "folder" .Values.theme.name "uniqueName" .Values.theme.uniqueName
+                    "title" .Values.theme.title "base" (dict "folder" .Values.theme.base.folder "uniqueName" .Values.theme.base.uniqueName)
+                    "languages" .Values.theme.languages "hclLogo" .Values.theme.hclLogo "assistantButton" .Values.theme.assistantButton)
+      "libraries" .Values.theme.libraries
+      "access" .Values.theme.access
+      "logoBase64" .Values.theme.logoBase64
+      "dryRun" .Values.theme.dryRun
+      "pages" (dict "create" .Values.pages.create "mode" $mode "parent" .Values.pages.parent "site" .Values.pages.site
+                    "items" .Values.pages.items "skin" .Values.pages.skin "pageTemplate" .Values.pages.pageTemplate)
+      "pagesBase" (include "orbita.pagesBase" .)) | quote }}
 binaryData:
-  # Default images of the example theme, uploaded once to the DAM collection theme.damCollection
-  company-logo.png: {{ ternary (.Files.Get "files/theme/company-logo.png" | b64enc) .Values.theme.logoBase64 (empty .Values.theme.logoBase64) }}
-  hcl-software.png: {{ .Files.Get "files/theme/hcl-software.png" | b64enc }}
-  orbita-icon.png: {{ .Files.Get "files/theme/orbita-icon.png" | b64enc }}
+  # Images of files/site/theme/images/ (logos and favicon of the theme, header and Setting fields)
+  {{- range $path, $_ := .Files.Glob "files/site/theme/images/*" }}
+  site-img-{{ base $path }}: {{ $.Files.Get $path | b64enc }}
+  {{- end }}

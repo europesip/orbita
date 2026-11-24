@@ -10,10 +10,19 @@
   Apps + pages: kubectl -n {{ .Release.Namespace }} logs job/{{ .Release.Name }}-scriptapps-push
 {{- end }}
 {{- if .Values.pages.create }}
+{{- $base := include "orbita.pagesBase" . }}
 
-Pages (signed-in users only):
+Pages (signed-in users only{{ if eq (.Values.pages.mode | default "site") "site" }}; site https://{{ .Values.dx.host }}{{ $base | replace "/myportal/" "/portal/" }}{{ end }}):
 {{- range .Values.pages.items }}
-  https://{{ $.Values.dx.host }}{{ $.Values.pages.base }}{{ .friendly }}
+  https://{{ $.Values.dx.host }}{{ $base }}{{ .friendly }}
+{{- end }}
+{{- if .Values.theme.enabled }}
+  https://{{ $.Values.dx.host }}{{ $base }}setting   (hidden, administrators only: logos, colors, footer)
+
+One manual step, the first time, if DX has DAM (no DX API can do it): in the WCM Authoring UI, open the site area
+template "Setting Site Area - ST" of the library {{ .Values.theme.libraries.theme }} and tick "Show digital asset resource"
+(Mostrar recurso de activo digital) in its four image fields (desktopLogo, mobileLogo, footerLogo, favicon).
+The Job log lists it under "TO DO in the portal" when it is still pending.
 {{- end }}
 {{- end }}
 {{- if .Values.mcp.enabled }}
