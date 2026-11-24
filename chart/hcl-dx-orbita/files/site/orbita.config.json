@@ -1,0 +1,69 @@
+{
+  "_comment": "ÓRBITA on the HCL Simple theme: what install.mjs creates in the target portal. Secrets go in .env.local, never here.",
+  "libraries": {
+    "_comment": "theme: theme contents (customColors.css, headerNav, logo, footer...) and the authoring templates of wcm/templates.json. content: the parent site area with the Setting fields and one area per page.",
+    "theme": "ThemeDS",
+    "content": "orbita"
+  },
+  "theme": {
+    "_comment": "Copy of the static part (WebDAV) of the base theme + our theme/theme.html + nls/ generated for each language of theme/nls.json. The dynamic part (st_* spots) stays the one of the base theme in the server. Same names as the ÓRBITA chart.",
+    "folder": "OrbitaTheme",
+    "uniqueName": "orbita.theme",
+    "title": "ÓRBITA",
+    "description": {
+      "en": "ÓRBITA theme (copy of the HCL DX Simple theme, header and footer from WCM)",
+      "es": "Tema de ÓRBITA (copia del tema Simple de HCL DX, cabecera y pie desde WCM)"
+    },
+    "base": {
+      "folder": "Simple",
+      "uniqueName": "ibm.portal.SimpleTheme"
+    },
+    "_wcmPath": "Library/site area of the theme WCM contents (customColors.css, headerNav.css, logo, footer...). theme.html says ThemeDS/ThemeSetting; it is replaced with this value.",
+    "wcmPath": "ThemeDS/ThemeSetting",
+    "_languages": "Codes of theme/nls.json to generate. [] = no nls folder (only theme.html).",
+    "languages": [
+      "ar",
+      "ca",
+      "cs",
+      "da",
+      "de",
+      "el",
+      "en",
+      "es",
+      "fi",
+      "fr",
+      "hr",
+      "hu",
+      "it",
+      "iw",
+      "ja",
+      "kk",
+      "ko",
+      "nl",
+      "no",
+      "pl",
+      "pt",
+      "pt_BR",
+      "ro",
+      "ru",
+      "sk",
+      "sl",
+      "sv",
+      "th",
+      "tr",
+      "uk",
+      "zh",
+      "zh_TW"
+    ]
+  },
+  "access": {
+    "_comment": "Roles given on the libraries of libraries (theme and content): the theme reads their contents, logos and colors on every page, also for anonymous users. Principals are only added, never removed.",
+    "libraries": {
+      "User": [
+        "anonymous portal user",
+        "all authenticated portal users",
+        "all portal user groups"
+      ]
+    }
+  }
+}

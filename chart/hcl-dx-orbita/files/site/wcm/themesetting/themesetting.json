@@ -1,0 +1,8 @@
+{
+  "_comment": "Contents of <theme.wcmPath> (ThemeDS/ThemeSetting) that theme.html calls with st_wcm_content, copied from the reference ÓRBITA site. Each content is wcm/themesetting/contents/<name>.html in the field <element> of <contentTemplate>. The components go to Components/<componentFolder> of the theme library: customColors.css and headerContent call them by name. The installer owns this code: a content or component that differs is updated.",
+  "contentTemplate": "simpleHTML - CT",
+  "element": "html",
+  "componentFolder": "Themesetting",
+  "components": ["defaultCustomColors.css", "HeaderContent-html"],
+  "contents": ["customColors.css", "headerContent", "siteOverrides", "JSOverrides", "logo", "headerNav.css", "headerNav.js", "favicon", "footer", "footer.css"]
+}

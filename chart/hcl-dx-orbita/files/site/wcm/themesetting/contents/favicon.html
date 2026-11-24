@@ -1,0 +1,25 @@
+<script>
+(function () {
+    var faviconUrl = '[Element key="favicon" format="url" type="top" context="portalContext"]'
+        .replace("myconnect", "connect");
+
+    var existing = document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"]');
+
+    if (existing.length) {
+        // Reutiliza el primero que encuentra el BaseTheme y lo corrige
+        existing[0].setAttribute("rel", "icon");
+        existing[0].setAttribute("type", "image/x-icon");
+        existing[0].setAttribute("href", faviconUrl);
+        // Si hay más de uno, elimina los sobrantes
+        for (var i = 1; i < existing.length; i++) {
+            existing[i].remove();
+        }
+    } else {
+        var link = document.createElement("link");
+        link.rel = "icon";
+        link.type = "image/x-icon";
+        link.href = faviconUrl;
+        document.head.appendChild(link);
+    }
+})();
+</script>

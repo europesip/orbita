@@ -1,0 +1,31 @@
+			<!-- ÓRBITA header TOP (Setting field HeaderContent) -->
+			<a rel="dynamic-content" href="dyn-cs:id:st_wcm_content?path={{wcmPath}}/headerContent"></a>
+			<div id="header" class="oh-header">
+				<div class="oh-bar">
+					<div class="oh-bar__inner">
+						<!-- Logo (Setting fields desktopLogo / mobileLogo); the link goes to Home (stHomeLink) -->
+						<div class="oh-logo">
+							<a rel="dynamic-content" href="dyn-cs:id:st_generate_href?hrefId=stHomeLink"></a>
+							<a rel="dynamic-content" href="dyn-cs:id:st_wcm_content?path={{wcmPath}}/logo"></a>
+						</div>
+						<!-- Menu: filled by headerNav.js with the pages of the theme menu (hidden, below) -->
+						<nav id="dxNavigationHeader" class="oh-nav" aria-label="Main navigation"></nav>
+						<!-- User: edit profile and log in / log out, the theme's own -->
+						<ul class="oh-user stBannerMenus">
+							<a rel="dynamic-content" href="dyn-cs:id:st_edit_profile"></a>
+							<a rel="dynamic-content" href="dyn-cs:id:st_login_logout"></a>
+						</ul>
+						<!-- Hamburger (small screens) -->
+						<button id="mobileMenuToggle" class="oh-toggle" type="button" aria-label="Open menu" aria-controls="dxNavigationHeader" aria-expanded="false">
+							<span></span><span></span><span></span>
+						</button>
+					</div>
+				</div>
+				<!-- Source of the menu: the theme menu, HIDDEN. headerNav.js copies its pages (already filtered by access and
+				     with the selected one marked). Do not remove it: without it the menu is empty. -->
+				<div id="stNavigation" class="oh-fuente" hidden>
+					<span class="stDisplayNone" id="stSelectedPage" data-selected-page=""></span>
+					<a rel="dynamic-content" href="dyn-cs:id:st_mega_menu_nav"></a>
+				</div>
+			</div>
+			<a rel="dynamic-content" href="dyn-cs:id:st_wcm_content?path={{wcmPath}}/headerNav.js"></a>

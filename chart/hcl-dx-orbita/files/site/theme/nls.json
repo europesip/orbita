@@ -1,0 +1,291 @@
+{
+  "_comment": "Languages of the theme: one nls/theme_<code>.html per entry. lang/locale and Complementary Content come from the HCL Portal 8.5 theme; texts: English text in theme.html -> translation (missing ones stay in English).",
+  "ar": {
+    "lang": "ar",
+    "locale": "ar",
+    "texts": {
+      "Complementary Content": "محتويات مكملة"
+    }
+  },
+  "ca": {
+    "lang": "ca",
+    "locale": "ca",
+    "texts": {
+      "Complementary Content": "Contingut complementari",
+      "Search": "Cerca",
+      "Enter search term": "Introduïu el terme de cerca",
+      "Navigation Menu": "Menú de navegació",
+      "Mobile Navigation Menu": "Menú de navegació mòbil",
+      "Digital Experience Logo": "Logotip de Digital Experience",
+      "Main navigation": "Navegació principal",
+      "Open menu": "Obre el menú",
+      "Site footer": "Peu del lloc"
+    }
+  },
+  "cs": {
+    "lang": "cs",
+    "locale": "cs",
+    "texts": {
+      "Complementary Content": "Doplňkový obsah"
+    }
+  },
+  "da": {
+    "lang": "da",
+    "locale": "da",
+    "texts": {
+      "Complementary Content": "Supplerende indhold"
+    }
+  },
+  "de": {
+    "lang": "de",
+    "locale": "de",
+    "texts": {
+      "Complementary Content": "Ergänzender Inhalt",
+      "Search": "Suchen",
+      "Enter search term": "Suchbegriff eingeben",
+      "Navigation Menu": "Navigationsmenü",
+      "Mobile Navigation Menu": "Mobiles Navigationsmenü",
+      "Digital Experience Logo": "Digital Experience-Logo",
+      "Main navigation": "Hauptnavigation",
+      "Open menu": "Menü öffnen",
+      "Site footer": "Fußzeile der Website"
+    }
+  },
+  "el": {
+    "lang": "el",
+    "locale": "el",
+    "texts": {
+      "Complementary Content": "Συμπληρωματικό περιεχόμενο"
+    }
+  },
+  "en": {
+    "lang": "en",
+    "locale": "en",
+    "texts": {
+      "Complementary Content": "Complementary Content"
+    }
+  },
+  "es": {
+    "lang": "es",
+    "locale": "es",
+    "texts": {
+      "Complementary Content": "Contenido complementario",
+      "Search": "Buscar",
+      "Enter search term": "Introduzca el término de búsqueda",
+      "Navigation Menu": "Menú de navegación",
+      "Mobile Navigation Menu": "Menú de navegación móvil",
+      "Digital Experience Logo": "Logotipo de Digital Experience",
+      "Main navigation": "Navegación principal",
+      "Open menu": "Abrir menú",
+      "Site footer": "Pie del sitio"
+    }
+  },
+  "fi": {
+    "lang": "fi",
+    "locale": "fi",
+    "texts": {
+      "Complementary Content": "Täydentävä sisältö"
+    }
+  },
+  "fr": {
+    "lang": "fr",
+    "locale": "fr",
+    "texts": {
+      "Complementary Content": "Contenu complémentaire",
+      "Search": "Rechercher",
+      "Enter search term": "Entrez le terme de recherche",
+      "Navigation Menu": "Menu de navigation",
+      "Mobile Navigation Menu": "Menu de navigation mobile",
+      "Digital Experience Logo": "Logo Digital Experience",
+      "Main navigation": "Navigation principale",
+      "Open menu": "Ouvrir le menu",
+      "Site footer": "Pied de page du site"
+    }
+  },
+  "hr": {
+    "lang": "hr",
+    "locale": "hr",
+    "texts": {
+      "Complementary Content": "Dopunski sadržaj"
+    }
+  },
+  "hu": {
+    "lang": "hu",
+    "locale": "hu",
+    "texts": {
+      "Complementary Content": "Kiegészítő tartalom"
+    }
+  },
+  "it": {
+    "lang": "it",
+    "locale": "it",
+    "texts": {
+      "Complementary Content": "Contenuto complementare",
+      "Search": "Cerca",
+      "Enter search term": "Immettere il termine di ricerca",
+      "Navigation Menu": "Menu di navigazione",
+      "Mobile Navigation Menu": "Menu di navigazione mobile",
+      "Digital Experience Logo": "Logo Digital Experience",
+      "Main navigation": "Navigazione principale",
+      "Open menu": "Apri menu",
+      "Site footer": "Piè di pagina del sito"
+    }
+  },
+  "iw": {
+    "lang": "he",
+    "locale": "he",
+    "texts": {
+      "Complementary Content": "תוכן משלים"
+    }
+  },
+  "ja": {
+    "lang": "ja",
+    "locale": "ja",
+    "texts": {
+      "Complementary Content": "補足コンテンツ"
+    }
+  },
+  "kk": {
+    "lang": "kk",
+    "locale": "kk",
+    "texts": {
+      "Complementary Content": "Қосымша мазмұн"
+    }
+  },
+  "ko": {
+    "lang": "ko",
+    "locale": "ko",
+    "texts": {
+      "Complementary Content": "보조 컨텐츠"
+    }
+  },
+  "nl": {
+    "lang": "nl",
+    "locale": "nl",
+    "texts": {
+      "Complementary Content": "Aanvullende content",
+      "Search": "Zoeken",
+      "Enter search term": "Zoekterm invoeren",
+      "Navigation Menu": "Navigatiemenu",
+      "Mobile Navigation Menu": "Mobiel navigatiemenu",
+      "Digital Experience Logo": "Digital Experience-logo",
+      "Main navigation": "Hoofdnavigatie",
+      "Open menu": "Menu openen",
+      "Site footer": "Voettekst van de site"
+    }
+  },
+  "no": {
+    "lang": "no",
+    "locale": "no",
+    "texts": {
+      "Complementary Content": "Utfyllende innhold"
+    }
+  },
+  "pl": {
+    "lang": "pl",
+    "locale": "pl",
+    "texts": {
+      "Complementary Content": "Treść uzupełniająca"
+    }
+  },
+  "pt": {
+    "lang": "pt",
+    "locale": "pt",
+    "texts": {
+      "Complementary Content": "Conteúdo complementar",
+      "Search": "Pesquisar",
+      "Enter search term": "Introduza o termo de pesquisa",
+      "Navigation Menu": "Menu de navegação",
+      "Mobile Navigation Menu": "Menu de navegação móvel",
+      "Digital Experience Logo": "Logótipo do Digital Experience",
+      "Main navigation": "Navegação principal",
+      "Open menu": "Abrir menu",
+      "Site footer": "Rodapé do site"
+    }
+  },
+  "pt_BR": {
+    "lang": "pt-br",
+    "locale": "pt_BR",
+    "texts": {
+      "Complementary Content": "Conteúdo Complementar",
+      "Search": "Pesquisar",
+      "Enter search term": "Insira o termo de pesquisa",
+      "Navigation Menu": "Menu de navegação",
+      "Mobile Navigation Menu": "Menu de navegação móvel",
+      "Digital Experience Logo": "Logotipo do Digital Experience",
+      "Main navigation": "Navegação principal",
+      "Open menu": "Abrir menu",
+      "Site footer": "Rodapé do site"
+    }
+  },
+  "ro": {
+    "lang": "ro",
+    "locale": "ro",
+    "texts": {
+      "Complementary Content": "Conținut complementar"
+    }
+  },
+  "ru": {
+    "lang": "ru",
+    "locale": "ru",
+    "texts": {
+      "Complementary Content": "Дополнительные материалы"
+    }
+  },
+  "sk": {
+    "lang": "sk",
+    "locale": "sk",
+    "texts": {
+      "Complementary Content": "Doplnkový obsah"
+    }
+  },
+  "sl": {
+    "lang": "sl",
+    "locale": "sl",
+    "texts": {
+      "Complementary Content": "Komplementarna vsebina"
+    }
+  },
+  "sv": {
+    "lang": "sv",
+    "locale": "sv",
+    "texts": {
+      "Complementary Content": "Kompletterande innehåll"
+    }
+  },
+  "th": {
+    "lang": "th",
+    "locale": "th",
+    "texts": {
+      "Complementary Content": "เนื้อหาเพิ่มเติม"
+    }
+  },
+  "tr": {
+    "lang": "tr",
+    "locale": "tr",
+    "texts": {
+      "Complementary Content": "Tamamlayıcı İçerik"
+    }
+  },
+  "uk": {
+    "lang": "uk",
+    "locale": "uk",
+    "texts": {
+      "Complementary Content": "Додаткові матеріали"
+    }
+  },
+  "zh": {
+    "lang": "zh",
+    "locale": "zh",
+    "texts": {
+      "Complementary Content": "补充内容"
+    }
+  },
+  "zh_TW": {
+    "lang": "zh-tw",
+    "locale": "zh_TW",
+    "texts": {
+      "Complementary Content": "互補內容"
+    }
+  }
+}

@@ -186,16 +186,29 @@ kiosk:
 
 # --- Pages in DX ----------------------------------------------------------------------------------------------------
 pages:
-  # Create (or update) one page per application with XMLAccess, after the push. Needs scriptapps.dx.credentialsSecret
-  # to be a DX administrator.
+  # Create (or update) the ÓRBITA pages with XMLAccess, after the push. Needs scriptapps.dx.credentialsSecret to be a DX
+  # administrator.
   create: true
-  parent: ibm.portal.Home                 # unique name of the parent page
-  base: /wps/myportal/Home/               # URL of the parent page (the apps link to each other with it)
-  # Theme layout and skin of the pages (HCL DX default theme)
-  layoutTemplate: dav:fs-type1/themes/Portal8.5/layout-templates/1Column
-  skin: ibm.portal.85NoSkin
+  # site (default, since 4.0.0): ÓRBITA gets its own site, /wps/portal/<site.friendly>, with the theme, one page per
+  #   application and a hidden Setting page (administrators only) to change logos, colors and footer.
+  # home: the pages under the page "parent" (the behaviour of chart 3.x, unique names orbita.<friendly>), with the theme.
+  mode: site
+  site:
+    uniqueName: orbita-site               # unique name of the site (a label under the content root)
+    friendly: orbita                      # its URL: /wps/portal/orbita
+    title: { es: "ÓRBITA", en: "ÓRBITA" }
+    # false (default): only authenticated users see the site; anonymous users are sent to the login. true: anonymous
+    # users see the site too (the apps still need a signed-in user). The Setting page is always administrators only.
+    anonymous: false
+  parent: ibm.portal.Home                 # pages.mode home: unique name of the parent page
+  # URL of the pages (the apps link to each other with it). Empty: from pages.mode (/wps/myportal/<site.friendly>/ or
+  # /wps/myportal/Home/). Set it only if the parent page of pages.mode home is not Home.
+  base: ""
+  # The pages are made like the ones of this DX page template (its layout and containers are copied)
+  pageTemplate: wps.content.template.noTheme
+  skin: ibm.portal.85NoSkin               # skin of the Script Application viewers
   # The pages, in this order: friendly name and titles (es, en). The Script Application of each page is
-  # "orbita-<friendly name>" (scriptapps.apps).
+  # "orbita-<friendly name>" (scriptapps.apps), and its default site area <theme.libraries.content>/orbita/<friendly>.
   items:
     - { friendly: mi-intranet,  es: "Mi intranet",        en: "My intranet" }
     - { friendly: fichaje,      es: "Fichaje",            en: "Time tracking" }
@@ -204,27 +217,44 @@ pages:
     - { friendly: aprobaciones, es: "Aprobaciones",       en: "Approvals" }
     - { friendly: quiosco,      es: "Quiosco de fichaje", en: "Time clock kiosk" }
 
-# --- Example theme for the ÓRBITA pages ----------------------------------------------------------------------------
-# A copy of the HCL DX Portal 8.5 theme (copied from YOUR DX at install time, WebDAV only, no EAR) with an ÓRBITA
-# header: the company logo and the HCL Software logo, both from a DAM collection, and a button that opens the ÓRBITA
-# assistant. Assigned to the ÓRBITA pages only; the rest of the portal is not touched. Needs pages.create=true.
+# --- Theme and WCM content of the ÓRBITA pages ---------------------------------------------------------------------
+# Since 4.0.0 (issue #28): a copy of the HCL DX Simple theme (its static part, copied from YOUR DX at install time,
+# WebDAV only) with ÓRBITA's theme.html: header, footer and <head> come from WCM contents, so logos, colors and footer
+# are changed in DX (Setting page) without a new release. The files are in files/site/ of the chart (theme/theme.html,
+# theme/nls.json, theme/images/, wcm/...). The chart creates and keeps up to date:
+#   - the theme (theme.uniqueName, WebDAV folder theme.name); a theme of chart 3.x (copy of Portal 8.5) is migrated
+#   - the WCM libraries theme.libraries.theme (authoring templates and theme contents) and theme.libraries.content
+#     (the Setting fields, one site area per page, header and footer components)
+#   - the header images in a DAM collection (or as WCM image components when DX has no DAM)
+#   - read access (User role) on both libraries for theme.access
+# It only adds or updates: fields changed in the Setting page are kept. Assigned to the ÓRBITA pages only.
+# false: no theme and no WCM content (with pages.create, the pages are created without them).
 theme:
   enabled: true
   name: OrbitaTheme                 # WebDAV folder (dav:fs-type1/themes/OrbitaTheme/)
   uniqueName: orbita.theme
   title: ÓRBITA
   base:                             # theme to copy (its static files and its registration)
-    folder: Portal8.5
-    uniqueName: ibm.portal.85Theme
-  damCollection: ÓRBITA             # DAM collection with company-logo.png, hcl-software.png and orbita-icon.png
-  # Company logo: uploaded to the DAM the first time (default: the ÓRBITA logo). Afterwards, change it in the DAM
-  # (new version of company-logo.png): the theme always shows its latest version. Or give a PNG here (base64), used
-  # when the collection does not have it yet: --set-file needs base64, e.g. --set theme.logoBase64=$(base64 -w0 logo.png)
+    folder: Simple
+    uniqueName: ibm.portal.SimpleTheme
+  # Languages of the theme (nls/theme_<code>.html, texts of files/site/theme/nls.json). Empty: the 32 of
+  # files/site/orbita.config.json
+  languages: []
+  libraries:
+    theme: ThemeDS                  # authoring templates and theme contents (customColors.css, logo, footer...)
+    content: orbita                 # Setting site area, one site area per page, header and footer components
+  # Principals with the User role on both libraries (the theme reads them on every page of the site) and on the site.
+  # "anonymous portal user" is only used when pages.site.anonymous is true. Principals are only added, never removed.
+  access:
+    - all authenticated portal users
+    - all portal user groups
+  # Company logo of the header (files/site/theme/images/company-logo.png by default): uploaded the first time only.
+  # Afterwards change it in DX (DAM collection "orbita", or the image component). Or give a PNG here (base64):
+  # --set theme.logoBase64=$(base64 -w0 logo.png)
   logoBase64: ""
-  logoAlt: ÓRBITA
   hclLogo: true                     # "Powered by HCL Software" in the header
   assistantButton: true             # button that opens the ÓRBITA assistant (only on pages with an ÓRBITA app)
-  headerBackground: "linear-gradient(90deg, #15123B 0%, #2A1B6B 55%, #0B2A6F 100%)"
+  dryRun: false                     # true: the Job only reads DX and logs what it would change
 
 # --- Script Applications (subchart hcl-dx-scriptapp 0.2.0) -------------------------------------------------------
 # The subchart does not see the values above: repeat dx.host and the secrets here.
@@ -237,7 +267,7 @@ scriptapps:
   dxclient:
     acceptLicense: false     # REQUIRED true: you accept the HCL DXClient license
   bundle:
-    image: ghcr.io/europesip/orbita/orbita-scriptapps:3.2.0
+    image: ghcr.io/europesip/orbita/orbita-scriptapps:4.0.0
   job:
     imagePullSecrets: []     # the bundle image is public; set it for a private mirror
   apps:

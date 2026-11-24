@@ -1,0 +1,17 @@
+<div class="of-main">
+  <div class="of-main__inner">
+    <div class="of-brand">
+      [Plugin:NotEquals text1="[Element key=&quot;footerLogo&quot; format=&quot;url&quot; type=&quot;top&quot; context=&quot;portalContext&quot;]" text2=""]
+      <img class="of-brand__logo" src="[Element key="footerLogo" format="url" type="top" context="portalContext"]"
+           alt="[Element key="footerLogo" format="alt" type="top" context="portalContext"]">
+      [/Plugin:NotEquals]
+      [Component name="orbita/orbita-footer-brand"]
+    </div>
+    <div class="of-cols">[Element key="footerContent" type="top" context="portalContext"]</div>
+  </div>
+</div>
+[Plugin:NotEquals text1="[Element key=&quot;copyrightContent&quot; type=&quot;top&quot; context=&quot;portalContext&quot;]" text2=""]
+<div class="of-copy">
+  <div class="of-copy__inner">[Element key="copyrightContent" type="top" context="portalContext"]</div>
+</div>
+[/Plugin:NotEquals]

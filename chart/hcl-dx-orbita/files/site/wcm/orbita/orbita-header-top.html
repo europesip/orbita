@@ -1,0 +1,82 @@
+<style id="orbita-header-top">
+/* Contenedor principal: ocupa el 100% del ancho */
+.orbitaTop{
+  width:100%;
+  box-sizing:border-box;
+  background:linear-gradient(90deg,#15123B 0%,#2A1B6B 55%,#0B2A6F 100%);
+}
+.orbitaTop *,.orbitaTop *::before,.orbitaTop *::after{box-sizing:border-box}
+
+/* Lo de dentro: centrado y repartido */
+.orbitaTop__inner{
+  max-width:1300px;
+  margin:0 auto;
+  padding:10px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:16px 24px;
+  min-height:64px;
+}
+
+/* Marca: logo + "Powered by HCL" */
+.orbitaTop__marca{display:flex;align-items:center;gap:20px;flex:0 0 auto}
+.orbitaTop__logo{display:block;line-height:0}
+.orbitaTop__logo img{height:44px;width:auto;display:block}
+.orbitaTop__hcl{
+  display:flex;align-items:center;gap:10px;
+  padding-left:20px;border-left:1px solid rgba(255,255,255,.3);
+  color:#c7d2fe;font:600 11px/1 Arial,sans-serif;
+  letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;
+}
+.orbitaTop__hcl img{height:15px;width:auto;display:block;filter:brightness(0) invert(1)}
+
+/* Zona central (navegación u otro contenido): ocupa el hueco y se centra */
+.orbitaTop__centro{flex:1 1 auto;display:flex;justify-content:center;align-items:center;min-width:0}
+
+/* Botón del asistente: oculto salvo que <html> tenga .orbita-asistente */
+.orbitaTop__chat{
+  display:none;flex:0 0 auto;align-items:center;gap:10px;
+  border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);
+  color:#fff;border-radius:999px;padding:5px 16px 5px 5px;
+  font:600 14px/1 Arial,sans-serif;cursor:pointer;
+}
+html.orbita-asistente .orbitaTop__chat{display:inline-flex}
+.orbitaTop__chat:hover,.orbitaTop__chat:focus-visible{background:rgba(255,255,255,.2)}
+.orbitaTop__chat img{width:30px;height:30px;border-radius:9px;display:block}
+
+/* Móvil: todo apilado y centrado */
+@media (max-width:767px){
+  .orbitaTop__inner{justify-content:center;padding:10px 16px}
+  .orbitaTop__marca{justify-content:center;flex-wrap:wrap;gap:12px}
+  .orbitaTop__hcl{padding-left:12px}
+  .orbitaTop__centro{flex-basis:100%}
+}
+</style>
+
+<div class="orbitaTop" role="banner" aria-label="Main header">
+  <div class="orbitaTop__inner">
+
+    <div class="orbitaTop__marca">
+      <a class="orbitaTop__logo" href="{{pagesBase}}">
+        <img src="{{image:company-logo.png}}" alt="ÓRBITA">
+      </a>
+      <span class="orbitaTop__hcl">
+        <span>Powered by</span>
+        <img src="{{image:hcl-software.png}}" alt="HCL Software">
+      </span>
+    </div>
+
+    <div class="orbitaTop__centro">
+ 
+    </div>
+
+    <button type="button" class="orbitaTop__chat" title="Ask ÓRBITA" aria-label="Ask ÓRBITA"
+            onclick="window.dispatchEvent(new CustomEvent('orbita:asistente'))">
+      <img src="{{image:orbita-icon.png}}" alt="">
+      <span>Ask ÓRBITA</span>
+    </button>
+
+  </div>
+</div>

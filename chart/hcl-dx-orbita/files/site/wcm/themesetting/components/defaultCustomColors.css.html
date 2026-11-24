@@ -1,0 +1,47 @@
+<style>
+:root {
+  /* === Tokens nativos del tema Blueprint === */
+  --primary-primary:     [Element key="primary" type="top" context="portalContext"];
+  --secondary-secondary: [Element key="secondary" type="top" context="portalContext"];
+
+  /* Alias Bootstrap, por si algún componente usa --bs-* en vez del token nativo */
+  --bs-primary:   var(--primary-primary);
+  --bs-secondary: var(--secondary-secondary);
+
+  /* === Corporativo === */
+  --color-corporativo: [Element key="corporate-color" type="top" context="portalContext"];
+
+  /* === Header === */
+  --header-background: [Element key="header-background" type="top" context="portalContext"];
+  --header-text:        [Element key="header-text" type="top" context="portalContext"];
+  --header-text-hover:   [Element key="header-text-hover" type="top" context="portalContext"];
+
+  /* === Footer === */
+  --footer-background: [Element key="footer-background" type="top" context="portalContext"];
+  --footer-text:        [Element key="footer-text" type="top" context="portalContext"];
+  --footer-text-hover:   [Element key="footer-text-hover" type="top" context="portalContext"];
+
+  /* === Copyright === */
+  --copyright-background: [Element key="copyright-background" type="top" context="portalContext"];
+  --copyright-text:       [Element key="copyright-text" type="top" context="portalContext"];
+
+  /* === Body / texto === */
+  --text-body:        [Element key="text-body" type="top" context="portalContext"];
+  --link-hover-body:  [Element key="link-hover-body" type="top" context="portalContext"];
+
+  /* === Fondo general del body (token nativo Bootstrap) === */
+  --bs-body-bg: [Element key="background-body-color" type="top" context="portalContext"];
+
+  /* === Tipografía (fija, no cambia por site) === */
+  --font-montserrat: "Montserrat", Arial, sans-serif;
+  --bs-body-font-family: var(--font-montserrat);
+
+--bs-accordion-btn-color:#fff;
+}
+
+
+/* === Tipos de botón (el de Estilos comunes y los del Figma) === */
+.dx-btn.dx-btn--comun { background: var(--primary-primary, #0040ff); color: var(--header-background, #ffffff); border: 0px solid var(--primary-primary, #0040ff); border-radius: 999px; padding: 12px 24px; font-weight: 600; }
+.dx-btn.dx-btn--comun { transition: background 250ms ease, color 250ms ease, border-color 250ms ease; }
+.dx-btn.dx-btn--comun:hover { background: #0033cc; color: var(--header-background, #ffffff); border-color: #0033cc; filter: none; }
+</style>

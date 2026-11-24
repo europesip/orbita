@@ -1,0 +1,741 @@
+{
+  "_comment": "Authoring templates of ÓRBITA, copied from the reference ÓRBITA site (library ThemeDS). Without workflow. Fields: name, type, title and their field settings (properties: DIGITAL_ASSET_SOURCE_SELECTION_ENABLED, HIDDEN, MANDATORY...), applied with the WCM REST v2 API (wcmrest-v2).",
+  "presentationTemplates": [
+    {
+      "name": "simpleHTML - PT",
+      "file": "wcm/presentation/simpleHTML - PT.html"
+    }
+  ],
+  "contentTemplates": [
+    {
+      "name": "simpleHTML - CT",
+      "defaultPresentation": "simpleHTML - PT",
+      "elements": [
+        {
+          "name": "html",
+          "type": "HTMLComponent",
+          "title": "html"
+        }
+      ]
+    }
+  ],
+  "siteAreaTemplates": [
+    {
+      "name": "Setting Site Area - ST",
+      "elements": [
+        {
+          "name": "desktopLogo",
+          "type": "ImageComponent",
+          "title": "desktopLogo",
+          "properties": [
+            {
+              "key": "HELP_TEXT_PROVIDER_NAME",
+              "value": "NONE"
+            },
+            {
+              "key": "HIDDEN",
+              "value": "false"
+            },
+            {
+              "key": "MANDATORY",
+              "value": "false"
+            },
+            {
+              "key": "RESTRICT_MIME_TYPES",
+              "value": "false"
+            },
+            {
+              "key": "ALLOWED_MIME_TYPES",
+              "value": "[]"
+            },
+            {
+              "key": "MAX_BYTES",
+              "value": "0"
+            },
+            {
+              "key": "MAX_FILE_SIZE_CHECK_EXIST",
+              "value": "false"
+            },
+            {
+              "key": "RENDITIONS_ENABLED",
+              "value": "true"
+            },
+            {
+              "key": "DIGITAL_ASSET_SOURCE_SELECTION_ENABLED",
+              "value": "true"
+            },
+            {
+              "key": "desktop_pref_size_check",
+              "value": "false"
+            },
+            {
+              "key": "desktop_HEIGHT",
+              "value": "0"
+            },
+            {
+              "key": "desktop_WIDTH",
+              "value": "0"
+            },
+            {
+              "key": "desktop_max_bytes_check",
+              "value": "false"
+            },
+            {
+              "key": "desktop_MAX_BYTES",
+              "value": "0"
+            },
+            {
+              "key": "smartphone_pref_size_check",
+              "value": "false"
+            },
+            {
+              "key": "smartphone_HEIGHT",
+              "value": "0"
+            },
+            {
+              "key": "smartphone_WIDTH",
+              "value": "0"
+            },
+            {
+              "key": "smartphone_max_bytes_check",
+              "value": "false"
+            },
+            {
+              "key": "smartphone_MAX_BYTES",
+              "value": "0"
+            },
+            {
+              "key": "tablet_pref_size_check",
+              "value": "false"
+            },
+            {
+              "key": "tablet_HEIGHT",
+              "value": "0"
+            },
+            {
+              "key": "tablet_WIDTH",
+              "value": "0"
+            },
+            {
+              "key": "tablet_max_bytes_check",
+              "value": "false"
+            },
+            {
+              "key": "tablet_MAX_BYTES",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "name": "mobileLogo",
+          "type": "ImageComponent",
+          "title": "mobileLogo",
+          "properties": [
+            {
+              "key": "HELP_TEXT_PROVIDER_NAME",
+              "value": "NONE"
+            },
+            {
+              "key": "HIDDEN",
+              "value": "false"
+            },
+            {
+              "key": "MANDATORY",
+              "value": "false"
+            },
+            {
+              "key": "RESTRICT_MIME_TYPES",
+              "value": "false"
+            },
+            {
+              "key": "ALLOWED_MIME_TYPES",
+              "value": "[]"
+            },
+            {
+              "key": "MAX_BYTES",
+              "value": "0"
+            },
+            {
+              "key": "MAX_FILE_SIZE_CHECK_EXIST",
+              "value": "false"
+            },
+            {
+              "key": "RENDITIONS_ENABLED",
+              "value": "true"
+            },
+            {
+              "key": "DIGITAL_ASSET_SOURCE_SELECTION_ENABLED",
+              "value": "true"
+            },
+            {
+              "key": "desktop_pref_size_check",
+              "value": "false"
+            },
+            {
+              "key": "desktop_HEIGHT",
+              "value": "0"
+            },
+            {
+              "key": "desktop_WIDTH",
+              "value": "0"
+            },
+            {
+              "key": "desktop_max_bytes_check",
+              "value": "false"
+            },
+            {
+              "key": "desktop_MAX_BYTES",
+              "value": "0"
+            },
+            {
+              "key": "smartphone_pref_size_check",
+              "value": "false"
+            },
+            {
+              "key": "smartphone_HEIGHT",
+              "value": "0"
+            },
+            {
+              "key": "smartphone_WIDTH",
+              "value": "0"
+            },
+            {
+              "key": "smartphone_max_bytes_check",
+              "value": "false"
+            },
+            {
+              "key": "smartphone_MAX_BYTES",
+              "value": "0"
+            },
+            {
+              "key": "tablet_pref_size_check",
+              "value": "false"
+            },
+            {
+              "key": "tablet_HEIGHT",
+              "value": "0"
+            },
+            {
+              "key": "tablet_WIDTH",
+              "value": "0"
+            },
+            {
+              "key": "tablet_max_bytes_check",
+              "value": "false"
+            },
+            {
+              "key": "tablet_MAX_BYTES",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "name": "footerLogo",
+          "type": "ImageComponent",
+          "title": "footerLogo",
+          "properties": [
+            {
+              "key": "HELP_TEXT_PROVIDER_NAME",
+              "value": "NONE"
+            },
+            {
+              "key": "HIDDEN",
+              "value": "false"
+            },
+            {
+              "key": "MANDATORY",
+              "value": "false"
+            },
+            {
+              "key": "RESTRICT_MIME_TYPES",
+              "value": "false"
+            },
+            {
+              "key": "ALLOWED_MIME_TYPES",
+              "value": "[]"
+            },
+            {
+              "key": "MAX_BYTES",
+              "value": "0"
+            },
+            {
+              "key": "MAX_FILE_SIZE_CHECK_EXIST",
+              "value": "false"
+            },
+            {
+              "key": "RENDITIONS_ENABLED",
+              "value": "true"
+            },
+            {
+              "key": "DIGITAL_ASSET_SOURCE_SELECTION_ENABLED",
+              "value": "true"
+            },
+            {
+              "key": "desktop_pref_size_check",
+              "value": "false"
+            },
+            {
+              "key": "desktop_HEIGHT",
+              "value": "0"
+            },
+            {
+              "key": "desktop_WIDTH",
+              "value": "0"
+            },
+            {
+              "key": "desktop_max_bytes_check",
+              "value": "false"
+            },
+            {
+              "key": "desktop_MAX_BYTES",
+              "value": "0"
+            },
+            {
+              "key": "smartphone_pref_size_check",
+              "value": "false"
+            },
+            {
+              "key": "smartphone_HEIGHT",
+              "value": "0"
+            },
+            {
+              "key": "smartphone_WIDTH",
+              "value": "0"
+            },
+            {
+              "key": "smartphone_max_bytes_check",
+              "value": "false"
+            },
+            {
+              "key": "smartphone_MAX_BYTES",
+              "value": "0"
+            },
+            {
+              "key": "tablet_pref_size_check",
+              "value": "false"
+            },
+            {
+              "key": "tablet_HEIGHT",
+              "value": "0"
+            },
+            {
+              "key": "tablet_WIDTH",
+              "value": "0"
+            },
+            {
+              "key": "tablet_max_bytes_check",
+              "value": "false"
+            },
+            {
+              "key": "tablet_MAX_BYTES",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "name": "favicon",
+          "type": "ImageComponent",
+          "title": "favicon",
+          "properties": [
+            {
+              "key": "HELP_TEXT_PROVIDER_NAME",
+              "value": "NONE"
+            },
+            {
+              "key": "HIDDEN",
+              "value": "false"
+            },
+            {
+              "key": "MANDATORY",
+              "value": "false"
+            },
+            {
+              "key": "RESTRICT_MIME_TYPES",
+              "value": "false"
+            },
+            {
+              "key": "ALLOWED_MIME_TYPES",
+              "value": "[]"
+            },
+            {
+              "key": "MAX_BYTES",
+              "value": "0"
+            },
+            {
+              "key": "MAX_FILE_SIZE_CHECK_EXIST",
+              "value": "false"
+            },
+            {
+              "key": "RENDITIONS_ENABLED",
+              "value": "true"
+            },
+            {
+              "key": "DIGITAL_ASSET_SOURCE_SELECTION_ENABLED",
+              "value": "true"
+            },
+            {
+              "key": "desktop_pref_size_check",
+              "value": "false"
+            },
+            {
+              "key": "desktop_HEIGHT",
+              "value": "0"
+            },
+            {
+              "key": "desktop_WIDTH",
+              "value": "0"
+            },
+            {
+              "key": "desktop_max_bytes_check",
+              "value": "false"
+            },
+            {
+              "key": "desktop_MAX_BYTES",
+              "value": "0"
+            },
+            {
+              "key": "smartphone_pref_size_check",
+              "value": "false"
+            },
+            {
+              "key": "smartphone_HEIGHT",
+              "value": "0"
+            },
+            {
+              "key": "smartphone_WIDTH",
+              "value": "0"
+            },
+            {
+              "key": "smartphone_max_bytes_check",
+              "value": "false"
+            },
+            {
+              "key": "smartphone_MAX_BYTES",
+              "value": "0"
+            },
+            {
+              "key": "tablet_pref_size_check",
+              "value": "false"
+            },
+            {
+              "key": "tablet_HEIGHT",
+              "value": "0"
+            },
+            {
+              "key": "tablet_WIDTH",
+              "value": "0"
+            },
+            {
+              "key": "tablet_max_bytes_check",
+              "value": "false"
+            },
+            {
+              "key": "tablet_MAX_BYTES",
+              "value": "0"
+            }
+          ]
+        },
+        {
+          "name": "primary",
+          "type": "ShortTextComponent",
+          "title": "primary",
+          "properties": [
+            {
+              "key": "HELP_TEXT_PROVIDER_NAME",
+              "value": "NONE"
+            },
+            {
+              "key": "HIDDEN",
+              "value": "false"
+            },
+            {
+              "key": "MANDATORY",
+              "value": "false"
+            },
+            {
+              "key": "MAX_CHARS",
+              "value": "250"
+            }
+          ]
+        },
+        {
+          "name": "secondary",
+          "type": "ShortTextComponent",
+          "title": "secondary",
+          "properties": [
+            {
+              "key": "HELP_TEXT_PROVIDER_NAME",
+              "value": "NONE"
+            },
+            {
+              "key": "HIDDEN",
+              "value": "false"
+            },
+            {
+              "key": "MANDATORY",
+              "value": "false"
+            },
+            {
+              "key": "MAX_CHARS",
+              "value": "250"
+            }
+          ]
+        },
+        {
+          "name": "corporate-color",
+          "type": "ShortTextComponent",
+          "title": "corporate-color",
+          "properties": [
+            {
+              "key": "MAX_CHARS",
+              "value": "250"
+            }
+          ]
+        },
+        {
+          "name": "header-background",
+          "type": "ShortTextComponent",
+          "title": "header-background",
+          "properties": [
+            {
+              "key": "HELP_TEXT_PROVIDER_NAME",
+              "value": "NONE"
+            },
+            {
+              "key": "HIDDEN",
+              "value": "false"
+            },
+            {
+              "key": "MANDATORY",
+              "value": "false"
+            },
+            {
+              "key": "MAX_CHARS",
+              "value": "250"
+            }
+          ]
+        },
+        {
+          "name": "header-text",
+          "type": "ShortTextComponent",
+          "title": "header-text",
+          "properties": [
+            {
+              "key": "MAX_CHARS",
+              "value": "250"
+            }
+          ]
+        },
+        {
+          "name": "header-text-hover",
+          "type": "ShortTextComponent",
+          "title": "header-text-hover",
+          "properties": [
+            {
+              "key": "HELP_TEXT_PROVIDER_NAME",
+              "value": "NONE"
+            },
+            {
+              "key": "HIDDEN",
+              "value": "false"
+            },
+            {
+              "key": "MANDATORY",
+              "value": "false"
+            },
+            {
+              "key": "MAX_CHARS",
+              "value": "250"
+            }
+          ]
+        },
+        {
+          "name": "footer-background",
+          "type": "ShortTextComponent",
+          "title": "footer-background",
+          "properties": [
+            {
+              "key": "HELP_TEXT_PROVIDER_NAME",
+              "value": "NONE"
+            },
+            {
+              "key": "HIDDEN",
+              "value": "false"
+            },
+            {
+              "key": "MANDATORY",
+              "value": "false"
+            },
+            {
+              "key": "MAX_CHARS",
+              "value": "250"
+            }
+          ]
+        },
+        {
+          "name": "footer-text",
+          "type": "ShortTextComponent",
+          "title": "footer-text",
+          "properties": [
+            {
+              "key": "HELP_TEXT_PROVIDER_NAME",
+              "value": "NONE"
+            },
+            {
+              "key": "HIDDEN",
+              "value": "false"
+            },
+            {
+              "key": "MANDATORY",
+              "value": "false"
+            },
+            {
+              "key": "MAX_CHARS",
+              "value": "250"
+            }
+          ]
+        },
+        {
+          "name": "footer-text-hover",
+          "type": "ShortTextComponent",
+          "title": "footer-text-hover",
+          "properties": [
+            {
+              "key": "HELP_TEXT_PROVIDER_NAME",
+              "value": "NONE"
+            },
+            {
+              "key": "HIDDEN",
+              "value": "false"
+            },
+            {
+              "key": "MANDATORY",
+              "value": "false"
+            },
+            {
+              "key": "MAX_CHARS",
+              "value": "250"
+            }
+          ]
+        },
+        {
+          "name": "copyright-background",
+          "type": "ShortTextComponent",
+          "title": "copyright-background",
+          "properties": [
+            {
+              "key": "MAX_CHARS",
+              "value": "250"
+            }
+          ]
+        },
+        {
+          "name": "copyright-text",
+          "type": "ShortTextComponent",
+          "title": "copyright-text",
+          "properties": [
+            {
+              "key": "MAX_CHARS",
+              "value": "250"
+            }
+          ]
+        },
+        {
+          "name": "text-body",
+          "type": "ShortTextComponent",
+          "title": "text-body",
+          "properties": [
+            {
+              "key": "MAX_CHARS",
+              "value": "250"
+            }
+          ]
+        },
+        {
+          "name": "link-hover-body",
+          "type": "ShortTextComponent",
+          "title": "link-hover-body",
+          "properties": [
+            {
+              "key": "MAX_CHARS",
+              "value": "250"
+            }
+          ]
+        },
+        {
+          "name": "background-body-color",
+          "type": "ShortTextComponent",
+          "title": "background-body-color",
+          "properties": [
+            {
+              "key": "MAX_CHARS",
+              "value": "250"
+            }
+          ]
+        },
+        {
+          "name": "footerContent",
+          "type": "HTMLComponent",
+          "title": "footerContent",
+          "properties": [
+            {
+              "key": "HELP_TEXT_PROVIDER_NAME",
+              "value": "NONE"
+            },
+            {
+              "key": "HIDDEN",
+              "value": "false"
+            },
+            {
+              "key": "MANDATORY",
+              "value": "false"
+            },
+            {
+              "key": "FILTER_ACTIVE_CONTENT",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "name": "copyrightContent",
+          "type": "HTMLComponent",
+          "title": "copyrightContent"
+        },
+        {
+          "name": "HeaderContent",
+          "type": "HTMLComponent",
+          "title": "HeaderContent",
+          "properties": [
+            {
+              "key": "HELP_TEXT_PROVIDER_NAME",
+              "value": "NONE"
+            },
+            {
+              "key": "HIDDEN",
+              "value": "false"
+            },
+            {
+              "key": "MANDATORY",
+              "value": "false"
+            },
+            {
+              "key": "FILTER_ACTIVE_CONTENT",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "name": "siteOverrides",
+          "type": "HTMLComponent",
+          "title": "siteOverrides"
+        },
+        {
+          "name": "JSOverrides",
+          "type": "HTMLComponent",
+          "title": "JSOverrides"
+        }
+      ],
+      "renderingBehavior": "RENDER_DEFAULT_CONTENT_AS_CHILD"
+    }
+  ]
+}

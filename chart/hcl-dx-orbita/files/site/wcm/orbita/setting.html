@@ -1,0 +1,106 @@
+<!-- Site settings: fields of the top-level site area (type="top"). Self-contained: no Bootstrap needed. -->
+<style>
+.ost-setting { --ost-azul: #0040ff; --ost-tinta: #0b1033; --ost-suave: #5b6275; --ost-borde: #e4e7ef; --ost-fondo: #f6f7fb;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: var(--ost-tinta); max-width: 1100px; margin: 24px auto; padding: 0 16px; line-height: 1.5; }
+.ost-setting * { box-sizing: border-box; }
+.ost-setting h1 { font-size: 26px; margin: 0 0 4px; font-weight: 650; }
+.ost-setting .ost-intro { color: var(--ost-suave); margin: 0 0 20px; font-size: 14px; }
+.ost-setting details { background: #fff; border: 1px solid var(--ost-borde); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+.ost-setting summary { cursor: pointer; list-style: none; padding: 14px 18px; font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 10px; }
+.ost-setting summary::-webkit-details-marker { display: none; }
+.ost-setting summary::before { content: ""; width: 8px; height: 8px; border-right: 2px solid var(--ost-suave); border-bottom: 2px solid var(--ost-suave); transform: rotate(-45deg); transition: transform .15s; }
+.ost-setting details[open] > summary::before { transform: rotate(45deg); }
+.ost-setting details[open] > summary { border-bottom: 1px solid var(--ost-borde); background: var(--ost-fondo); }
+.ost-setting .ost-cuerpo { padding: 16px 18px; }
+.ost-setting .ost-rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.ost-setting .ost-grupo { margin: 4px 0 8px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ost-suave); }
+.ost-setting .ost-grupo:not(:first-child) { margin-top: 18px; }
+.ost-setting .ost-campo { border: 1px solid var(--ost-borde); border-radius: 10px; padding: 10px 12px; background: #fff; }
+.ost-setting .ost-etiqueta { font-size: 13px; color: var(--ost-suave); margin: 0 0 6px; }
+.ost-setting .ost-clave { font-family: ui-monospace, Consolas, monospace; font-size: 11px; color: #8a90a2; }
+.ost-setting .ost-logo { height: 90px; display: flex; align-items: center; justify-content: center; background: repeating-conic-gradient(#f1f3f8 0 25%, #fff 0 50%) 0 0 / 16px 16px; border-radius: 8px; }
+.ost-setting .ost-logo img { max-height: 80px; max-width: 100%; }
+.ost-setting .ost-color { display: flex; align-items: center; gap: 10px; }
+.ost-setting .ost-muestra { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--ost-borde); flex: none; }
+.ost-setting .ost-valor { font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+.ost-setting .ost-html { border: 1px dashed var(--ost-borde); border-radius: 8px; padding: 10px; min-height: 48px; }
+.ost-setting .ost-ayuda { font-size: 13px; color: var(--ost-suave); }
+.ost-setting .ost-codigo { margin: 0; border: 1px dashed var(--ost-borde); border-radius: 8px; padding: 10px; min-height: 48px; max-height: 260px; overflow: auto; white-space: pre-wrap; font: 12px/1.5 ui-monospace, Consolas, monospace; color: var(--ost-tinta); background: var(--ost-fondo); }
+.ost-setting .ost-ayuda code { background: var(--ost-fondo); padding: 1px 5px; border-radius: 4px; }
+</style>
+<div class="ost-setting">
+  <h1>Site settings</h1>
+  <p class="ost-intro">Logos, colors and header and footer content. To change a value, turn on <strong>edit mode</strong> and click on it.</p>
+
+  <details open>
+    <summary>Logos</summary>
+    <div class="ost-cuerpo"><div class="ost-rejilla">
+      <div class="ost-campo"><p class="ost-etiqueta">Desktop logo <span class="ost-clave">desktopLogo</span></p>[EditableElement key="desktopLogo" type="top" context="portalContext" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-logo"><img src='[Element key="desktopLogo" type="top" context="portalContext" format="url"]' alt="Desktop logo"></div>[/EditableElement]</div>
+      <div class="ost-campo"><p class="ost-etiqueta">Mobile logo <span class="ost-clave">mobileLogo</span></p>[EditableElement key="mobileLogo" type="top" context="portalContext" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-logo"><img src='[Element key="mobileLogo" type="top" context="portalContext" format="url"]' alt="Mobile logo"></div>[/EditableElement]</div>
+      <div class="ost-campo"><p class="ost-etiqueta">Footer logo <span class="ost-clave">footerLogo</span></p>[EditableElement key="footerLogo" type="top" context="portalContext" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-logo"><img src='[Element key="footerLogo" type="top" context="portalContext" format="url"]' alt="Footer logo"></div>[/EditableElement]</div>
+      <div class="ost-campo"><p class="ost-etiqueta">Favicon <span class="ost-clave">favicon</span></p>[EditableElement key="favicon" type="top" context="portalContext" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-logo"><img src='[Element key="favicon" type="top" context="portalContext" format="url"]' alt="Favicon"></div>[/EditableElement]</div>
+    </div></div>
+  </details>
+
+  <details open>
+    <summary>Colors</summary>
+    <div class="ost-cuerpo">
+      <p class="ost-grupo">Brand</p>
+      <div class="ost-rejilla">
+        <div class="ost-campo"><p class="ost-etiqueta">Primary <span class="ost-clave">primary</span></p>[EditableElement key="primary" type="top" context="portalContext" format="div" mode="dialog" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-color"><span class="ost-muestra" style="background:[Element key="primary" type="top" context="portalContext"]"></span><span class="ost-valor">[Element key="primary" type="top" context="portalContext"]</span></div>[/EditableElement]</div>
+        <div class="ost-campo"><p class="ost-etiqueta">Secondary <span class="ost-clave">secondary</span></p>[EditableElement key="secondary" type="top" context="portalContext" format="div" mode="dialog" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-color"><span class="ost-muestra" style="background:[Element key="secondary" type="top" context="portalContext"]"></span><span class="ost-valor">[Element key="secondary" type="top" context="portalContext"]</span></div>[/EditableElement]</div>
+        <div class="ost-campo"><p class="ost-etiqueta">Corporate <span class="ost-clave">corporate-color</span></p>[EditableElement key="corporate-color" type="top" context="portalContext" format="div" mode="dialog" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-color"><span class="ost-muestra" style="background:[Element key="corporate-color" type="top" context="portalContext"]"></span><span class="ost-valor">[Element key="corporate-color" type="top" context="portalContext"]</span></div>[/EditableElement]</div>
+      </div>
+      <p class="ost-grupo">Header</p>
+      <div class="ost-rejilla">
+        <div class="ost-campo"><p class="ost-etiqueta">Background <span class="ost-clave">header-background</span></p>[EditableElement key="header-background" type="top" context="portalContext" format="div" mode="dialog" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-color"><span class="ost-muestra" style="background:[Element key="header-background" type="top" context="portalContext"]"></span><span class="ost-valor">[Element key="header-background" type="top" context="portalContext"]</span></div>[/EditableElement]</div>
+        <div class="ost-campo"><p class="ost-etiqueta">Text <span class="ost-clave">header-text</span></p>[EditableElement key="header-text" type="top" context="portalContext" format="div" mode="dialog" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-color"><span class="ost-muestra" style="background:[Element key="header-text" type="top" context="portalContext"]"></span><span class="ost-valor">[Element key="header-text" type="top" context="portalContext"]</span></div>[/EditableElement]</div>
+        <div class="ost-campo"><p class="ost-etiqueta">Text on hover <span class="ost-clave">header-text-hover</span></p>[EditableElement key="header-text-hover" type="top" context="portalContext" format="div" mode="dialog" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-color"><span class="ost-muestra" style="background:[Element key="header-text-hover" type="top" context="portalContext"]"></span><span class="ost-valor">[Element key="header-text-hover" type="top" context="portalContext"]</span></div>[/EditableElement]</div>
+      </div>
+      <p class="ost-grupo">Footer</p>
+      <div class="ost-rejilla">
+        <div class="ost-campo"><p class="ost-etiqueta">Background <span class="ost-clave">footer-background</span></p>[EditableElement key="footer-background" type="top" context="portalContext" format="div" mode="dialog" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-color"><span class="ost-muestra" style="background:[Element key="footer-background" type="top" context="portalContext"]"></span><span class="ost-valor">[Element key="footer-background" type="top" context="portalContext"]</span></div>[/EditableElement]</div>
+        <div class="ost-campo"><p class="ost-etiqueta">Text <span class="ost-clave">footer-text</span></p>[EditableElement key="footer-text" type="top" context="portalContext" format="div" mode="dialog" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-color"><span class="ost-muestra" style="background:[Element key="footer-text" type="top" context="portalContext"]"></span><span class="ost-valor">[Element key="footer-text" type="top" context="portalContext"]</span></div>[/EditableElement]</div>
+        <div class="ost-campo"><p class="ost-etiqueta">Text on hover <span class="ost-clave">footer-text-hover</span></p>[EditableElement key="footer-text-hover" type="top" context="portalContext" format="div" mode="dialog" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-color"><span class="ost-muestra" style="background:[Element key="footer-text-hover" type="top" context="portalContext"]"></span><span class="ost-valor">[Element key="footer-text-hover" type="top" context="portalContext"]</span></div>[/EditableElement]</div>
+      </div>
+      <p class="ost-grupo">Copyright</p>
+      <div class="ost-rejilla">
+        <div class="ost-campo"><p class="ost-etiqueta">Background <span class="ost-clave">copyright-background</span></p>[EditableElement key="copyright-background" type="top" context="portalContext" format="div" mode="dialog" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-color"><span class="ost-muestra" style="background:[Element key="copyright-background" type="top" context="portalContext"]"></span><span class="ost-valor">[Element key="copyright-background" type="top" context="portalContext"]</span></div>[/EditableElement]</div>
+        <div class="ost-campo"><p class="ost-etiqueta">Text <span class="ost-clave">copyright-text</span></p>[EditableElement key="copyright-text" type="top" context="portalContext" format="div" mode="dialog" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-color"><span class="ost-muestra" style="background:[Element key="copyright-text" type="top" context="portalContext"]"></span><span class="ost-valor">[Element key="copyright-text" type="top" context="portalContext"]</span></div>[/EditableElement]</div>
+      </div>
+      <p class="ost-grupo">Page</p>
+      <div class="ost-rejilla">
+        <div class="ost-campo"><p class="ost-etiqueta">Page background <span class="ost-clave">background-body-color</span></p>[EditableElement key="background-body-color" type="top" context="portalContext" format="div" mode="dialog" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-color"><span class="ost-muestra" style="background:[Element key="background-body-color" type="top" context="portalContext"]"></span><span class="ost-valor">[Element key="background-body-color" type="top" context="portalContext"]</span></div>[/EditableElement]</div>
+        <div class="ost-campo"><p class="ost-etiqueta">Body text <span class="ost-clave">text-body</span></p>[EditableElement key="text-body" type="top" context="portalContext" format="div" mode="dialog" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-color"><span class="ost-muestra" style="background:[Element key="text-body" type="top" context="portalContext"]"></span><span class="ost-valor">[Element key="text-body" type="top" context="portalContext"]</span></div>[/EditableElement]</div>
+        <div class="ost-campo"><p class="ost-etiqueta">Link on hover <span class="ost-clave">link-hover-body</span></p>[EditableElement key="link-hover-body" type="top" context="portalContext" format="div" mode="dialog" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-color"><span class="ost-muestra" style="background:[Element key="link-hover-body" type="top" context="portalContext"]"></span><span class="ost-valor">[Element key="link-hover-body" type="top" context="portalContext"]</span></div>[/EditableElement]</div>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>Header and footer</summary>
+    <div class="ost-cuerpo">
+      <div class="ost-campo"><p class="ost-etiqueta">Header content <span class="ost-clave">HeaderContent</span></p>[EditableElement key="HeaderContent" type="top" context="portalContext" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-html">[Element key="HeaderContent" type="top" context="portalContext"]</div>[/EditableElement]</div>
+      <div class="ost-campo"><p class="ost-etiqueta">Footer content (columns: &lt;div class=&quot;of-col&quot;&gt;…) <span class="ost-clave">footerContent</span></p>[EditableElement key="footerContent" type="top" context="portalContext" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-html">[Element key="footerContent" type="top" context="portalContext"]</div>[/EditableElement]</div>
+      <div class="ost-campo"><p class="ost-etiqueta">Copyright <span class="ost-clave">copyrightContent</span></p>[EditableElement key="copyrightContent" type="top" context="portalContext" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<div class="ost-html">[Element key="copyrightContent" type="top" context="portalContext"]</div>[/EditableElement]</div>
+    </div>
+  </details>
+
+  <details>
+    <summary>Overrides</summary>
+    <div class="ost-cuerpo">
+      <p class="ost-ayuda" style="margin-top:0">Extra code for this site. <strong>siteOverrides</strong> is added in the page &lt;head&gt; (CSS); <strong>JSOverrides</strong> at the end of the page (JavaScript). Wrong code here can break every page of the site.</p>
+      <div class="ost-campo"><p class="ost-etiqueta">Site overrides (CSS, inside &lt;style&gt;…&lt;/style&gt;) <span class="ost-clave">siteOverrides</span></p>[EditableElement key="siteOverrides" type="top" context="portalContext" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<pre class="ost-codigo">[Element key="siteOverrides" type="top" context="portalContext" htmlencode="true"]</pre>[/EditableElement]</div>
+      <div class="ost-campo"><p class="ost-etiqueta">JS overrides (scripts, inside &lt;script&gt;…&lt;/script&gt;) <span class="ost-clave">JSOverrides</span></p>[EditableElement key="JSOverrides" type="top" context="portalContext" callback="var myCallBack=new i$.Promise(); myCallBack.then(function(){window.location.reload(false)});return myCallBack;"]<pre class="ost-codigo">[Element key="JSOverrides" type="top" context="portalContext" htmlencode="true"]</pre>[/EditableElement]</div>
+    </div>
+  </details>
+
+  <details>
+    <summary>Help</summary>
+    <div class="ost-cuerpo ost-ayuda">
+      <p>These values are the fields of the site top-level site area. The theme reads them with <code>[Element key="&hellip;" type="top" context="portalContext"]</code>,
+      so every page must have a default site area mapping inside this site.</p>
+      <p>Colors use CSS syntax: <code>#0040ff</code>, <code>rgb(0 64 255)</code> or a name (<code>red</code>).</p>
+    </div>
+  </details>
+</div>
