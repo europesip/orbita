@@ -51,7 +51,8 @@ theme:
 - **El tema se migra**: el tema 3.x (copia de Portal 8.5, el mismo `orbita.theme`) se sustituye por el basado en
   Simple: se reemplazan sus ficheros, se quitan los antiguos y se actualiza el registro (mismo object ID, así que las
   páginas lo conservan).
-- Con `site`, las páginas 3.x debajo de Home **se quedan** (no se borra nada): quítalas en DX si no las necesitas.
+- Con `site`, las páginas 3.x debajo de Home **se quedan** (no se borra nada) y siguen funcionando con el tema nuevo,
+  pero sin la cabecera TOP de ÓRBITA (no tienen área en la biblioteca `orbita`): quítalas en DX si no las necesitas.
 - La colección del DAM `ÓRBITA` del 3.x se queda; las imágenes nuevas de la cabecera van a la colección `orbita`.
 - Valores que desaparecen: `theme.damCollection`, `theme.logoAlt`, `theme.headerBackground`, `pages.layoutTemplate`
   (colores y logos se editan ahora en la página Setting).

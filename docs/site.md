@@ -48,7 +48,8 @@ theme:
 - **The default changes to `site`.** To keep the pages below Home, set **`pages.mode: home`** before upgrading.
 - **The theme is migrated**: the 3.x theme (a copy of Portal 8.5, same `orbita.theme`) is replaced by the Simple-based
   one: its files are replaced, the old ones removed, the registration updated (same object ID, so the pages keep it).
-- With `site`, the 3.x pages below Home **stay** (nothing is deleted): remove them in DX if you do not need them.
+- With `site`, the 3.x pages below Home **stay** (nothing is deleted) and keep working with the new theme, but without
+  the ÓRBITA header TOP (they have no site area in the `orbita` library): remove them in DX if you do not need them.
 - The 3.x DAM collection `ÓRBITA` stays; the new header images go to the collection `orbita`.
 - Removed values: `theme.damCollection`, `theme.logoAlt`, `theme.headerBackground`, `pages.layoutTemplate` (colors and
   logos are now edited in the Setting page).

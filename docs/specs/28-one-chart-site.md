@@ -36,11 +36,15 @@ and `paginas.mjs` (one page per app below `pages.parent`). `pages.base` is the l
 - [x] A second upgrade reports everything "same / already there"; fields edited in Setting are kept.
 - [x] `pages.mode: home` uses the 3.x pages (`orbita.<app>` below Home) with the new theme.
 - [x] Migration path (registered theme with another base): files replaced, 69 old files removed, registration updated.
-- [ ] A real 3.x → 4.0.0 upgrade on a portal with DAM (3.x needs DAM): not tested yet.
+- [x] A real 3.x → 4.0.0 upgrade on a portal with DAM: ÓRBITA 3.2.0 installed (Portal 8.5 theme, DAM collection,
+      pages below Home), then 4.0.0 with defaults: theme migrated (180 files copied, 321 old files removed,
+      registration updated), site created, pages render with header, logo, footer and app; a second upgrade changed
+      nothing. The 3.x pages below Home keep working with the new theme (without the header TOP: they have no site
+      area of the `orbita` library).
 
 ## Out of scope
 Removing the 3.x pages below Home when moving to `site`; multilingual WCM content; the manual DAM tick.
 
-## Test plan (done on a lab Compose CF239 without DAM)
+## Test plan (done on two lab Compose CF239 portals: one without DAM, one with DAM and PostgreSQL)
 `helm lint`, `helm template`; ÓRBITA 3.2.0 installed (pages below Home), then 4.0.0: site, idempotent run, home
 mode, simulated migration; WebDAV writes retried (the DX WebDAV answered 400 to some parallel PUTs).
