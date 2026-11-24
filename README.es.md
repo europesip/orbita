@@ -12,7 +12,7 @@ se instala con **un chart de Helm**, `hcl-dx-orbita`. Qué hace cada aplicación
 
 <p align="center"><img src="docs/images/theme-home.es.jpg" alt="ÓRBITA en HCL DX Compose: la página Mi intranet con el theme de ejemplo" width="100%"></p>
 
-> **Versión 3.2.0.** Necesita **PostgreSQL** (ver [Requisitos](#requisitos)); en las siguientes versiones se podrán
+> **Versión 4.0.0** (sitio propio para usuarios autenticados, tema basado en Simple con ajustes en WCM). Necesita **PostgreSQL** (ver [Requisitos](#requisitos)); en las siguientes versiones se podrán
 > usar otras bases de datos. La interfaz está en **español e inglés**, en el idioma del perfil de DX de cada usuario.
 > Tiene **asistente de IA propio** ([más abajo](#qué-preguntarle-a-la-ia-sobre-órbita)), y la integración con HCL DX IQ es opcional.
 

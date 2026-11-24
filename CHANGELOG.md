@@ -2,7 +2,7 @@
 
 **English** · [Español](CHANGELOG.es.md)
 
-## 4.0.0 · unreleased · One chart: own site, Simple-based theme and WCM settings (#28)
+## 4.0.0 · 2026-11-24 · One chart: own site, Simple-based theme and WCM settings (#28)
 
 Based on the "ÓRBITA on the Simple theme" work by **Macarena** (EUROPESIP): her installer, WCM content and theme
 design, integrated in the chart so one `helm install` / `helm upgrade` does everything (no second installer).

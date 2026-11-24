@@ -11,7 +11,7 @@ Everything is installed with **one Helm chart**, `hcl-dx-orbita`.
 
 <p align="center"><img src="docs/images/theme-home.en.jpg" alt="ÓRBITA in HCL DX Compose: the My intranet page with the example theme" width="100%"></p>
 
-> **Version 3.2.0.** Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
+> **Version 4.0.0** (own site for authenticated users, Simple-based theme with WCM settings). Requires **PostgreSQL** (see [Requirements](#requirements)); other databases will be supported
 > in later releases. The interface is in **English and Spanish**, in the language of each user's DX profile.
 > It has its **own AI assistant** ([below](#ask-the-ai-about-órbita)), and the integration with HCL DX IQ is optional.
 

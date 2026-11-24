@@ -2,7 +2,7 @@
 
 [English](CHANGELOG.md) · **Español**
 
-## 4.0.0 · sin publicar · Un solo chart: sitio propio, tema basado en Simple y ajustes en WCM (#28)
+## 4.0.0 · 2026-11-24 · Un solo chart: sitio propio, tema basado en Simple y ajustes en WCM (#28)
 
 Parte del trabajo «ÓRBITA sobre el tema Simple» de **Macarena** (EUROPESIP): su instalador, su contenido WCM y el
 diseño del tema, integrados en el chart para que un solo `helm install` / `helm upgrade` lo haga todo (sin un segundo
