@@ -51,7 +51,13 @@ const cfg = JSON.parse(readFileSync(join(HERE, 'orbita.config.json'), 'utf8'));
 cfg.libraries = {...cfg.libraries, ...values.libraries};
 cfg.theme = {...cfg.theme, folder: values.theme.folder, uniqueName: values.theme.uniqueName, title: values.theme.title,
   base: values.theme.base, ...(values.theme.languages?.length ? {languages: values.theme.languages} : {})};
-if (values.access) cfg.access = {libraries: {User: values.access}};
+// pages.site.anonymous (default false): the ÓRBITA site is for authenticated users only (anonymous users are sent to the
+// login). Anonymous users then never render the ÓRBITA theme, so the libraries do not need anonymous read either; with
+// anonymous true, "anonymous portal user" is added to the site and to the libraries.
+const ANON = 'anonymous portal user';
+const SITE_ANONYMOUS = values.pages?.site?.anonymous === true;
+const principals = (list) => [...new Set([...(list || []).filter((a) => SITE_ANONYMOUS || a !== ANON), ...(SITE_ANONYMOUS ? [ANON] : [])])];
+if (values.access) cfg.access = {libraries: {User: principals(values.access)}};
 const LOG_DIR = '/tmp/orbita-site-logs';
 mkdirSync(LOG_DIR, {recursive: true});
 const log = (m) => console.log(m);
@@ -829,7 +835,7 @@ async function installPages() {
     scriptAppSkin: values.pages.skin || tplPages.scriptAppSkin,
     label: {...tplPages.label, uniqueName: values.pages.site.uniqueName, friendly: values.pages.site.friendly,
       title: values.pages.site.title || tplPages.label.title, siteArea: cfgOf('wcm/orbita/orbita.json').parentArea.name,
-      access: (values.access || []).map((a) => ({subject: a, type: a === 'anonymous portal user' ? 'user' : 'user_group'}))},
+      access: principals(values.access).map((a) => ({subject: a, type: a === ANON ? 'user' : 'user_group'}))},
     pages: [
       ...values.pages.items.map((i) => ({uniqueName: `${prefix}.${i.friendly}`, title: {es: i.es, en: i.en}, friendly: i.friendly,
         siteArea: `${cfgOf('wcm/orbita/orbita.json').parentArea.name}/${i.friendly}`, scriptApp: `orbita-${i.friendly}`})),

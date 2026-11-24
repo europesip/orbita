@@ -35,7 +35,7 @@ Todo es **idempotente** (solo añade o actualiza, nunca borra): cada `helm upgra
 ```yaml
 pages:
   mode: site            # o home: las páginas debajo de Home, como el chart 3.x
-  site: { uniqueName: orbita-site, friendly: orbita }
+  site: { uniqueName: orbita-site, friendly: orbita, anonymous: false }   # false (por defecto): solo usuarios con sesión; los anónimos van al login
 theme:
   enabled: true         # false: sin tema ni contenido WCM (solo páginas)
   libraries: { theme: ThemeDS, content: orbita }

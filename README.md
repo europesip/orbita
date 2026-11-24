@@ -255,6 +255,7 @@ The values you normally set (all of them, with comments: [values.yaml](chart/hcl
 | `database.dxPersistence.release` / `.namespace` | with `dxPersistence` | Release and namespace of `hcl-dx-deployment` |
 | `pages.mode` | `site` (default) | `site`: own site `/wps/myportal/orbita/` with a hidden Setting page; `home`: pages under Home (3.x layout) |
 | `pages.site.friendly` / `.title` | default `orbita` / «ÓRBITA» | URL and title of the site |
+| `pages.site.anonymous` | `false` (default) | `false`: only signed-in users see the site, anonymous users go to the login; `true`: anonymous users see it too (the apps still need a user). Setting is always administrators only |
 | `theme.enabled` | `true` | ÓRBITA theme (copy of Simple made from your DX) and its WCM content; `false`: use your own theme |
 | `theme.hclLogo` / `theme.assistantButton` | `true` | «Powered by HCL Software» and the assistant button in the header |
 | `assistant.backend` + `assistant.litellm.url` | `orbita` (default) with your LiteLLM URL, or `none` | `orbita`: ÓRBITA's own assistant (needs a LiteLLM), `iq` (HCL DX IQ chat) or `none` (no button) |

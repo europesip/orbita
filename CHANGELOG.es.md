@@ -12,11 +12,14 @@ instalador). Mira [Sitio y tema](docs/site.es.md).
   `orbita-site`) con una página por app y una página **Setting** oculta (solo administradores). `pages.mode: home`
   mantiene la disposición del 3.x (páginas debajo de Home, nombres únicos `orbita.<app>`). Las apps se enlazan entre sí
   con la base correcta automáticamente (`pages.base` vacío = derivado).
+- **Solo usuarios autenticados** (`pages.site.anonymous: false`, por defecto): los anónimos van al login; el sitio y
+  las bibliotecas WCM dan lectura solo a todos los usuarios autenticados y grupos (`theme.access`). Con `true` el sitio
+  (y las bibliotecas) se abren también a los anónimos. La página Setting es siempre solo para administradores.
 - **Tema**: copia del tema **Simple** de HCL DX (antes Portal 8.5) con cabecera, pie y `<head>` desde WCM. Su
   `theme.html` se **genera al instalar** a partir del `theme.html` de Simple de tu portal más las piezas de ÓRBITA
   (`files/site/theme/parts/`): ÓRBITA no lleva ningún fichero de HCL. Ficheros nls para 32 idiomas.
 - **WCM**: bibliotecas `ThemeDS` (plantillas sin flujo de trabajo, contenidos del tema) y `orbita` (área Setting con
-  logos, colores, pie, copyright y la cabecera de ÓRBITA; un área por página), con lectura para todos; imágenes en la
+  logos, colores, pie, copyright y la cabecera de ÓRBITA; un área por página), con lectura para los usuarios del sitio; imágenes en la
   colección del DAM `orbita` o como componentes de imagen WCM sin DAM. Los campos del Setting solo se rellenan si están
   vacíos.
 - Un solo paso `files/sitio.mjs` sustituye a `tema.mjs` y `paginas.mjs`; idempotente; `theme.dryRun` solo lee.

@@ -34,7 +34,7 @@ Everything is **idempotent** (only adds or updates, never deletes): every `helm 
 ```yaml
 pages:
   mode: site            # or home: the pages below Home, as chart 3.x
-  site: { uniqueName: orbita-site, friendly: orbita }
+  site: { uniqueName: orbita-site, friendly: orbita, anonymous: false }   # false (default): signed-in users only, anonymous users go to the login
 theme:
   enabled: true         # false: no theme and no WCM content (pages only)
   libraries: { theme: ThemeDS, content: orbita }

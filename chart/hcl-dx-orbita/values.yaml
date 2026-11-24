@@ -197,6 +197,9 @@ pages:
     uniqueName: orbita-site               # unique name of the site (a label under the content root)
     friendly: orbita                      # its URL: /wps/portal/orbita
     title: { es: "ÓRBITA", en: "ÓRBITA" }
+    # false (default): only authenticated users see the site; anonymous users are sent to the login. true: anonymous
+    # users see the site too (the apps still need a signed-in user). The Setting page is always administrators only.
+    anonymous: false
   parent: ibm.portal.Home                 # pages.mode home: unique name of the parent page
   # URL of the pages (the apps link to each other with it). Empty: from pages.mode (/wps/myportal/<site.friendly>/ or
   # /wps/myportal/Home/). Set it only if the parent page of pages.mode home is not Home.
@@ -240,9 +243,9 @@ theme:
   libraries:
     theme: ThemeDS                  # authoring templates and theme contents (customColors.css, logo, footer...)
     content: orbita                 # Setting site area, one site area per page, header and footer components
-  # Principals with the User role on both libraries (the theme reads them on every page, also anonymous users)
+  # Principals with the User role on both libraries (the theme reads them on every page of the site) and on the site.
+  # "anonymous portal user" is only used when pages.site.anonymous is true. Principals are only added, never removed.
   access:
-    - anonymous portal user
     - all authenticated portal users
     - all portal user groups
   # Company logo of the header (files/site/theme/images/company-logo.png by default): uploaded the first time only.

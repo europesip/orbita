@@ -12,12 +12,15 @@ See [Site and theme](docs/site.md).
   page per app and a hidden **Setting** page (administrators only). `pages.mode: home` keeps the layout of 3.x (pages
   below Home, unique names `orbita.<app>`). The apps link to each other with the right base automatically
   (`pages.base` empty = derived).
+- **Authenticated users only** (`pages.site.anonymous: false`, default): anonymous users are sent to the login; the
+  site and the WCM libraries get read access for all authenticated users and groups only (`theme.access`). `true`
+  opens the site (and the libraries) to anonymous users too. The Setting page is always administrators only.
 - **Theme**: a copy of the HCL DX **Simple** theme (was Portal 8.5) whose header, footer and `<head>` come from WCM.
   Its `theme.html` is **generated at install time** from the Simple `theme.html` of your portal plus ÓRBITA's parts
   (`files/site/theme/parts/`): no HCL file ships with ÓRBITA. nls files for 32 languages.
 - **WCM**: libraries `ThemeDS` (authoring templates without workflow, theme contents) and `orbita` (Setting site
   area with logos, colors, footer, copyright and the ÓRBITA header; one site area per page), read access for
-  everybody; images in the DAM collection `orbita` or as WCM image components without DAM. Setting fields are filled
+  the users of the site; images in the DAM collection `orbita` or as WCM image components without DAM. Setting fields are filled
   only when empty.
 - One step `files/sitio.mjs` replaces `tema.mjs` and `paginas.mjs`; idempotent; `theme.dryRun` only reads.
 
