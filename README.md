@@ -210,8 +210,8 @@ VALUES
 **3. Install**:
 
 ```bash
-helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 3.2.0 \
-  -n $NS_ORBITA -f orbita-values.yaml --timeout 15m
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 4.0.0 \
+  -n $NS_ORBITA -f orbita-values.yaml --timeout 30m
 ```
 
 What happens, in order:
@@ -220,11 +220,17 @@ What happens, in order:
    and kept across upgrades (Secret `orbita-db`).
 2. **`orbita-api`** starts: Flyway creates the tables and the demo data are loaded. Then the Service, the Ingress on
    `/orbita-api` of the DX host and the MCP NetworkPolicy.
-3. The **scriptapps Job** pushes the six Script Applications to WCM with HCL DXClient and creates the six pages under
-   *Home* with XMLAccess.
+3. The **scriptapps Job** pushes the six Script Applications to WCM with HCL DXClient, then deploys the ÓRBITA theme
+   (a copy of Simple made from your DX), its WCM libraries (`ThemeDS`, `orbita`) and images, and creates ÓRBITA's own
+   site `/wps/myportal/orbita/` with one page per app and a hidden **Setting** page (administrators only). Running
+   `helm upgrade` again changes nothing that already exists, and never overwrites what you changed in Setting.
 
 **4. Check**: `kubectl -n $NS_ORBITA logs job/orbita-scriptapps-push -c dxclient | tail -3`, and
-`https://<DX host>/orbita-api/v1/salud` must answer `ok`. Then sign in to DX as a demo user and open *My intranet*.
+`https://<DX host>/orbita-api/v1/salud` must answer `ok`. Then sign in to DX as a demo user and open
+`https://<DX host>/wps/myportal/orbita/`. As a DX administrator, open the **Setting** page of the site to change
+logos, colors and footer. One manual step DX does not allow by API: in the WCM Authoring UI, tick «Show digital asset
+resource» in the four image fields of the site area template *Setting Site Area - ST* (only when DX has DAM).
+
 
 **In the HCL DX Compose labs**, the same with one script (it reads the labs `env.sh` and creates the secrets):
 
@@ -232,6 +238,29 @@ What happens, in order:
 DXCLIENT_ACCEPT_LICENSE=yes scripts/instalar-en-labs.sh
 scripts/verificar.sh
 ```
+
+### Usual and recommended values
+
+The values you normally set (all of them, with comments: [values.yaml](chart/hcl-dx-orbita/values.yaml)):
+
+| Value | Recommended | What it does |
+|---|---|---|
+| `dx.host` | **required** | Public host name of DX (the Ingress `/orbita-api` and the links of the apps use it) |
+| `scriptapps.dx.host` | **required**, same as `dx.host` | DX host for the subchart that pushes the Script Applications |
+| `scriptapps.dx.credentialsSecret` | **required** | Secret (keys `username`, `password`) of a DX **administrator**: pushes the apps, deploys the theme and WCM content, creates the site |
+| `scriptapps.dxclient.acceptLicense` | **required** `true` | You accept the HCL DXClient licence |
+| `dx.caSecret` / `scriptapps.dx.caSecret` | when DX has a self-signed or private CA | Secret with `ca.crt` to trust the DX certificate |
+| `database.type` | `external` (your PostgreSQL) or `dxPersistence` (the PostgreSQL of DX) | Where ÓRBITA keeps its data; see below |
+| `database.host` + `database.create.superuserSecret` | with `external` | Your PostgreSQL and a superuser Secret so the chart creates the `orbita` database and user |
+| `database.dxPersistence.release` / `.namespace` | with `dxPersistence` | Release and namespace of `hcl-dx-deployment` |
+| `pages.mode` | `site` (default) | `site`: own site `/wps/myportal/orbita/` with a hidden Setting page; `home`: pages under Home (3.x layout) |
+| `pages.site.friendly` / `.title` | default `orbita` / «ÓRBITA» | URL and title of the site |
+| `theme.enabled` | `true` | ÓRBITA theme (copy of Simple made from your DX) and its WCM content; `false`: use your own theme |
+| `theme.hclLogo` / `theme.assistantButton` | `true` | «Powered by HCL Software» and the assistant button in the header |
+| `assistant.backend` + `assistant.litellm.url` | `orbita` (default) with your LiteLLM URL, or `none` | `orbita`: ÓRBITA's own assistant (needs a LiteLLM), `iq` (HCL DX IQ chat) or `none` (no button) |
+| `mcp.enabled` + `mcp.networkPolicy.integratorNamespace` | `true` with HCL DX IQ | MCP server for the IQ Integrator, only reachable from its namespace |
+| `demo.people` | your DX users | Who plays each role of the demo (HR, approvers, employees) |
+| `ingress.className` / `ingress.tlsSecret` | your Ingress class / TLS Secret | Ingress of `/orbita-api` on the DX host |
 
 ### Database: your PostgreSQL or the persistence of DX
 
@@ -391,6 +420,11 @@ deployment/dx-iq-integrator`) so that it reads the new list; the `orbita-api` lo
 - **Upgrade**: `helm upgrade orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version <new> -n dx-shared -f
   orbita-values.yaml`. New migrations are applied at start-up; data are kept. The Script Applications are updated in
   place on their pages, and the existing pages keep their layout and the settings of each application.
+- **From 3.x to 4.0**: the default is now ÓRBITA's own site (`pages.mode: site`) and the theme becomes a copy of
+  Simple; the 3.x theme (copy of Portal 8.5, same name) is migrated in place. **To keep your pages under Home, set
+  `pages.mode: home`** before upgrading. With `site`, the old pages under Home stay: remove them in DX once the site is
+  in use. The values `theme.damCollection`, `theme.logoAlt`, `theme.headerBackground` and `pages.layoutTemplate` are
+  gone. Details: [CHANGELOG](CHANGELOG.md).
 - **From 2.x to 3.0**: the assistant button now opens ÓRBITA's own assistant, which needs a LiteLLM
   (`assistant.litellm.*`). Without LiteLLM, keep the IQ chat with `assistant.backend: iq`, or hide the button with
   `none`. The notifications created from 3.0 are shown in each user's language; the earlier ones stay in Spanish.
