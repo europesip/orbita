@@ -9,10 +9,62 @@ type: application
 version: 4.0.0
 appVersion: "4.0.0"
 home: https://github.com/europesip/orbita
+icon: https://raw.githubusercontent.com/europesip/orbita/main/chart/hcl-dx-orbita/files/site/theme/images/orbita-icon.png
 sources:
   - https://github.com/europesip/orbita
 annotations:
   artifacthub.io/license: MIT
+  artifacthub.io/category: web-applications
+  artifacthub.io/prerelease: "false"
+  artifacthub.io/containsSecurityUpdates: "false"
+  artifacthub.io/links: |
+    - name: Source code
+      url: https://github.com/europesip/orbita
+    - name: Documentation
+      url: https://github.com/europesip/orbita#readme
+    - name: Release history
+      url: https://github.com/europesip/orbita/blob/main/CHANGELOG.md
+    - name: HCL Marketplace
+      url: https://marketplace.hcl-software.com/dx/catalog/dx-orbita
+    - name: Support
+      url: https://github.com/europesip/orbita/issues
+  artifacthub.io/maintainers: |
+    - name: EUROPESIP
+      email: info@europesip.com
+  # Images of this chart version (update with every release, like appVersion)
+  artifacthub.io/images: |
+    - name: orbita-api
+      image: ghcr.io/europesip/orbita/orbita-api:4.0.0
+      platforms:
+        - linux/amd64
+        - linux/arm64
+    - name: orbita-scriptapps
+      image: ghcr.io/europesip/orbita/orbita-scriptapps:4.0.0
+      platforms:
+        - linux/amd64
+        - linux/arm64
+    - name: postgres
+      image: postgres:18.1-alpine
+  # Changes of this chart version, from CHANGELOG.md (replace with every release)
+  artifacthub.io/changes: |
+    - kind: added
+      description: "Own site /wps/myportal/orbita/ by default (pages.mode: site), with a hidden Setting page for administrators; pages.mode: home keeps the 3.x layout"
+      links:
+        - name: Issue 28
+          url: https://github.com/europesip/orbita/issues/28
+    - kind: added
+      description: "Authenticated users only by default (pages.site.anonymous: false)"
+    - kind: changed
+      description: "Theme based on the HCL DX Simple theme, generated at install time from the portal (no HCL file in the chart); header, footer and settings from WCM"
+    - kind: added
+      description: "WCM libraries ThemeDS and orbita with the Setting site area; images in the DAM or as WCM components"
+  artifacthub.io/screenshots: |
+    - title: ÓRBITA home page
+      url: https://raw.githubusercontent.com/europesip/orbita/main/docs/images/theme-home.en.jpg
+    - title: Approvals
+      url: https://raw.githubusercontent.com/europesip/orbita/main/docs/images/approvals.en.jpg
+    - title: Assistant (HCL DX IQ)
+      url: https://raw.githubusercontent.com/europesip/orbita/main/docs/images/assistant.en.jpg
 keywords: [hcl, dx, digital-experience, script-application, mcp, intranet]
 maintainers:
   - name: EUROPESIP

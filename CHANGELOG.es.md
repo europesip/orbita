@@ -38,6 +38,9 @@ instalador). Mira [Sitio y tema](docs/site.es.md).
 
 ## Sin publicar
 
+- **Publicación en Artifact Hub** (#30): icono y anotaciones `artifacthub.io/*` en `Chart.yaml` (categoría, enlaces,
+  mantenedores, imágenes, cambios, capturas), un `README.md` del chart (EN/ES) y `hack/artifacthub/artifacthub-repo.yml`
+  (publicador verificado). Mira [Publicación en Artifact Hub](docs/artifact-hub.es.md). Sin cambios en la API ni en las apps.
 - **Punto de extensión de identidad del MCP** (#12): además de la sesión de DX del usuario, proveedores de identidad
   empaquetados en JAR aparte (`ProveedorIdentidadMcp`, cargados de `ORBITA_EXTENSIONS_DIR`) pueden decir en nombre de
   quién actúa una llamada al MCP, para que un asistente fuera de HCL DX (un bot de Microsoft Teams...) use ÓRBITA como
