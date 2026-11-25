@@ -154,7 +154,7 @@ mcp:
     extraFrom: []
 
 # --- Extensions ---------------------------------------------------------------------------------------------------
-# JARs that extend ÓRBITA, packaged as images (free or commercial, not part of ÓRBITA): for example identity providers
+# JARs that extend ÓRBITA, packaged as images (open source or under a subscription, not part of ÓRBITA): for example identity providers
 # of the MCP server, so that an assistant outside HCL DX (a Microsoft Teams bot...) acts as each user. An init container
 # copies <path>/*.jar of each image to /config/extensions, where the API loads them. See docs/mcp.md.
 extensions: []

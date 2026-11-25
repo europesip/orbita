@@ -20,12 +20,14 @@ nav:
   - Overview: index.md
   - FAQ: faq.md
   - "Site and theme (4.0.0)": site.md
+  - Artifact Hub listing: artifact-hub.md
   - What to ask the AI: ai-questions.md
   - How we work: workflow.md
   - Español:
       - Introducción: index.es.md
       - Preguntas frecuentes: faq.es.md
       - "Sitio y tema (4.0.0)": site.es.md
+      - Publicación en Artifact Hub: artifact-hub.es.md
       - Qué preguntarle a la IA: preguntas-ia.md
       - Servidor MCP: mcp.md
       - Especificación funcional: ESPECIFICACION.md

@@ -2,6 +2,12 @@
 
 [English](CHANGELOG.md) · **Español**
 
+## Sin publicar
+
+- **Publicación en Artifact Hub** (#30): icono y anotaciones `artifacthub.io/*` en `Chart.yaml` (categoría, enlaces,
+  mantenedores, imágenes, cambios, capturas), un `README.md` del chart (EN/ES) y `hack/artifacthub/artifacthub-repo.yml`
+  (publicador verificado). Mira [Publicación en Artifact Hub](docs/artifact-hub.es.md). Sin cambios en la API ni en las apps.
+
 ## 4.0.0 · 2026-11-24 · Un solo chart: sitio propio, tema basado en Simple y ajustes en WCM (#28)
 
 Parte del trabajo «ÓRBITA sobre el tema Simple» de **Macarena** (EUROPESIP): su instalador, su contenido WCM y el
@@ -36,7 +42,7 @@ instalador). Mira [Sitio y tema](docs/site.es.md).
 - Un paso manual con DAM (ninguna API de DX lo permite): marcar «Mostrar recurso de activo digital» en los cuatro
   campos de imagen de la plantilla *Setting Site Area - ST* (lo dicen el log del Job y las NOTES).
 
-## Sin publicar
+También en la 4.0.0 (fusionado antes de la versión, apuntado por error como sin publicar):
 
 - **Punto de extensión de identidad del MCP** (#12): además de la sesión de DX del usuario, proveedores de identidad
   empaquetados en JAR aparte (`ProveedorIdentidadMcp`, cargados de `ORBITA_EXTENSIONS_DIR`) pueden decir en nombre de

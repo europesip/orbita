@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 EUROPESIP
+# Pushes hack/artifacthub/artifacthub-repo.yml to the OCI repository of the chart with the special tag
+# `artifacthub.io`, so Artifact Hub shows the "Verified publisher" label. Run it by hand after changing the file.
+name: Artifact Hub metadata
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: read
+  packages: write
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oras-project/setup-oras@v1
+      - run: echo "${{ secrets.GITHUB_TOKEN }}" | oras login ghcr.io -u "${{ github.actor }}" --password-stdin
+      - name: Push artifacthub-repo.yml
+        working-directory: hack/artifacthub
+        run: |
+          oras push ghcr.io/europesip/charts/hcl-dx-orbita:artifacthub.io \
+            --config /dev/null:application/vnd.cncf.artifacthub.config.v1+yaml \
+            artifacthub-repo.yml:application/vnd.cncf.artifacthub.repository-metadata.layer.v1.yaml

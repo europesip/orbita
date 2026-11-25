@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 EUROPESIP
+# Artifact Hub repository metadata (issue #30). Pushed to the OCI repository of the chart with the special tag
+# `artifacthub.io` (see docs/artifact-hub.md). Fill repositoryID with the ID shown on the repository card in the
+# Artifact Hub control panel (it enables the "Verified publisher" label).
+repositoryID: b434f09d-c32d-423d-86cc-fea594978306
+owners:
+  - name: EUROPESIP
+    email: info@europesip.com
