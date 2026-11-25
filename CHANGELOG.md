@@ -2,6 +2,12 @@
 
 **English** · [Español](CHANGELOG.es.md)
 
+## Unreleased
+
+- **Artifact Hub listing** (#30): `Chart.yaml` icon and `artifacthub.io/*` annotations (category, links, maintainers,
+  images, changes, screenshots), a chart `README.md` (EN/ES) and `hack/artifacthub/artifacthub-repo.yml` (verified
+  publisher). See [Artifact Hub listing](docs/artifact-hub.md). No change to the API or the apps.
+
 ## 4.0.0 · 2026-11-24 · One chart: own site, Simple-based theme and WCM settings (#28)
 
 Based on the "ÓRBITA on the Simple theme" work by **Macarena** (EUROPESIP): her installer, WCM content and theme
@@ -36,11 +42,8 @@ See [Site and theme](docs/site.md).
 - One manual step with DAM (no DX API): tick "Show digital asset resource" in the four image fields of the template
   *Setting Site Area - ST* (the Job log and NOTES say it).
 
-## Unreleased
+Also in 4.0.0 (merged before the release, listed as unreleased by mistake):
 
-- **Artifact Hub listing** (#30): `Chart.yaml` icon and `artifacthub.io/*` annotations (category, links, maintainers,
-  images, changes, screenshots), a chart `README.md` (EN/ES) and `hack/artifacthub/artifacthub-repo.yml` (verified
-  publisher). See [Artifact Hub listing](docs/artifact-hub.md). No change to the API or the apps.
 - **MCP identity extension point** (#12): besides the user's DX session, identity providers packaged as separate
   JARs (`ProveedorIdentidadMcp`, loaded from `ORBITA_EXTENSIONS_DIR`) can say on whose behalf an MCP call acts, so an
   assistant outside HCL DX (a Microsoft Teams bot...) uses ÓRBITA as each user. The audit line records the identity
