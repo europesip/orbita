@@ -2,6 +2,8 @@
 
 # ÓRBITA · Time tracking, Time off, Expenses and Approvals for HCL DX
 
+<p align="center"><a href="https://artifacthub.io/packages/helm/orbita/hcl-dx-orbita"><img src="https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/orbita" alt="Artifact Hub"></a></p>
+
 **English** · [Español](README.es.md) · [Manual (PDF)](docs/manual/orbita-explained.en.pdf) · [Presentation (PDF)](docs/presentation/orbita-presentation.en.pdf) · [FAQ](docs/faq.md) · [Release history](CHANGELOG.md) · [Contact](#contact-and-services)
 
 **ÓRBITA** is an intranet suite for **HCL DX Compose** (CF239) by **EUROPESIP**. Its React interface is published as
@@ -210,7 +212,7 @@ VALUES
 **3. Install**:
 
 ```bash
-helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 4.0.0 \
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 4.0.1 \
   -n $NS_ORBITA -f orbita-values.yaml --timeout 30m
 ```
 
@@ -238,6 +240,18 @@ resource» in the four image fields of the site area template *Setting Site Area
 DXCLIENT_ACCEPT_LICENSE=yes scripts/instalar-en-labs.sh
 scripts/verificar.sh
 ```
+
+### From Artifact Hub
+
+The same chart is listed on **[Artifact Hub](https://artifacthub.io/packages/helm/orbita/hcl-dx-orbita)**, the CNCF
+catalog of Kubernetes packages. Installing from there gives you the same `helm` command as above, plus:
+
+- **Verified publisher** (EUROPESIP): the package comes from our repository.
+- **Security report** of the images (`orbita-api`, `orbita-scriptapps`), updated by Artifact Hub.
+- The **values reference**, screenshots and the changes of each version, before you install.
+- **Release notifications**: press *Subscribe* (bell icon) and Artifact Hub e-mails you when a new version is out.
+
+Open the page, press *Install* and use the command with your `orbita-values.yaml` (step 2 above).
 
 ### Usual and recommended values
 

@@ -2,6 +2,8 @@
 
 # ÓRBITA · Fichaje, Vacaciones, Gastos y Aprobaciones para HCL DX
 
+<p align="center"><a href="https://artifacthub.io/packages/helm/orbita/hcl-dx-orbita"><img src="https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/orbita" alt="Artifact Hub"></a></p>
+
 [English](README.md) · **Español** · [Manual (PDF)](docs/manual/orbita-explicada.es.pdf) · [Presentación (PDF)](docs/presentation/orbita-presentacion.es.pdf) · [Preguntas frecuentes](docs/faq.es.md) · [Historial de versiones](CHANGELOG.es.md) · [Contacto](#contacto-y-servicios)
 
 **ÓRBITA** es una suite de intranet para **HCL DX Compose** (CF239), de **EUROPESIP**. Su interfaz React se publica
@@ -213,7 +215,7 @@ VALUES
 **3. Instalar**:
 
 ```bash
-helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 4.0.0 \
+helm upgrade --install orbita oci://ghcr.io/europesip/charts/hcl-dx-orbita --version 4.0.1 \
   -n $NS_ORBITA -f orbita-values.yaml --timeout 30m
 ```
 
@@ -243,6 +245,18 @@ cambiar logos, colores y pie. Un paso a mano que DX no permite por API: en la in
 DXCLIENT_ACCEPT_LICENSE=yes scripts/instalar-en-labs.sh
 scripts/verificar.sh
 ```
+
+### Desde Artifact Hub
+
+El mismo chart está en **[Artifact Hub](https://artifacthub.io/packages/helm/orbita/hcl-dx-orbita)**, el catálogo de
+paquetes de Kubernetes de la CNCF. Instalar desde allí te da el mismo comando `helm` de arriba y, además:
+
+- **Publicador verificado** (EUROPESIP): el paquete sale de nuestro repositorio.
+- **Informe de seguridad** de las imágenes (`orbita-api`, `orbita-scriptapps`), que Artifact Hub actualiza.
+- La **referencia de valores**, las capturas y los cambios de cada versión, antes de instalar.
+- **Aviso de versiones nuevas**: pulsa *Subscribe* (la campana) y Artifact Hub te avisa por correo.
+
+Abre la página, pulsa *Install* y usa el comando con tu `orbita-values.yaml` (paso 2 de arriba).
 
 ### Valores habituales y recomendados
 
