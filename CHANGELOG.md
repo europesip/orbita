@@ -2,7 +2,12 @@
 
 **English** · [Español](CHANGELOG.es.md)
 
-## Unreleased
+## 4.0.1 · 2026-11-28 · Artifact Hub listing (no change to the API or the apps)
+
+Same code as 4.0.0: this release publishes the chart metadata on Artifact Hub (it is read from each new chart
+version).
+
+- **README** (#32): Artifact Hub badge and a section on installing from Artifact Hub (EN/ES).
 
 - **Artifact Hub listing** (#30): `Chart.yaml` icon and `artifacthub.io/*` annotations (category, links, maintainers,
   images, changes, screenshots), a chart `README.md` (EN/ES) and `hack/artifacthub/artifacthub-repo.yml` (verified

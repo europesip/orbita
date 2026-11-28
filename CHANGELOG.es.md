@@ -2,7 +2,12 @@
 
 [English](CHANGELOG.md) · **Español**
 
-## Sin publicar
+## 4.0.1 · 2026-11-28 · Ficha en Artifact Hub (sin cambios en la API ni en las aplicaciones)
+
+El mismo código que la 4.0.0: esta versión publica los metadatos del chart en Artifact Hub (los lee de cada versión
+nueva del chart).
+
+- **README** (#32): insignia de Artifact Hub y una sección sobre instalar desde Artifact Hub (EN/ES).
 
 - **Publicación en Artifact Hub** (#30): icono y anotaciones `artifacthub.io/*` en `Chart.yaml` (categoría, enlaces,
   mantenedores, imágenes, cambios, capturas), un `README.md` del chart (EN/ES) y `hack/artifacthub/artifacthub-repo.yml`
